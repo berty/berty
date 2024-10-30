@@ -1,0 +1,67 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Settings.SystemInfo renders correctly 1`] = `
+<RNCSafeAreaProvider
+  onInsetsChange={[Function]}
+  style={
+    Array [
+      Object {
+        "flex": 1,
+      },
+      undefined,
+    ]
+  }
+>
+  <View
+    style={
+      Object {
+        "flex": 1,
+      }
+    }
+  >
+    <View
+      appearance="default"
+      level="1"
+      style={
+        Array [
+          Object {
+            "backgroundColor": "#FFFFFF",
+          },
+          Object {
+            "backgroundColor": "#FFFFFF",
+            "flex": 1,
+          },
+        ]
+      }
+    >
+      <RCTScrollView
+        bounces={false}
+        contentContainerStyle={
+          Object {
+            "paddingBottom": 90,
+          }
+        }
+      >
+        <View>
+          <View
+            style={
+              Object {
+                "alignItems": "center",
+                "justifyContent": "center",
+                "marginTop": 100,
+              }
+            }
+          >
+            <ActivityIndicator
+              animating={true}
+              color="#999999"
+              hidesWhenStopped={true}
+              size="large"
+            />
+          </View>
+        </View>
+      </RCTScrollView>
+    </View>
+  </View>
+</RNCSafeAreaProvider>
+`;

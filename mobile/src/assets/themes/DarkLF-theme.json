@@ -1,0 +1,14 @@
+{
+  "main-background": "#2B2E4D",
+  "secondary-background": "#EDEDED",
+  "main-text": "#f6eef5",
+  "secondary-text": "#c5bdc4",
+  "background-header": "#7474dc",
+  "secondary-background-header": "#9f0f8a",
+  "alt-secondary-background-header": "#3F426D",
+  "reverted-main-text": "#fffdff",
+  "positive-asset": "#696c91",
+  "negative-asset": "#67315f",
+  "warning-asset": "#a7035e",
+  "input-background": "#46496c"
+}

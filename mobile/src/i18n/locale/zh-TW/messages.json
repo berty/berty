@@ -1,0 +1,646 @@
+{
+	"onboarding": {
+		"getstarted": {
+			"screenTitle": "",
+			"title": "",
+			"desc": "",
+			"create-button": "",
+			"import-button": ""
+		},
+		"default-mode": {
+			"summary": {
+				"title": "",
+				"screenTitle": "",
+				"subtitle": "",
+				"first-point": "",
+				"second-point": "",
+				"third-point": "",
+				"back-button": "",
+				"accept-button": ""
+			}
+		},
+		"custom-mode": {
+			"summary": {
+				"screenTitle": "",
+				"title": "",
+				"subtitle": "",
+				"first-point": "",
+				"second-point": "",
+				"back-button": "",
+				"accept-button": ""
+			},
+			"settings": {
+				"off-grid": {
+					"title": "",
+					"ble-button": "",
+					"nearby-button": "",
+					"mc-button": "",
+					"mdns-button": ""
+				},
+				"routing": {
+					"title": "",
+					"dht-button": "",
+					"rdvp-button": ""
+				},
+				"access": {
+					"title": "",
+					"relay-button": "",
+					"bootstrap-button": ""
+				},
+				"modals": {
+					"add": {
+						"title": {
+							"relay": "",
+							"bootstrap": "",
+							"rdvp": ""
+						}
+					},
+					"edit": {
+						"title": {
+							"relay": "",
+							"bootstrap": "",
+							"rdvp": ""
+						}
+					},
+					"errors": {
+						"alias-already-exists": "",
+						"multiaddr-alread-exists": "",
+						"multiaddr-bad-format": "",
+						"multiaddr-p2p": ""
+					},
+					"buttons": {
+						"add": "添加",
+						"edit": "",
+						"delete": ""
+					},
+					"multiaddress": "",
+					"alias": ""
+				},
+				"all-button": "",
+				"accept-button": ""
+			}
+		},
+		"create-account": {
+			"title": "創建您的帳戶",
+			"first-button": "",
+			"second-button": "",
+			"placeholder": "",
+			"good-to-know": {
+				"title": "",
+				"first-point": "",
+				"second-point": ""
+			}
+		},
+		"generate-key": {
+			"title": "正在啟動 Berty 節點…",
+			"desc": "這可能需要幾秒鐘"
+		},
+		"setup-finished": {
+			"title": "設置完成！",
+			"desc": "您現在可以使用該應用，開始添加聯繫人以及與他們自由私下聊天",
+			"button": ""
+		},
+		"web-views": {
+			"title": "",
+			"desc": "",
+			"first-button": "取消",
+			"second-button": ""
+		}
+	},
+	"main": {
+		"home": {
+			"title": "",
+			"requests": {
+				"title": "請求",
+				"accept": "同意",
+				"card-title": "聯繫請求！"
+			},
+			"input-placeholder": "搜索關鍵詞",
+			"no-contacts": "您還沒有任何聯繫人或聊天",
+			"no-network": {
+				"title": "",
+				"description": "",
+				"cancel": "",
+				"activate": ""
+			},
+			"search": {
+				"no-results": "未找到結果"
+			},
+			"create-group": {
+				"title": "新建群組",
+				"add-members": "添加成員",
+				"group-info": "群組信息",
+				"search-placeholder": "搜索",
+				"continue": "",
+				"create-group": ""
+			},
+			"create-group-finalize": {
+				"placeholder": "群組名稱",
+				"about": "關於群組",
+				"first-bullet-point": "任何群組中的人都可以重命名或邀請新成員",
+				"second-bullet-point": "您可以通過鏈接邀請成員",
+				"third-bullet-point": "您可以離開此群組",
+				"fourth-bullet-point": "您不能刪除此組",
+				"fifth-bullet-point": "您不能從此群組中刪除成員"
+			},
+			"conversations": {
+				"request-sent": "",
+				"draft": ""
+			}
+		},
+		"suggestion-display-name-initial": "單擊這裡以添加"
+	},
+	"settings": {
+		"home": {
+			"title": "設置",
+			"proximity-button": "",
+			"notifications-button": "消息通知",
+			"appearance-button": "",
+			"accounts-button": "賬戶",
+			"network-button": "",
+			"linked-identities-button": "",
+			"directory-search-button": "",
+			"bug-button": "",
+			"about-button": "關於 Berty",
+			"version-button": "",
+			"devtools-button": "開發工具"
+		},
+		"about": {
+			"title": "關於 Berty",
+			"faq-button": "",
+			"roadmap-button": "",
+			"policy-button": "",
+			"license-button": "",
+			"terms-of-use": "使用條款"
+		},
+		"accounts": {
+			"title": "賬戶",
+			"backup-button": "",
+			"backup-notif-title": "",
+			"backup-notif-desc": "",
+			"accounts-button": "賬戶",
+			"create-button": "",
+			"import-button": "",
+			"delete-button": "",
+			"delete-title": ""
+		},
+		"appearance": {
+			"title": "",
+			"dark-button": "",
+			"editor-button": "",
+			"theme-editor": {
+				"title": ""
+			}
+		},
+		"contact-convs": {
+			"title": "",
+			"reset-button": "",
+			"request-button": ""
+		},
+		"network": {
+			"title": "",
+			"ble-button": "",
+			"mc-button": "",
+			"nearby-button": "",
+			"mdns-button": "多播DNS",
+			"dht-button": "",
+			"rdvp-button": "",
+			"relay-button": "",
+			"bootstrap-button": ""
+		},
+		"notifications": {
+			"title": "消息通知"
+		},
+		"edit-profile": {
+			"title": "編輯我的資料",
+			"qr-will-update": "您的 Berty ID (二維碼) 將會被更新",
+			"ocr-wont-update": "您的待處理聯繫人請求將不會被更新",
+			"save": "保存修改",
+			"cancel": "取消",
+			"name-input-placeholder": "名..."
+		},
+		"delete-account": {
+			"title": "刪除帳戶！",
+			"first-desc": "您確定要刪除您的帳戶嗎？",
+			"desc-please": "",
+			"desc-delete": "",
+			"desc-confirm": "",
+			"cancel-button": "取消",
+			"delete-button": ""
+		},
+		"faq": {
+			"title": ""
+		},
+		"roadmap": {
+			"title": ""
+		},
+		"privacy-policy": {
+			"title": ""
+		},
+		"license": {
+			"title": ""
+		},
+		"devtools": {
+			"title": "開發工具",
+			"header-left-button": "設備信息",
+			"header-middle-button": "生成偽數據",
+			"header-right-button": "重啟守護進程",
+			"allow-unsecure-grpc": "",
+			"force-mock-button": "",
+			"simulate-button": "模擬流錯誤",
+			"simulate-js-error-button": "模擬 JavaScript 錯誤",
+			"system-info-button": "系統信息",
+			"select-node": {
+				"title": "",
+				"node-type": "",
+				"address": "",
+				"account-port": "",
+				"messenger-port": "",
+				"dont-ask": "",
+				"button-continue": ""
+			},
+			"debug-button": "Debug",
+			"log-button": {
+				"name": "日誌格式",
+				"bullet-point": "更改之後重新啟動應用"
+			},
+			"log-filters-button": {
+				"name": "日誌過濾器",
+				"bullet-point": "更改之後重新啟動應用"
+			},
+			"export-logs-button": "",
+			"add-dev-conversations-button": "添加開發者會話",
+			"share-button": {
+				"title": "分享ID到Discord",
+				"alert-title": "您想要在 Berty Discord 服務器上分享您的 二維碼到\"#dev-logs\"嗎？",
+				"alert-message": "這將允許其他工作人員掃描您的二維碼或複製您的聯繫鏈接。",
+				"alert-accept-button": "好 👍",
+				"alert-cancel-button": "不"
+			},
+			"dump-account-button": "轉儲帳戶",
+			"dump-contacts-button": "轉儲聯繫人",
+			"dump-conversations-button": "轉儲對話",
+			"dump-interactions-button": "轉儲互動",
+			"dump-members-button": "轉儲成員",
+			"stop-node-button": "停止節點",
+			"local-grpc-button": "本地 gRPC",
+			"console-logs-button": "控制台日誌",
+			"ipfs-webui-button": "IPFS WebUI",
+			"send-to-all-button": {
+				"title": "向所有聯繫人發送消息",
+				"sending": "正在發送...",
+				"test": "測試， ",
+				"tried": "✔ 正在嘗試向 {{length}} 聯繫人發送"
+			},
+			"tyber-attach": "Tyber 附加到 {{host}}",
+			"tyber-host-button": {
+				"name": "Tyber",
+				"bullet-point": "更改之後重新啟動應用"
+			},
+			"footer-left-button": "設備信息",
+			"footer-middle-button": "顯示事件",
+			"footer-right-button": "重啟守護進程"
+		},
+		"system-info": {
+			"title": "系統信息"
+		},
+		"fake-data": {
+			"title": "生成偽數據",
+			"contacts-button": "生成偽聯繫人",
+			"multi-members-button": "生成偽多重成員",
+			"messages-button": "生成偽消息",
+			"delete-button": "刪除偽數據"
+		},
+		"add-dev-conversations": {
+			"title": "添加開發者會話",
+			"add": "添加 {{name}}",
+			"tag-bot": "機器人",
+			"tag-contact": "聯繫人",
+			"tag-conversation": ""
+		},
+		"ipfs-webui": {
+			"title": "IPFS WebUI"
+		},
+		"theme-editor": {
+			"randomize": "生成主題",
+			"save": "保存主題",
+			"export": "將選定主題導出為文件",
+			"share": "將選定主題作為文件分享",
+			"import": "導入主題文件",
+			"delete": "",
+			"bad-format-title": "",
+			"bad-format-desc": "",
+			"notification-file-saved": {
+				"title": "數據已保存！",
+				"desc": "在下載目錄中可用"
+			}
+		},
+		"my-berty-ID": {
+			"title": ""
+		},
+		"share": {
+			"invite": "",
+			"tap-to-scan": "",
+			"create-group": ""
+		},
+		"linked-identities": {
+			"title": ""
+		},
+		"directory-search": {
+			"title": ""
+		}
+	},
+	"tabs": {
+		"qr": "二維碼",
+		"fingerprint": "指紋",
+		"info": "信息",
+		"devices": "設備"
+	},
+	"modals": {
+		"manage-deep-link": {
+			"invalid-link": "無效的鏈接！",
+			"invalid-qr": "無效的二維碼！",
+			"error": "錯誤！",
+			"contact-already-added": "聯繫人已添加",
+			"contact-already-added-message": "您不能多次添加同一個聯繫人"
+		},
+		"invalid-scan": {
+			"dismiss-button": ""
+		},
+		"group-invitation": {
+			"join": "",
+			"password-label": "",
+			"password-placeholder": ""
+		},
+		"save-theme": {
+			"title": "正在保存主題",
+			"desc": "請為您的主題選擇一個名稱！",
+			"placeholder": "主題名稱...",
+			"cancel": "取消",
+			"add": "添加！"
+		}
+	},
+	"chat": {
+		"title-unknown": "",
+		"sending": "正在發送...",
+		"sent": "",
+		"contact-settings": {
+			"my-devices": ""
+		},
+		"multi-member": {
+			"input-placeholder": "在此輸入..."
+		},
+		"push-notifications": {
+			"title": "消息通知",
+			"unsupported": "",
+			"check-device-settings": "",
+			"check-account-settings": "",
+			"warning-disable": {
+				"title": "",
+				"subtitle": "",
+				"accept": "",
+				"refuse": ""
+			},
+			"why-cant-disable": "",
+			"why-cant-disable-account": "",
+			"errors": {
+				"no-token": "",
+				"no-server": ""
+			},
+			"warning-enable-all": {
+				"title": "",
+				"subtitle": "",
+				"refuse": "",
+				"accept": "同意"
+			},
+			"warning-disable-mute": {
+				"title": "",
+				"refuse": "",
+				"accept": ""
+			},
+			"receive-push": "接收新消息通知",
+			"hide-previews": "",
+			"auto-enable": "",
+			"show-in-app": ""
+		},
+		"devices": {
+			"title": "設備",
+			"push": {
+				"enabled": "",
+				"not-enabled": "已禁用新消息通知"
+			}
+		},
+		"multi-member-settings": {
+			"title": "",
+			"members-button": {
+				"title": ""
+			},
+			"add-member-button": "添加成員",
+			"members-dropdown": {
+				"search-placeholder": "",
+				"conversation-booster": "",
+				"replication-type": "",
+				"user-type": ""
+			},
+			"invite-button": "通過鏈接邀請",
+			"save-button": "在服務器上保存對話"
+		},
+		"add-members": {
+			"members": "成員",
+			"contacts": "聯繫人列表",
+			"add": "添加！"
+		},
+		"multi-member-qr": {
+			"title": "二維碼組"
+		},
+		"one-to-one": {
+			"contact-request-box": {
+				"title": "聯繫請求",
+				"group-invitation": "",
+				"refuse-button": "",
+				"accept-button": "同意",
+				"accepted-button": "",
+				"error": "",
+				"you-invited": "",
+				"this-contact": "",
+				"to-a-group": ""
+			},
+			"infos-chat": {
+				"connection-confirmed": "👋 Berty 連接已確認! 🎉",
+				"request-sent": "請求已發送 ✈",
+				"incoming": "接受此請求以回復 ！",
+				"outgoing": "正在等待您的聯繫人回復以連接！",
+				"refresh-button": ""
+			},
+			"incoming-input-placeholder": "接受此請求以在這裡寫入...",
+			"input-placeholder": "在此輸入..."
+		},
+		"one-to-one-settings": {
+			"title": "",
+			"save-button": "在服務器上保存對話"
+		},
+		"replicate-group-settings": {
+			"title": "在服務器上註冊會話",
+			"no-registered-button": "未註冊複製服務",
+			"connect-button": "連接到 Berty 運營服務",
+			"manage-add-button": "管理或添加服務"
+		},
+		"user-message": {
+			"read-more": "",
+			"show-less": ""
+		}
+	},
+	"account": {
+		"deleting": "",
+		"creating": "",
+		"opening": {
+			"alert-push-title": "推送通知",
+			"alert-push-go-failed": "",
+			"alert-push-fetch-failed": "",
+			"alert-push-perm-denied": "",
+			"alert-push-desc": "",
+			"alert-push-button": ""
+		}
+	},
+	"permission": {
+		"notification": {
+			"title": "",
+			"desc": "Berty app 需要您的許可才能向您發送本地或推送通知。這將允許您在收到消息時收到通知。"
+		},
+		"proximity": {
+			"title": "",
+			"android-desc": "",
+			"ios-desc": ""
+		},
+		"camera": {
+			"title": "攝像頭",
+			"desc": ""
+		},
+		"audio": {
+			"title": "",
+			"desc": "若要向您的聯繫人發送音頻信息，您需要允許Berty 應用程序獲得麥克風權限。"
+		},
+		"gallery": {
+			"title": "",
+			"desc": ""
+		},
+		"contacts": {
+			"title": "聯繫人列表",
+			"desc": ""
+		},
+		"button-labels": {
+			"allow": "允許",
+			"settings": "轉到設置"
+		},
+		"skip": "",
+		"cancel": "取消",
+		"settings-text": "您可以在設置中啟用 {{title}} 權限。"
+	},
+	"notification": {
+		"need-restart": {
+			"title": "",
+			"desc": ""
+		}
+	},
+	"error": {
+		"labels": {
+			"bug": "檢測到BUG",
+			"crash": "檢測到崩潰"
+		},
+		"restart-app": "重啟應用",
+		"wtf-screen": {
+			"title": "失敗的原因是什麼？What's the Fail?",
+			"desc": "應用程序剛剛崩潰了。",
+			"desc-report": ""
+		},
+		"sorry-screen": {
+			"title": "很抱歉發生了這個錯誤！",
+			"desc": "這是Berty的實習生Francis的錯，他一定犯了個錯誤。Francis真是個急躁的人！",
+			"desc-em": "*好吧，Berty的團隊裡沒有 Francis這個人。",
+			"desc-report": ""
+		}
+	},
+	"debug": {
+		"inspector": {
+			"show-button": "顯示應用檢查器",
+			"hide-button": "關閉",
+			"title": "檢查器",
+			"accounts": {
+				"title": "賬戶",
+				"data-not-found": "帳戶不在列表中",
+				"action-delete": {
+					"file-exists": "帳戶 {{accountId}} 不存在，但文件有此名稱。",
+					"account-exists": "帳戶 {{accountId}} 當前存在。",
+					"fs-read-error": "獲取有關帳戶的FS信息時出錯",
+					"actions-title": "我們應該怎麼做？",
+					"action-account-manager": "通過帳戶管理器刪除它",
+					"action-account-manager-confirm": "確認刪除帳戶",
+					"action-force-delete": "強制刪除它",
+					"action-force-delete-confirm": "確認強制刪除帳戶",
+					"error-close": "關閉帳戶時出錯",
+					"error-delete": "刪除帳戶時出錯",
+					"success-feedback": "帳戶已刪除",
+					"action-cancel": "取消"
+				},
+				"status": {
+					"datastore-found": "",
+					"datastore-not-found": "",
+					"ipfs-repo-found": "",
+					"ipfs-repo-not-found": "",
+					"messenger-db-found": "發現Messenger DB",
+					"messenger-db-not-found": "未找到Messenger DB"
+				},
+				"infos": {
+					"aligned": {
+						"name": "名稱: {{name}}",
+						"created": "創建: {{created}}",
+						"opened": "打開:  {{opened}}",
+						"error": "錯誤: {{error}}"
+					}
+				}
+			},
+			"errors": {
+				"title": "錯誤",
+				"header-reported": "錯誤報告:",
+				"header-all-clear": "未報告錯誤",
+				"listing-files-failed": "列出目錄內容時出錯",
+				"listing-accounts-failed": "列出賬戶時出錯",
+				"listing-accounts-failed-grpc": "列出帳戶時發生GRPC錯誤"
+			},
+			"dump": {
+				"button": "轉儲應用狀態"
+			},
+			"refresh": "刷新",
+			"confirm-alert": {
+				"button-confirm": "確認",
+				"button-cancel": "取消"
+			}
+		}
+	},
+	"time-for": {
+		"minutes": "",
+		"hours": "",
+		"days": ""
+	},
+	"share": {
+		"sharing-id-message": ""
+	},
+	"directory": {
+		"phone": {
+			"register": "",
+			"associated": "",
+			"expired": "",
+			"proof-service-unavailable": "",
+			"register-service": "",
+			"unregister-service": ""
+		},
+		"email": {
+			"register": "",
+			"associated": "",
+			"expired": "",
+			"proof-service-unavailable": "",
+			"register-service": "",
+			"unregister-service": ""
+		}
+	}
+}

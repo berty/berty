@@ -1,0 +1,646 @@
+{
+	"onboarding": {
+		"getstarted": {
+			"screenTitle": "از حریم خصوصی خود محافظت کنید",
+			"title": "از حریم خصوصی خود محافظت کنید",
+			"desc": "پیام رسانی رایگان و ایمن همتا به همتا",
+			"create-button": "ساخت یک حساب کاربری",
+			"import-button": "بازنشانی یک حساب"
+		},
+		"default-mode": {
+			"summary": {
+				"title": "حالت پیشفرض",
+				"screenTitle": "ساخت حساب کاربری",
+				"subtitle": "آغاز سریع",
+				"first-point": "Save translation\nبا تنظیمات از پیش تعیین شده ای شروع کنید که تعادل حریم خصوصی/راحتی را ارائه می دهند که مناسب بیشتر افراد است. گره های Berty برای بهبود عملکرد و ارتباطات ناهمزمان استفاده می شوند.",
+				"second-point": "سیستم Push notification به‌طور پیش‌فرض فعال است و فعلن نمی‌توانید آن‌ها را در iOS غیرفعال کنید.",
+				"third-point": "برای سفارشی کردن تعادل حریم خصوصی/آسایش، حالت سفارشی را انتخاب کنید.",
+				"back-button": "قبل",
+				"accept-button": "بزن بریم"
+			}
+		},
+		"custom-mode": {
+			"summary": {
+				"screenTitle": "ایجاد حساب کاربری - تنظیمات سفارشی",
+				"title": "حالت سفارشی",
+				"subtitle": "تعادل سفارشی حریم خصوصی/راحتی",
+				"first-point": "در این حالت، تمام تنظیمات را به صورت جداگانه تنظیم کنید تا تعادلی بین حریم خصوصی و راحتی ایجاد شود که برای شما مناسب است.",
+				"second-point": "حالت پیشفرض را برای یک تجربه کولر روشن! انتخاب کنید.",
+				"back-button": "قبل",
+				"accept-button": "ادامه"
+			},
+			"settings": {
+				"off-grid": {
+					"title": "ارتباطات خارج از شبکه",
+					"ble-button": "بلوتوث کم مصرف",
+					"nearby-button": "اندروید در نزدیکی",
+					"mc-button": "قابلیت اتصال چندپایه اپل",
+					"mdns-button": "DNS چند پخشی (شبکه محلی)"
+				},
+				"routing": {
+					"title": "مسیریابی",
+					"dht-button": "جدول هش توزیع شده",
+					"rdvp-button": "گره های نقطه ی قرار ملاقات"
+				},
+				"access": {
+					"title": "دسترسی به شبکه",
+					"relay-button": "گره رله (فعال)",
+					"bootstrap-button": "گره بوت استرپ"
+				},
+				"modals": {
+					"add": {
+						"title": {
+							"relay": "افزودن گره رله (فعال)",
+							"bootstrap": "افزودن گره بوت استرپ",
+							"rdvp": "افزودن گره RDVP"
+						}
+					},
+					"edit": {
+						"title": {
+							"relay": "ویرایش گره رله (فعال)",
+							"bootstrap": "ویرایش گره بوت استرپ",
+							"rdvp": "ویرایش گره RDVP"
+						}
+					},
+					"errors": {
+						"alias-already-exists": "نام مستعار از قبل وجود دارد",
+						"multiaddr-alread-exists": "نشانی چندگانه از قبل وجود دارد",
+						"multiaddr-bad-format": "فرمت نامعتبر نشانی چندگانه",
+						"multiaddr-p2p": ""
+					},
+					"buttons": {
+						"add": "اضافه",
+						"edit": "ویرایش",
+						"delete": "حذف"
+					},
+					"multiaddress": "چندنشانی",
+					"alias": "نام مستعار"
+				},
+				"all-button": "همه",
+				"accept-button": "بزن بریم"
+			}
+		},
+		"create-account": {
+			"title": "حساب کاربری خود را ایجاد کنید",
+			"first-button": "حالت پیشفرض",
+			"second-button": "حالت سفارشی",
+			"placeholder": "اسم خود را انتخاب کنید",
+			"good-to-know": {
+				"title": "نکات مفید:",
+				"first-point": "حساب کاربری شما در داخل دستگاه ایجاد میشود",
+				"second-point": "انتخاب اسم اختیاری بوده و بعدن قابل تغییر است"
+			}
+		},
+		"generate-key": {
+			"title": "شروع گره Berty…",
+			"desc": ""
+		},
+		"setup-finished": {
+			"title": "راه اندازی پایان یافت!",
+			"desc": "اکنون می توانید از برنامه استفاده کنید، شروع به اضافه کردن مخاطبین کنید و آزادانه و خصوصی با آنها صحبت کنید",
+			"button": "شروع به استفاده از Berty کنید"
+		},
+		"web-views": {
+			"title": "مجوز دسترسی به محتوای وب",
+			"desc": "Berty در شرف بارگیری محتوا از وب است. آیا می خواهید این صفحه را باز کنید؟",
+			"first-button": "لغو",
+			"second-button": "بله"
+		}
+	},
+	"main": {
+		"home": {
+			"title": "Berty",
+			"requests": {
+				"title": "درخواستها",
+				"accept": "تایید",
+				"card-title": "درخواست تماس!"
+			},
+			"input-placeholder": "کلید واژه جستجو",
+			"no-contacts": "شما هنوز هیچ مخاطب یا گپی ندارید",
+			"no-network": {
+				"title": "هیچ شبکه ای یافت نشد!",
+				"description": "شما آفلاین به نظر می رسید! قابلیت بلوتوث را برای چت با دوستان فعال کنید!",
+				"cancel": "الان نه",
+				"activate": "فعال سازی"
+			},
+			"search": {
+				"no-results": "هیچ نتیجه ای یافت نشد"
+			},
+			"create-group": {
+				"title": "گروه جدید",
+				"add-members": "اضافه کردن اعضا",
+				"group-info": "مشخصات گروه",
+				"search-placeholder": "جستجو",
+				"continue": "",
+				"create-group": ""
+			},
+			"create-group-finalize": {
+				"placeholder": "",
+				"about": "",
+				"first-bullet-point": "",
+				"second-bullet-point": "",
+				"third-bullet-point": "",
+				"fourth-bullet-point": "",
+				"fifth-bullet-point": ""
+			},
+			"conversations": {
+				"request-sent": "",
+				"draft": ""
+			}
+		},
+		"suggestion-display-name-initial": ""
+	},
+	"settings": {
+		"home": {
+			"title": "تنظیمات",
+			"proximity-button": "ارتباطات خارج از شبکه",
+			"notifications-button": "اعلان ها",
+			"appearance-button": "ظاهر",
+			"accounts-button": "حسابها",
+			"network-button": "شبکه",
+			"linked-identities-button": "",
+			"directory-search-button": "",
+			"bug-button": "گزارش ایراد",
+			"about-button": "درباره Berty",
+			"version-button": "ویرایش: {{version}}",
+			"devtools-button": "Devtools"
+		},
+		"about": {
+			"title": "درباره Berty",
+			"faq-button": "پرسش های متداول",
+			"roadmap-button": "نقشه راه",
+			"policy-button": "سیاست حفظ حریم خصوصی",
+			"license-button": "مجوزهای متن باز",
+			"terms-of-use": "شرایط استفاده"
+		},
+		"accounts": {
+			"title": "حسابها",
+			"backup-button": "پشتیبان گیری",
+			"backup-notif-title": "موفقیت آمیز",
+			"backup-notif-desc": "از حساب شما پشتیبان گرفته شد!",
+			"accounts-button": "حسابها",
+			"create-button": "ایجاد یک جساب",
+			"import-button": "بازنشانی یک حساب",
+			"delete-button": "این حساب را حذف کن",
+			"delete-title": "حذف حساب"
+		},
+		"appearance": {
+			"title": "ظاهر",
+			"dark-button": "حالت تاریک",
+			"editor-button": "ویرایشگر تم",
+			"theme-editor": {
+				"title": "ویرایشگر تم"
+			}
+		},
+		"contact-convs": {
+			"title": "تماس و مکالمات",
+			"reset-button": "لینک تماس/کد QR من را بازنشانی کنید",
+			"request-button": "دریافت درخواست های تماس را مجاز کنید"
+		},
+		"network": {
+			"title": "شبکه",
+			"ble-button": "بلوتوث کم مصرف",
+			"mc-button": "قابلیت اتصال چندپایه",
+			"nearby-button": "اندروید در نزدیکی",
+			"mdns-button": "",
+			"dht-button": "جدول هش توزیع شده",
+			"rdvp-button": "گره های نقطه ی قرار ملاقات",
+			"relay-button": "",
+			"bootstrap-button": ""
+		},
+		"notifications": {
+			"title": ""
+		},
+		"edit-profile": {
+			"title": "ویرایش مشخصات خودم",
+			"qr-will-update": "شناسه Berty شما(کد QR) به روز می شود",
+			"ocr-wont-update": "درخواست‌های تماس شما که در وضعیت انتظارند به‌روزرسانی نخواهند شد",
+			"save": "ذخیره تغییرات",
+			"cancel": "لغو",
+			"name-input-placeholder": ""
+		},
+		"delete-account": {
+			"title": "",
+			"first-desc": "",
+			"desc-please": "",
+			"desc-delete": "",
+			"desc-confirm": "",
+			"cancel-button": "",
+			"delete-button": ""
+		},
+		"faq": {
+			"title": ""
+		},
+		"roadmap": {
+			"title": ""
+		},
+		"privacy-policy": {
+			"title": ""
+		},
+		"license": {
+			"title": ""
+		},
+		"devtools": {
+			"title": "",
+			"header-left-button": "",
+			"header-middle-button": "",
+			"header-right-button": "",
+			"allow-unsecure-grpc": "",
+			"force-mock-button": "",
+			"simulate-button": "",
+			"simulate-js-error-button": "",
+			"system-info-button": "",
+			"select-node": {
+				"title": "",
+				"node-type": "",
+				"address": "",
+				"account-port": "",
+				"messenger-port": "",
+				"dont-ask": "",
+				"button-continue": ""
+			},
+			"debug-button": "",
+			"log-button": {
+				"name": "",
+				"bullet-point": ""
+			},
+			"log-filters-button": {
+				"name": "",
+				"bullet-point": ""
+			},
+			"export-logs-button": "",
+			"add-dev-conversations-button": "",
+			"share-button": {
+				"title": "",
+				"alert-title": "",
+				"alert-message": "",
+				"alert-accept-button": "",
+				"alert-cancel-button": ""
+			},
+			"dump-account-button": "",
+			"dump-contacts-button": "",
+			"dump-conversations-button": "",
+			"dump-interactions-button": "",
+			"dump-members-button": "",
+			"stop-node-button": "",
+			"local-grpc-button": "",
+			"console-logs-button": "",
+			"ipfs-webui-button": "",
+			"send-to-all-button": {
+				"title": "",
+				"sending": "",
+				"test": "",
+				"tried": ""
+			},
+			"tyber-attach": "",
+			"tyber-host-button": {
+				"name": "",
+				"bullet-point": ""
+			},
+			"footer-left-button": "اطلاعات دستگاه",
+			"footer-middle-button": "فهرست رویدادها",
+			"footer-right-button": "بازنشانی نرم افزار"
+		},
+		"system-info": {
+			"title": "مشخصات سیستم"
+		},
+		"fake-data": {
+			"title": "تولید داده های جعلی",
+			"contacts-button": "تولید مخاطبین جعلی",
+			"multi-members-button": "تولید چند-کاربری جعلی",
+			"messages-button": "تولید پیام های جعلی",
+			"delete-button": "حذف داده های جعلی"
+		},
+		"add-dev-conversations": {
+			"title": "",
+			"add": "اضافه کردن {{name}}",
+			"tag-bot": "بات",
+			"tag-contact": "مخاطب",
+			"tag-conversation": "مکالمه"
+		},
+		"ipfs-webui": {
+			"title": "واسط تحت وب IPFS"
+		},
+		"theme-editor": {
+			"randomize": "تولید تم",
+			"save": "ذخیره این تم",
+			"export": "این تم را بصورت یک فایل ذخیره کن",
+			"share": "",
+			"import": "",
+			"delete": "",
+			"bad-format-title": "",
+			"bad-format-desc": "",
+			"notification-file-saved": {
+				"title": "",
+				"desc": ""
+			}
+		},
+		"my-berty-ID": {
+			"title": ""
+		},
+		"share": {
+			"invite": "",
+			"tap-to-scan": "",
+			"create-group": ""
+		},
+		"linked-identities": {
+			"title": ""
+		},
+		"directory-search": {
+			"title": ""
+		}
+	},
+	"tabs": {
+		"qr": "",
+		"fingerprint": "",
+		"info": "",
+		"devices": ""
+	},
+	"modals": {
+		"manage-deep-link": {
+			"invalid-link": "",
+			"invalid-qr": "",
+			"error": "",
+			"contact-already-added": "",
+			"contact-already-added-message": ""
+		},
+		"invalid-scan": {
+			"dismiss-button": ""
+		},
+		"group-invitation": {
+			"join": "",
+			"password-label": "",
+			"password-placeholder": ""
+		},
+		"save-theme": {
+			"title": "",
+			"desc": "",
+			"placeholder": "",
+			"cancel": "",
+			"add": ""
+		}
+	},
+	"chat": {
+		"title-unknown": "",
+		"sending": "",
+		"sent": "",
+		"contact-settings": {
+			"my-devices": ""
+		},
+		"multi-member": {
+			"input-placeholder": ""
+		},
+		"push-notifications": {
+			"title": "",
+			"unsupported": "",
+			"check-device-settings": "",
+			"check-account-settings": "",
+			"warning-disable": {
+				"title": "",
+				"subtitle": "",
+				"accept": "",
+				"refuse": ""
+			},
+			"why-cant-disable": "",
+			"why-cant-disable-account": "",
+			"errors": {
+				"no-token": "",
+				"no-server": ""
+			},
+			"warning-enable-all": {
+				"title": "",
+				"subtitle": "",
+				"refuse": "",
+				"accept": ""
+			},
+			"warning-disable-mute": {
+				"title": "",
+				"refuse": "",
+				"accept": ""
+			},
+			"receive-push": "",
+			"hide-previews": "",
+			"auto-enable": "",
+			"show-in-app": ""
+		},
+		"devices": {
+			"title": "",
+			"push": {
+				"enabled": "",
+				"not-enabled": ""
+			}
+		},
+		"multi-member-settings": {
+			"title": "",
+			"members-button": {
+				"title": ""
+			},
+			"add-member-button": "",
+			"members-dropdown": {
+				"search-placeholder": "",
+				"conversation-booster": "",
+				"replication-type": "",
+				"user-type": ""
+			},
+			"invite-button": "",
+			"save-button": ""
+		},
+		"add-members": {
+			"members": "",
+			"contacts": "",
+			"add": ""
+		},
+		"multi-member-qr": {
+			"title": ""
+		},
+		"one-to-one": {
+			"contact-request-box": {
+				"title": "",
+				"group-invitation": "",
+				"refuse-button": "",
+				"accept-button": "",
+				"accepted-button": "",
+				"error": "",
+				"you-invited": "",
+				"this-contact": "",
+				"to-a-group": ""
+			},
+			"infos-chat": {
+				"connection-confirmed": "",
+				"request-sent": "",
+				"incoming": "",
+				"outgoing": "",
+				"refresh-button": ""
+			},
+			"incoming-input-placeholder": "",
+			"input-placeholder": ""
+		},
+		"one-to-one-settings": {
+			"title": "",
+			"save-button": ""
+		},
+		"replicate-group-settings": {
+			"title": "",
+			"no-registered-button": "",
+			"connect-button": "",
+			"manage-add-button": ""
+		},
+		"user-message": {
+			"read-more": "",
+			"show-less": ""
+		}
+	},
+	"account": {
+		"deleting": "",
+		"creating": "",
+		"opening": {
+			"alert-push-title": "",
+			"alert-push-go-failed": "",
+			"alert-push-fetch-failed": "",
+			"alert-push-perm-denied": "",
+			"alert-push-desc": "",
+			"alert-push-button": ""
+		}
+	},
+	"permission": {
+		"notification": {
+			"title": "",
+			"desc": ""
+		},
+		"proximity": {
+			"title": "",
+			"android-desc": "",
+			"ios-desc": ""
+		},
+		"camera": {
+			"title": "",
+			"desc": ""
+		},
+		"audio": {
+			"title": "",
+			"desc": ""
+		},
+		"gallery": {
+			"title": "",
+			"desc": ""
+		},
+		"contacts": {
+			"title": "",
+			"desc": ""
+		},
+		"button-labels": {
+			"allow": "",
+			"settings": ""
+		},
+		"skip": "",
+		"cancel": "",
+		"settings-text": ""
+	},
+	"notification": {
+		"need-restart": {
+			"title": "",
+			"desc": ""
+		}
+	},
+	"error": {
+		"labels": {
+			"bug": "",
+			"crash": ""
+		},
+		"restart-app": "",
+		"wtf-screen": {
+			"title": "",
+			"desc": "",
+			"desc-report": ""
+		},
+		"sorry-screen": {
+			"title": "",
+			"desc": "",
+			"desc-em": "",
+			"desc-report": ""
+		}
+	},
+	"debug": {
+		"inspector": {
+			"show-button": "",
+			"hide-button": "",
+			"title": "",
+			"accounts": {
+				"title": "",
+				"data-not-found": "",
+				"action-delete": {
+					"file-exists": "",
+					"account-exists": "",
+					"fs-read-error": "",
+					"actions-title": "",
+					"action-account-manager": "",
+					"action-account-manager-confirm": "",
+					"action-force-delete": "",
+					"action-force-delete-confirm": "",
+					"error-close": "",
+					"error-delete": "",
+					"success-feedback": "",
+					"action-cancel": ""
+				},
+				"status": {
+					"datastore-found": "",
+					"datastore-not-found": "",
+					"ipfs-repo-found": "",
+					"ipfs-repo-not-found": "",
+					"messenger-db-found": "",
+					"messenger-db-not-found": ""
+				},
+				"infos": {
+					"aligned": {
+						"name": "",
+						"created": "",
+						"opened": "",
+						"error": ""
+					}
+				}
+			},
+			"errors": {
+				"title": "",
+				"header-reported": "",
+				"header-all-clear": "",
+				"listing-files-failed": "",
+				"listing-accounts-failed": "",
+				"listing-accounts-failed-grpc": ""
+			},
+			"dump": {
+				"button": ""
+			},
+			"refresh": "",
+			"confirm-alert": {
+				"button-confirm": "",
+				"button-cancel": ""
+			}
+		}
+	},
+	"time-for": {
+		"minutes": "",
+		"hours": "",
+		"days": ""
+	},
+	"share": {
+		"sharing-id-message": ""
+	},
+	"directory": {
+		"phone": {
+			"register": "",
+			"associated": "",
+			"expired": "",
+			"proof-service-unavailable": "",
+			"register-service": "",
+			"unregister-service": ""
+		},
+		"email": {
+			"register": "",
+			"associated": "",
+			"expired": "",
+			"proof-service-unavailable": "",
+			"register-service": "",
+			"unregister-service": ""
+		}
+	}
+}

@@ -103,13 +103,13 @@ e2e-tests.ci-flow: e2e-tests/node_modules
 
 .PHONY: test
 test: node_modules
-	$(call check-program, yarn)
-	yarn test --coverage
+	$(call check-program, npm)
+	npm test --coverage
 
 .PHONY: snapshot
 snapshot: node_modules
-	$(call check-program, yarn)
-	yarn test -u
+	$(call check-program, npm)
+	npm test -u
 
 #### Gen
 
@@ -123,9 +123,9 @@ regenerate: gen.clean generate
 
 .PHONY: clean
 clean:
-	$(call check-program, yarn)
+	$(call check-program, npm)
 	# React-Native cmd
-	yarn cache clean -f
+	npm cache clean -f
 	$(call kill-program-using-port, $(METRO_RN_PORT))
 
 	# Android cmd
@@ -183,11 +183,11 @@ endif
 gen.clean:
 	rm -f gen.sum
 	rm -f $(wildcard \
-	  example/src/api*/*.gen.tsx \
-	  example/src/api*/*.gen.ts \
-	  example/src/api*/*.gen.js \
-	  example/src/api*/*.pb.js \
-	  example/src/api*/*.pb.d.ts \
+	  src/api*/*.gen.tsx \
+	  src/api*/*.gen.ts \
+	  src/api*/*.gen.js \
+	  src/api*/*.pb.js \
+	  src/api*/*.pb.d.ts \
 	)
 	rm -fr $(pbjs_proto_weshnet_dir)
 	@#TODO add more generated files here
@@ -219,7 +219,7 @@ lint.fix: node_modules
 .PHONY: js.unused_exports
 js.unused_exports: node_modules
 	$(call check-program, npx)
-	npx ts-unused-exports ./tsconfig.json --excludePathsFromReport="grpc-bridge;api;polyfill;example/src/apicomponents/MiniGame.tsx;example/src/apicomponents/chat/member-bar/MemberBar.tsx;GoBridge.native.ts;PushTokenRequester.native.ts" --ignoreTestFiles --ignoreFiles='.*\.gen'
+	npx ts-unused-exports ./tsconfig.json --excludePathsFromReport="grpc-bridge;api;polyfill;src/components/MiniGame.tsx;src/components/chat/member-bar/MemberBar.tsx;GoBridge.native.ts;PushTokenRequester.native.ts" --ignoreTestFiles --ignoreFiles='.*\.gen'
 
 ###################
 # Build/Run rules #
@@ -316,8 +316,8 @@ android.reverse_tcp:
 
 .PHONY: web.debug
 web.debug: web/node_modules
-	$(call check-program, yarn)
-	cd web && yarn && yarn start
+	$(call check-program, npm)
+	cd web && npm install && npm start
 
 .PHONY: web.daemon.start
 web.daemon.start:
@@ -326,8 +326,8 @@ web.daemon.start:
 
 .PHONY: web.build
 web.build: web/node_modules
-	$(call check-program, yarn)
-	cd web && yarn && yarn build
+	$(call check-program, npm)
+	cd web && npm install && npm build
 
 #### React
 
@@ -339,8 +339,8 @@ metro.start: node_modules
 
 .PHONY: storybook
 storybook: node_modules
-	$(call check-program, yarn)
-	yarn storybook
+	$(call check-program, npm)
+	npm storybook
 
 #### Go daemon
 
@@ -358,11 +358,11 @@ daemon.start.docker:
 
 ##### pbjs
 
-pbjs_common_flags := --force-long -p ../api -p node_modules/@googleapis/googleapis -p `$(GO) list -m -modfile=../go.mod -mod=mod -f {{.Dir}} github.com/grpc-ecosystem/grpc-gateway`/third_party/googleapis -p `$(GO) list -m -modfile=../go.mod -mod=mod -f {{.Dir}} github.com/gogo/protobuf` -p node_modules/@protocolbuffers/protobuf/src
+pbjs_common_flags := --force-long -p ../api -p src/api/vendor -p node_modules/@googleapis/googleapis -p `$(GO) list -m -modfile=../go.mod -mod=mod -f {{.Dir}} github.com/grpc-ecosystem/grpc-gateway`/third_party/googleapis -p `$(GO) list -m -modfile=../go.mod -mod=mod -f {{.Dir}} github.com/gogo/protobuf` -p node_modules/@protocolbuffers/protobuf/src
 
 pbjs_proto_berty_dir := ../api
 pbjs_berty_protos := $(pbjs_proto_berty_dir)/accounttypes/accounttypes.proto $(pbjs_proto_berty_dir)/bertybridge/bertybridge.proto $(pbjs_proto_berty_dir)/messengertypes/messengertypes.proto $(pbjs_proto_berty_dir)/pushtypes/bertypushtypes.proto
-pbjs_proto_weshnet_dir := example/src/api/vendor
+pbjs_proto_weshnet_dir := src/api/vendor
 pbjs_weshnet_protos := $(pbjs_proto_weshnet_dir)/protocoltypes.proto $(pbjs_proto_weshnet_dir)/errcode/errcode.proto
 pbjs_protos := $(pbjs_berty_protos) $(pbjs_weshnet_protos)
 
@@ -372,7 +372,7 @@ $(pbjs_weshnet_protos): $(buf.lock)
 	mkdir -p $(pbjs_proto_weshnet_dir)
 	buf export buf.build/berty-technologies/weshnet:$(proto_commit_hash) --output $(pbjs_proto_weshnet_dir)
 
-example/src/api/root.pb.js: $(pbjs_berty_protos) $(pbjs_weshnet_protos) node_modules
+src/api/root.pb.js: $(pbjs_berty_protos) $(pbjs_weshnet_protos) node_modules
 	$(call check-program, npx)
 	npx pbjs $(pbjs_common_flags) \
 		--no-comments \
@@ -381,7 +381,7 @@ example/src/api/root.pb.js: $(pbjs_berty_protos) $(pbjs_weshnet_protos) node_mod
 		-o $@ \
 		$(pbjs_protos)
 
-example/src/api/root.pb.d.ts: $(wildcard ../api/*) node_modules
+src/api/root.pb.d.ts: $(wildcard ../api/*) node_modules
 	$(call check-program, npx)
 	npx pbjs $(pbjs_common_flags) \
 		-t static-module \
@@ -390,33 +390,33 @@ example/src/api/root.pb.d.ts: $(wildcard ../api/*) node_modules
 	sed -E -i.bak 's/^.*constructor.*$$//g' $@ # json-module codegen doesn't support new
 	rm -f $@.bak
 
-example/src/grpc-bridge/welsh-clients.gen.ts: example/src/grpc-bridge/gen-clients.js example/src/api/root.pb.js node_modules
+src/grpc-bridge/welsh-clients.gen.ts: src/grpc-bridge/gen-clients.js src/api/root.pb.js node_modules
 	$(call check-program, npx)
-	npx babel-node example/src/apigrpc-bridge/gen-clients.js > $@
+	npx babel-node src/grpc-bridge/gen-clients.js > $@
 	npx eslint --no-ignore --fix $@
 
-example/src/utils/api/types.gen.ts: example/src/utils/api/gen-type-utils.js example/src/api/root.pb.js node_modules
+src/utils/api/types.gen.ts: src/utils/api/gen-type-utils.js src/api/root.pb.js node_modules
 	$(call check-program, npx)
-	npx babel-node example/src/apiutils/api/gen-type-utils.js > $@
+	npx babel-node src/utils/api/gen-type-utils.js > $@
 	npx eslint --no-ignore --fix $@
 
-example/src/hooks/methods/methods.gen.ts: example/src/hooks/methods/gen-methods-hooks.js example/src/api/root.pb.js node_modules
+src/hooks/methods/methods.gen.ts: src/hooks/methods/gen-methods-hooks.js src/api/root.pb.js node_modules
 	$(call check-program, npx)
-	npx babel-node example/src/apihooks/methods/gen-methods-hooks.js > $@
+	npx babel-node src/hooks/methods/gen-methods-hooks.js > $@
 	npx eslint --no-ignore --fix $@
 
-example/src/redux/messengerActions.gen.ts: example/src/redux/gen-messenger-actions.js example/src/api/root.pb.js node_modules
+src/redux/messengerActions.gen.ts: src/redux/gen-messenger-actions.js src/api/root.pb.js node_modules
 	$(call check-program, npx)
-	npx babel-node example/src/apiredux/gen-messenger-actions.js > $@
+	npx babel-node src/redux/gen-messenger-actions.js > $@
 	npx eslint --no-ignore --fix $@
 
-example/src/mock-services/mockedServicesInterfaces.gen.ts: example/src/mock-services/gen-mocked-interfaces.js example/src/api/root.pb.js node_modules
+src/mock-services/mockedServicesInterfaces.gen.ts: src/mock-services/gen-mocked-interfaces.js src/api/root.pb.js node_modules
 	$(call check-program, npx)
-	npx babel-node example/src/apimock-services/gen-mocked-interfaces.js > $@
+	npx babel-node src/mock-services/gen-mocked-interfaces.js > $@
 	npx eslint --no-ignore --fix $@
 
 
-_gen.pbjs: example/src/api/root.pb.js example/src/api/root.pb.d.ts example/src/grpc-bridge/welsh-clients.gen.ts example/src/utils/api/types.gen.ts example/src/redux/messengerActions.gen.ts example/src/mock-services/mockedServicesInterfaces.gen.ts example/src/hooks/methods/methods.gen.ts
+_gen.pbjs: src/api/root.pb.js src/api/root.pb.d.ts src/grpc-bridge/welsh-clients.gen.ts src/utils/api/types.gen.ts src/redux/messengerActions.gen.ts src/mock-services/mockedServicesInterfaces.gen.ts src/hooks/methods/methods.gen.ts
 .PHONY: _gen.pbjs
 
 ##### other generation
@@ -532,13 +532,13 @@ android/libs/gobridge.aar: $(bridge_src)
 #### React
 
 node_modules: package.json
-	$(call check-program, yarn)
-	yarn $(if $(filter $(CI), true), --frozen-lockfile --network-timeout 1200000 --network-concurrency 1)
+	$(call check-program, npm)
+	npm install $(if $(filter $(CI), true), --frozen-lockfile --network-timeout 1200000 --network-concurrency 1)
 	touch $@
 
 web/node_modules: node_modules web/package.json
-	$(call check-program, yarn)
-	cd web && yarn $(if $(filter $(CI), true), --frozen-lockfile --network-timeout 1200000 --network-concurrency 1)
+	$(call check-program, npm)
+	cd web && npm install $(if $(filter $(CI), true), --frozen-lockfile --network-timeout 1200000 --network-concurrency 1)
 	touch $@
 
 ### Electron
@@ -549,6 +549,6 @@ electron.mac: web/node_modules
 	rm -rf ./web/resources/mac/berty
 	mkdir -p ./web/resources/mac/
 	ln `$(GO) env GOPATH`/bin/berty ./web/resources/mac/berty
-	cd ./web && yarn install
-	cd ./web && yarn build
-	cd ./web && yarn run dist:mac -- -c.buildVersion=$(shell echo -n $(shell git rev-list HEAD | wc -l)) -c.extraMetadata.version=$(VERSION)
+	cd ./web && npm install
+	cd ./web && npm build
+	cd ./web && npm run dist:mac -- -c.buildVersion=$(shell echo -n $(shell git rev-list HEAD | wc -l)) -c.extraMetadata.version=$(VERSION)

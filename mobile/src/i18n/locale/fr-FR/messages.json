@@ -1,0 +1,646 @@
+{
+	"onboarding": {
+		"getstarted": {
+			"screenTitle": "Protégez votre vie privée",
+			"title": "Protégez votre vie privée",
+			"desc": "messagerie P2P gratuite et sécurisée",
+			"create-button": "Créer un nouveau compte",
+			"import-button": "Importer un compte"
+		},
+		"default-mode": {
+			"summary": {
+				"title": "Mode par défaut",
+				"screenTitle": "Créez votre compte",
+				"subtitle": "Démarrer rapidement",
+				"first-point": "Commencer par des préréglages qui offrent un équilibre entre intimité et confort qui convient au plus grand nombre. Les nœuds Berty sont utilisés pour améliorer les performances et la communication asynchrone.",
+				"second-point": "Les notifications sont activées par défaut et vous ne pouvez pas encore les désactiver sur IOS.",
+				"third-point": "Pour un équilibre de vie privée/confort personnalisé, sélectionnez le Mode Personnalisé.",
+				"back-button": "Retour",
+				"accept-button": "C'est parti"
+			}
+		},
+		"custom-mode": {
+			"summary": {
+				"screenTitle": "Créer un compte - Personnaliser les paramètres",
+				"title": "Mode personnalisé",
+				"subtitle": "Ratio confort et confidentialité personnalisé",
+				"first-point": "Dans ce mode, ajustez tous les paramètres individuellement pour créer l'équilibre entre intimité et confort qui vous convient.",
+				"second-point": "Pour une expérience clé en main, sélectionnez le mode par défaut.",
+				"back-button": "Retour",
+				"accept-button": "Procéder"
+			},
+			"settings": {
+				"off-grid": {
+					"title": "Communication hors ligne",
+					"ble-button": "Bluetooth faible consommation d'énergie",
+					"nearby-button": "Android à proximité",
+					"mc-button": "Apple Multipeer Connectivity",
+					"mdns-button": "Multicast DNS (LAN)"
+				},
+				"routing": {
+					"title": "Routage",
+					"dht-button": "Tableau distribué de hachage",
+					"rdvp-button": "Nœuds de point de rendez-vous"
+				},
+				"access": {
+					"title": "Accessibilité réseau",
+					"relay-button": "Nœuds de relais (TURN)",
+					"bootstrap-button": "Nœuds d'amorçage"
+				},
+				"modals": {
+					"add": {
+						"title": {
+							"relay": "Ajouter un nœud de relais (TURN)",
+							"bootstrap": "Ajouter un nœud bootstrap",
+							"rdvp": "Ajouter un nœud RDVP"
+						}
+					},
+					"edit": {
+						"title": {
+							"relay": "Modifier un nœud de relais (TURN)",
+							"bootstrap": "Modifier un nœud bootstrap",
+							"rdvp": "Modifier un nœud RDVP"
+						}
+					},
+					"errors": {
+						"alias-already-exists": "L'alias existe déjà",
+						"multiaddr-alread-exists": "La multi-adresse existe déjà",
+						"multiaddr-bad-format": "Mauvais format de multi-adresse",
+						"multiaddr-p2p": "La multiadresse doit contenir un p2p"
+					},
+					"buttons": {
+						"add": "Ajouter",
+						"edit": "Modifier",
+						"delete": "Supprimer"
+					},
+					"multiaddress": "Multiadresse",
+					"alias": "Alias"
+				},
+				"all-button": "Tout",
+				"accept-button": "C'est parti"
+			}
+		},
+		"create-account": {
+			"title": "Créer votre compte",
+			"first-button": "Mode par défaut",
+			"second-button": "Mode personnalisé",
+			"placeholder": "Choisissez votre pseudo",
+			"good-to-know": {
+				"title": "Bon à savoir :",
+				"first-point": "Votre compte est créé localement",
+				"second-point": "Le surnom est optionnel et peut être modifié plus tard"
+			}
+		},
+		"generate-key": {
+			"title": "Démarrage du nœud Berty…",
+			"desc": "Cette tâche peut prendre quelques secondes"
+		},
+		"setup-finished": {
+			"title": "Configuration terminée !",
+			"desc": "Vous pouvez dés maintenant utiliser l'application, ajoutez vos contacts et parler en toute tranquillité avec eux",
+			"button": "Démarrer avec Berty"
+		},
+		"web-views": {
+			"title": "Autorisation de contenu Web",
+			"desc": "Berty est sur le point de charger le contenu depuis le Web. Voulez-vous ouvrir cette page ?",
+			"first-button": "Annuler",
+			"second-button": "Oui"
+		}
+	},
+	"main": {
+		"home": {
+			"title": "Berty",
+			"requests": {
+				"title": "Requêtes",
+				"accept": "Accepter",
+				"card-title": "Demande de contact !"
+			},
+			"input-placeholder": "Mots-clés de recherche",
+			"no-contacts": "Vous n'avez pas encore de contact ou de conversation",
+			"no-network": {
+				"title": "Aucun réseau trouvé !",
+				"description": "Vous semblez hors ligne ! Activez le Bluetooth pour parler avec vos amis !",
+				"cancel": "PAS MAINTENANT",
+				"activate": "ACTIVER"
+			},
+			"search": {
+				"no-results": "Aucun résultat trouvé"
+			},
+			"create-group": {
+				"title": "Nouveau groupe",
+				"add-members": "Ajouter des membres",
+				"group-info": "Informations du groupe",
+				"search-placeholder": "Rechercher",
+				"continue": "Continuer",
+				"create-group": "Créer un groupe"
+			},
+			"create-group-finalize": {
+				"placeholder": "Nom du groupe",
+				"about": "À propos des groupes",
+				"first-bullet-point": "N'importe qui dans le groupe peut le renommer ou inviter de nouveaux membres",
+				"second-bullet-point": "Vous pouvez inviter des membres par lien",
+				"third-bullet-point": "Vous pouvez quitter ce groupe",
+				"fourth-bullet-point": "Vous ne pouvez pas supprimer ce groupe",
+				"fifth-bullet-point": "Vous ne pouvez pas retirer un membre de ce groupe"
+			},
+			"conversations": {
+				"request-sent": "Demande envoyée. En attente...",
+				"draft": "Brouillon : {{message}}"
+			}
+		},
+		"suggestion-display-name-initial": "Cliquer ici pour ajouter"
+	},
+	"settings": {
+		"home": {
+			"title": "Paramètres",
+			"proximity-button": "Communication hors-ligne",
+			"notifications-button": "Notifications",
+			"appearance-button": "Apparence",
+			"accounts-button": "Comptes",
+			"network-button": "Réseau",
+			"linked-identities-button": "",
+			"directory-search-button": "",
+			"bug-button": "Soumettre un bug",
+			"about-button": "À propos de Berty",
+			"version-button": "Version : {{version}}",
+			"devtools-button": "Devtools"
+		},
+		"about": {
+			"title": "À propos de Berty",
+			"faq-button": "FAQ",
+			"roadmap-button": "Roadmap",
+			"policy-button": "Politique de confidentialité",
+			"license-button": "Licences Open Source",
+			"terms-of-use": "Conditions d'utilisation"
+		},
+		"accounts": {
+			"title": "Comptes",
+			"backup-button": "Sauvegarde",
+			"backup-notif-title": "Réussite",
+			"backup-notif-desc": "Le compte a été sauvegardé !",
+			"accounts-button": "Comptes",
+			"create-button": "Créer un nouveau compte",
+			"import-button": "Importer un compte",
+			"delete-button": "Supprimer ce compte",
+			"delete-title": "Supprimer le compte"
+		},
+		"appearance": {
+			"title": "Apparence",
+			"dark-button": "Mode Sombre",
+			"editor-button": "Éditeur de thème",
+			"theme-editor": {
+				"title": "Éditeur de thème"
+			}
+		},
+		"contact-convs": {
+			"title": "Contacts et Conversations",
+			"reset-button": "Réinitialiser mon lien/code QR de contact",
+			"request-button": "Autoriser les demandes de contact entrantes"
+		},
+		"network": {
+			"title": "Réseau",
+			"ble-button": "Bluetooth faible consommation d'énergie",
+			"mc-button": "Connectivité multi-pair",
+			"nearby-button": "Android Nearby",
+			"mdns-button": "Multicast DNS",
+			"dht-button": "Tableau distribué de hachage",
+			"rdvp-button": "Nœuds de point de rendez-vous",
+			"relay-button": "Nœuds de relais",
+			"bootstrap-button": "Nœuds d'amorçage"
+		},
+		"notifications": {
+			"title": "Notifications"
+		},
+		"edit-profile": {
+			"title": "Modifier mon profil",
+			"qr-will-update": "Votre Berty ID (code QR) sera mis à jour",
+			"ocr-wont-update": "Vos demandes de contact en attente ne seront pas mises à jour",
+			"save": "Enregistrer les modifications",
+			"cancel": "Annuler",
+			"name-input-placeholder": "Nom..."
+		},
+		"delete-account": {
+			"title": "Supprimer le compte !",
+			"first-desc": "Êtes-vous sûr de vouloir supprimer votre compte ?",
+			"desc-please": "Veuillez saisir ",
+			"desc-delete": "supprimer",
+			"desc-confirm": " pour confirmer",
+			"cancel-button": "Annuler",
+			"delete-button": "Supprimer"
+		},
+		"faq": {
+			"title": "FAQ"
+		},
+		"roadmap": {
+			"title": "Roadmap"
+		},
+		"privacy-policy": {
+			"title": "Politique de confidentialité"
+		},
+		"license": {
+			"title": ""
+		},
+		"devtools": {
+			"title": "Outils Dev",
+			"header-left-button": "Infos sur l'appareil",
+			"header-middle-button": "Générer de fausses données",
+			"header-right-button": "Redémarrer le démon",
+			"allow-unsecure-grpc": "Autoriser les connexions GRPC non sécurisées",
+			"force-mock-button": "",
+			"simulate-button": "Simuler une erreur de stream",
+			"simulate-js-error-button": "Simuler une erreur JavaScript",
+			"system-info-button": "Infos système",
+			"select-node": {
+				"title": "Sélectionnez un noeud",
+				"node-type": "Nœud interne / externe",
+				"address": "Adresse",
+				"account-port": "",
+				"messenger-port": "",
+				"dont-ask": "Ne plus me demander",
+				"button-continue": "Continuer"
+			},
+			"debug-button": "Debug",
+			"log-button": {
+				"name": "Format de log",
+				"bullet-point": "Redémarrer l'application après avoir modifié ce champ"
+			},
+			"log-filters-button": {
+				"name": "Filtres de logs",
+				"bullet-point": "Redémarrer l'application après avoir modifié ce champ"
+			},
+			"export-logs-button": "Exporter les logs",
+			"add-dev-conversations-button": "Ajouter conversations de dev",
+			"share-button": {
+				"title": "Partager l'ID sur Discord",
+				"alert-title": "Voulez-vous partager votre code QR sur \"#dev-logs\" sur le Discord de l'équipe Berty ?",
+				"alert-message": "Cela permettra à l'équipe de Berty de scanner votre code QR ou de copier votre lien de contact.",
+				"alert-accept-button": "Oui 👍",
+				"alert-cancel-button": "Non"
+			},
+			"dump-account-button": "Extraire le compte",
+			"dump-contacts-button": "Extraire les contacts",
+			"dump-conversations-button": "Extraire les conversations",
+			"dump-interactions-button": "Extraire les interactions",
+			"dump-members-button": "Extraire les membres",
+			"stop-node-button": "Arrêter le nœud",
+			"local-grpc-button": "gRPC local",
+			"console-logs-button": "Journal de la console",
+			"ipfs-webui-button": "Interface web IPFS",
+			"send-to-all-button": {
+				"title": "Envoyer des messages à tous les contacts",
+				"sending": "Envoi...",
+				"test": "Test, ",
+				"tried": "✔ Tentative d'envoi aux {{length}} contacts"
+			},
+			"tyber-attach": "Attacher Tyber à {{host}}",
+			"tyber-host-button": {
+				"name": "Tyber",
+				"bullet-point": "Redémarrer l'application après avoir modifié ce champ"
+			},
+			"footer-left-button": "Infos sur l'appareil",
+			"footer-middle-button": "Lister les événements",
+			"footer-right-button": "Redémarrer le démon"
+		},
+		"system-info": {
+			"title": "Infos système"
+		},
+		"fake-data": {
+			"title": "Générer de fausses données",
+			"contacts-button": "Gén. faux contacts",
+			"multi-members-button": "Gén. faux membres de conversations de groupe",
+			"messages-button": "Gén. faux messages",
+			"delete-button": "Supprimer les fausses données"
+		},
+		"add-dev-conversations": {
+			"title": "Ajouter conversations de dev",
+			"add": "Ajouter {{name}}",
+			"tag-bot": "Bot",
+			"tag-contact": "Contact",
+			"tag-conversation": "Conversation"
+		},
+		"ipfs-webui": {
+			"title": "Interface web IPFS"
+		},
+		"theme-editor": {
+			"randomize": "Générer un thème",
+			"save": "Enregistrez ce thème",
+			"export": "Exporter le thème sélectionné sous forme de fichier",
+			"share": "Partager le thème sélectionné sous forme de fichier",
+			"import": "Importer un fichier de thème",
+			"delete": "Supprimer tous les thèmes non par défaut",
+			"bad-format-title": "Format de thème incorrect",
+			"bad-format-desc": "Format incorrect pour le fichier du thème",
+			"notification-file-saved": {
+				"title": "Données sauvegardées !",
+				"desc": "Disponible dans le répertoire des téléchargements"
+			}
+		},
+		"my-berty-ID": {
+			"title": "Mon identifiant Berty"
+		},
+		"share": {
+			"invite": "Inviter",
+			"tap-to-scan": "Appuyer pour scanner",
+			"create-group": "Créer un groupe"
+		},
+		"linked-identities": {
+			"title": ""
+		},
+		"directory-search": {
+			"title": ""
+		}
+	},
+	"tabs": {
+		"qr": "QR",
+		"fingerprint": "Empreinte numérique",
+		"info": "Infos",
+		"devices": "Appareils"
+	},
+	"modals": {
+		"manage-deep-link": {
+			"invalid-link": "Lien invalide !",
+			"invalid-qr": "QR code invalide !",
+			"error": "Erreur !",
+			"contact-already-added": "Contact déjà ajouté",
+			"contact-already-added-message": "Vous ne pouvez pas ajouter le même contact plusieurs fois"
+		},
+		"invalid-scan": {
+			"dismiss-button": "Refuser"
+		},
+		"group-invitation": {
+			"join": "Rejoindre ce groupe",
+			"password-label": "Saisir le mot de passe du groupe",
+			"password-placeholder": "Mot de passe..."
+		},
+		"save-theme": {
+			"title": "Sauvegarde du thème",
+			"desc": "Veuillez choisir un nom pour votre thème !",
+			"placeholder": "Nom du thème...",
+			"cancel": "Annuler",
+			"add": "Ajouter!"
+		}
+	},
+	"chat": {
+		"title-unknown": "Conversation inconnue",
+		"sending": "Envoi...",
+		"sent": "Envoyé",
+		"contact-settings": {
+			"my-devices": "Mes appareils"
+		},
+		"multi-member": {
+			"input-placeholder": "Écrivez ici..."
+		},
+		"push-notifications": {
+			"title": "Notifications",
+			"unsupported": "Notifications non prises en charge",
+			"check-device-settings": "Cette conversation est configurée pour recevoir des notifications push, mais les alertes ont été désactivées dans les paramètres système de votre appareil",
+			"check-account-settings": "Les notifications sont désactivées, vérifiez les paramètres de votre compte",
+			"warning-disable": {
+				"title": "Voulez-vous activer cette fonctionnalité ?",
+				"subtitle": "Une fois activées, les notifications push ne peuvent pas être désactivées pour une conversation spécifique.",
+				"accept": "Activer",
+				"refuse": "Ignorer"
+			},
+			"why-cant-disable": "Les notifications ne peuvent pas être désactivées pour une conversation spécifique",
+			"why-cant-disable-account": "Les notifications ne peuvent pas être désactivées mais vous pouvez désactiver totalement les notifications de Berty via les paramètres de votre système d'exploitation.",
+			"errors": {
+				"no-token": "Votre appareil n'est pas compatible avec les notifications push",
+				"no-server": "Vous devez d'abord enregistrer un relais push"
+			},
+			"warning-enable-all": {
+				"title": "Activer les notifications pour toutes les conversations ?",
+				"subtitle": "",
+				"refuse": "",
+				"accept": "Accepter"
+			},
+			"warning-disable-mute": {
+				"title": "",
+				"refuse": "",
+				"accept": ""
+			},
+			"receive-push": "Recevoir les notifications push",
+			"hide-previews": "",
+			"auto-enable": "",
+			"show-in-app": ""
+		},
+		"devices": {
+			"title": "Appareils",
+			"push": {
+				"enabled": "Les notifications push sont activées",
+				"not-enabled": "Notifications push désactivées"
+			}
+		},
+		"multi-member-settings": {
+			"title": "Paramètres de la conversation",
+			"members-button": {
+				"title": ""
+			},
+			"add-member-button": "Ajouter un membre",
+			"members-dropdown": {
+				"search-placeholder": "",
+				"conversation-booster": "",
+				"replication-type": "",
+				"user-type": ""
+			},
+			"invite-button": "Inviter par lien",
+			"save-button": "Enregistrer la conversation sur un serveur"
+		},
+		"add-members": {
+			"members": "Membres",
+			"contacts": "Contacts",
+			"add": "Ajouter!"
+		},
+		"multi-member-qr": {
+			"title": "Groupe QR"
+		},
+		"one-to-one": {
+			"contact-request-box": {
+				"title": "Demande de contact",
+				"group-invitation": "",
+				"refuse-button": "",
+				"accept-button": "Accepter",
+				"accepted-button": "",
+				"error": "Erreur lors de votre ajout au groupe ☹️ Notre mal !",
+				"you-invited": "Vous avez invité",
+				"this-contact": "ce contact",
+				"to-a-group": "à un groupe ! 💌"
+			},
+			"infos-chat": {
+				"connection-confirmed": "👋 Connexion Berty confirmée ! 🎉",
+				"request-sent": "Demande envoyée ✈",
+				"incoming": "Accepter cette demande pour répondre !",
+				"outgoing": "En attente de la réponse de votre contact pour vous connecter !",
+				"refresh-button": ""
+			},
+			"incoming-input-placeholder": "Accepter la demande pour écrire ici...",
+			"input-placeholder": "Écrivez ici..."
+		},
+		"one-to-one-settings": {
+			"title": "Paramètres de la conversation",
+			"save-button": "Enregistrer la conversation sur un serveur"
+		},
+		"replicate-group-settings": {
+			"title": "Enregistrer la conversation sur un serveur",
+			"no-registered-button": "Aucun service de réplication enregistré",
+			"connect-button": "Se connecter aux services opérés par Berty",
+			"manage-add-button": "Gérer ou ajouter des services"
+		},
+		"user-message": {
+			"read-more": "En savoir plus",
+			"show-less": "Afficher moins"
+		}
+	},
+	"account": {
+		"deleting": "",
+		"creating": "",
+		"opening": {
+			"alert-push-title": "Notifications push",
+			"alert-push-go-failed": "",
+			"alert-push-fetch-failed": "",
+			"alert-push-perm-denied": "",
+			"alert-push-desc": "",
+			"alert-push-button": ""
+		}
+	},
+	"permission": {
+		"notification": {
+			"title": "Notifications push",
+			"desc": "L'application Berty a besoin de votre autorisation pour vous envoyer des notifications locales ou push. Cela vous permettra d'être informé lorsque vous recevrez un message."
+		},
+		"proximity": {
+			"title": "Messagerie Bluetooth",
+			"android-desc": "Pour échanger des messages hors ligne via Bluetooth, même lorsque l'application est en arrière-plan, l'API Android nécessite l'autorisation de localisation. Nous n'utilisons pas vos données de localisation de quelque manière que ce soit.",
+			"ios-desc": "Pour échanger des messages hors ligne via Bluetooth, l'API d’iOS nécessite une autorisation."
+		},
+		"camera": {
+			"title": "Caméra",
+			"desc": "Voulez-vous autoriser l'appareil photo à prendre des photos ou à scanner des codes QR ?"
+		},
+		"audio": {
+			"title": "Messages audio",
+			"desc": "Pour envoyer des messages audio à vos contacts, vous devez autoriser l'application Berty à accéder au microphone."
+		},
+		"gallery": {
+			"title": "Messagerie d'images",
+			"desc": "Pour envoyer des images à vos contacts, vous devez autoriser Berty à accéder aux photos et autres médias stockés sur votre appareil."
+		},
+		"contacts": {
+			"title": "Contacts",
+			"desc": ""
+		},
+		"button-labels": {
+			"allow": "Autoriser",
+			"settings": "Accéder aux paramètres"
+		},
+		"skip": "Ignorer",
+		"cancel": "Annuler",
+		"settings-text": "Vous pouvez activer la permission {{title}} à partir des paramètres."
+	},
+	"notification": {
+		"need-restart": {
+			"title": "Redémarrage nécessaire",
+			"desc": "Redémarrez Berty pour sauvegarder vos données et activer les notifications !"
+		}
+	},
+	"error": {
+		"labels": {
+			"bug": "Bug détecté",
+			"crash": "Crash détecté"
+		},
+		"restart-app": "Redémarrez l'application",
+		"wtf-screen": {
+			"title": "Quelle est l'erreur ?",
+			"desc": "L'application vient de planter.",
+			"desc-report": "Cliquez sur le bouton pour quitter et redémarrer l'application."
+		},
+		"sorry-screen": {
+			"title": "Désolé pour ce bug !",
+			"desc": "C'est la faute de Francis, le développeur stagiaire de Berty, qui a dû faire une erreur, quel idiot ce Francis !",
+			"desc-em": "*Bon, ok, il n'y a pas de Francis dans l'équipe de Berty.",
+			"desc-report": "Cliquez sur le bouton pour quitter et redémarrer l'application."
+		}
+	},
+	"debug": {
+		"inspector": {
+			"show-button": "Afficher l'inspecteur de l'application",
+			"hide-button": "Fermer",
+			"title": "Inspecteur",
+			"accounts": {
+				"title": "Comptes",
+				"data-not-found": "Le compte n’est pas dans la liste",
+				"action-delete": {
+					"file-exists": "Le compte {{accountId}} n'existe pas, mais un fichier porte ce nom.",
+					"account-exists": "Le compte {{accountId}} existe déjà.",
+					"fs-read-error": "Erreur lors de l'obtention des informations FS sur le compte",
+					"actions-title": "Que devrions-nous faire?",
+					"action-account-manager": "Supprimer via le gestionnaire de compte",
+					"action-account-manager-confirm": "Confirmer la suppression du compte",
+					"action-force-delete": "Forcer la suppression",
+					"action-force-delete-confirm": "Confirmer la suppression forcée du compte",
+					"error-close": "Erreur lors de la fermeture du compte",
+					"error-delete": "Erreur lors de la suppression du compte",
+					"success-feedback": "Le compte a été supprimé",
+					"action-cancel": "Annuler"
+				},
+				"status": {
+					"datastore-found": "Le datastore a été trouvé",
+					"datastore-not-found": "Le datastore n'a pas été trouvé",
+					"ipfs-repo-found": "Dépôt IPFS trouvé",
+					"ipfs-repo-not-found": "Dépôt IPFS introuvable",
+					"messenger-db-found": "Messenger DB trouvé",
+					"messenger-db-not-found": "Messenger DB introuvable"
+				},
+				"infos": {
+					"aligned": {
+						"name": "Nom : {{name}}",
+						"created": "Créé : {{created}}",
+						"opened": "Ouvert :  {{opened}}",
+						"error": "Erreur : {{error}}"
+					}
+				}
+			},
+			"errors": {
+				"title": "Erreurs",
+				"header-reported": "Erreur signalée :",
+				"header-all-clear": "Aucune erreur signalée",
+				"listing-files-failed": "Erreur lors du référencèrent des contenus du répertoire",
+				"listing-accounts-failed": "Erreur lors du référencement des comptes",
+				"listing-accounts-failed-grpc": "GPRC Erreur lors du référencement des comptes"
+			},
+			"dump": {
+				"button": "Dump l'état de l'application"
+			},
+			"refresh": "Actualiser",
+			"confirm-alert": {
+				"button-confirm": "Confirmer",
+				"button-cancel": "Annuler"
+			}
+		}
+	},
+	"time-for": {
+		"minutes": "",
+		"hours": "",
+		"days": ""
+	},
+	"share": {
+		"sharing-id-message": ""
+	},
+	"directory": {
+		"phone": {
+			"register": "",
+			"associated": "",
+			"expired": "",
+			"proof-service-unavailable": "",
+			"register-service": "",
+			"unregister-service": ""
+		},
+		"email": {
+			"register": "",
+			"associated": "",
+			"expired": "",
+			"proof-service-unavailable": "",
+			"register-service": "",
+			"unregister-service": ""
+		}
+	}
+}

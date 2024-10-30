@@ -1,0 +1,519 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Chat.ReplicateGroupSettings renders correctly 1`] = `
+<RNCSafeAreaProvider
+  onInsetsChange={[Function]}
+  style={
+    Array [
+      Object {
+        "flex": 1,
+      },
+      undefined,
+    ]
+  }
+>
+  <View
+    style={
+      Object {
+        "flex": 1,
+      }
+    }
+  >
+    <View
+      appearance="default"
+      level="1"
+      style={
+        Array [
+          Object {
+            "backgroundColor": "#FFFFFF",
+          },
+          Object {
+            "flex": 1,
+          },
+        ]
+      }
+    >
+      <RCTScrollView
+        bounces={false}
+        contentContainerStyle={
+          Array [
+            Object {
+              "paddingBottom": 40,
+            },
+          ]
+        }
+      >
+        <View>
+          <View
+            style={
+              Array [
+                Object {
+                  "flex": 1,
+                },
+                Object {
+                  "padding": 16,
+                },
+                Object {
+                  "marginBottom": 16,
+                },
+              ]
+            }
+          >
+            <View
+              accessible={true}
+              focusable={false}
+              onClick={[Function]}
+              onResponderGrant={[Function]}
+              onResponderMove={[Function]}
+              onResponderRelease={[Function]}
+              onResponderTerminate={[Function]}
+              onResponderTerminationRequest={[Function]}
+              onStartShouldSetResponder={[Function]}
+              style={
+                Object {
+                  "backgroundColor": "#FFFFFF",
+                  "borderRadius": 16,
+                  "flex": 1,
+                  "marginTop": 20,
+                  "minHeight": 60,
+                  "opacity": 0.5,
+                  "shadowColor": "#000000",
+                  "shadowOffset": Object {
+                    "height": 1,
+                    "width": 0,
+                  },
+                  "shadowOpacity": 0.2,
+                  "shadowRadius": 2,
+                }
+              }
+            >
+              <View
+                style={
+                  Array [
+                    Object {
+                      "flex": 1,
+                    },
+                    Object {
+                      "alignItems": "stretch",
+                      "flexDirection": "row",
+                      "justifyContent": "space-between",
+                    },
+                    Object {
+                      "paddingHorizontal": 16,
+                    },
+                    null,
+                    Object {
+                      "alignItems": "center",
+                    },
+                  ]
+                }
+              >
+                <View
+                  style={
+                    Array [
+                      Object {
+                        "alignItems": "stretch",
+                        "flexDirection": "row",
+                        "justifyContent": "flex-start",
+                      },
+                      Object {
+                        "alignItems": "center",
+                      },
+                    ]
+                  }
+                >
+                  <View>
+                    <Text
+                      numberOfLines={2}
+                      style={
+                        Array [
+                          Object {
+                            "fontSize": 30,
+                          },
+                          Object {
+                            "color": "#383B62",
+                            "fontFamily": "Open Sans",
+                          },
+                          Array [
+                            Object {
+                              "paddingLeft": 9,
+                            },
+                            Object {
+                              "fontSize": 30,
+                            },
+                            Object {
+                              "color": "#383B62",
+                              "maxWidth": 600,
+                            },
+                            null,
+                          ],
+                        ]
+                      }
+                    >
+                      chat.replicate-group-settings.no-registered-button
+                    </Text>
+                  </View>
+                </View>
+                <View
+                  style={
+                    Array [
+                      Object {
+                        "alignItems": "stretch",
+                        "flexDirection": "row",
+                        "justifyContent": "space-evenly",
+                      },
+                      Object {
+                        "alignItems": "center",
+                      },
+                    ]
+                  }
+                >
+                  <View
+                    style={Object {}}
+                  >
+                    <View
+                      style={
+                        Object {
+                          "transform": Array [
+                            Object {
+                              "scale": 1,
+                            },
+                          ],
+                        }
+                      }
+                    >
+                      <RNSVGMock
+                        fill="#383B62"
+                        height={25}
+                        viewBox="0 0 24 24"
+                        width={25}
+                      />
+                    </View>
+                  </View>
+                </View>
+              </View>
+            </View>
+            <View
+              accessible={true}
+              focusable={true}
+              onClick={[Function]}
+              onResponderGrant={[Function]}
+              onResponderMove={[Function]}
+              onResponderRelease={[Function]}
+              onResponderTerminate={[Function]}
+              onResponderTerminationRequest={[Function]}
+              onStartShouldSetResponder={[Function]}
+              style={
+                Object {
+                  "backgroundColor": "#FFFFFF",
+                  "borderRadius": 16,
+                  "flex": 1,
+                  "marginTop": 20,
+                  "minHeight": 60,
+                  "opacity": 1,
+                  "shadowColor": "#000000",
+                  "shadowOffset": Object {
+                    "height": 1,
+                    "width": 0,
+                  },
+                  "shadowOpacity": 0.2,
+                  "shadowRadius": 2,
+                }
+              }
+            >
+              <View
+                style={
+                  Array [
+                    Object {
+                      "flex": 1,
+                    },
+                    Object {
+                      "alignItems": "stretch",
+                      "flexDirection": "row",
+                      "justifyContent": "space-between",
+                    },
+                    Object {
+                      "paddingHorizontal": 16,
+                    },
+                    null,
+                    Object {
+                      "alignItems": "center",
+                    },
+                  ]
+                }
+              >
+                <View
+                  style={
+                    Array [
+                      Object {
+                        "alignItems": "stretch",
+                        "flexDirection": "row",
+                        "justifyContent": "flex-start",
+                      },
+                      Object {
+                        "alignItems": "center",
+                      },
+                    ]
+                  }
+                >
+                  <View>
+                    <View
+                      style={
+                        Object {
+                          "transform": Array [
+                            Object {
+                              "scale": 1,
+                            },
+                          ],
+                        }
+                      }
+                    >
+                      <AssetMock
+                        color="#535AE4"
+                        height={28}
+                        style={
+                          Array [
+                            false,
+                          ]
+                        }
+                        width={28}
+                      />
+                    </View>
+                  </View>
+                  <View>
+                    <Text
+                      numberOfLines={2}
+                      style={
+                        Array [
+                          Object {
+                            "fontSize": 30,
+                          },
+                          Object {
+                            "color": "#383B62",
+                            "fontFamily": "Open Sans",
+                          },
+                          Array [
+                            Object {
+                              "paddingLeft": 9,
+                            },
+                            Object {
+                              "fontSize": 30,
+                            },
+                            Object {
+                              "color": "#383B62",
+                              "maxWidth": 600,
+                            },
+                            null,
+                          ],
+                        ]
+                      }
+                    >
+                      chat.replicate-group-settings.connect-button
+                    </Text>
+                  </View>
+                </View>
+                <View
+                  style={
+                    Array [
+                      Object {
+                        "alignItems": "stretch",
+                        "flexDirection": "row",
+                        "justifyContent": "space-evenly",
+                      },
+                      Object {
+                        "alignItems": "center",
+                      },
+                    ]
+                  }
+                >
+                  <View
+                    style={Object {}}
+                  >
+                    <View
+                      style={
+                        Object {
+                          "transform": Array [
+                            Object {
+                              "scale": 1,
+                            },
+                          ],
+                        }
+                      }
+                    >
+                      <RNSVGMock
+                        fill="#383B62"
+                        height={25}
+                        viewBox="0 0 24 24"
+                        width={25}
+                      />
+                    </View>
+                  </View>
+                </View>
+              </View>
+            </View>
+            <View
+              accessible={true}
+              focusable={false}
+              onClick={[Function]}
+              onResponderGrant={[Function]}
+              onResponderMove={[Function]}
+              onResponderRelease={[Function]}
+              onResponderTerminate={[Function]}
+              onResponderTerminationRequest={[Function]}
+              onStartShouldSetResponder={[Function]}
+              style={
+                Object {
+                  "backgroundColor": "#FFFFFF",
+                  "borderRadius": 16,
+                  "flex": 1,
+                  "marginTop": 20,
+                  "minHeight": 60,
+                  "opacity": 1,
+                  "shadowColor": "#000000",
+                  "shadowOffset": Object {
+                    "height": 1,
+                    "width": 0,
+                  },
+                  "shadowOpacity": 0.2,
+                  "shadowRadius": 2,
+                }
+              }
+            >
+              <View
+                style={
+                  Array [
+                    Object {
+                      "flex": 1,
+                    },
+                    Object {
+                      "alignItems": "stretch",
+                      "flexDirection": "row",
+                      "justifyContent": "space-between",
+                    },
+                    Object {
+                      "paddingHorizontal": 16,
+                    },
+                    null,
+                    Object {
+                      "alignItems": "center",
+                    },
+                  ]
+                }
+              >
+                <View
+                  style={
+                    Array [
+                      Object {
+                        "alignItems": "stretch",
+                        "flexDirection": "row",
+                        "justifyContent": "flex-start",
+                      },
+                      Object {
+                        "alignItems": "center",
+                      },
+                    ]
+                  }
+                >
+                  <View>
+                    <View
+                      style={
+                        Object {
+                          "transform": Array [
+                            Object {
+                              "scale": 1,
+                            },
+                          ],
+                        }
+                      }
+                    >
+                      <RNSVGMock
+                        fill="#535AE4"
+                        height={30}
+                        style={
+                          Array [
+                            false,
+                          ]
+                        }
+                        viewBox="0 0 24 24"
+                        width={30}
+                      />
+                    </View>
+                  </View>
+                  <View>
+                    <Text
+                      numberOfLines={2}
+                      style={
+                        Array [
+                          Object {
+                            "fontSize": 30,
+                          },
+                          Object {
+                            "color": "#383B62",
+                            "fontFamily": "Open Sans",
+                          },
+                          Array [
+                            Object {
+                              "paddingLeft": 9,
+                            },
+                            Object {
+                              "fontSize": 30,
+                            },
+                            Object {
+                              "color": "#383B62",
+                              "maxWidth": 600,
+                            },
+                            null,
+                          ],
+                        ]
+                      }
+                    >
+                      chat.replicate-group-settings.manage-add-button
+                    </Text>
+                  </View>
+                </View>
+                <View
+                  style={
+                    Array [
+                      Object {
+                        "alignItems": "stretch",
+                        "flexDirection": "row",
+                        "justifyContent": "space-evenly",
+                      },
+                      Object {
+                        "alignItems": "center",
+                      },
+                    ]
+                  }
+                >
+                  <View
+                    style={Object {}}
+                  >
+                    <View
+                      style={
+                        Object {
+                          "transform": Array [
+                            Object {
+                              "scale": 1,
+                            },
+                          ],
+                        }
+                      }
+                    >
+                      <RNSVGMock
+                        fill="#383B62"
+                        height={25}
+                        viewBox="0 0 24 24"
+                        width={25}
+                      />
+                    </View>
+                  </View>
+                </View>
+              </View>
+            </View>
+          </View>
+        </View>
+      </RCTScrollView>
+    </View>
+  </View>
+</RNCSafeAreaProvider>
+`;

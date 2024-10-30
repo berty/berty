@@ -1,0 +1,646 @@
+{
+	"onboarding": {
+		"getstarted": {
+			"screenTitle": "保护您的隐私",
+			"title": "保护您的隐私",
+			"desc": "免费和安全的点对点消息传递",
+			"create-button": "创建账户",
+			"import-button": "导入账户"
+		},
+		"default-mode": {
+			"summary": {
+				"title": "默认模式",
+				"screenTitle": "创建账户",
+				"subtitle": "快速开始",
+				"first-point": "从提供最适合的隐私/舒适平衡的预设开始。 Berty 节点用于提高性能和异步通信。",
+				"second-point": "推送通知在默认情况下是启用的，您还不能在iOS上禁用它们。",
+				"third-point": "如需自定义隐私/舒适度平衡，请选择自定义模式。",
+				"back-button": "返回",
+				"accept-button": "开始"
+			}
+		},
+		"custom-mode": {
+			"summary": {
+				"screenTitle": "创建账户 - 自定义设置",
+				"title": "自定义模式",
+				"subtitle": "自定义隐私/舒适度平衡",
+				"first-point": "在此模式下，单独调整所有设置以创建适合您隐私和舒适的平衡。",
+				"second-point": "要获得turnkey experience，请选择默认模式。",
+				"back-button": "返回",
+				"accept-button": "继续"
+			},
+			"settings": {
+				"off-grid": {
+					"title": "离线通讯",
+					"ble-button": "低功耗蓝牙",
+					"nearby-button": "附近的移动设备",
+					"mc-button": "苹果多点连接",
+					"mdns-button": "多播 DNS (LAN)"
+				},
+				"routing": {
+					"title": "路由",
+					"dht-button": "分布式哈希表",
+					"rdvp-button": "Rendezvous 节点"
+				},
+				"access": {
+					"title": "网络辅助",
+					"relay-button": "中继节点 (TURN)",
+					"bootstrap-button": "引导节点"
+				},
+				"modals": {
+					"add": {
+						"title": {
+							"relay": "添加中继节点 (TURN)",
+							"bootstrap": "添加引导节点",
+							"rdvp": "添加 RDVP 节点"
+						}
+					},
+					"edit": {
+						"title": {
+							"relay": "编辑中继节点 (TURN)",
+							"bootstrap": "编辑引导节点",
+							"rdvp": "编辑 RDVP 节点"
+						}
+					},
+					"errors": {
+						"alias-already-exists": "别名已存在",
+						"multiaddr-alread-exists": "多地址已存在",
+						"multiaddr-bad-format": "多地址格式错误",
+						"multiaddr-p2p": "多地址应该包含一个p2p"
+					},
+					"buttons": {
+						"add": "添加",
+						"edit": "编辑",
+						"delete": "删除"
+					},
+					"multiaddress": "多地址",
+					"alias": "别名"
+				},
+				"all-button": "全部",
+				"accept-button": "开始"
+			}
+		},
+		"create-account": {
+			"title": "创建您的帐号",
+			"first-button": "默认模式",
+			"second-button": "自定义模式",
+			"placeholder": "选择您的昵称",
+			"good-to-know": {
+				"title": "知道：",
+				"first-point": "您的账户在本地创建",
+				"second-point": "昵称是可选的，可以稍后更改"
+			}
+		},
+		"generate-key": {
+			"title": "正在启动 Berty 节点…",
+			"desc": "这可能需要几秒钟"
+		},
+		"setup-finished": {
+			"title": "设置完成！",
+			"desc": "您现在可以使用该应用，开始添加联系人以及与他们自由私下聊天",
+			"button": "开始使用 Berty"
+		},
+		"web-views": {
+			"title": "网页内容权限",
+			"desc": "Berty 即将从网络加载内容。您想要打开此页面吗？",
+			"first-button": "取消",
+			"second-button": "是"
+		}
+	},
+	"main": {
+		"home": {
+			"title": "Berty",
+			"requests": {
+				"title": "请求",
+				"accept": "同意",
+				"card-title": "联系请求！"
+			},
+			"input-placeholder": "搜索关键词",
+			"no-contacts": "您还没有任何联系人或聊天",
+			"no-network": {
+				"title": "未找到网络！",
+				"description": "你看起来离线了！激活蓝牙功能来与朋友聊天 ！",
+				"cancel": "不是现在",
+				"activate": "激活"
+			},
+			"search": {
+				"no-results": "未找到结果"
+			},
+			"create-group": {
+				"title": "新建群组",
+				"add-members": "添加新成员",
+				"group-info": "群组信息",
+				"search-placeholder": "搜索",
+				"continue": "继续",
+				"create-group": "创建群組"
+			},
+			"create-group-finalize": {
+				"placeholder": "群组名称",
+				"about": "关于群组",
+				"first-bullet-point": "任何群组中的人都可以重命名或邀请新成员",
+				"second-bullet-point": "您可以通过链接邀请成员",
+				"third-bullet-point": "您可以离开此群组",
+				"fourth-bullet-point": "您不能删除此组",
+				"fifth-bullet-point": "您不能从此群组中删除成员"
+			},
+			"conversations": {
+				"request-sent": "请求已发送，正在等待...",
+				"draft": "草稿: {{message}}"
+			}
+		},
+		"suggestion-display-name-initial": "单击这里添加"
+	},
+	"settings": {
+		"home": {
+			"title": "设置",
+			"proximity-button": "离线通讯",
+			"notifications-button": "消息通知",
+			"appearance-button": "外观",
+			"accounts-button": "账户",
+			"network-button": "网络",
+			"linked-identities-button": "",
+			"directory-search-button": "",
+			"bug-button": "提交错误",
+			"about-button": "关于 Berty",
+			"version-button": "版本: {{version}}",
+			"devtools-button": "开发工具"
+		},
+		"about": {
+			"title": "关于 Berty",
+			"faq-button": "常见问题",
+			"roadmap-button": "路线图",
+			"policy-button": "隐私政策",
+			"license-button": "开源许可证",
+			"terms-of-use": "使用条款"
+		},
+		"accounts": {
+			"title": "账户",
+			"backup-button": "备份",
+			"backup-notif-title": "成功",
+			"backup-notif-desc": "账户已备份！",
+			"accounts-button": "账户",
+			"create-button": "创建账户",
+			"import-button": "导入账户",
+			"delete-button": "删除此账户",
+			"delete-title": "账户删除"
+		},
+		"appearance": {
+			"title": "外观",
+			"dark-button": "暗色模式",
+			"editor-button": "主题编辑器",
+			"theme-editor": {
+				"title": "主题编辑器"
+			}
+		},
+		"contact-convs": {
+			"title": "联系人和对话",
+			"reset-button": "重置我的联系链接/二维码",
+			"request-button": "允许收到联系人请求"
+		},
+		"network": {
+			"title": "网络",
+			"ble-button": "低功耗蓝牙",
+			"mc-button": "多节点连接",
+			"nearby-button": "附近的移动设备",
+			"mdns-button": "多播DNS",
+			"dht-button": "分布式哈希表",
+			"rdvp-button": "Rendezvous 节点",
+			"relay-button": "中继节点",
+			"bootstrap-button": "引导节点"
+		},
+		"notifications": {
+			"title": "消息通知"
+		},
+		"edit-profile": {
+			"title": "编辑我的资料",
+			"qr-will-update": "您的 Berty ID (QR 代码) 将被更新",
+			"ocr-wont-update": "您的待处理联系人请求将不会被更新",
+			"save": "保存修改",
+			"cancel": "取消",
+			"name-input-placeholder": "名"
+		},
+		"delete-account": {
+			"title": "删除帐户！",
+			"first-desc": "您确定要删除您的帐户吗？",
+			"desc-please": "",
+			"desc-delete": "",
+			"desc-confirm": "",
+			"cancel-button": "取消",
+			"delete-button": "删除"
+		},
+		"faq": {
+			"title": "常见问题"
+		},
+		"roadmap": {
+			"title": "路线图"
+		},
+		"privacy-policy": {
+			"title": "隐私政策"
+		},
+		"license": {
+			"title": ""
+		},
+		"devtools": {
+			"title": "开发工具",
+			"header-left-button": "设备信息",
+			"header-middle-button": "生成伪数据",
+			"header-right-button": "重启守护进程",
+			"allow-unsecure-grpc": "",
+			"force-mock-button": "强制模拟",
+			"simulate-button": "模拟流错误",
+			"simulate-js-error-button": "模拟 JavaScript 错误",
+			"system-info-button": "系统信息",
+			"select-node": {
+				"title": "选择节点",
+				"node-type": "内部/外部节点",
+				"address": "地址",
+				"account-port": "账户服务端口",
+				"messenger-port": "Messenger 服务端口",
+				"dont-ask": "不再询问",
+				"button-continue": "继续"
+			},
+			"debug-button": "Debug",
+			"log-button": {
+				"name": "日志格式",
+				"bullet-point": "更改之后重新启动应用"
+			},
+			"log-filters-button": {
+				"name": "日志过滤器",
+				"bullet-point": "更改之后重新启动应用"
+			},
+			"export-logs-button": "导出日志",
+			"add-dev-conversations-button": "添加开发者会话",
+			"share-button": {
+				"title": "分享ID到Discord",
+				"alert-title": "您想要在 Berty Discord 服务器上分享您的 QR 码到\"#dev-logs\"吗？",
+				"alert-message": "这将允许其他工作人员扫描您的二维码或复制您的联系链接。",
+				"alert-accept-button": "好",
+				"alert-cancel-button": "不"
+			},
+			"dump-account-button": "转储帐户",
+			"dump-contacts-button": "转储联系人",
+			"dump-conversations-button": "转储对话",
+			"dump-interactions-button": "转储互动",
+			"dump-members-button": "转储成员",
+			"stop-node-button": "停止节点",
+			"local-grpc-button": "本地 gRPC",
+			"console-logs-button": "控制台日志",
+			"ipfs-webui-button": "IPFS WebUI",
+			"send-to-all-button": {
+				"title": "向所有联系人发送消息",
+				"sending": "正在发送...",
+				"test": "测试， ",
+				"tried": ": very_check_mark: 正在尝试向 {{length}} 联系人发送"
+			},
+			"tyber-attach": "Tyber 附加到 {{host}}",
+			"tyber-host-button": {
+				"name": "Tyber",
+				"bullet-point": "更改之后重新启动应用"
+			},
+			"footer-left-button": "设备信息",
+			"footer-middle-button": "显示事件",
+			"footer-right-button": "重启守护进程"
+		},
+		"system-info": {
+			"title": "系统信息"
+		},
+		"fake-data": {
+			"title": "生成伪数据",
+			"contacts-button": "生成伪联系人",
+			"multi-members-button": "生成伪多重成员",
+			"messages-button": "生成伪消息",
+			"delete-button": "删除伪数据"
+		},
+		"add-dev-conversations": {
+			"title": "添加开发者会话",
+			"add": "添加 {{name}}",
+			"tag-bot": "机器人",
+			"tag-contact": "联系人",
+			"tag-conversation": "对话"
+		},
+		"ipfs-webui": {
+			"title": "IPFS WebUI"
+		},
+		"theme-editor": {
+			"randomize": "生成主题",
+			"save": "保存主题",
+			"export": "将选定主题导出为文件",
+			"share": "将选定主题作为文件分享",
+			"import": "导入主题文件",
+			"delete": "删除所有非默认主题",
+			"bad-format-title": "主题格式错误",
+			"bad-format-desc": "主题文件格式错误",
+			"notification-file-saved": {
+				"title": "数据已保存！",
+				"desc": "在下载目录中可用"
+			}
+		},
+		"my-berty-ID": {
+			"title": "我的 Berty ID"
+		},
+		"share": {
+			"invite": "邀请",
+			"tap-to-scan": "点击扫描",
+			"create-group": "创建群組"
+		},
+		"linked-identities": {
+			"title": ""
+		},
+		"directory-search": {
+			"title": ""
+		}
+	},
+	"tabs": {
+		"qr": "二维码",
+		"fingerprint": "指纹",
+		"info": "信息",
+		"devices": "设备"
+	},
+	"modals": {
+		"manage-deep-link": {
+			"invalid-link": "无效的链接！",
+			"invalid-qr": "无效的二维码",
+			"error": "错误！",
+			"contact-already-added": "联系人已添加",
+			"contact-already-added-message": "您不能多次添加同一个联系人"
+		},
+		"invalid-scan": {
+			"dismiss-button": "关闭"
+		},
+		"group-invitation": {
+			"join": "加入此群组",
+			"password-label": "输入群组密码",
+			"password-placeholder": "密码..."
+		},
+		"save-theme": {
+			"title": "正在保存主题",
+			"desc": "请为您的主题选择一个名称！",
+			"placeholder": "主题名称...",
+			"cancel": "取消",
+			"add": "添加！"
+		}
+	},
+	"chat": {
+		"title-unknown": "未知对话",
+		"sending": "正在发送...",
+		"sent": "已发送",
+		"contact-settings": {
+			"my-devices": "我的设备"
+		},
+		"multi-member": {
+			"input-placeholder": "在此输入..."
+		},
+		"push-notifications": {
+			"title": "消息通知",
+			"unsupported": "不支持通知",
+			"check-device-settings": "此对话设置为接收推送通知，但您设备的系统设置中已禁用通知",
+			"check-account-settings": "通知已禁用，请检查您的帐户设置",
+			"warning-disable": {
+				"title": "您想要激活此功能吗？",
+				"subtitle": "开启后，无法为特定对话禁用推送通知。",
+				"accept": "启用",
+				"refuse": "跳过"
+			},
+			"why-cant-disable": "无法为特定对话禁用推送通知",
+			"why-cant-disable-account": "推送通知无法静音，但您可以使用操作系统设置全局静音Berty通知。",
+			"errors": {
+				"no-token": "您的设备与推送通知不兼容",
+				"no-server": "您必须先注册一个推送中继"
+			},
+			"warning-enable-all": {
+				"title": "是否为所有对话启用推送通知？",
+				"subtitle": "这为您将来加入的对话启用通知",
+				"refuse": "拒绝",
+				"accept": "同意"
+			},
+			"warning-disable-mute": {
+				"title": "是否为此对话启用通知？",
+				"refuse": "保持静音",
+				"accept": "取消静音"
+			},
+			"receive-push": "接收新消息通知",
+			"hide-previews": "在推送通知中隐藏预览",
+			"auto-enable": "启用当前和未来对话的推送功能",
+			"show-in-app": "在应用程序中显示通知"
+		},
+		"devices": {
+			"title": "设备",
+			"push": {
+				"enabled": "已启用推送通知",
+				"not-enabled": "已禁用新消息通知"
+			}
+		},
+		"multi-member-settings": {
+			"title": "对话设置",
+			"members-button": {
+				"title": "成员网络状态 ({{count}})"
+			},
+			"add-member-button": "添加成员",
+			"members-dropdown": {
+				"search-placeholder": "查找成员",
+				"conversation-booster": "添加对话助推器",
+				"replication-type": "复制节点",
+				"user-type": "用户设备"
+			},
+			"invite-button": "通过链接邀请",
+			"save-button": "在服务器上保存对话"
+		},
+		"add-members": {
+			"members": "成员",
+			"contacts": "联系人列表",
+			"add": "添加！"
+		},
+		"multi-member-qr": {
+			"title": "二维码组"
+		},
+		"one-to-one": {
+			"contact-request-box": {
+				"title": "联系人请求",
+				"group-invitation": "群组邀请",
+				"refuse-button": "拒绝",
+				"accept-button": "同意",
+				"accepted-button": "同意",
+				"error": "将您添加到群组时出错☹️ 我们的错误！",
+				"you-invited": "你已邀请",
+				"this-contact": "此联系人",
+				"to-a-group": "到一个群组！💌"
+			},
+			"infos-chat": {
+				"connection-confirmed": "👋 Berty 连接已确认! 🎉",
+				"request-sent": "请求已发送: airplan:",
+				"incoming": "接受此请求以回复 ！",
+				"outgoing": "正在等待您的联系人回复连接！",
+				"refresh-button": "重新发送联系请求"
+			},
+			"incoming-input-placeholder": "接受此请求以在这里写入...",
+			"input-placeholder": "在此输入..."
+		},
+		"one-to-one-settings": {
+			"title": "对话设置",
+			"save-button": "在服务器上保存对话"
+		},
+		"replicate-group-settings": {
+			"title": "在服务器上注册会话",
+			"no-registered-button": "未注册复制服务",
+			"connect-button": "连接到 Berty 运营服务",
+			"manage-add-button": "管理或添加服务"
+		},
+		"user-message": {
+			"read-more": "查看更多",
+			"show-less": "显示剩余"
+		}
+	},
+	"account": {
+		"deleting": "删除账户中...",
+		"creating": "创建账户中...",
+		"opening": {
+			"alert-push-title": "推送通知",
+			"alert-push-go-failed": "注册Berty Push通知服务时出错。",
+			"alert-push-fetch-failed": "无法连接到Berty推送通知服务。",
+			"alert-push-perm-denied": "推送通知的权限请求已被拒绝。",
+			"alert-push-desc": "您可以随时尝试在“设置”中再次激活此功能。",
+			"alert-push-button": "继续"
+		}
+	},
+	"permission": {
+		"notification": {
+			"title": "推送通知",
+			"desc": "Berty app 需要您的许可才能向您发送本地或推送通知。这将允许您在收到消息时收到通知。"
+		},
+		"proximity": {
+			"title": "蓝牙消息",
+			"android-desc": "要通过蓝牙离线交换消息，即使应用程序在后台，Android API也需要授予位置权限。我们不会以任何方式使用您的位置数据。",
+			"ios-desc": "要通过蓝牙离线交换消息，iOS API需要授予权限。"
+		},
+		"camera": {
+			"title": "摄像头",
+			"desc": "是否要授权相机拍照或扫描二维码？"
+		},
+		"audio": {
+			"title": "音频消息",
+			"desc": "若要向您的联系人发送音频信息，您需要允许Berty 应用程序获得麦克风权限。"
+		},
+		"gallery": {
+			"title": "图片消息",
+			"desc": "要将图像发送给您的联系人，您必须授权 Berty 访问存储在您设备上的照片和其他媒体。"
+		},
+		"contacts": {
+			"title": "联系人列表",
+			"desc": ""
+		},
+		"button-labels": {
+			"allow": "允许",
+			"settings": "转到设置"
+		},
+		"skip": "跳过",
+		"cancel": "取消",
+		"settings-text": "您可以在设置中启用 {{title}} 权限。"
+	},
+	"notification": {
+		"need-restart": {
+			"title": "需要重新启动",
+			"desc": "重新启动 Berty 以保存您的数据并启用通知！"
+		}
+	},
+	"error": {
+		"labels": {
+			"bug": "检测BUG",
+			"crash": "检测崩溃"
+		},
+		"restart-app": "重启应用",
+		"wtf-screen": {
+			"title": "失败的原因是什么？",
+			"desc": "应用程序崩溃。",
+			"desc-report": "单击按钮退出并重新启动应用程序。"
+		},
+		"sorry-screen": {
+			"title": "对不起，这是个BUG",
+			"desc": "这是Berty的实习生Francis的错，他一定犯了个错误。Francis真是个混蛋！",
+			"desc-em": "*好吧，伯蒂的团队里没有 Francis",
+			"desc-report": "单击按钮退出并重新启动应用程序。"
+		}
+	},
+	"debug": {
+		"inspector": {
+			"show-button": "显示应用检查器",
+			"hide-button": "关闭",
+			"title": "检查器",
+			"accounts": {
+				"title": "账户",
+				"data-not-found": "帐户不在列表中",
+				"action-delete": {
+					"file-exists": "帐户 {{accountId}} 不存在，但文件有此名称。",
+					"account-exists": "帐户 {{accountId}} 当前存在。",
+					"fs-read-error": "获取有关帐户的FS信息时出错",
+					"actions-title": "我们应该怎么做？",
+					"action-account-manager": "通过帐户管理器删除",
+					"action-account-manager-confirm": "确认删除帐户",
+					"action-force-delete": "强制删除",
+					"action-force-delete-confirm": "确认强制删除帐户",
+					"error-close": "关闭帐户时出错",
+					"error-delete": "删除帐户时出错",
+					"success-feedback": "帐户已删除",
+					"action-cancel": "取消"
+				},
+				"status": {
+					"datastore-found": "找到数据存储",
+					"datastore-not-found": "未找到数据存储",
+					"ipfs-repo-found": "找到 IPFS 配置文件",
+					"ipfs-repo-not-found": "未找到 IPFS 配置文件",
+					"messenger-db-found": "发现Messenger DB",
+					"messenger-db-not-found": "未找到Messenger DB"
+				},
+				"infos": {
+					"aligned": {
+						"name": "名称: {{name}}",
+						"created": "创建: {{created}}",
+						"opened": "打开:  {{opened}}",
+						"error": "错误: {{error}}"
+					}
+				}
+			},
+			"errors": {
+				"title": "错误",
+				"header-reported": "错误报告:",
+				"header-all-clear": "未报告错误",
+				"listing-files-failed": "列出目录内容时出错",
+				"listing-accounts-failed": "列出账户时出错",
+				"listing-accounts-failed-grpc": "列出帐户时发生GRPC错误"
+			},
+			"dump": {
+				"button": "转储应用状态"
+			},
+			"refresh": "刷新",
+			"confirm-alert": {
+				"button-confirm": "确认",
+				"button-cancel": "取消"
+			}
+		}
+	},
+	"time-for": {
+		"minutes": "{{minutes}} 分",
+		"hours": "{{hours}} 时",
+		"days": "{{days}} 日"
+	},
+	"share": {
+		"sharing-id-message": "让我们在 Berty 上聊天，这是一个安全的 p2p 消息应用。加入我："
+	},
+	"directory": {
+		"phone": {
+			"register": "",
+			"associated": "",
+			"expired": "",
+			"proof-service-unavailable": "",
+			"register-service": "",
+			"unregister-service": ""
+		},
+		"email": {
+			"register": "",
+			"associated": "",
+			"expired": "",
+			"proof-service-unavailable": "",
+			"register-service": "",
+			"unregister-service": ""
+		}
+	}
+}

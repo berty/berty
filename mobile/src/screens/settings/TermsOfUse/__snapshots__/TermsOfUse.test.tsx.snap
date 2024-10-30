@@ -1,0 +1,328 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Settings.TermsOfUse renders correctly 1`] = `
+<RNCSafeAreaProvider
+  onInsetsChange={[Function]}
+  style={
+    Array [
+      Object {
+        "flex": 1,
+      },
+      undefined,
+    ]
+  }
+>
+  <View
+    style={
+      Object {
+        "flex": 1,
+      }
+    }
+  >
+    <View
+      appearance="default"
+      level="1"
+      style={
+        Array [
+          Object {
+            "backgroundColor": "#FFFFFF",
+          },
+          Object {
+            "backgroundColor": "#FFFFFF",
+            "flex": 1,
+          },
+        ]
+      }
+    >
+      <RCTScrollView
+        bounces={false}
+      >
+        <View>
+          <View
+            style={
+              Array [
+                Object {
+                  "padding": 16,
+                },
+                Object {
+                  "flex": 1,
+                },
+                Object {
+                  "marginBottom": 9,
+                },
+                Object {
+                  "marginTop": 16,
+                },
+                Object {
+                  "marginHorizontal": 16,
+                },
+              ]
+            }
+          >
+            <View
+              style={
+                Array [
+                  Object {
+                    "marginTop": 32,
+                  },
+                ]
+              }
+            >
+              <Text
+                style={
+                  Array [
+                    Object {
+                      "fontSize": 30,
+                    },
+                    Object {
+                      "color": "#383B62",
+                      "fontFamily": "Open Sans",
+                    },
+                    Array [
+                      Object {
+                        "fontSize": 26,
+                      },
+                    ],
+                  ]
+                }
+              >
+                Berty Technologies (“Berty”) utilizes state-of-the-art security and end-to-end encryption to provide private messaging, Internet calling, and other services to users worldwide. You agree to our Terms of Service (“Terms”) by installing or using our apps, services, or website (together, “Services”).
+              </Text>
+            </View>
+            <View
+              style={
+                Array [
+                  Object {
+                    "marginTop": 32,
+                  },
+                ]
+              }
+            >
+              <Text
+                style={
+                  Array [
+                    Object {
+                      "fontSize": 30,
+                    },
+                    Object {
+                      "color": "#383B62",
+                      "fontFamily": "Open Sans",
+                    },
+                    Array [
+                      Object {
+                        "fontFamily": "Bold Open Sans",
+                      },
+                    ],
+                  ]
+                }
+              >
+                Minimum Age
+              </Text>
+              <Text
+                style={
+                  Array [
+                    Object {
+                      "fontSize": 30,
+                    },
+                    Object {
+                      "color": "#383B62",
+                      "fontFamily": "Open Sans",
+                    },
+                    Array [
+                      Object {
+                        "fontSize": 26,
+                      },
+                    ],
+                  ]
+                }
+              >
+                You must be at least 13 years old to use our Services. The minimum age to use our Services without parental approval may be higher in your home country.
+              </Text>
+            </View>
+            <View
+              style={
+                Array [
+                  Object {
+                    "marginTop": 32,
+                  },
+                ]
+              }
+            >
+              <Text
+                style={
+                  Array [
+                    Object {
+                      "fontSize": 30,
+                    },
+                    Object {
+                      "color": "#383B62",
+                      "fontFamily": "Open Sans",
+                    },
+                    Array [
+                      Object {
+                        "fontFamily": "Bold Open Sans",
+                      },
+                    ],
+                  ]
+                }
+              >
+                Privacy of user data
+              </Text>
+              <Text
+                style={
+                  Array [
+                    Object {
+                      "fontSize": 30,
+                    },
+                    Object {
+                      "color": "#383B62",
+                      "fontFamily": "Open Sans",
+                    },
+                    Array [
+                      Object {
+                        "fontSize": 26,
+                      },
+                    ],
+                  ]
+                }
+              >
+                Berty does not sell, rent or monetize your personal data or content in any way – ever.
+              </Text>
+            </View>
+            <View
+              style={
+                Array [
+                  Object {
+                    "marginTop": 32,
+                  },
+                ]
+              }
+            >
+              <Text
+                style={
+                  Array [
+                    Object {
+                      "fontSize": 30,
+                    },
+                    Object {
+                      "color": "#383B62",
+                      "fontFamily": "Open Sans",
+                    },
+                    Array [
+                      Object {
+                        "fontSize": 26,
+                      },
+                    ],
+                  ]
+                }
+              >
+                Please read our Privacy Policy to understand how we safeguard the information you provide when using our Services. For the purpose of operating our Services, you agree to our data practices as described in our Privacy Policy.
+              </Text>
+            </View>
+            <View
+              style={
+                Array [
+                  Object {
+                    "marginTop": 32,
+                  },
+                ]
+              }
+            >
+              <Text
+                style={
+                  Array [
+                    Object {
+                      "fontSize": 30,
+                    },
+                    Object {
+                      "color": "#383B62",
+                      "fontFamily": "Open Sans",
+                    },
+                    Array [
+                      Object {
+                        "fontFamily": "Bold Open Sans",
+                      },
+                    ],
+                  ]
+                }
+              >
+                Software
+              </Text>
+              <Text
+                style={
+                  Array [
+                    Object {
+                      "fontSize": 30,
+                    },
+                    Object {
+                      "color": "#383B62",
+                      "fontFamily": "Open Sans",
+                    },
+                    Array [
+                      Object {
+                        "fontSize": 26,
+                      },
+                    ],
+                  ]
+                }
+              >
+                In order to enable new features and enhanced functionality, you consent to downloading and installing updates to our Services.
+              </Text>
+            </View>
+            <View
+              style={
+                Array [
+                  Object {
+                    "marginTop": 32,
+                  },
+                ]
+              }
+            >
+              <Text
+                style={
+                  Array [
+                    Object {
+                      "fontSize": 30,
+                    },
+                    Object {
+                      "color": "#383B62",
+                      "fontFamily": "Open Sans",
+                    },
+                    Array [
+                      Object {
+                        "fontFamily": "Bold Open Sans",
+                      },
+                    ],
+                  ]
+                }
+              >
+                Fees and Taxes
+              </Text>
+              <Text
+                style={
+                  Array [
+                    Object {
+                      "fontSize": 30,
+                    },
+                    Object {
+                      "color": "#383B62",
+                      "fontFamily": "Open Sans",
+                    },
+                    Array [
+                      Object {
+                        "fontSize": 26,
+                      },
+                    ],
+                  ]
+                }
+              >
+                You are responsible for data and mobile carrier fees and taxes associated with the devices on which you use our Services.
+              </Text>
+            </View>
+          </View>
+        </View>
+      </RCTScrollView>
+    </View>
+  </View>
+</RNCSafeAreaProvider>
+`;

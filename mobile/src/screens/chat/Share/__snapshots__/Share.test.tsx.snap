@@ -1,0 +1,609 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Chat.Share renders correctly 1`] = `
+<RNCSafeAreaProvider
+  onInsetsChange={[Function]}
+  style={
+    Array [
+      Object {
+        "flex": 1,
+      },
+      undefined,
+    ]
+  }
+>
+  <View
+    style={
+      Object {
+        "flex": 1,
+      }
+    }
+  >
+    <View
+      appearance="default"
+      level="1"
+      style={
+        Array [
+          Object {
+            "backgroundColor": "#FFFFFF",
+          },
+          Array [
+            Object {
+              "flex": 1,
+            },
+            Object {
+              "backgroundColor": "#FFFFFF",
+            },
+          ],
+        ]
+      }
+    >
+      <RCTScrollView
+        style={
+          Array [
+            Object {
+              "marginBottom": 16,
+            },
+            Object {
+              "backgroundColor": "#FFFFFF",
+            },
+          ]
+        }
+      >
+        <View>
+          <View
+            style={
+              Array [
+                Object {
+                  "borderBottomLeftRadius": 40,
+                  "borderBottomRightRadius": 40,
+                },
+                Object {
+                  "paddingBottom": 40,
+                },
+                Object {
+                  "paddingTop": 16,
+                },
+                Object {
+                  "backgroundColor": "#535AE4",
+                },
+              ]
+            }
+          >
+            <View
+              style={
+                Array [
+                  Object {
+                    "borderRadius": 16,
+                  },
+                  Object {
+                    "marginBottom": 32,
+                  },
+                  Object {
+                    "alignItems": "center",
+                    "alignSelf": "center",
+                    "backgroundColor": "#FFFFFF",
+                    "height": 535,
+                    "width": 535,
+                  },
+                ]
+              }
+            >
+              <View
+                style={
+                  Array [
+                    Object {
+                      "alignItems": "center",
+                      "justifyContent": "center",
+                    },
+                  ]
+                }
+              >
+                <View
+                  style={
+                    Array [
+                      Object {
+                        "alignItems": "center",
+                      },
+                      Object {
+                        "justifyContent": "center",
+                      },
+                      Object {
+                        "flexDirection": "row",
+                      },
+                      Object {
+                        "marginTop": 32,
+                      },
+                      Object {
+                        "marginBottom": 9,
+                      },
+                      Object {
+                        "marginHorizontal": 32,
+                      },
+                    ]
+                  }
+                >
+                  <View
+                    style={
+                      Array [
+                        Object {
+                          "marginRight": 9,
+                        },
+                      ]
+                    }
+                  >
+                    <View
+                      style={
+                        Object {
+                          "zIndex": -1,
+                        }
+                      }
+                    >
+                      <View
+                        style={
+                          Array [
+                            undefined,
+                            Object {
+                              "alignItems": "center",
+                              "backgroundColor": "#FFFFFF",
+                              "borderRadius": 12,
+                              "height": 24,
+                              "justifyContent": "center",
+                              "width": 24,
+                            },
+                          ]
+                        }
+                      >
+                        <View
+                          style={
+                            Object {
+                              "alignItems": "center",
+                              "justifyContent": "center",
+                            }
+                          }
+                        >
+                          <View
+                            style={
+                              Array [
+                                undefined,
+                                Object {
+                                  "alignItems": "center",
+                                  "backgroundColor": "#b8bd4a",
+                                  "borderRadius": 12,
+                                  "height": 24,
+                                  "justifyContent": "center",
+                                  "width": 24,
+                                },
+                              ]
+                            }
+                          >
+                            <Text
+                              adjustsFontSizeToFit={true}
+                              style={
+                                Array [
+                                  Object {
+                                    "fontSize": 30,
+                                  },
+                                  Object {
+                                    "color": "#383B62",
+                                    "fontFamily": "Open Sans",
+                                  },
+                                  Object {
+                                    "color": "#FFFFFF",
+                                    "fontSize": 12,
+                                    "includeFontPadding": false,
+                                    "paddingBottom": 1.2,
+                                    "textAlign": "center",
+                                  },
+                                ]
+                              }
+                            >
+                              ?
+                            </Text>
+                          </View>
+                        </View>
+                      </View>
+                    </View>
+                  </View>
+                  <Text
+                    ellipsizeMode="tail"
+                    numberOfLines={2}
+                    style={
+                      Array [
+                        Object {
+                          "fontSize": 30,
+                        },
+                        Object {
+                          "color": "#383B62",
+                          "fontFamily": "Open Sans",
+                        },
+                        undefined,
+                      ]
+                    }
+                  >
+                    
+                  </Text>
+                </View>
+                <View
+                  style={
+                    Object {
+                      "height": 337.5,
+                      "justifyContent": "center",
+                      "width": 337.5,
+                    }
+                  }
+                >
+                  <View
+                    style={
+                      Object {
+                        "alignItems": "center",
+                        "backgroundColor": "#FFFFFF",
+                        "height": "100%",
+                        "justifyContent": "center",
+                        "width": "100%",
+                      }
+                    }
+                  >
+                    <Image
+                      source="AssetMock"
+                      style={
+                        Object {
+                          "height": "40%",
+                          "maxHeight": 80,
+                          "maxWidth": 170,
+                          "width": "80%",
+                        }
+                      }
+                    />
+                  </View>
+                </View>
+              </View>
+            </View>
+            <RCTScrollView
+              contentContainerStyle={
+                Array [
+                  Object {
+                    "flex": 1,
+                  },
+                  Object {
+                    "alignItems": "stretch",
+                    "flexDirection": "row",
+                    "justifyContent": "space-between",
+                  },
+                  Object {
+                    "marginTop": 16,
+                  },
+                  Object {
+                    "paddingBottom": 9,
+                  },
+                  null,
+                  Object {
+                    "justifyContent": "center",
+                  },
+                ]
+              }
+              horizontal={true}
+              scrollEnabled={false}
+              showsHorizontalScrollIndicator={false}
+            >
+              <View>
+                <View
+                  accessible={true}
+                  focusable={true}
+                  onClick={[Function]}
+                  onResponderGrant={[Function]}
+                  onResponderMove={[Function]}
+                  onResponderRelease={[Function]}
+                  onResponderTerminate={[Function]}
+                  onResponderTerminationRequest={[Function]}
+                  onStartShouldSetResponder={[Function]}
+                  style={
+                    Object {
+                      "alignItems": "center",
+                      "backgroundColor": "#FFFFFF",
+                      "borderRadius": 16,
+                      "height": 120,
+                      "justifyContent": "center",
+                      "marginRight": 20,
+                      "opacity": 1,
+                      "padding": 16,
+                      "shadowColor": "#000000",
+                      "shadowOffset": Object {
+                        "height": 1,
+                        "width": 0,
+                      },
+                      "shadowOpacity": 0.2,
+                      "shadowRadius": 2,
+                      "width": 120,
+                    }
+                  }
+                >
+                  <View
+                    style={
+                      Object {
+                        "transform": Array [
+                          Object {
+                            "scale": 1,
+                          },
+                        ],
+                      }
+                    }
+                  >
+                    <RNSVGMock
+                      fill="#535AE4"
+                      height={30}
+                      viewBox="0 0 24 24"
+                      width={30}
+                    />
+                  </View>
+                  <Text
+                    numberOfLines={2}
+                    style={
+                      Array [
+                        Object {
+                          "fontSize": 30,
+                        },
+                        Object {
+                          "color": "#383B62",
+                          "fontFamily": "Open Sans",
+                        },
+                        Array [
+                          Object {
+                            "textAlign": "center",
+                          },
+                          Object {
+                            "fontSize": 30,
+                          },
+                          null,
+                          Object {
+                            "paddingTop": 6,
+                          },
+                        ],
+                      ]
+                    }
+                  >
+                    settings.share.tap-to-scan
+                  </Text>
+                </View>
+                <View
+                  accessible={true}
+                  focusable={true}
+                  onClick={[Function]}
+                  onResponderGrant={[Function]}
+                  onResponderMove={[Function]}
+                  onResponderRelease={[Function]}
+                  onResponderTerminate={[Function]}
+                  onResponderTerminationRequest={[Function]}
+                  onStartShouldSetResponder={[Function]}
+                  style={
+                    Object {
+                      "alignItems": "center",
+                      "backgroundColor": "#FFFFFF",
+                      "borderRadius": 16,
+                      "height": 120,
+                      "justifyContent": "center",
+                      "opacity": 1,
+                      "padding": 16,
+                      "shadowColor": "#000000",
+                      "shadowOffset": Object {
+                        "height": 1,
+                        "width": 0,
+                      },
+                      "shadowOpacity": 0.2,
+                      "shadowRadius": 2,
+                      "width": 120,
+                    }
+                  }
+                >
+                  <View
+                    style={
+                      Object {
+                        "transform": Array [
+                          Object {
+                            "scale": 1,
+                          },
+                        ],
+                      }
+                    }
+                  >
+                    <RNSVGMock
+                      fill="#535AE4"
+                      height={30}
+                      viewBox="0 0 24 24"
+                      width={30}
+                    />
+                  </View>
+                  <Text
+                    numberOfLines={2}
+                    style={
+                      Array [
+                        Object {
+                          "fontSize": 30,
+                        },
+                        Object {
+                          "color": "#383B62",
+                          "fontFamily": "Open Sans",
+                        },
+                        Array [
+                          Object {
+                            "textAlign": "center",
+                          },
+                          Object {
+                            "fontSize": 30,
+                          },
+                          null,
+                          Object {
+                            "paddingTop": 6,
+                          },
+                        ],
+                      ]
+                    }
+                  >
+                    settings.share.invite
+                  </Text>
+                </View>
+              </View>
+            </RCTScrollView>
+          </View>
+          <View
+            style={
+              Array [
+                Object {
+                  "marginHorizontal": 16,
+                },
+              ]
+            }
+          >
+            <View
+              style={
+                Array [
+                  Object {
+                    "backgroundColor": "white",
+                    "shadowColor": "#000000",
+                  },
+                  Object {
+                    "shadowOffset": Object {
+                      "height": 1,
+                      "width": 0,
+                    },
+                    "shadowOpacity": 0.2,
+                    "shadowRadius": 2,
+                  },
+                  Object {
+                    "borderRadius": 14,
+                    "marginTop": 20,
+                  },
+                ]
+              }
+            >
+              <View
+                accessible={true}
+                focusable={true}
+                onClick={[Function]}
+                onResponderGrant={[Function]}
+                onResponderMove={[Function]}
+                onResponderRelease={[Function]}
+                onResponderTerminate={[Function]}
+                onResponderTerminationRequest={[Function]}
+                onStartShouldSetResponder={[Function]}
+                style={
+                  Object {
+                    "alignItems": "center",
+                    "flexDirection": "row",
+                    "height": 48,
+                    "justifyContent": "space-between",
+                    "opacity": 1,
+                    "padding": 12,
+                  }
+                }
+              >
+                <View
+                  style={
+                    Object {
+                      "flexShrink": 1,
+                      "width": "90%",
+                    }
+                  }
+                >
+                  <Text
+                    numberOfLines={1}
+                    style={
+                      Array [
+                        Object {
+                          "fontSize": 30,
+                        },
+                        Object {
+                          "color": "#383B62",
+                          "fontFamily": "Open Sans",
+                        },
+                        Array [
+                          Object {
+                            "marginLeft": 9,
+                          },
+                        ],
+                      ]
+                    }
+                  >
+                    settings.share.create-group
+                  </Text>
+                </View>
+                <View
+                  style={
+                    Object {
+                      "transform": Array [
+                        Object {
+                          "scale": 1,
+                        },
+                      ],
+                    }
+                  }
+                >
+                  <RNSVGMock
+                    fill="#393C63"
+                    height={20}
+                    viewBox="0 0 24 24"
+                    width={20}
+                  />
+                </View>
+              </View>
+            </View>
+            <View
+              style={
+                Object {
+                  "flexDirection": "row",
+                }
+              }
+            >
+              <TextInput
+                allowFontScaling={true}
+                onChangeText={[Function]}
+                placeholder="Paste link here"
+                rejectResponderTermination={true}
+                style={
+                  Object {
+                    "flex": 1,
+                  }
+                }
+                underlineColorAndroid="transparent"
+              />
+              <View
+                accessible={true}
+                focusable={true}
+                onClick={[Function]}
+                onResponderGrant={[Function]}
+                onResponderMove={[Function]}
+                onResponderRelease={[Function]}
+                onResponderTerminate={[Function]}
+                onResponderTerminationRequest={[Function]}
+                onStartShouldSetResponder={[Function]}
+                style={
+                  Object {
+                    "opacity": 1,
+                  }
+                }
+              >
+                <Text
+                  style={
+                    Array [
+                      Object {
+                        "fontSize": 30,
+                      },
+                      Object {
+                        "color": "#383B62",
+                        "fontFamily": "Open Sans",
+                      },
+                      undefined,
+                    ]
+                  }
+                >
+                  Confirm
+                </Text>
+              </View>
+            </View>
+          </View>
+        </View>
+      </RCTScrollView>
+    </View>
+  </View>
+</RNCSafeAreaProvider>
+`;

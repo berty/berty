@@ -1,0 +1,646 @@
+{
+	"onboarding": {
+		"getstarted": {
+			"screenTitle": "",
+			"title": "",
+			"desc": "",
+			"create-button": "",
+			"import-button": ""
+		},
+		"default-mode": {
+			"summary": {
+				"title": "",
+				"screenTitle": "",
+				"subtitle": "",
+				"first-point": "",
+				"second-point": "",
+				"third-point": "",
+				"back-button": "",
+				"accept-button": ""
+			}
+		},
+		"custom-mode": {
+			"summary": {
+				"screenTitle": "",
+				"title": "",
+				"subtitle": "",
+				"first-point": "",
+				"second-point": "",
+				"back-button": "",
+				"accept-button": ""
+			},
+			"settings": {
+				"off-grid": {
+					"title": "",
+					"ble-button": "",
+					"nearby-button": "",
+					"mc-button": "",
+					"mdns-button": ""
+				},
+				"routing": {
+					"title": "",
+					"dht-button": "",
+					"rdvp-button": ""
+				},
+				"access": {
+					"title": "",
+					"relay-button": "",
+					"bootstrap-button": ""
+				},
+				"modals": {
+					"add": {
+						"title": {
+							"relay": "",
+							"bootstrap": "",
+							"rdvp": ""
+						}
+					},
+					"edit": {
+						"title": {
+							"relay": "",
+							"bootstrap": "",
+							"rdvp": ""
+						}
+					},
+					"errors": {
+						"alias-already-exists": "",
+						"multiaddr-alread-exists": "",
+						"multiaddr-bad-format": "",
+						"multiaddr-p2p": ""
+					},
+					"buttons": {
+						"add": "Legg til",
+						"edit": "",
+						"delete": ""
+					},
+					"multiaddress": "",
+					"alias": ""
+				},
+				"all-button": "",
+				"accept-button": ""
+			}
+		},
+		"create-account": {
+			"title": "Opprett din konto",
+			"first-button": "",
+			"second-button": "",
+			"placeholder": "",
+			"good-to-know": {
+				"title": "",
+				"first-point": "",
+				"second-point": ""
+			}
+		},
+		"generate-key": {
+			"title": "Starter Berty-noden…",
+			"desc": "Dette kan ta noen få sekunder"
+		},
+		"setup-finished": {
+			"title": "Oppsett fullført!",
+			"desc": "Du kan nå bruke appen, legge til kontakter, og snakke fritt og privat med dem",
+			"button": ""
+		},
+		"web-views": {
+			"title": "",
+			"desc": "",
+			"first-button": "Avbryt",
+			"second-button": ""
+		}
+	},
+	"main": {
+		"home": {
+			"title": "",
+			"requests": {
+				"title": "Forespørsler",
+				"accept": "Godta",
+				"card-title": "Kontaktforespørsel!"
+			},
+			"input-placeholder": "Søk med nøkkelord",
+			"no-contacts": "Du har ingen kontakter eller samtaler enda",
+			"no-network": {
+				"title": "",
+				"description": "",
+				"cancel": "",
+				"activate": ""
+			},
+			"search": {
+				"no-results": "Fant ingen resultater"
+			},
+			"create-group": {
+				"title": "",
+				"add-members": "",
+				"group-info": "",
+				"search-placeholder": "Søk",
+				"continue": "",
+				"create-group": ""
+			},
+			"create-group-finalize": {
+				"placeholder": "",
+				"about": "",
+				"first-bullet-point": "",
+				"second-bullet-point": "",
+				"third-bullet-point": "",
+				"fourth-bullet-point": "",
+				"fifth-bullet-point": ""
+			},
+			"conversations": {
+				"request-sent": "",
+				"draft": ""
+			}
+		},
+		"suggestion-display-name-initial": ""
+	},
+	"settings": {
+		"home": {
+			"title": "Innstillinger",
+			"proximity-button": "",
+			"notifications-button": "Varsler",
+			"appearance-button": "",
+			"accounts-button": "",
+			"network-button": "",
+			"linked-identities-button": "",
+			"directory-search-button": "",
+			"bug-button": "",
+			"about-button": "Om Berty",
+			"version-button": "",
+			"devtools-button": "Verktøy for utviklere"
+		},
+		"about": {
+			"title": "Om Berty",
+			"faq-button": "",
+			"roadmap-button": "",
+			"policy-button": "",
+			"license-button": "",
+			"terms-of-use": "Vilkår for bruk"
+		},
+		"accounts": {
+			"title": "",
+			"backup-button": "",
+			"backup-notif-title": "",
+			"backup-notif-desc": "",
+			"accounts-button": "",
+			"create-button": "",
+			"import-button": "",
+			"delete-button": "",
+			"delete-title": ""
+		},
+		"appearance": {
+			"title": "",
+			"dark-button": "",
+			"editor-button": "",
+			"theme-editor": {
+				"title": ""
+			}
+		},
+		"contact-convs": {
+			"title": "",
+			"reset-button": "",
+			"request-button": ""
+		},
+		"network": {
+			"title": "",
+			"ble-button": "",
+			"mc-button": "",
+			"nearby-button": "",
+			"mdns-button": "Multicast DNS",
+			"dht-button": "",
+			"rdvp-button": "",
+			"relay-button": "",
+			"bootstrap-button": ""
+		},
+		"notifications": {
+			"title": "Varsler"
+		},
+		"edit-profile": {
+			"title": "Rediger min profil",
+			"qr-will-update": "Din Berty ID (QR-kode) vil bli oppdatert",
+			"ocr-wont-update": "Dine pågående kontaktforespørsler vil ikke bli oppdatert",
+			"save": "Lagre endringer",
+			"cancel": "Avbryt",
+			"name-input-placeholder": "Navn..."
+		},
+		"delete-account": {
+			"title": "Slett konto!",
+			"first-desc": "Er du sikker på at du vil slette din konto?",
+			"desc-please": "",
+			"desc-delete": "",
+			"desc-confirm": "",
+			"cancel-button": "Avbryt",
+			"delete-button": ""
+		},
+		"faq": {
+			"title": ""
+		},
+		"roadmap": {
+			"title": ""
+		},
+		"privacy-policy": {
+			"title": ""
+		},
+		"license": {
+			"title": ""
+		},
+		"devtools": {
+			"title": "Verktøy for utviklere",
+			"header-left-button": "Infoer om enheten",
+			"header-middle-button": "Generer falsk data",
+			"header-right-button": "Restart daemon",
+			"allow-unsecure-grpc": "",
+			"force-mock-button": "",
+			"simulate-button": "Simuler stream-feil",
+			"simulate-js-error-button": "",
+			"system-info-button": "System-info",
+			"select-node": {
+				"title": "",
+				"node-type": "",
+				"address": "",
+				"account-port": "",
+				"messenger-port": "",
+				"dont-ask": "",
+				"button-continue": ""
+			},
+			"debug-button": "Feilsøk",
+			"log-button": {
+				"name": "",
+				"bullet-point": ""
+			},
+			"log-filters-button": {
+				"name": "",
+				"bullet-point": ""
+			},
+			"export-logs-button": "",
+			"add-dev-conversations-button": "Legg til utviklersamtaler",
+			"share-button": {
+				"title": "Del ID på Discord",
+				"alert-title": "",
+				"alert-message": "Dette vil tillate andre ansatte til å skanne QR-koden din eller kopiere kontaktlenken din.",
+				"alert-accept-button": "Yep 👍",
+				"alert-cancel-button": "Nei"
+			},
+			"dump-account-button": "Dump konto",
+			"dump-contacts-button": "Dump kontakter",
+			"dump-conversations-button": "Dump samtaler",
+			"dump-interactions-button": "Dump interaksjoner",
+			"dump-members-button": "Dump medlemmer",
+			"stop-node-button": "Stopp node",
+			"local-grpc-button": "lokal gRPC",
+			"console-logs-button": "Konsoll-logger",
+			"ipfs-webui-button": "IPFS WebUI",
+			"send-to-all-button": {
+				"title": "Send meldinger til alle kontakter",
+				"sending": "Sender...",
+				"test": "Test, ",
+				"tried": "✔ Prøvde å sende til {{length}} kontakter"
+			},
+			"tyber-attach": "",
+			"tyber-host-button": {
+				"name": "",
+				"bullet-point": ""
+			},
+			"footer-left-button": "Infoer om enheten",
+			"footer-middle-button": "List opp hendelser",
+			"footer-right-button": "Restart daemon"
+		},
+		"system-info": {
+			"title": "System-info"
+		},
+		"fake-data": {
+			"title": "Generer falske data",
+			"contacts-button": "Gen. falske kontakter",
+			"multi-members-button": "Gen. falske multi-medlemmer",
+			"messages-button": "Gen. falske meldinger",
+			"delete-button": "Slett falske data"
+		},
+		"add-dev-conversations": {
+			"title": "Legg til utviklersamtaler",
+			"add": "Legg til {{name}}",
+			"tag-bot": "Bot",
+			"tag-contact": "Kontakt",
+			"tag-conversation": ""
+		},
+		"ipfs-webui": {
+			"title": "IPFS WebUI"
+		},
+		"theme-editor": {
+			"randomize": "",
+			"save": "",
+			"export": "",
+			"share": "",
+			"import": "",
+			"delete": "",
+			"bad-format-title": "",
+			"bad-format-desc": "",
+			"notification-file-saved": {
+				"title": "",
+				"desc": ""
+			}
+		},
+		"my-berty-ID": {
+			"title": ""
+		},
+		"share": {
+			"invite": "",
+			"tap-to-scan": "",
+			"create-group": ""
+		},
+		"linked-identities": {
+			"title": ""
+		},
+		"directory-search": {
+			"title": ""
+		}
+	},
+	"tabs": {
+		"qr": "QR",
+		"fingerprint": "Fingeravtrykk",
+		"info": "Info",
+		"devices": "Enheter"
+	},
+	"modals": {
+		"manage-deep-link": {
+			"invalid-link": "Ugyldig lenke!",
+			"invalid-qr": "Ugyldig QR-kode!",
+			"error": "Feil!",
+			"contact-already-added": "Kontakten er allerede lagt til",
+			"contact-already-added-message": "Du kan ikke legge til samme kontakt flere ganger"
+		},
+		"invalid-scan": {
+			"dismiss-button": ""
+		},
+		"group-invitation": {
+			"join": "",
+			"password-label": "",
+			"password-placeholder": ""
+		},
+		"save-theme": {
+			"title": "",
+			"desc": "",
+			"placeholder": "",
+			"cancel": "Avbryt",
+			"add": ""
+		}
+	},
+	"chat": {
+		"title-unknown": "",
+		"sending": "Sender...",
+		"sent": "",
+		"contact-settings": {
+			"my-devices": ""
+		},
+		"multi-member": {
+			"input-placeholder": ""
+		},
+		"push-notifications": {
+			"title": "Varsler",
+			"unsupported": "",
+			"check-device-settings": "",
+			"check-account-settings": "",
+			"warning-disable": {
+				"title": "",
+				"subtitle": "",
+				"accept": "",
+				"refuse": ""
+			},
+			"why-cant-disable": "",
+			"why-cant-disable-account": "",
+			"errors": {
+				"no-token": "",
+				"no-server": ""
+			},
+			"warning-enable-all": {
+				"title": "",
+				"subtitle": "",
+				"refuse": "",
+				"accept": "Godta"
+			},
+			"warning-disable-mute": {
+				"title": "",
+				"refuse": "",
+				"accept": ""
+			},
+			"receive-push": "Motta push-varsler",
+			"hide-previews": "",
+			"auto-enable": "",
+			"show-in-app": ""
+		},
+		"devices": {
+			"title": "Enheter",
+			"push": {
+				"enabled": "",
+				"not-enabled": "Push-varsler deaktivert"
+			}
+		},
+		"multi-member-settings": {
+			"title": "",
+			"members-button": {
+				"title": ""
+			},
+			"add-member-button": "Legg til medlem",
+			"members-dropdown": {
+				"search-placeholder": "",
+				"conversation-booster": "",
+				"replication-type": "",
+				"user-type": ""
+			},
+			"invite-button": "Inviter via lenke",
+			"save-button": "Lagre samtale på serveren"
+		},
+		"add-members": {
+			"members": "Medlemmer",
+			"contacts": "",
+			"add": ""
+		},
+		"multi-member-qr": {
+			"title": "QR-Gruppe"
+		},
+		"one-to-one": {
+			"contact-request-box": {
+				"title": "Kontaktforespørsel",
+				"group-invitation": "",
+				"refuse-button": "",
+				"accept-button": "Godta",
+				"accepted-button": "",
+				"error": "",
+				"you-invited": "",
+				"this-contact": "",
+				"to-a-group": ""
+			},
+			"infos-chat": {
+				"connection-confirmed": "👋 Berty-tilkobling bekreftet! 🎉",
+				"request-sent": "Forespørsel sendt ✈",
+				"incoming": "Godta denne forespørselen for å svare!",
+				"outgoing": "Venter på ditt kontaktsvar for å tilkoble!",
+				"refresh-button": ""
+			},
+			"incoming-input-placeholder": "Godta forespørselen for å skrive her...",
+			"input-placeholder": ""
+		},
+		"one-to-one-settings": {
+			"title": "",
+			"save-button": "Lagre samtale på serveren"
+		},
+		"replicate-group-settings": {
+			"title": "Registrer samtale på serveren",
+			"no-registered-button": "Ingen gjenskapingstjeneste registrert",
+			"connect-button": "Koble til Berty-opererte tjenester",
+			"manage-add-button": "Administrer eller legg til tjenester"
+		},
+		"user-message": {
+			"read-more": "",
+			"show-less": ""
+		}
+	},
+	"account": {
+		"deleting": "",
+		"creating": "",
+		"opening": {
+			"alert-push-title": "",
+			"alert-push-go-failed": "",
+			"alert-push-fetch-failed": "",
+			"alert-push-perm-denied": "",
+			"alert-push-desc": "",
+			"alert-push-button": ""
+		}
+	},
+	"permission": {
+		"notification": {
+			"title": "",
+			"desc": ""
+		},
+		"proximity": {
+			"title": "",
+			"android-desc": "",
+			"ios-desc": ""
+		},
+		"camera": {
+			"title": "Kamera",
+			"desc": ""
+		},
+		"audio": {
+			"title": "",
+			"desc": ""
+		},
+		"gallery": {
+			"title": "",
+			"desc": ""
+		},
+		"contacts": {
+			"title": "",
+			"desc": ""
+		},
+		"button-labels": {
+			"allow": "",
+			"settings": ""
+		},
+		"skip": "",
+		"cancel": "Avbryt",
+		"settings-text": ""
+	},
+	"notification": {
+		"need-restart": {
+			"title": "",
+			"desc": ""
+		}
+	},
+	"error": {
+		"labels": {
+			"bug": "",
+			"crash": ""
+		},
+		"restart-app": "",
+		"wtf-screen": {
+			"title": "",
+			"desc": "",
+			"desc-report": ""
+		},
+		"sorry-screen": {
+			"title": "",
+			"desc": "",
+			"desc-em": "",
+			"desc-report": ""
+		}
+	},
+	"debug": {
+		"inspector": {
+			"show-button": "",
+			"hide-button": "",
+			"title": "",
+			"accounts": {
+				"title": "",
+				"data-not-found": "",
+				"action-delete": {
+					"file-exists": "",
+					"account-exists": "",
+					"fs-read-error": "",
+					"actions-title": "",
+					"action-account-manager": "",
+					"action-account-manager-confirm": "",
+					"action-force-delete": "",
+					"action-force-delete-confirm": "",
+					"error-close": "",
+					"error-delete": "",
+					"success-feedback": "",
+					"action-cancel": "Avbryt"
+				},
+				"status": {
+					"datastore-found": "",
+					"datastore-not-found": "",
+					"ipfs-repo-found": "",
+					"ipfs-repo-not-found": "",
+					"messenger-db-found": "",
+					"messenger-db-not-found": ""
+				},
+				"infos": {
+					"aligned": {
+						"name": "",
+						"created": "",
+						"opened": "",
+						"error": ""
+					}
+				}
+			},
+			"errors": {
+				"title": "",
+				"header-reported": "",
+				"header-all-clear": "",
+				"listing-files-failed": "",
+				"listing-accounts-failed": "",
+				"listing-accounts-failed-grpc": ""
+			},
+			"dump": {
+				"button": ""
+			},
+			"refresh": "",
+			"confirm-alert": {
+				"button-confirm": "",
+				"button-cancel": "Avbryt"
+			}
+		}
+	},
+	"time-for": {
+		"minutes": "",
+		"hours": "",
+		"days": ""
+	},
+	"share": {
+		"sharing-id-message": ""
+	},
+	"directory": {
+		"phone": {
+			"register": "",
+			"associated": "",
+			"expired": "",
+			"proof-service-unavailable": "",
+			"register-service": "",
+			"unregister-service": ""
+		},
+		"email": {
+			"register": "",
+			"associated": "",
+			"expired": "",
+			"proof-service-unavailable": "",
+			"register-service": "",
+			"unregister-service": ""
+		}
+	}
+}
