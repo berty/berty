@@ -2,7 +2,7 @@ import { useHeaderHeight } from '@react-navigation/elements'
 import { useFocusEffect } from '@react-navigation/native'
 import React, { useState } from 'react'
 import { TouchableOpacity, View, Platform, Keyboard } from 'react-native'
-import AndroidKeyboardAdjust from 'react-native-android-keyboard-adjust'
+import AndroidKeyboardAdjust from 'rn-android-keyboard-adjust'
 
 import beapi from '@berty/api'
 import { MultiMemberAvatar } from '@berty/components/avatars'

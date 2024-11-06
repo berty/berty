@@ -13707,11 +13707,6 @@ react-is@^16.13.0, react-is@^16.13.1, react-is@^16.7.0, react-is@^16.8.1:
   resolved "https://registry.yarnpkg.com/react-is/-/react-is-16.13.1.tgz#789729a4dc36de2999dc156dd6c1d9c18cea56a4"
   integrity sha512-24e6ynE2H+OKt4kqsOvNd8kBpV65zoxbA4BVsEOB3ARVWQki/DHzaUoC5KuON/BiccDaCCTZBuOcfZs70kR8bQ==
 
-react-native-android-keyboard-adjust@^1.2.0:
-  version "1.2.0"
-  resolved "https://registry.yarnpkg.com/react-native-android-keyboard-adjust/-/react-native-android-keyboard-adjust-1.2.0.tgz#7988b1258482c08548ce972401b2ae03a674fcb4"
-  integrity sha512-Q280bmf0zXnzLbHU9DcVoKZSKihd0s3hltz2kIUCJ5Q9EhLVR/pjgZ3Bwd1VgrHxQPnduHXdCp0432msklRMow==
-
 react-native-bootsplash@^3.2.6:
   version "3.2.6"
   resolved "https://registry.yarnpkg.com/react-native-bootsplash/-/react-native-bootsplash-3.2.6.tgz#610e476b1156ab29817aa394d5bb64871c1f1f42"
@@ -14383,6 +14378,11 @@ ripemd160@^2.0.0, ripemd160@^2.0.1:
   dependencies:
     hash-base "^3.0.0"
     inherits "^2.0.1"
+
+rn-android-keyboard-adjust@^1.0.0:
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/rn-android-keyboard-adjust/-/rn-android-keyboard-adjust-1.0.1.tgz#c0c9a8cc44b4db48e950beccfb055b9b3d16d454"
+  integrity sha512-Pb3c69zJ0hiSmuKlyURZReYhS/xOmSmoK8iyU/1XmMBi3GK3N7JXK4TYM2k+ka9x9qezpLCY871n3fLaffnknA==
 
 rsvp@^4.8.4:
   version "4.8.5"
