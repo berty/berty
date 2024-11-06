@@ -3943,12 +3943,10 @@
     eventemitter3 "^1.2.0"
     lodash "^4.17.15"
 
-"@react-native-community/blur@^3.6.0":
-  version "3.6.0"
-  resolved "https://registry.yarnpkg.com/@react-native-community/blur/-/blur-3.6.0.tgz#31c9e0f2770519c9b5c4f99418f192246f0d4db8"
-  integrity sha512-GtDBhpX2pQcjl4VopOC8FktrVufrEfYRwVeMQ2WWckqKIv2BdwvlvWvj88L1WmEdBr9UNcm3rtgz+d+YXkmirA==
-  dependencies:
-    prop-types "^15.5.10"
+"@react-native-community/blur@^4.0.0":
+  version "4.4.1"
+  resolved "https://registry.yarnpkg.com/@react-native-community/blur/-/blur-4.4.1.tgz#72cbc0be5a84022c33091683ec6888925ebcca6e"
+  integrity sha512-XBSsRiYxE/MOEln2ayunShfJtWztHwUxLFcSL20o+HNNRnuUDv+GXkF6FmM2zE8ZUfrnhQ/zeTqvnuDPGw6O8A==
 
 "@react-native-community/cameraroll@^4.1.2":
   version "4.1.2"
@@ -14379,10 +14377,10 @@ ripemd160@^2.0.0, ripemd160@^2.0.1:
     hash-base "^3.0.0"
     inherits "^2.0.1"
 
-rn-android-keyboard-adjust@^1.0.0:
-  version "1.0.1"
-  resolved "https://registry.yarnpkg.com/rn-android-keyboard-adjust/-/rn-android-keyboard-adjust-1.0.1.tgz#c0c9a8cc44b4db48e950beccfb055b9b3d16d454"
-  integrity sha512-Pb3c69zJ0hiSmuKlyURZReYhS/xOmSmoK8iyU/1XmMBi3GK3N7JXK4TYM2k+ka9x9qezpLCY871n3fLaffnknA==
+rn-android-keyboard-adjust@^2.1.2:
+  version "2.1.2"
+  resolved "https://registry.yarnpkg.com/rn-android-keyboard-adjust/-/rn-android-keyboard-adjust-2.1.2.tgz#f2b792628700dcb026215420192317ce43fd954f"
+  integrity sha512-pUYiMT7aucw5YnV4geGdalyl6o6rEwRYhDnw2oPQwDym1BZHtmKsxFLupky1Kj2ZNkNKadpEyoyHOElLo+f3sA==
 
 rsvp@^4.8.4:
   version "4.8.5"
