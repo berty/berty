@@ -12,7 +12,7 @@ declare module 'react-native-in-app-notification'
 declare module 'linkify-it'
 declare module 'react-native-flags'
 declare module 'react-native-emoji-board'
-declare module 'react-native-android-keyboard-adjust'
+declare module 'rn-android-keyboard-adjust'
 declare module 'emoji-datasource'
 declare module 'eventemitter3'
 

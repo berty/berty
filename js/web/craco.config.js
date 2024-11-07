@@ -6,7 +6,7 @@ const polyfillModules = [
 	'@react-native-community/audio-toolkit',
 	'@react-native-community/blur',
 	'@react-native-community/cameraroll',
-	'react-native-android-keyboard-adjust',
+	'rn-android-keyboard-adjust',
 	'react-native-fs',
 	'react-native-in-app-notification',
 	'react-native-permissions',
