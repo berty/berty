@@ -286,7 +286,6 @@ exports[`Settings.Home renders correctly 1`] = `
                   style={
                     Object {
                       "flexShrink": 1,
-                      "width": "90%",
                     }
                   }
                 >
@@ -436,7 +435,6 @@ exports[`Settings.Home renders correctly 1`] = `
                   style={
                     Object {
                       "flexShrink": 1,
-                      "width": "90%",
                     }
                   }
                 >
@@ -557,7 +555,6 @@ exports[`Settings.Home renders correctly 1`] = `
                   style={
                     Object {
                       "flexShrink": 1,
-                      "width": "90%",
                     }
                   }
                 >
@@ -661,7 +658,6 @@ exports[`Settings.Home renders correctly 1`] = `
                   style={
                     Object {
                       "flexShrink": 1,
-                      "width": "90%",
                     }
                   }
                 >
@@ -782,7 +778,6 @@ exports[`Settings.Home renders correctly 1`] = `
                   style={
                     Object {
                       "flexShrink": 1,
-                      "width": "90%",
                     }
                   }
                 >
