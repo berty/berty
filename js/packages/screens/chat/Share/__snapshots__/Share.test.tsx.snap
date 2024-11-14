@@ -501,7 +501,6 @@ exports[`Chat.Share renders correctly 1`] = `
                   style={
                     Object {
                       "flexShrink": 1,
-                      "width": "90%",
                     }
                   }
                 >
