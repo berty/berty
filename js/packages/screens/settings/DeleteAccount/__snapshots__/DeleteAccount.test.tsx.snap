@@ -231,7 +231,17 @@ exports[`Settings.DeleteAccount renders correctly 1`] = `
                         "color": "#383B62",
                         "fontFamily": "Open Sans",
                       },
-                      undefined,
+                      Array [
+                        Object {
+                          "fontFamily": "Light Open Sans",
+                        },
+                        Object {
+                          "textAlign": "center",
+                        },
+                        Object {
+                          "color": "#F64278",
+                        },
+                      ],
                     ]
                   }
                 >
