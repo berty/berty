@@ -1,9 +1,0 @@
-{
-  "platforms": ["ios", "tvos", "android", "web"],
-  "ios": {
-    "modules": ["BertyMessengerModule"]
-  },
-  "android": {
-    "modules": ["tech.berty.bertymessenger.BertyMessengerModule"]
-  }
-}

@@ -1,0 +1,17 @@
+{
+  "platforms": [
+    "apple",
+    "android",
+    "web"
+  ],
+  "apple": {
+    "modules": [
+      "BertyPushExpoModule"
+    ]
+  },
+  "android": {
+    "modules": [
+      "tech.berty.bertypushexpo.BertyPushExpoModule"
+    ]
+  }
+}
