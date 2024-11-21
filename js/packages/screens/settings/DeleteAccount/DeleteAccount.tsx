@@ -37,7 +37,7 @@ export const DeleteAccount: ScreenFC<'Settings.DeleteAccount'> = () => {
 				}}
 			>
 				<View style={[padding.horizontal.medium, padding.bottom.medium]}>
-					<UnifiedText>
+					<UnifiedText style={_styles.light}>
 						<UnifiedText style={_styles.light}>
 							{t('settings.delete-account.desc-please')}
 						</UnifiedText>
