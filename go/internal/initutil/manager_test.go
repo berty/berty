@@ -79,6 +79,7 @@ func verifyRunningLeakDetection(t *testing.T) {
 		goleak.IgnoreTopFunction("github.com/libp2p/go-libp2p/p2p/discovery/mdns.(*mdnsService).startResolver.func1"),        // the closing routine has big timeout, should be managed by ipfs
 		goleak.IgnoreTopFunction("github.com/libp2p/go-libp2p-kad-dht/providers.(*ProviderManager).GetProviders"),            // the closing routine has big timeout, should be managed by ipfs
 		goleak.IgnoreTopFunction("github.com/libp2p/go-libp2p-kad-dht/dual.(*DHT).FindProvidersAsync.func1"),
+		goleak.IgnoreTopFunction("github.com/libp2p/go-libp2p-kad-dht/dual.(*DHT).FindProvidersAsync.func2"),
 		goleak.IgnoreTopFunction("github.com/libp2p/zeroconf/v2.(*client).mainloop"),            // the closing routine has big timeout, should be managed by ipfs
 		goleak.IgnoreTopFunction("github.com/libp2p/zeroconf/v2.(*client).periodicQuery"),       // the closing routine has big timeout, should be managed by ipfs
 		goleak.IgnoreTopFunction("github.com/ipfs/kubo/core/bootstrap.bootstrapConnect.func1 "), // the closing routine has big timeout, should be managed by ipfs
