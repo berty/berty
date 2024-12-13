@@ -33,7 +33,7 @@ yarn 1.22.19
 # This is simply the most recent ruby version available to date.
 # There is no contraindication for updating it.
 #-----
-ruby 3.1.3
+ruby 3.2.2
 
 #-----
 # This is simply the most recent golangci-lint version available to date.
