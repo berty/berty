@@ -22,7 +22,7 @@ async function getMatrix() {
 		},
 		github: {
 			name: "github",
-			runner: ["macos-12"],
+			runner: ["macos-15"],
 			selfhosted: false,
 		},
 	};
@@ -42,6 +42,6 @@ async function getMatrix() {
 getMatrix().then((matrix) => {
 	console.debug("matrix: " + JSON.stringify(matrix, undefined, 2));
 	console.log(
-		"::set-output name=matrix::" + JSON.stringify({ include: matrix })
+		"::set-output name=matrix::" + JSON.stringify({ include: matrix }),
 	);
 });
