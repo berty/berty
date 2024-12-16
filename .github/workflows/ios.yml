@@ -51,7 +51,7 @@ jobs:
     name: Build for iOS
     runs-on: ${{ matrix.runner }}
     env:
-      E2E_TESTING_IOS_DEVICE: iPhone 14
+      E2E_TESTING_IOS_DEVICE: iPhone 16
       # TODO: fix hetzner
       # E2E_TESTING_IOS_VERSION: 15.5
       CACHE_DIRS: js/android/.gomobile-cache; js/ios/.gomobile-cache; js/ios/.xcodegen-cache
@@ -129,8 +129,7 @@ jobs:
           asdf install yarn
 
       - name: Get XCode version from version file
-        run:
-          echo "xcode_version=$(cat js/ios/.xcode-version)" >> $GITHUB_ENV
+        run: echo "xcode_version=$(cat js/ios/.xcode-version)" >> $GITHUB_ENV
 
       - name: Setup XCode version (Github runners)
         # Disabled on self-hosted because it requires authentication
@@ -151,21 +150,21 @@ jobs:
         uses: actions/cache@v2.1.6
         with:
           path: ~/go/pkg/mod
-          key:          ${{ runner.os }}-go-${{ env.go_version }}-${{ env.json_cache-versions_go }}-${{ hashFiles('go/**/go.sum') }}
+          key: ${{ runner.os }}-go-${{ env.go_version }}-${{ env.json_cache-versions_go }}-${{ hashFiles('go/**/go.sum') }}
           restore-keys: ${{ runner.os }}-go-${{ env.go_version }}-${{ env.json_cache-versions_go }}-
 
       - name: Cache ruby modules
         uses: actions/cache@v2.1.6
         with:
           path: js/ios/vendor/bundle
-          key:          ${{ runner.os }}-ruby-${{ env.ruby_version }}-${{ env.json_cache-versions_ruby }}-${{ hashFiles('js/ios/Gemfile*') }}
+          key: ${{ runner.os }}-ruby-${{ env.ruby_version }}-${{ env.json_cache-versions_ruby }}-${{ hashFiles('js/ios/Gemfile*') }}
           restore-keys: ${{ runner.os }}-ruby-${{ env.ruby_version }}-${{ env.json_cache-versions_ruby }}-
 
       - name: Cache node modules
         uses: actions/cache@v2.1.6
         with:
           path: js/node_modules
-          key:          ${{ runner.OS }}-node-${{ env.node_version }}-${{ env.json_cache-versions_node }}-${{ hashFiles('js/yarn.lock') }}
+          key: ${{ runner.OS }}-node-${{ env.node_version }}-${{ env.json_cache-versions_node }}-${{ hashFiles('js/yarn.lock') }}
           restore-keys: ${{ runner.OS }}-node-${{ env.node_version }}-${{ env.json_cache-versions_node }}-
 
       - name: Cache Bertybridge framework
@@ -194,7 +193,7 @@ jobs:
           path: |
             js/ios/Berty.xcodeproj
             js/ios/.xcodegen-cache
-          key:          ios-xcodeproject-${{ env.xcodegen_version }}-${{ env.json_cache-versions_xcodeproject }}-${{ hashFiles('js/ios/*.yaml') }}
+          key: ios-xcodeproject-${{ env.xcodegen_version }}-${{ env.json_cache-versions_xcodeproject }}-${{ hashFiles('js/ios/*.yaml') }}
           restore-keys: ios-xcodeproject-${{ env.xcodegen_version }}-${{ env.json_cache-versions_xcodeproject }}-
 
       - name: Cache Pods and XCode workspace
@@ -203,7 +202,7 @@ jobs:
           path: |
             js/ios/Berty.xcworkspace
             js/ios/Pods
-          key:          ios-xcodeworkspace-${{ env.ruby_version }}-${{ env.json_cache-versions_xcodeworkspace }}-${{ hashFiles('js/ios/Podfile.lock', 'js/ios/Gemfile*', 'js/yarn.lock') }}
+          key: ios-xcodeworkspace-${{ env.ruby_version }}-${{ env.json_cache-versions_xcodeworkspace }}-${{ hashFiles('js/ios/Podfile.lock', 'js/ios/Gemfile*', 'js/yarn.lock') }}
           restore-keys: ios-xcodeworkspace-${{ env.ruby_version }}-${{ env.json_cache-versions_xcodeworkspace }}-
 
       - name: Fetch node modules
@@ -231,6 +230,6 @@ jobs:
 
       # TODO: fix hetzner
       # - name: Run e2e-tests
-        # working-directory: js
-        # run: |
-          # make e2e-tests.ci-flow
+      # working-directory: js
+      # run: |
+      # make e2e-tests.ci-flow
