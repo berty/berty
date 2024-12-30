@@ -18,7 +18,7 @@ node_modules: package.json
 #### iOS
 
 .PHONY: ios.gomobile
-ios.gomobile: ios/Frameworks/Bertybridge.xcframework
+ios.gomobile: ios/Frameworks/Bertybridge.xcframework ios/Frameworks/Bertypush.xcframework
 
 ios/Frameworks/Bertybridge.xcframework: $(bridge_src)
 	cd .. && $(GO) mod download
@@ -31,13 +31,35 @@ ios/Frameworks/Bertybridge.xcframework: $(bridge_src)
 		PATH="$(PATH):`go env GOPATH`/bin" \
 		CGO_CPPFLAGS=-DHAVE_GETHOSTUUID=0 \
 		$(GO) run golang.org/x/mobile/cmd/gomobile bind \
-			-o ./$@ \
 			-v $(ext_ldflags) \
+			-o $(PWD)/$@ \
 			$(GO_TAGS) -tags 'nowatchdog' \
 			-cache $(ios_gomobile_cache)/bertybridge \
 			-target $(GOMOBILE_IOS_TARGET) \
 			-iosversion $(minimum_ios_ver) \
 			./go/framework/bertybridge
+
+	touch $@
+	cd .. && $(GO) mod tidy
+
+ios/Frameworks/Bertypush.xcframework: $(bridge_src)
+	cd .. && $(GO) mod download
+	cd .. && $(GO) install golang.org/x/mobile/cmd/gobind
+	cd .. && $(GO) run golang.org/x/mobile/cmd/gomobile init
+	mkdir -p $(ios_gomobile_cache) ios/Frameworks
+
+# use `nowatchdog` tags, see https://github.com/libp2p/go-libp2p-connmgr/issues/98
+	cd .. && \
+		PATH="$(PATH):`go env GOPATH`/bin" \
+		CGO_CPPFLAGS=-DHAVE_GETHOSTUUID=0 \
+		$(GO) run golang.org/x/mobile/cmd/gomobile bind \
+			-o $(PWD)/$@ \
+			-v $(ext_ldflags) \
+			$(GO_TAGS) -tags 'nowatchdog,noproximitytransport' \
+			-cache $(ios_gomobile_cache)/bertypush \
+			-target $(GOMOBILE_IOS_TARGET) \
+			-iosversion $(minimum_ios_ver) \
+			./go/framework/bertypush
 
 	touch $@
 	cd .. && $(GO) mod tidy
@@ -52,7 +74,7 @@ android/libs/gobridge.aar: $(bridge_src)
 	cd .. && $(GO) run golang.org/x/mobile/cmd/gomobile init
 	mkdir -p $(android_gomobile_cache) android/libs
 	cd .. && GO111MODULE=on $(GO) run golang.org/x/mobile/cmd/gomobile bind \
-		-o $./$@ \
+		-o $(PWD)/$@ \
 		-v $(ext_ldflags) \
 		$(GO_TAGS) \
 		-cache $(android_gomobile_cache) \

@@ -1774,7 +1774,7 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native/ReactCommon/yoga"
 
 SPEC CHECKSUMS:
-  BertyPushExpo: 5ca370e9ae8d2ae608170840479bfe00d364f672
+  BertyPushExpo: 25cdf32aac5e17652ffa4bfee947ad07a7109254
   boost: 1dca942403ed9342f98334bf4c3621f011aa7946
   DoubleConversion: f16ae600a246532c4020132d54af21d0ddb2a385
   EXConstants: dd2fe64c6cdb1383b694c309a63028a8e9f2be6d

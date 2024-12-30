@@ -10,8 +10,6 @@ METRO_RN_PORT ?= 8081
 IOS_RN_FLAGS ?= --udid
 IOS_DEVICE ?=
 ANDROID_DEVICE ?=
-GO ?= go # this allows to override the go version used
-GO_TAGS ?= -tags "fts5 sqlite sqlite_unlock_notify"
 GOMOBILE_IOS_TARGET ?= ios
 GOMOBILE_ANDROID_TARGET ?= android
 IOS_BUNDLE_VERSION ?= $(shell echo -n $(shell git rev-list HEAD | wc -l))
@@ -230,6 +228,10 @@ js.unused_exports: node_modules
 .PHONY: ios.app_deps
 ios.app_deps: node_modules ios.gomobile ios.project
 
+.PHONY: ios.gomobile
+ios.gomobile:
+	make -C ../expo ios.gomobile
+
 .PHONY: ios.debug
 ios.debug: ios.app_deps
 	$(call check-program, npx)
@@ -258,9 +260,6 @@ ios.log:
 .PHONY: ios.project
 ios.project: ios/Berty.xcworkspace
 
-.PHONY: ios.gomobile
-ios.gomobile: ios/Frameworks/Bertybridge.xcframework ios/Frameworks/Bertypush.xcframework
-
 #### Android
 
 .PHONY: android.app_deps
@@ -286,7 +285,8 @@ android.release: android.app_deps
 		$(if $(ANDROID_DEVICE),--deviceId='$(ANDROID_DEVICE)',)
 
 .PHONY: android.gomobile
-android.gomobile: android/libs/gobridge.aar
+android.gomobile:
+	make -C ../expo android.gomobile
 
 .PHONY: android.log
 android.log:
@@ -442,52 +442,6 @@ _write_gen_sum:
 # Internal/File-based rules #
 #############################
 
-#### iOS
-
-ios/Frameworks/Bertybridge.xcframework: $(bridge_src)
-	cd .. && $(GO) mod download
-	cd .. && $(GO) install golang.org/x/mobile/cmd/gobind
-	cd .. && $(GO) run golang.org/x/mobile/cmd/gomobile init
-	mkdir -p $(ios_gomobile_cache) ios/Frameworks
-
-# use `nowatchdog` tags, see https://github.com/libp2p/go-libp2p-connmgr/issues/98
-	cd .. && \
-		PATH="$(PATH):`go env GOPATH`/bin" \
-		CGO_CPPFLAGS=-DHAVE_GETHOSTUUID=0 \
-		$(GO) run golang.org/x/mobile/cmd/gomobile bind \
-			-o js/$@ \
-			-v $(ext_ldflags) \
-			$(GO_TAGS) -tags 'nowatchdog' \
-			-cache $(ios_gomobile_cache)/bertybridge \
-			-target $(GOMOBILE_IOS_TARGET) \
-			-iosversion $(minimum_ios_ver) \
-			./go/framework/bertybridge
-
-	touch $@
-	cd .. && $(GO) mod tidy
-
-ios/Frameworks/Bertypush.xcframework: $(bridge_src)
-	cd .. && $(GO) mod download
-	cd .. && $(GO) install golang.org/x/mobile/cmd/gobind
-	cd .. && $(GO) run golang.org/x/mobile/cmd/gomobile init
-	mkdir -p $(ios_gomobile_cache) ios/Frameworks
-
-# use `nowatchdog` tags, see https://github.com/libp2p/go-libp2p-connmgr/issues/98
-	cd .. && \
-		PATH="$(PATH):`go env GOPATH`/bin" \
-		CGO_CPPFLAGS=-DHAVE_GETHOSTUUID=0 \
-		$(GO) run golang.org/x/mobile/cmd/gomobile bind \
-			-o js/$@ \
-			-v $(ext_ldflags) \
-			$(GO_TAGS) -tags 'nowatchdog,noproximitytransport' \
-			-cache $(ios_gomobile_cache)/bertypush \
-			-target $(GOMOBILE_IOS_TARGET) \
-			-iosversion $(minimum_ios_ver) \
-			./go/framework/bertypush
-
-	touch $@
-	cd .. && $(GO) mod tidy
-
 ios/Berty.xcworkspace: ios/Berty.xcodeproj ios/Podfile ios/vendor/bundle node_modules
 	$(call check-program, bundle)
 	cd ios && bundle exec pod install --repo-update
@@ -511,23 +465,6 @@ ios/vendor/bundle: ios/Gemfile
 	$(call check-program, bundle)
 	cd ios && bundle install
 	touch $@
-
-#### Android
-
-android/libs/gobridge.aar: $(bridge_src)
-	cd .. && $(GO) mod download
-	cd .. && $(GO) run golang.org/x/mobile/cmd/gomobile init
-	mkdir -p $(android_gomobile_cache) android/libs
-	cd .. && GO111MODULE=on $(GO) run golang.org/x/mobile/cmd/gomobile bind \
-		-o js/$@ \
-		-v $(ext_ldflags) \
-		$(GO_TAGS) \
-		-cache $(android_gomobile_cache) \
-		-target $(GOMOBILE_ANDROID_TARGET) \
-		-androidapi $(minimum_android_ver) \
-		./go/framework/bertybridge
-	touch $@
-	cd .. && $(GO) mod tidy
 
 #### React
 

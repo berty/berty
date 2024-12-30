@@ -19,6 +19,7 @@ Pod::Spec.new do |s|
   s.static_framework = true
 
   s.dependency 'ExpoModulesCore'
+  s.dependency "OpenSSL-Universal"
   s.source_files = "**/*.{h,m,mm,swift,hpp,cpp}"
   s.libraries = 'resolv'
   s.frameworks = 'CoreBluetooth', 'MultipeerConnectivity'

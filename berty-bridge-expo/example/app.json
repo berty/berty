@@ -26,6 +26,22 @@
     "web": {
       "favicon": "./assets/favicon.png"
     },
-    "plugins": ["../app.plugin.js"]
+    "plugins": ["../app.plugin.js"],
+    "extra": {
+      "eas": {
+        "build": {
+          "experimental": {
+            "ios": {
+              "appExtensions": [
+                {
+                  "targetName": "NotificationService",
+                  "bundleIdentifier": "tech.berty.ios.NotificationService"
+                }
+              ]
+            }
+          }
+        }
+      }
+    }
   }
 }
