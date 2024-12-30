@@ -1,5 +1,4 @@
 import * as $protobuf from "protobufjs";
-import Long = require("long");
 export namespace berty {
 
     namespace account {
@@ -120,7 +119,6 @@ export namespace berty {
                 public static fromObject(object: { [k: string]: any }): berty.account.v1.AppStoragePut;
                 public static toObject(message: berty.account.v1.AppStoragePut, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
-                public static getTypeUrl(typeUrlPrefix?: string): string;
             }
 
             namespace AppStoragePut {
@@ -145,7 +143,6 @@ export namespace berty {
                     public static fromObject(object: { [k: string]: any }): berty.account.v1.AppStoragePut.Request;
                     public static toObject(message: berty.account.v1.AppStoragePut.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
-                    public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
 
                 interface IReply {
@@ -162,7 +159,6 @@ export namespace berty {
                     public static fromObject(object: { [k: string]: any }): berty.account.v1.AppStoragePut.Reply;
                     public static toObject(message: berty.account.v1.AppStoragePut.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
-                    public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
             }
 
@@ -180,7 +176,6 @@ export namespace berty {
                 public static fromObject(object: { [k: string]: any }): berty.account.v1.AppStorageGet;
                 public static toObject(message: berty.account.v1.AppStorageGet, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
-                public static getTypeUrl(typeUrlPrefix?: string): string;
             }
 
             namespace AppStorageGet {
@@ -203,7 +198,6 @@ export namespace berty {
                     public static fromObject(object: { [k: string]: any }): berty.account.v1.AppStorageGet.Request;
                     public static toObject(message: berty.account.v1.AppStorageGet.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
-                    public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
 
                 interface IReply {
@@ -222,7 +216,6 @@ export namespace berty {
                     public static fromObject(object: { [k: string]: any }): berty.account.v1.AppStorageGet.Reply;
                     public static toObject(message: berty.account.v1.AppStorageGet.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
-                    public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
             }
 
@@ -240,7 +233,6 @@ export namespace berty {
                 public static fromObject(object: { [k: string]: any }): berty.account.v1.AppStorageRemove;
                 public static toObject(message: berty.account.v1.AppStorageRemove, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
-                public static getTypeUrl(typeUrlPrefix?: string): string;
             }
 
             namespace AppStorageRemove {
@@ -263,7 +255,6 @@ export namespace berty {
                     public static fromObject(object: { [k: string]: any }): berty.account.v1.AppStorageRemove.Request;
                     public static toObject(message: berty.account.v1.AppStorageRemove.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
-                    public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
 
                 interface IReply {
@@ -280,7 +271,6 @@ export namespace berty {
                     public static fromObject(object: { [k: string]: any }): berty.account.v1.AppStorageRemove.Reply;
                     public static toObject(message: berty.account.v1.AppStorageRemove.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
-                    public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
             }
 
@@ -298,7 +288,6 @@ export namespace berty {
                 public static fromObject(object: { [k: string]: any }): berty.account.v1.GetOpenedAccount;
                 public static toObject(message: berty.account.v1.GetOpenedAccount, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
-                public static getTypeUrl(typeUrlPrefix?: string): string;
             }
 
             namespace GetOpenedAccount {
@@ -317,7 +306,6 @@ export namespace berty {
                     public static fromObject(object: { [k: string]: any }): berty.account.v1.GetOpenedAccount.Request;
                     public static toObject(message: berty.account.v1.GetOpenedAccount.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
-                    public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
 
                 interface IReply {
@@ -338,7 +326,6 @@ export namespace berty {
                     public static fromObject(object: { [k: string]: any }): berty.account.v1.GetOpenedAccount.Reply;
                     public static toObject(message: berty.account.v1.GetOpenedAccount.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
-                    public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
             }
 
@@ -356,7 +343,6 @@ export namespace berty {
                 public static fromObject(object: { [k: string]: any }): berty.account.v1.OpenAccount;
                 public static toObject(message: berty.account.v1.OpenAccount, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
-                public static getTypeUrl(typeUrlPrefix?: string): string;
             }
 
             namespace OpenAccount {
@@ -385,7 +371,6 @@ export namespace berty {
                     public static fromObject(object: { [k: string]: any }): berty.account.v1.OpenAccount.Request;
                     public static toObject(message: berty.account.v1.OpenAccount.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
-                    public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
 
                 interface IReply {
@@ -404,7 +389,6 @@ export namespace berty {
                     public static fromObject(object: { [k: string]: any }): berty.account.v1.OpenAccount.Reply;
                     public static toObject(message: berty.account.v1.OpenAccount.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
-                    public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
             }
 
@@ -422,7 +406,6 @@ export namespace berty {
                 public static fromObject(object: { [k: string]: any }): berty.account.v1.OpenAccountWithProgress;
                 public static toObject(message: berty.account.v1.OpenAccountWithProgress, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
-                public static getTypeUrl(typeUrlPrefix?: string): string;
             }
 
             namespace OpenAccountWithProgress {
@@ -449,7 +432,6 @@ export namespace berty {
                     public static fromObject(object: { [k: string]: any }): berty.account.v1.OpenAccountWithProgress.Request;
                     public static toObject(message: berty.account.v1.OpenAccountWithProgress.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
-                    public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
 
                 interface IReply {
@@ -468,7 +450,6 @@ export namespace berty {
                     public static fromObject(object: { [k: string]: any }): berty.account.v1.OpenAccountWithProgress.Reply;
                     public static toObject(message: berty.account.v1.OpenAccountWithProgress.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
-                    public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
             }
 
@@ -486,7 +467,6 @@ export namespace berty {
                 public static fromObject(object: { [k: string]: any }): berty.account.v1.CloseAccount;
                 public static toObject(message: berty.account.v1.CloseAccount, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
-                public static getTypeUrl(typeUrlPrefix?: string): string;
             }
 
             namespace CloseAccount {
@@ -505,7 +485,6 @@ export namespace berty {
                     public static fromObject(object: { [k: string]: any }): berty.account.v1.CloseAccount.Request;
                     public static toObject(message: berty.account.v1.CloseAccount.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
-                    public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
 
                 interface IReply {
@@ -522,7 +501,6 @@ export namespace berty {
                     public static fromObject(object: { [k: string]: any }): berty.account.v1.CloseAccount.Reply;
                     public static toObject(message: berty.account.v1.CloseAccount.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
-                    public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
             }
 
@@ -540,7 +518,6 @@ export namespace berty {
                 public static fromObject(object: { [k: string]: any }): berty.account.v1.CloseAccountWithProgress;
                 public static toObject(message: berty.account.v1.CloseAccountWithProgress, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
-                public static getTypeUrl(typeUrlPrefix?: string): string;
             }
 
             namespace CloseAccountWithProgress {
@@ -559,7 +536,6 @@ export namespace berty {
                     public static fromObject(object: { [k: string]: any }): berty.account.v1.CloseAccountWithProgress.Request;
                     public static toObject(message: berty.account.v1.CloseAccountWithProgress.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
-                    public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
 
                 interface IReply {
@@ -578,7 +554,6 @@ export namespace berty {
                     public static fromObject(object: { [k: string]: any }): berty.account.v1.CloseAccountWithProgress.Reply;
                     public static toObject(message: berty.account.v1.CloseAccountWithProgress.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
-                    public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
             }
 
@@ -610,7 +585,6 @@ export namespace berty {
                 public static fromObject(object: { [k: string]: any }): berty.account.v1.AccountMetadata;
                 public static toObject(message: berty.account.v1.AccountMetadata, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
-                public static getTypeUrl(typeUrlPrefix?: string): string;
             }
 
             interface IListAccounts {
@@ -627,7 +601,6 @@ export namespace berty {
                 public static fromObject(object: { [k: string]: any }): berty.account.v1.ListAccounts;
                 public static toObject(message: berty.account.v1.ListAccounts, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
-                public static getTypeUrl(typeUrlPrefix?: string): string;
             }
 
             namespace ListAccounts {
@@ -646,7 +619,6 @@ export namespace berty {
                     public static fromObject(object: { [k: string]: any }): berty.account.v1.ListAccounts.Request;
                     public static toObject(message: berty.account.v1.ListAccounts.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
-                    public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
 
                 interface IReply {
@@ -665,7 +637,6 @@ export namespace berty {
                     public static fromObject(object: { [k: string]: any }): berty.account.v1.ListAccounts.Reply;
                     public static toObject(message: berty.account.v1.ListAccounts.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
-                    public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
             }
 
@@ -683,7 +654,6 @@ export namespace berty {
                 public static fromObject(object: { [k: string]: any }): berty.account.v1.DeleteAccount;
                 public static toObject(message: berty.account.v1.DeleteAccount, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
-                public static getTypeUrl(typeUrlPrefix?: string): string;
             }
 
             namespace DeleteAccount {
@@ -704,7 +674,6 @@ export namespace berty {
                     public static fromObject(object: { [k: string]: any }): berty.account.v1.DeleteAccount.Request;
                     public static toObject(message: berty.account.v1.DeleteAccount.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
-                    public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
 
                 interface IReply {
@@ -721,7 +690,6 @@ export namespace berty {
                     public static fromObject(object: { [k: string]: any }): berty.account.v1.DeleteAccount.Reply;
                     public static toObject(message: berty.account.v1.DeleteAccount.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
-                    public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
             }
 
@@ -739,7 +707,6 @@ export namespace berty {
                 public static fromObject(object: { [k: string]: any }): berty.account.v1.ImportAccount;
                 public static toObject(message: berty.account.v1.ImportAccount, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
-                public static getTypeUrl(typeUrlPrefix?: string): string;
             }
 
             namespace ImportAccount {
@@ -772,7 +739,6 @@ export namespace berty {
                     public static fromObject(object: { [k: string]: any }): berty.account.v1.ImportAccount.Request;
                     public static toObject(message: berty.account.v1.ImportAccount.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
-                    public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
 
                 interface IReply {
@@ -791,7 +757,6 @@ export namespace berty {
                     public static fromObject(object: { [k: string]: any }): berty.account.v1.ImportAccount.Reply;
                     public static toObject(message: berty.account.v1.ImportAccount.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
-                    public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
             }
 
@@ -809,7 +774,6 @@ export namespace berty {
                 public static fromObject(object: { [k: string]: any }): berty.account.v1.ImportAccountWithProgress;
                 public static toObject(message: berty.account.v1.ImportAccountWithProgress, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
-                public static getTypeUrl(typeUrlPrefix?: string): string;
             }
 
             namespace ImportAccountWithProgress {
@@ -842,7 +806,6 @@ export namespace berty {
                     public static fromObject(object: { [k: string]: any }): berty.account.v1.ImportAccountWithProgress.Request;
                     public static toObject(message: berty.account.v1.ImportAccountWithProgress.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
-                    public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
 
                 interface IReply {
@@ -863,7 +826,6 @@ export namespace berty {
                     public static fromObject(object: { [k: string]: any }): berty.account.v1.ImportAccountWithProgress.Reply;
                     public static toObject(message: berty.account.v1.ImportAccountWithProgress.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
-                    public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
             }
 
@@ -881,7 +843,6 @@ export namespace berty {
                 public static fromObject(object: { [k: string]: any }): berty.account.v1.CreateAccount;
                 public static toObject(message: berty.account.v1.CreateAccount, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
-                public static getTypeUrl(typeUrlPrefix?: string): string;
             }
 
             namespace CreateAccount {
@@ -906,7 +867,6 @@ export namespace berty {
                     public static fromObject(object: { [k: string]: any }): berty.account.v1.CreateAccount.Request;
                     public static toObject(message: berty.account.v1.CreateAccount.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
-                    public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
 
                 interface IReply {
@@ -925,7 +885,6 @@ export namespace berty {
                     public static fromObject(object: { [k: string]: any }): berty.account.v1.CreateAccount.Reply;
                     public static toObject(message: berty.account.v1.CreateAccount.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
-                    public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
             }
 
@@ -943,7 +902,6 @@ export namespace berty {
                 public static fromObject(object: { [k: string]: any }): berty.account.v1.UpdateAccount;
                 public static toObject(message: berty.account.v1.UpdateAccount, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
-                public static getTypeUrl(typeUrlPrefix?: string): string;
             }
 
             namespace UpdateAccount {
@@ -970,7 +928,6 @@ export namespace berty {
                     public static fromObject(object: { [k: string]: any }): berty.account.v1.UpdateAccount.Request;
                     public static toObject(message: berty.account.v1.UpdateAccount.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
-                    public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
 
                 interface IReply {
@@ -989,7 +946,6 @@ export namespace berty {
                     public static fromObject(object: { [k: string]: any }): berty.account.v1.UpdateAccount.Reply;
                     public static toObject(message: berty.account.v1.UpdateAccount.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
-                    public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
             }
 
@@ -1007,7 +963,6 @@ export namespace berty {
                 public static fromObject(object: { [k: string]: any }): berty.account.v1.GetGRPCListenerAddrs;
                 public static toObject(message: berty.account.v1.GetGRPCListenerAddrs, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
-                public static getTypeUrl(typeUrlPrefix?: string): string;
             }
 
             namespace GetGRPCListenerAddrs {
@@ -1026,7 +981,6 @@ export namespace berty {
                     public static fromObject(object: { [k: string]: any }): berty.account.v1.GetGRPCListenerAddrs.Request;
                     public static toObject(message: berty.account.v1.GetGRPCListenerAddrs.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
-                    public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
 
                 interface IReply {
@@ -1045,7 +999,6 @@ export namespace berty {
                     public static fromObject(object: { [k: string]: any }): berty.account.v1.GetGRPCListenerAddrs.Reply;
                     public static toObject(message: berty.account.v1.GetGRPCListenerAddrs.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
-                    public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
 
                 namespace Reply {
@@ -1068,7 +1021,6 @@ export namespace berty {
                         public static fromObject(object: { [k: string]: any }): berty.account.v1.GetGRPCListenerAddrs.Reply.Entry;
                         public static toObject(message: berty.account.v1.GetGRPCListenerAddrs.Reply.Entry, options?: $protobuf.IConversionOptions): { [k: string]: any };
                         public toJSON(): { [k: string]: any };
-                        public static getTypeUrl(typeUrlPrefix?: string): string;
                     }
                 }
             }
@@ -1087,7 +1039,6 @@ export namespace berty {
                 public static fromObject(object: { [k: string]: any }): berty.account.v1.LogfileList;
                 public static toObject(message: berty.account.v1.LogfileList, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
-                public static getTypeUrl(typeUrlPrefix?: string): string;
             }
 
             namespace LogfileList {
@@ -1106,7 +1057,6 @@ export namespace berty {
                     public static fromObject(object: { [k: string]: any }): berty.account.v1.LogfileList.Request;
                     public static toObject(message: berty.account.v1.LogfileList.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
-                    public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
 
                 interface IReply {
@@ -1125,7 +1075,6 @@ export namespace berty {
                     public static fromObject(object: { [k: string]: any }): berty.account.v1.LogfileList.Reply;
                     public static toObject(message: berty.account.v1.LogfileList.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
-                    public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
 
                 namespace Reply {
@@ -1160,7 +1109,6 @@ export namespace berty {
                         public static fromObject(object: { [k: string]: any }): berty.account.v1.LogfileList.Reply.Logfile;
                         public static toObject(message: berty.account.v1.LogfileList.Reply.Logfile, options?: $protobuf.IConversionOptions): { [k: string]: any };
                         public toJSON(): { [k: string]: any };
-                        public static getTypeUrl(typeUrlPrefix?: string): string;
                     }
                 }
             }
@@ -1179,7 +1127,6 @@ export namespace berty {
                 public static fromObject(object: { [k: string]: any }): berty.account.v1.StreamLogfile;
                 public static toObject(message: berty.account.v1.StreamLogfile, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
-                public static getTypeUrl(typeUrlPrefix?: string): string;
             }
 
             namespace StreamLogfile {
@@ -1200,7 +1147,6 @@ export namespace berty {
                     public static fromObject(object: { [k: string]: any }): berty.account.v1.StreamLogfile.Request;
                     public static toObject(message: berty.account.v1.StreamLogfile.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
-                    public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
 
                 interface IReply {
@@ -1221,7 +1167,6 @@ export namespace berty {
                     public static fromObject(object: { [k: string]: any }): berty.account.v1.StreamLogfile.Reply;
                     public static toObject(message: berty.account.v1.StreamLogfile.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
-                    public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
             }
 
@@ -1239,7 +1184,6 @@ export namespace berty {
                 public static fromObject(object: { [k: string]: any }): berty.account.v1.GetUsername;
                 public static toObject(message: berty.account.v1.GetUsername, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
-                public static getTypeUrl(typeUrlPrefix?: string): string;
             }
 
             namespace GetUsername {
@@ -1258,7 +1202,6 @@ export namespace berty {
                     public static fromObject(object: { [k: string]: any }): berty.account.v1.GetUsername.Request;
                     public static toObject(message: berty.account.v1.GetUsername.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
-                    public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
 
                 interface IReply {
@@ -1277,7 +1220,6 @@ export namespace berty {
                     public static fromObject(object: { [k: string]: any }): berty.account.v1.GetUsername.Reply;
                     public static toObject(message: berty.account.v1.GetUsername.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
-                    public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
             }
 
@@ -1317,7 +1259,6 @@ export namespace berty {
                 public static fromObject(object: { [k: string]: any }): berty.account.v1.NetworkConfig;
                 public static toObject(message: berty.account.v1.NetworkConfig, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
-                public static getTypeUrl(typeUrlPrefix?: string): string;
             }
 
             namespace NetworkConfig {
@@ -1365,7 +1306,6 @@ export namespace berty {
                 public static fromObject(object: { [k: string]: any }): berty.account.v1.NetworkConfigSet;
                 public static toObject(message: berty.account.v1.NetworkConfigSet, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
-                public static getTypeUrl(typeUrlPrefix?: string): string;
             }
 
             namespace NetworkConfigSet {
@@ -1388,7 +1328,6 @@ export namespace berty {
                     public static fromObject(object: { [k: string]: any }): berty.account.v1.NetworkConfigSet.Request;
                     public static toObject(message: berty.account.v1.NetworkConfigSet.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
-                    public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
 
                 interface IReply {
@@ -1405,7 +1344,6 @@ export namespace berty {
                     public static fromObject(object: { [k: string]: any }): berty.account.v1.NetworkConfigSet.Reply;
                     public static toObject(message: berty.account.v1.NetworkConfigSet.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
-                    public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
             }
 
@@ -1423,7 +1361,6 @@ export namespace berty {
                 public static fromObject(object: { [k: string]: any }): berty.account.v1.NetworkConfigGet;
                 public static toObject(message: berty.account.v1.NetworkConfigGet, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
-                public static getTypeUrl(typeUrlPrefix?: string): string;
             }
 
             namespace NetworkConfigGet {
@@ -1444,7 +1381,6 @@ export namespace berty {
                     public static fromObject(object: { [k: string]: any }): berty.account.v1.NetworkConfigGet.Request;
                     public static toObject(message: berty.account.v1.NetworkConfigGet.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
-                    public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
 
                 interface IReply {
@@ -1473,7 +1409,6 @@ export namespace berty {
                     public static fromObject(object: { [k: string]: any }): berty.account.v1.NetworkConfigGet.Reply;
                     public static toObject(message: berty.account.v1.NetworkConfigGet.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
-                    public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
             }
 
@@ -1491,7 +1426,6 @@ export namespace berty {
                 public static fromObject(object: { [k: string]: any }): berty.account.v1.NetworkConfigGetPreset;
                 public static toObject(message: berty.account.v1.NetworkConfigGetPreset, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
-                public static getTypeUrl(typeUrlPrefix?: string): string;
             }
 
             namespace NetworkConfigGetPreset {
@@ -1514,7 +1448,6 @@ export namespace berty {
                     public static fromObject(object: { [k: string]: any }): berty.account.v1.NetworkConfigGetPreset.Request;
                     public static toObject(message: berty.account.v1.NetworkConfigGetPreset.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
-                    public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
 
                 interface IReply {
@@ -1533,7 +1466,6 @@ export namespace berty {
                     public static fromObject(object: { [k: string]: any }): berty.account.v1.NetworkConfigGetPreset.Reply;
                     public static toObject(message: berty.account.v1.NetworkConfigGetPreset.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
-                    public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
             }
 
@@ -1551,7 +1483,6 @@ export namespace berty {
                 public static fromObject(object: { [k: string]: any }): berty.account.v1.PushReceive;
                 public static toObject(message: berty.account.v1.PushReceive, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
-                public static getTypeUrl(typeUrlPrefix?: string): string;
             }
 
             namespace PushReceive {
@@ -1574,7 +1505,6 @@ export namespace berty {
                     public static fromObject(object: { [k: string]: any }): berty.account.v1.PushReceive.Request;
                     public static toObject(message: berty.account.v1.PushReceive.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
-                    public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
 
                 interface IReply {
@@ -1595,7 +1525,6 @@ export namespace berty {
                     public static fromObject(object: { [k: string]: any }): berty.account.v1.PushReceive.Reply;
                     public static toObject(message: berty.account.v1.PushReceive.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
-                    public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
             }
 
@@ -1613,7 +1542,6 @@ export namespace berty {
                 public static fromObject(object: { [k: string]: any }): berty.account.v1.PushPlatformTokenRegister;
                 public static toObject(message: berty.account.v1.PushPlatformTokenRegister, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
-                public static getTypeUrl(typeUrlPrefix?: string): string;
             }
 
             namespace PushPlatformTokenRegister {
@@ -1634,7 +1562,6 @@ export namespace berty {
                     public static fromObject(object: { [k: string]: any }): berty.account.v1.PushPlatformTokenRegister.Request;
                     public static toObject(message: berty.account.v1.PushPlatformTokenRegister.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
-                    public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
 
                 interface IReply {
@@ -1651,7 +1578,6 @@ export namespace berty {
                     public static fromObject(object: { [k: string]: any }): berty.account.v1.PushPlatformTokenRegister.Reply;
                     public static toObject(message: berty.account.v1.PushPlatformTokenRegister.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
-                    public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
             }
         }
@@ -1699,7 +1625,6 @@ export namespace berty {
                 public static fromObject(object: { [k: string]: any }): berty.push.v1.PushServiceReceiver;
                 public static toObject(message: berty.push.v1.PushServiceReceiver, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
-                public static getTypeUrl(typeUrlPrefix?: string): string;
             }
 
             interface IPushServiceServerInfo {
@@ -1716,7 +1641,6 @@ export namespace berty {
                 public static fromObject(object: { [k: string]: any }): berty.push.v1.PushServiceServerInfo;
                 public static toObject(message: berty.push.v1.PushServiceServerInfo, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
-                public static getTypeUrl(typeUrlPrefix?: string): string;
             }
 
             namespace PushServiceServerInfo {
@@ -1735,7 +1659,6 @@ export namespace berty {
                     public static fromObject(object: { [k: string]: any }): berty.push.v1.PushServiceServerInfo.Request;
                     public static toObject(message: berty.push.v1.PushServiceServerInfo.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
-                    public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
 
                 interface IReply {
@@ -1756,7 +1679,6 @@ export namespace berty {
                     public static fromObject(object: { [k: string]: any }): berty.push.v1.PushServiceServerInfo.Reply;
                     public static toObject(message: berty.push.v1.PushServiceServerInfo.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
-                    public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
             }
 
@@ -1778,7 +1700,6 @@ export namespace berty {
                 public static fromObject(object: { [k: string]: any }): berty.push.v1.PushServiceSupportedTokenType;
                 public static toObject(message: berty.push.v1.PushServiceSupportedTokenType, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
-                public static getTypeUrl(typeUrlPrefix?: string): string;
             }
 
             enum PushServiceTokenType {
@@ -1805,7 +1726,6 @@ export namespace berty {
                 public static fromObject(object: { [k: string]: any }): berty.push.v1.PushServiceSend;
                 public static toObject(message: berty.push.v1.PushServiceSend, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
-                public static getTypeUrl(typeUrlPrefix?: string): string;
             }
 
             namespace PushServiceSend {
@@ -1830,7 +1750,6 @@ export namespace berty {
                     public static fromObject(object: { [k: string]: any }): berty.push.v1.PushServiceSend.Request;
                     public static toObject(message: berty.push.v1.PushServiceSend.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
-                    public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
 
                 interface IReply {
@@ -1847,7 +1766,6 @@ export namespace berty {
                     public static fromObject(object: { [k: string]: any }): berty.push.v1.PushServiceSend.Reply;
                     public static toObject(message: berty.push.v1.PushServiceSend.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
-                    public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
             }
 
@@ -1869,7 +1787,6 @@ export namespace berty {
                 public static fromObject(object: { [k: string]: any }): berty.push.v1.OutOfStoreExposedData;
                 public static toObject(message: berty.push.v1.OutOfStoreExposedData, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
-                public static getTypeUrl(typeUrlPrefix?: string): string;
             }
 
             enum PushServicePriority {
@@ -1896,7 +1813,6 @@ export namespace berty {
                 public static fromObject(object: { [k: string]: any }): berty.push.v1.PushServiceOpaqueReceiver;
                 public static toObject(message: berty.push.v1.PushServiceOpaqueReceiver, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
-                public static getTypeUrl(typeUrlPrefix?: string): string;
             }
 
             interface IDecryptedPush {
@@ -1939,7 +1855,6 @@ export namespace berty {
                 public static fromObject(object: { [k: string]: any }): berty.push.v1.DecryptedPush;
                 public static toObject(message: berty.push.v1.DecryptedPush, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
-                public static getTypeUrl(typeUrlPrefix?: string): string;
             }
 
             namespace DecryptedPush {
@@ -1984,7 +1899,6 @@ export namespace berty {
                 public static fromObject(object: { [k: string]: any }): berty.push.v1.FormatedPush;
                 public static toObject(message: berty.push.v1.FormatedPush, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
-                public static getTypeUrl(typeUrlPrefix?: string): string;
             }
         }
     }
@@ -2039,7 +1953,6 @@ export namespace berty {
                 public static fromObject(object: { [k: string]: any }): berty.bridge.v1.ClientInvokeUnary;
                 public static toObject(message: berty.bridge.v1.ClientInvokeUnary, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
-                public static getTypeUrl(typeUrlPrefix?: string): string;
             }
 
             namespace ClientInvokeUnary {
@@ -2064,7 +1977,6 @@ export namespace berty {
                     public static fromObject(object: { [k: string]: any }): berty.bridge.v1.ClientInvokeUnary.Request;
                     public static toObject(message: berty.bridge.v1.ClientInvokeUnary.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
-                    public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
 
                 interface IReply {
@@ -2087,7 +1999,6 @@ export namespace berty {
                     public static fromObject(object: { [k: string]: any }): berty.bridge.v1.ClientInvokeUnary.Reply;
                     public static toObject(message: berty.bridge.v1.ClientInvokeUnary.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
-                    public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
             }
 
@@ -2105,7 +2016,6 @@ export namespace berty {
                 public static fromObject(object: { [k: string]: any }): berty.bridge.v1.ClientCreateStream;
                 public static toObject(message: berty.bridge.v1.ClientCreateStream, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
-                public static getTypeUrl(typeUrlPrefix?: string): string;
             }
 
             namespace ClientCreateStream {
@@ -2130,7 +2040,6 @@ export namespace berty {
                     public static fromObject(object: { [k: string]: any }): berty.bridge.v1.ClientCreateStream.Request;
                     public static toObject(message: berty.bridge.v1.ClientCreateStream.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
-                    public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
 
                 interface IReply {
@@ -2153,7 +2062,6 @@ export namespace berty {
                     public static fromObject(object: { [k: string]: any }): berty.bridge.v1.ClientCreateStream.Reply;
                     public static toObject(message: berty.bridge.v1.ClientCreateStream.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
-                    public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
             }
 
@@ -2171,7 +2079,6 @@ export namespace berty {
                 public static fromObject(object: { [k: string]: any }): berty.bridge.v1.ClientStreamSend;
                 public static toObject(message: berty.bridge.v1.ClientStreamSend, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
-                public static getTypeUrl(typeUrlPrefix?: string): string;
             }
 
             namespace ClientStreamSend {
@@ -2194,7 +2101,6 @@ export namespace berty {
                     public static fromObject(object: { [k: string]: any }): berty.bridge.v1.ClientStreamSend.Request;
                     public static toObject(message: berty.bridge.v1.ClientStreamSend.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
-                    public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
 
                 interface IReply {
@@ -2217,7 +2123,6 @@ export namespace berty {
                     public static fromObject(object: { [k: string]: any }): berty.bridge.v1.ClientStreamSend.Reply;
                     public static toObject(message: berty.bridge.v1.ClientStreamSend.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
-                    public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
             }
 
@@ -2235,7 +2140,6 @@ export namespace berty {
                 public static fromObject(object: { [k: string]: any }): berty.bridge.v1.ClientStreamRecv;
                 public static toObject(message: berty.bridge.v1.ClientStreamRecv, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
-                public static getTypeUrl(typeUrlPrefix?: string): string;
             }
 
             namespace ClientStreamRecv {
@@ -2256,7 +2160,6 @@ export namespace berty {
                     public static fromObject(object: { [k: string]: any }): berty.bridge.v1.ClientStreamRecv.Request;
                     public static toObject(message: berty.bridge.v1.ClientStreamRecv.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
-                    public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
 
                 interface IReply {
@@ -2281,7 +2184,6 @@ export namespace berty {
                     public static fromObject(object: { [k: string]: any }): berty.bridge.v1.ClientStreamRecv.Reply;
                     public static toObject(message: berty.bridge.v1.ClientStreamRecv.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
-                    public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
             }
 
@@ -2299,7 +2201,6 @@ export namespace berty {
                 public static fromObject(object: { [k: string]: any }): berty.bridge.v1.ClientStreamClose;
                 public static toObject(message: berty.bridge.v1.ClientStreamClose, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
-                public static getTypeUrl(typeUrlPrefix?: string): string;
             }
 
             namespace ClientStreamClose {
@@ -2320,7 +2221,6 @@ export namespace berty {
                     public static fromObject(object: { [k: string]: any }): berty.bridge.v1.ClientStreamClose.Request;
                     public static toObject(message: berty.bridge.v1.ClientStreamClose.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
-                    public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
 
                 interface IReply {
@@ -2343,7 +2243,6 @@ export namespace berty {
                     public static fromObject(object: { [k: string]: any }): berty.bridge.v1.ClientStreamClose.Reply;
                     public static toObject(message: berty.bridge.v1.ClientStreamClose.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
-                    public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
             }
 
@@ -2361,7 +2260,6 @@ export namespace berty {
                 public static fromObject(object: { [k: string]: any }): berty.bridge.v1.ClientStreamCloseAndRecv;
                 public static toObject(message: berty.bridge.v1.ClientStreamCloseAndRecv, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
-                public static getTypeUrl(typeUrlPrefix?: string): string;
             }
 
             namespace ClientStreamCloseAndRecv {
@@ -2382,7 +2280,6 @@ export namespace berty {
                     public static fromObject(object: { [k: string]: any }): berty.bridge.v1.ClientStreamCloseAndRecv.Request;
                     public static toObject(message: berty.bridge.v1.ClientStreamCloseAndRecv.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
-                    public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
 
                 interface IReply {
@@ -2407,7 +2304,6 @@ export namespace berty {
                     public static fromObject(object: { [k: string]: any }): berty.bridge.v1.ClientStreamCloseAndRecv.Reply;
                     public static toObject(message: berty.bridge.v1.ClientStreamCloseAndRecv.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
-                    public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
             }
 
@@ -2431,7 +2327,6 @@ export namespace berty {
                 public static fromObject(object: { [k: string]: any }): berty.bridge.v1.MethodDesc;
                 public static toObject(message: berty.bridge.v1.MethodDesc, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
-                public static getTypeUrl(typeUrlPrefix?: string): string;
             }
 
             interface IMetadata {
@@ -2452,7 +2347,6 @@ export namespace berty {
                 public static fromObject(object: { [k: string]: any }): berty.bridge.v1.Metadata;
                 public static toObject(message: berty.bridge.v1.Metadata, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
-                public static getTypeUrl(typeUrlPrefix?: string): string;
             }
 
             interface IError {
@@ -2477,7 +2371,6 @@ export namespace berty {
                 public static fromObject(object: { [k: string]: any }): berty.bridge.v1.Error;
                 public static toObject(message: berty.bridge.v1.Error, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
-                public static getTypeUrl(typeUrlPrefix?: string): string;
             }
 
             enum GRPCErrCode {
@@ -2648,7 +2541,6 @@ export namespace berty {
             public static fromObject(object: { [k: string]: any }): berty.errcode.ErrDetails;
             public static toObject(message: berty.errcode.ErrDetails, options?: $protobuf.IConversionOptions): { [k: string]: any };
             public toJSON(): { [k: string]: any };
-            public static getTypeUrl(typeUrlPrefix?: string): string;
         }
     }
 
@@ -2868,7 +2760,6 @@ export namespace berty {
                 public static fromObject(object: { [k: string]: any }): berty.messenger.v1.PaginatedInteractionsOptions;
                 public static toObject(message: berty.messenger.v1.PaginatedInteractionsOptions, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
-                public static getTypeUrl(typeUrlPrefix?: string): string;
             }
 
             interface IConversationOpen {
@@ -2885,7 +2776,6 @@ export namespace berty {
                 public static fromObject(object: { [k: string]: any }): berty.messenger.v1.ConversationOpen;
                 public static toObject(message: berty.messenger.v1.ConversationOpen, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
-                public static getTypeUrl(typeUrlPrefix?: string): string;
             }
 
             namespace ConversationOpen {
@@ -2906,7 +2796,6 @@ export namespace berty {
                     public static fromObject(object: { [k: string]: any }): berty.messenger.v1.ConversationOpen.Request;
                     public static toObject(message: berty.messenger.v1.ConversationOpen.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
-                    public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
 
                 interface IReply {
@@ -2923,7 +2812,6 @@ export namespace berty {
                     public static fromObject(object: { [k: string]: any }): berty.messenger.v1.ConversationOpen.Reply;
                     public static toObject(message: berty.messenger.v1.ConversationOpen.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
-                    public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
             }
 
@@ -2941,7 +2829,6 @@ export namespace berty {
                 public static fromObject(object: { [k: string]: any }): berty.messenger.v1.ConversationClose;
                 public static toObject(message: berty.messenger.v1.ConversationClose, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
-                public static getTypeUrl(typeUrlPrefix?: string): string;
             }
 
             namespace ConversationClose {
@@ -2962,7 +2849,6 @@ export namespace berty {
                     public static fromObject(object: { [k: string]: any }): berty.messenger.v1.ConversationClose.Request;
                     public static toObject(message: berty.messenger.v1.ConversationClose.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
-                    public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
 
                 interface IReply {
@@ -2979,7 +2865,6 @@ export namespace berty {
                     public static fromObject(object: { [k: string]: any }): berty.messenger.v1.ConversationClose.Reply;
                     public static toObject(message: berty.messenger.v1.ConversationClose.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
-                    public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
             }
 
@@ -2997,7 +2882,6 @@ export namespace berty {
                 public static fromObject(object: { [k: string]: any }): berty.messenger.v1.ConversationLoad;
                 public static toObject(message: berty.messenger.v1.ConversationLoad, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
-                public static getTypeUrl(typeUrlPrefix?: string): string;
             }
 
             namespace ConversationLoad {
@@ -3018,7 +2902,6 @@ export namespace berty {
                     public static fromObject(object: { [k: string]: any }): berty.messenger.v1.ConversationLoad.Request;
                     public static toObject(message: berty.messenger.v1.ConversationLoad.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
-                    public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
 
                 interface IReply {
@@ -3035,7 +2918,6 @@ export namespace berty {
                     public static fromObject(object: { [k: string]: any }): berty.messenger.v1.ConversationLoad.Reply;
                     public static toObject(message: berty.messenger.v1.ConversationLoad.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
-                    public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
             }
 
@@ -3053,7 +2935,6 @@ export namespace berty {
                 public static fromObject(object: { [k: string]: any }): berty.messenger.v1.ConversationMute;
                 public static toObject(message: berty.messenger.v1.ConversationMute, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
-                public static getTypeUrl(typeUrlPrefix?: string): string;
             }
 
             namespace ConversationMute {
@@ -3080,7 +2961,6 @@ export namespace berty {
                     public static fromObject(object: { [k: string]: any }): berty.messenger.v1.ConversationMute.Request;
                     public static toObject(message: berty.messenger.v1.ConversationMute.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
-                    public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
 
                 interface IReply {
@@ -3097,7 +2977,6 @@ export namespace berty {
                     public static fromObject(object: { [k: string]: any }): berty.messenger.v1.ConversationMute.Reply;
                     public static toObject(message: berty.messenger.v1.ConversationMute.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
-                    public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
             }
 
@@ -3115,7 +2994,6 @@ export namespace berty {
                 public static fromObject(object: { [k: string]: any }): berty.messenger.v1.EchoTest;
                 public static toObject(message: berty.messenger.v1.EchoTest, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
-                public static getTypeUrl(typeUrlPrefix?: string): string;
             }
 
             namespace EchoTest {
@@ -3140,7 +3018,6 @@ export namespace berty {
                     public static fromObject(object: { [k: string]: any }): berty.messenger.v1.EchoTest.Request;
                     public static toObject(message: berty.messenger.v1.EchoTest.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
-                    public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
 
                 interface IReply {
@@ -3159,7 +3036,6 @@ export namespace berty {
                     public static fromObject(object: { [k: string]: any }): berty.messenger.v1.EchoTest.Reply;
                     public static toObject(message: berty.messenger.v1.EchoTest.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
-                    public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
             }
 
@@ -3177,7 +3053,6 @@ export namespace berty {
                 public static fromObject(object: { [k: string]: any }): berty.messenger.v1.EchoDuplexTest;
                 public static toObject(message: berty.messenger.v1.EchoDuplexTest, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
-                public static getTypeUrl(typeUrlPrefix?: string): string;
             }
 
             namespace EchoDuplexTest {
@@ -3200,7 +3075,6 @@ export namespace berty {
                     public static fromObject(object: { [k: string]: any }): berty.messenger.v1.EchoDuplexTest.Request;
                     public static toObject(message: berty.messenger.v1.EchoDuplexTest.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
-                    public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
 
                 interface IReply {
@@ -3219,7 +3093,6 @@ export namespace berty {
                     public static fromObject(object: { [k: string]: any }): berty.messenger.v1.EchoDuplexTest.Reply;
                     public static toObject(message: berty.messenger.v1.EchoDuplexTest.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
-                    public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
             }
 
@@ -3237,7 +3110,6 @@ export namespace berty {
                 public static fromObject(object: { [k: string]: any }): berty.messenger.v1.InstanceShareableBertyID;
                 public static toObject(message: berty.messenger.v1.InstanceShareableBertyID, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
-                public static getTypeUrl(typeUrlPrefix?: string): string;
             }
 
             namespace InstanceShareableBertyID {
@@ -3262,7 +3134,6 @@ export namespace berty {
                     public static fromObject(object: { [k: string]: any }): berty.messenger.v1.InstanceShareableBertyID.Request;
                     public static toObject(message: berty.messenger.v1.InstanceShareableBertyID.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
-                    public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
 
                 interface IReply {
@@ -3285,7 +3156,6 @@ export namespace berty {
                     public static fromObject(object: { [k: string]: any }): berty.messenger.v1.InstanceShareableBertyID.Reply;
                     public static toObject(message: berty.messenger.v1.InstanceShareableBertyID.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
-                    public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
             }
 
@@ -3303,7 +3173,6 @@ export namespace berty {
                 public static fromObject(object: { [k: string]: any }): berty.messenger.v1.ShareableBertyGroup;
                 public static toObject(message: berty.messenger.v1.ShareableBertyGroup, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
-                public static getTypeUrl(typeUrlPrefix?: string): string;
             }
 
             namespace ShareableBertyGroup {
@@ -3326,7 +3195,6 @@ export namespace berty {
                     public static fromObject(object: { [k: string]: any }): berty.messenger.v1.ShareableBertyGroup.Request;
                     public static toObject(message: berty.messenger.v1.ShareableBertyGroup.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
-                    public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
 
                 interface IReply {
@@ -3349,7 +3217,6 @@ export namespace berty {
                     public static fromObject(object: { [k: string]: any }): berty.messenger.v1.ShareableBertyGroup.Reply;
                     public static toObject(message: berty.messenger.v1.ShareableBertyGroup.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
-                    public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
             }
 
@@ -3367,7 +3234,6 @@ export namespace berty {
                 public static fromObject(object: { [k: string]: any }): berty.messenger.v1.DevShareInstanceBertyID;
                 public static toObject(message: berty.messenger.v1.DevShareInstanceBertyID, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
-                public static getTypeUrl(typeUrlPrefix?: string): string;
             }
 
             namespace DevShareInstanceBertyID {
@@ -3390,7 +3256,6 @@ export namespace berty {
                     public static fromObject(object: { [k: string]: any }): berty.messenger.v1.DevShareInstanceBertyID.Request;
                     public static toObject(message: berty.messenger.v1.DevShareInstanceBertyID.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
-                    public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
 
                 interface IReply {
@@ -3407,7 +3272,6 @@ export namespace berty {
                     public static fromObject(object: { [k: string]: any }): berty.messenger.v1.DevShareInstanceBertyID.Reply;
                     public static toObject(message: berty.messenger.v1.DevShareInstanceBertyID.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
-                    public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
             }
 
@@ -3425,7 +3289,6 @@ export namespace berty {
                 public static fromObject(object: { [k: string]: any }): berty.messenger.v1.DevStreamLogs;
                 public static toObject(message: berty.messenger.v1.DevStreamLogs, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
-                public static getTypeUrl(typeUrlPrefix?: string): string;
             }
 
             namespace DevStreamLogs {
@@ -3444,7 +3307,6 @@ export namespace berty {
                     public static fromObject(object: { [k: string]: any }): berty.messenger.v1.DevStreamLogs.Request;
                     public static toObject(message: berty.messenger.v1.DevStreamLogs.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
-                    public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
 
                 interface IReply {
@@ -3463,7 +3325,6 @@ export namespace berty {
                     public static fromObject(object: { [k: string]: any }): berty.messenger.v1.DevStreamLogs.Reply;
                     public static toObject(message: berty.messenger.v1.DevStreamLogs.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
-                    public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
             }
 
@@ -3481,7 +3342,6 @@ export namespace berty {
                 public static fromObject(object: { [k: string]: any }): berty.messenger.v1.ParseDeepLink;
                 public static toObject(message: berty.messenger.v1.ParseDeepLink, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
-                public static getTypeUrl(typeUrlPrefix?: string): string;
             }
 
             namespace ParseDeepLink {
@@ -3504,7 +3364,6 @@ export namespace berty {
                     public static fromObject(object: { [k: string]: any }): berty.messenger.v1.ParseDeepLink.Request;
                     public static toObject(message: berty.messenger.v1.ParseDeepLink.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
-                    public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
 
                 interface IReply {
@@ -3523,7 +3382,6 @@ export namespace berty {
                     public static fromObject(object: { [k: string]: any }): berty.messenger.v1.ParseDeepLink.Reply;
                     public static toObject(message: berty.messenger.v1.ParseDeepLink.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
-                    public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
             }
 
@@ -3551,7 +3409,6 @@ export namespace berty {
                 public static fromObject(object: { [k: string]: any }): berty.messenger.v1.BertyLink;
                 public static toObject(message: berty.messenger.v1.BertyLink, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
-                public static getTypeUrl(typeUrlPrefix?: string): string;
             }
 
             namespace BertyLink {
@@ -3594,7 +3451,6 @@ export namespace berty {
                     public static fromObject(object: { [k: string]: any }): berty.messenger.v1.BertyLink.Encrypted;
                     public static toObject(message: berty.messenger.v1.BertyLink.Encrypted, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
-                    public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
 
                 enum Kind {
@@ -3625,7 +3481,6 @@ export namespace berty {
                     public static fromObject(object: { [k: string]: any }): berty.messenger.v1.BertyLink.BertyMessageRef;
                     public static toObject(message: berty.messenger.v1.BertyLink.BertyMessageRef, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
-                    public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
             }
 
@@ -3643,7 +3498,6 @@ export namespace berty {
                 public static fromObject(object: { [k: string]: any }): berty.messenger.v1.SendContactRequest;
                 public static toObject(message: berty.messenger.v1.SendContactRequest, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
-                public static getTypeUrl(typeUrlPrefix?: string): string;
             }
 
             namespace SendContactRequest {
@@ -3668,7 +3522,6 @@ export namespace berty {
                     public static fromObject(object: { [k: string]: any }): berty.messenger.v1.SendContactRequest.Request;
                     public static toObject(message: berty.messenger.v1.SendContactRequest.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
-                    public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
 
                 interface IReply {
@@ -3685,7 +3538,6 @@ export namespace berty {
                     public static fromObject(object: { [k: string]: any }): berty.messenger.v1.SendContactRequest.Reply;
                     public static toObject(message: berty.messenger.v1.SendContactRequest.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
-                    public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
             }
 
@@ -3709,7 +3561,6 @@ export namespace berty {
                 public static fromObject(object: { [k: string]: any }): berty.messenger.v1.BertyID;
                 public static toObject(message: berty.messenger.v1.BertyID, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
-                public static getTypeUrl(typeUrlPrefix?: string): string;
             }
 
             interface IBertyGroup {
@@ -3730,7 +3581,6 @@ export namespace berty {
                 public static fromObject(object: { [k: string]: any }): berty.messenger.v1.BertyGroup;
                 public static toObject(message: berty.messenger.v1.BertyGroup, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
-                public static getTypeUrl(typeUrlPrefix?: string): string;
             }
 
             interface IAppMessage {
@@ -3755,7 +3605,6 @@ export namespace berty {
                 public static fromObject(object: { [k: string]: any }): berty.messenger.v1.AppMessage;
                 public static toObject(message: berty.messenger.v1.AppMessage, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
-                public static getTypeUrl(typeUrlPrefix?: string): string;
             }
 
             namespace AppMessage {
@@ -3792,7 +3641,6 @@ export namespace berty {
                     public static fromObject(object: { [k: string]: any }): berty.messenger.v1.AppMessage.UserMessage;
                     public static toObject(message: berty.messenger.v1.AppMessage.UserMessage, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
-                    public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
 
                 interface IGroupInvitation {
@@ -3811,7 +3659,6 @@ export namespace berty {
                     public static fromObject(object: { [k: string]: any }): berty.messenger.v1.AppMessage.GroupInvitation;
                     public static toObject(message: berty.messenger.v1.AppMessage.GroupInvitation, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
-                    public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
 
                 interface ISetGroupInfo {
@@ -3830,7 +3677,6 @@ export namespace berty {
                     public static fromObject(object: { [k: string]: any }): berty.messenger.v1.AppMessage.SetGroupInfo;
                     public static toObject(message: berty.messenger.v1.AppMessage.SetGroupInfo, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
-                    public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
 
                 interface ISetUserInfo {
@@ -3849,7 +3695,6 @@ export namespace berty {
                     public static fromObject(object: { [k: string]: any }): berty.messenger.v1.AppMessage.SetUserInfo;
                     public static toObject(message: berty.messenger.v1.AppMessage.SetUserInfo, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
-                    public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
 
                 interface IAcknowledge {
@@ -3866,7 +3711,6 @@ export namespace berty {
                     public static fromObject(object: { [k: string]: any }): berty.messenger.v1.AppMessage.Acknowledge;
                     public static toObject(message: berty.messenger.v1.AppMessage.Acknowledge, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
-                    public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
 
                 interface IAccountDirectoryServiceRegistered {
@@ -3897,7 +3741,6 @@ export namespace berty {
                     public static fromObject(object: { [k: string]: any }): berty.messenger.v1.AppMessage.AccountDirectoryServiceRegistered;
                     public static toObject(message: berty.messenger.v1.AppMessage.AccountDirectoryServiceRegistered, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
-                    public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
 
                 interface IAccountDirectoryServiceUnregistered {
@@ -3924,7 +3767,6 @@ export namespace berty {
                     public static fromObject(object: { [k: string]: any }): berty.messenger.v1.AppMessage.AccountDirectoryServiceUnregistered;
                     public static toObject(message: berty.messenger.v1.AppMessage.AccountDirectoryServiceUnregistered, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
-                    public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
 
                 interface IServiceAddToken {
@@ -3949,7 +3791,6 @@ export namespace berty {
                     public static fromObject(object: { [k: string]: any }): berty.messenger.v1.AppMessage.ServiceAddToken;
                     public static toObject(message: berty.messenger.v1.AppMessage.ServiceAddToken, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
-                    public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
 
                 interface IServiceRemoveToken {
@@ -3968,7 +3809,6 @@ export namespace berty {
                     public static fromObject(object: { [k: string]: any }): berty.messenger.v1.AppMessage.ServiceRemoveToken;
                     public static toObject(message: berty.messenger.v1.AppMessage.ServiceRemoveToken, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
-                    public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
 
                 interface IPushSetDeviceToken {
@@ -3987,7 +3827,6 @@ export namespace berty {
                     public static fromObject(object: { [k: string]: any }): berty.messenger.v1.AppMessage.PushSetDeviceToken;
                     public static toObject(message: berty.messenger.v1.AppMessage.PushSetDeviceToken, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
-                    public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
 
                 interface IPushSetServer {
@@ -4006,7 +3845,6 @@ export namespace berty {
                     public static fromObject(object: { [k: string]: any }): berty.messenger.v1.AppMessage.PushSetServer;
                     public static toObject(message: berty.messenger.v1.AppMessage.PushSetServer, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
-                    public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
 
                 interface IPushSetMemberToken {
@@ -4025,7 +3863,6 @@ export namespace berty {
                     public static fromObject(object: { [k: string]: any }): berty.messenger.v1.AppMessage.PushSetMemberToken;
                     public static toObject(message: berty.messenger.v1.AppMessage.PushSetMemberToken, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
-                    public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
             }
 
@@ -4043,7 +3880,6 @@ export namespace berty {
                 public static fromObject(object: { [k: string]: any }): berty.messenger.v1.SystemInfo;
                 public static toObject(message: berty.messenger.v1.SystemInfo, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
-                public static getTypeUrl(typeUrlPrefix?: string): string;
             }
 
             namespace SystemInfo {
@@ -4062,7 +3898,6 @@ export namespace berty {
                     public static fromObject(object: { [k: string]: any }): berty.messenger.v1.SystemInfo.Request;
                     public static toObject(message: berty.messenger.v1.SystemInfo.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
-                    public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
 
                 interface IReply {
@@ -4083,7 +3918,6 @@ export namespace berty {
                     public static fromObject(object: { [k: string]: any }): berty.messenger.v1.SystemInfo.Reply;
                     public static toObject(message: berty.messenger.v1.SystemInfo.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
-                    public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
 
                 interface IMessenger {
@@ -4108,7 +3942,6 @@ export namespace berty {
                     public static fromObject(object: { [k: string]: any }): berty.messenger.v1.SystemInfo.Messenger;
                     public static toObject(message: berty.messenger.v1.SystemInfo.Messenger, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
-                    public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
 
                 interface IDB {
@@ -4157,7 +3990,6 @@ export namespace berty {
                     public static fromObject(object: { [k: string]: any }): berty.messenger.v1.SystemInfo.DB;
                     public static toObject(message: berty.messenger.v1.SystemInfo.DB, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
-                    public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
             }
 
@@ -4175,7 +4007,6 @@ export namespace berty {
                 public static fromObject(object: { [k: string]: any }): berty.messenger.v1.ConversationJoin;
                 public static toObject(message: berty.messenger.v1.ConversationJoin, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
-                public static getTypeUrl(typeUrlPrefix?: string): string;
             }
 
             namespace ConversationJoin {
@@ -4198,7 +4029,6 @@ export namespace berty {
                     public static fromObject(object: { [k: string]: any }): berty.messenger.v1.ConversationJoin.Request;
                     public static toObject(message: berty.messenger.v1.ConversationJoin.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
-                    public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
 
                 interface IReply {
@@ -4215,7 +4045,6 @@ export namespace berty {
                     public static fromObject(object: { [k: string]: any }): berty.messenger.v1.ConversationJoin.Reply;
                     public static toObject(message: berty.messenger.v1.ConversationJoin.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
-                    public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
             }
 
@@ -4233,7 +4062,6 @@ export namespace berty {
                 public static fromObject(object: { [k: string]: any }): berty.messenger.v1.DebugAuthServiceSetToken;
                 public static toObject(message: berty.messenger.v1.DebugAuthServiceSetToken, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
-                public static getTypeUrl(typeUrlPrefix?: string): string;
             }
 
             namespace DebugAuthServiceSetToken {
@@ -4256,7 +4084,6 @@ export namespace berty {
                     public static fromObject(object: { [k: string]: any }): berty.messenger.v1.DebugAuthServiceSetToken.Request;
                     public static toObject(message: berty.messenger.v1.DebugAuthServiceSetToken.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
-                    public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
 
                 interface IReply {
@@ -4273,7 +4100,6 @@ export namespace berty {
                     public static fromObject(object: { [k: string]: any }): berty.messenger.v1.DebugAuthServiceSetToken.Reply;
                     public static toObject(message: berty.messenger.v1.DebugAuthServiceSetToken.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
-                    public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
             }
 
@@ -4291,7 +4117,6 @@ export namespace berty {
                 public static fromObject(object: { [k: string]: any }): berty.messenger.v1.ServicesTokenList;
                 public static toObject(message: berty.messenger.v1.ServicesTokenList, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
-                public static getTypeUrl(typeUrlPrefix?: string): string;
             }
 
             namespace ServicesTokenList {
@@ -4310,7 +4135,6 @@ export namespace berty {
                     public static fromObject(object: { [k: string]: any }): berty.messenger.v1.ServicesTokenList.Request;
                     public static toObject(message: berty.messenger.v1.ServicesTokenList.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
-                    public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
 
                 interface IReply {
@@ -4329,7 +4153,6 @@ export namespace berty {
                     public static fromObject(object: { [k: string]: any }): berty.messenger.v1.ServicesTokenList.Reply;
                     public static toObject(message: berty.messenger.v1.ServicesTokenList.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
-                    public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
             }
 
@@ -4347,7 +4170,6 @@ export namespace berty {
                 public static fromObject(object: { [k: string]: any }): berty.messenger.v1.AuthServiceCompleteFlow;
                 public static toObject(message: berty.messenger.v1.AuthServiceCompleteFlow, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
-                public static getTypeUrl(typeUrlPrefix?: string): string;
             }
 
             namespace AuthServiceCompleteFlow {
@@ -4368,7 +4190,6 @@ export namespace berty {
                     public static fromObject(object: { [k: string]: any }): berty.messenger.v1.AuthServiceCompleteFlow.Request;
                     public static toObject(message: berty.messenger.v1.AuthServiceCompleteFlow.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
-                    public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
 
                 interface IReply {
@@ -4387,7 +4208,6 @@ export namespace berty {
                     public static fromObject(object: { [k: string]: any }): berty.messenger.v1.AuthServiceCompleteFlow.Reply;
                     public static toObject(message: berty.messenger.v1.AuthServiceCompleteFlow.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
-                    public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
             }
 
@@ -4405,7 +4225,6 @@ export namespace berty {
                 public static fromObject(object: { [k: string]: any }): berty.messenger.v1.AuthServiceInitFlow;
                 public static toObject(message: berty.messenger.v1.AuthServiceInitFlow, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
-                public static getTypeUrl(typeUrlPrefix?: string): string;
             }
 
             namespace AuthServiceInitFlow {
@@ -4428,7 +4247,6 @@ export namespace berty {
                     public static fromObject(object: { [k: string]: any }): berty.messenger.v1.AuthServiceInitFlow.Request;
                     public static toObject(message: berty.messenger.v1.AuthServiceInitFlow.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
-                    public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
 
                 interface IReply {
@@ -4449,7 +4267,6 @@ export namespace berty {
                     public static fromObject(object: { [k: string]: any }): berty.messenger.v1.AuthServiceInitFlow.Reply;
                     public static toObject(message: berty.messenger.v1.AuthServiceInitFlow.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
-                    public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
             }
 
@@ -4493,7 +4310,6 @@ export namespace berty {
                 public static fromObject(object: { [k: string]: any }): berty.messenger.v1.Account;
                 public static toObject(message: berty.messenger.v1.Account, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
-                public static getTypeUrl(typeUrlPrefix?: string): string;
             }
 
             interface IServiceTokenSupportedService {
@@ -4514,7 +4330,6 @@ export namespace berty {
                 public static fromObject(object: { [k: string]: any }): berty.messenger.v1.ServiceTokenSupportedService;
                 public static toObject(message: berty.messenger.v1.ServiceTokenSupportedService, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
-                public static getTypeUrl(typeUrlPrefix?: string): string;
             }
 
             interface IServiceTokenSupportedServiceRecord {
@@ -4537,7 +4352,6 @@ export namespace berty {
                 public static fromObject(object: { [k: string]: any }): berty.messenger.v1.ServiceTokenSupportedServiceRecord;
                 public static toObject(message: berty.messenger.v1.ServiceTokenSupportedServiceRecord, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
-                public static getTypeUrl(typeUrlPrefix?: string): string;
             }
 
             interface IServiceToken {
@@ -4566,7 +4380,6 @@ export namespace berty {
                 public static fromObject(object: { [k: string]: any }): berty.messenger.v1.ServiceToken;
                 public static toObject(message: berty.messenger.v1.ServiceToken, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
-                public static getTypeUrl(typeUrlPrefix?: string): string;
             }
 
             interface IMetadataEvent {
@@ -4591,7 +4404,6 @@ export namespace berty {
                 public static fromObject(object: { [k: string]: any }): berty.messenger.v1.MetadataEvent;
                 public static toObject(message: berty.messenger.v1.MetadataEvent, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
-                public static getTypeUrl(typeUrlPrefix?: string): string;
             }
 
             interface IInteraction {
@@ -4634,7 +4446,6 @@ export namespace berty {
                 public static fromObject(object: { [k: string]: any }): berty.messenger.v1.Interaction;
                 public static toObject(message: berty.messenger.v1.Interaction, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
-                public static getTypeUrl(typeUrlPrefix?: string): string;
             }
 
             interface IContact {
@@ -4669,7 +4480,6 @@ export namespace berty {
                 public static fromObject(object: { [k: string]: any }): berty.messenger.v1.Contact;
                 public static toObject(message: berty.messenger.v1.Contact, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
-                public static getTypeUrl(typeUrlPrefix?: string): string;
             }
 
             namespace Contact {
@@ -4735,7 +4545,6 @@ export namespace berty {
                 public static fromObject(object: { [k: string]: any }): berty.messenger.v1.Conversation;
                 public static toObject(message: berty.messenger.v1.Conversation, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
-                public static getTypeUrl(typeUrlPrefix?: string): string;
             }
 
             namespace Conversation {
@@ -4772,7 +4581,6 @@ export namespace berty {
                 public static fromObject(object: { [k: string]: any }): berty.messenger.v1.ConversationReplicationInfo;
                 public static toObject(message: berty.messenger.v1.ConversationReplicationInfo, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
-                public static getTypeUrl(typeUrlPrefix?: string): string;
             }
 
             interface IMember {
@@ -4805,7 +4613,6 @@ export namespace berty {
                 public static fromObject(object: { [k: string]: any }): berty.messenger.v1.Member;
                 public static toObject(message: berty.messenger.v1.Member, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
-                public static getTypeUrl(typeUrlPrefix?: string): string;
             }
 
             interface IDevice {
@@ -4826,7 +4633,6 @@ export namespace berty {
                 public static fromObject(object: { [k: string]: any }): berty.messenger.v1.Device;
                 public static toObject(message: berty.messenger.v1.Device, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
-                public static getTypeUrl(typeUrlPrefix?: string): string;
             }
 
             interface IAccountVerifiedCredential {
@@ -4853,7 +4659,6 @@ export namespace berty {
                 public static fromObject(object: { [k: string]: any }): berty.messenger.v1.AccountVerifiedCredential;
                 public static toObject(message: berty.messenger.v1.AccountVerifiedCredential, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
-                public static getTypeUrl(typeUrlPrefix?: string): string;
             }
 
             interface IAccountDirectoryServiceRecord {
@@ -4888,7 +4693,6 @@ export namespace berty {
                 public static fromObject(object: { [k: string]: any }): berty.messenger.v1.AccountDirectoryServiceRecord;
                 public static toObject(message: berty.messenger.v1.AccountDirectoryServiceRecord, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
-                public static getTypeUrl(typeUrlPrefix?: string): string;
             }
 
             interface IPushDeviceToken {
@@ -4915,7 +4719,6 @@ export namespace berty {
                 public static fromObject(object: { [k: string]: any }): berty.messenger.v1.PushDeviceToken;
                 public static toObject(message: berty.messenger.v1.PushDeviceToken, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
-                public static getTypeUrl(typeUrlPrefix?: string): string;
             }
 
             interface IPushServerRecord {
@@ -4938,7 +4741,6 @@ export namespace berty {
                 public static fromObject(object: { [k: string]: any }): berty.messenger.v1.PushServerRecord;
                 public static toObject(message: berty.messenger.v1.PushServerRecord, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
-                public static getTypeUrl(typeUrlPrefix?: string): string;
             }
 
             interface IContactMetadata {
@@ -4957,7 +4759,6 @@ export namespace berty {
                 public static fromObject(object: { [k: string]: any }): berty.messenger.v1.ContactMetadata;
                 public static toObject(message: berty.messenger.v1.ContactMetadata, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
-                public static getTypeUrl(typeUrlPrefix?: string): string;
             }
 
             interface IStreamEvent {
@@ -4980,7 +4781,6 @@ export namespace berty {
                 public static fromObject(object: { [k: string]: any }): berty.messenger.v1.StreamEvent;
                 public static toObject(message: berty.messenger.v1.StreamEvent, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
-                public static getTypeUrl(typeUrlPrefix?: string): string;
             }
 
             namespace StreamEvent {
@@ -5021,7 +4821,6 @@ export namespace berty {
                     public static fromObject(object: { [k: string]: any }): berty.messenger.v1.StreamEvent.ConversationUpdated;
                     public static toObject(message: berty.messenger.v1.StreamEvent.ConversationUpdated, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
-                    public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
 
                 interface IConversationDeleted {
@@ -5040,7 +4839,6 @@ export namespace berty {
                     public static fromObject(object: { [k: string]: any }): berty.messenger.v1.StreamEvent.ConversationDeleted;
                     public static toObject(message: berty.messenger.v1.StreamEvent.ConversationDeleted, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
-                    public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
 
                 interface IInteractionUpdated {
@@ -5059,7 +4857,6 @@ export namespace berty {
                     public static fromObject(object: { [k: string]: any }): berty.messenger.v1.StreamEvent.InteractionUpdated;
                     public static toObject(message: berty.messenger.v1.StreamEvent.InteractionUpdated, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
-                    public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
 
                 interface IInteractionDeleted {
@@ -5080,7 +4877,6 @@ export namespace berty {
                     public static fromObject(object: { [k: string]: any }): berty.messenger.v1.StreamEvent.InteractionDeleted;
                     public static toObject(message: berty.messenger.v1.StreamEvent.InteractionDeleted, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
-                    public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
 
                 interface IContactUpdated {
@@ -5099,7 +4895,6 @@ export namespace berty {
                     public static fromObject(object: { [k: string]: any }): berty.messenger.v1.StreamEvent.ContactUpdated;
                     public static toObject(message: berty.messenger.v1.StreamEvent.ContactUpdated, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
-                    public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
 
                 interface IAccountUpdated {
@@ -5118,7 +4913,6 @@ export namespace berty {
                     public static fromObject(object: { [k: string]: any }): berty.messenger.v1.StreamEvent.AccountUpdated;
                     public static toObject(message: berty.messenger.v1.StreamEvent.AccountUpdated, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
-                    public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
 
                 interface IMemberUpdated {
@@ -5137,7 +4931,6 @@ export namespace berty {
                     public static fromObject(object: { [k: string]: any }): berty.messenger.v1.StreamEvent.MemberUpdated;
                     public static toObject(message: berty.messenger.v1.StreamEvent.MemberUpdated, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
-                    public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
 
                 interface IDeviceUpdated {
@@ -5156,7 +4949,6 @@ export namespace berty {
                     public static fromObject(object: { [k: string]: any }): berty.messenger.v1.StreamEvent.DeviceUpdated;
                     public static toObject(message: berty.messenger.v1.StreamEvent.DeviceUpdated, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
-                    public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
 
                 interface IListEnded {
@@ -5173,7 +4965,6 @@ export namespace berty {
                     public static fromObject(object: { [k: string]: any }): berty.messenger.v1.StreamEvent.ListEnded;
                     public static toObject(message: berty.messenger.v1.StreamEvent.ListEnded, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
-                    public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
 
                 interface IConversationPartialLoad {
@@ -5194,7 +4985,6 @@ export namespace berty {
                     public static fromObject(object: { [k: string]: any }): berty.messenger.v1.StreamEvent.ConversationPartialLoad;
                     public static toObject(message: berty.messenger.v1.StreamEvent.ConversationPartialLoad, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
-                    public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
 
                 interface INotified {
@@ -5219,7 +5009,6 @@ export namespace berty {
                     public static fromObject(object: { [k: string]: any }): berty.messenger.v1.StreamEvent.Notified;
                     public static toObject(message: berty.messenger.v1.StreamEvent.Notified, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
-                    public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
 
                 namespace Notified {
@@ -5247,7 +5036,6 @@ export namespace berty {
                         public static fromObject(object: { [k: string]: any }): berty.messenger.v1.StreamEvent.Notified.Basic;
                         public static toObject(message: berty.messenger.v1.StreamEvent.Notified.Basic, options?: $protobuf.IConversionOptions): { [k: string]: any };
                         public toJSON(): { [k: string]: any };
-                        public static getTypeUrl(typeUrlPrefix?: string): string;
                     }
 
                     interface IMessageReceived {
@@ -5270,7 +5058,6 @@ export namespace berty {
                         public static fromObject(object: { [k: string]: any }): berty.messenger.v1.StreamEvent.Notified.MessageReceived;
                         public static toObject(message: berty.messenger.v1.StreamEvent.Notified.MessageReceived, options?: $protobuf.IConversionOptions): { [k: string]: any };
                         public toJSON(): { [k: string]: any };
-                        public static getTypeUrl(typeUrlPrefix?: string): string;
                     }
 
                     interface IContactRequestSent {
@@ -5289,7 +5076,6 @@ export namespace berty {
                         public static fromObject(object: { [k: string]: any }): berty.messenger.v1.StreamEvent.Notified.ContactRequestSent;
                         public static toObject(message: berty.messenger.v1.StreamEvent.Notified.ContactRequestSent, options?: $protobuf.IConversionOptions): { [k: string]: any };
                         public toJSON(): { [k: string]: any };
-                        public static getTypeUrl(typeUrlPrefix?: string): string;
                     }
 
                     interface IContactRequestReceived {
@@ -5308,7 +5094,6 @@ export namespace berty {
                         public static fromObject(object: { [k: string]: any }): berty.messenger.v1.StreamEvent.Notified.ContactRequestReceived;
                         public static toObject(message: berty.messenger.v1.StreamEvent.Notified.ContactRequestReceived, options?: $protobuf.IConversionOptions): { [k: string]: any };
                         public toJSON(): { [k: string]: any };
-                        public static getTypeUrl(typeUrlPrefix?: string): string;
                     }
 
                     interface IGroupInvitation {
@@ -5329,7 +5114,6 @@ export namespace berty {
                         public static fromObject(object: { [k: string]: any }): berty.messenger.v1.StreamEvent.Notified.GroupInvitation;
                         public static toObject(message: berty.messenger.v1.StreamEvent.Notified.GroupInvitation, options?: $protobuf.IConversionOptions): { [k: string]: any };
                         public toJSON(): { [k: string]: any };
-                        public static getTypeUrl(typeUrlPrefix?: string): string;
                     }
                 }
 
@@ -5351,7 +5135,6 @@ export namespace berty {
                     public static fromObject(object: { [k: string]: any }): berty.messenger.v1.StreamEvent.PeerStatusConnected;
                     public static toObject(message: berty.messenger.v1.StreamEvent.PeerStatusConnected, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
-                    public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
 
                 namespace PeerStatusConnected {
@@ -5380,7 +5163,6 @@ export namespace berty {
                     public static fromObject(object: { [k: string]: any }): berty.messenger.v1.StreamEvent.PeerStatusReconnecting;
                     public static toObject(message: berty.messenger.v1.StreamEvent.PeerStatusReconnecting, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
-                    public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
 
                 interface IPeerStatusDisconnected {
@@ -5399,7 +5181,6 @@ export namespace berty {
                     public static fromObject(object: { [k: string]: any }): berty.messenger.v1.StreamEvent.PeerStatusDisconnected;
                     public static toObject(message: berty.messenger.v1.StreamEvent.PeerStatusDisconnected, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
-                    public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
 
                 interface IPeerStatusGroupAssociated {
@@ -5422,7 +5203,6 @@ export namespace berty {
                     public static fromObject(object: { [k: string]: any }): berty.messenger.v1.StreamEvent.PeerStatusGroupAssociated;
                     public static toObject(message: berty.messenger.v1.StreamEvent.PeerStatusGroupAssociated, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
-                    public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
 
                 interface IServiceTokenAdded {
@@ -5441,7 +5221,6 @@ export namespace berty {
                     public static fromObject(object: { [k: string]: any }): berty.messenger.v1.StreamEvent.ServiceTokenAdded;
                     public static toObject(message: berty.messenger.v1.StreamEvent.ServiceTokenAdded, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
-                    public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
             }
 
@@ -5459,7 +5238,6 @@ export namespace berty {
                 public static fromObject(object: { [k: string]: any }): berty.messenger.v1.ConversationStream;
                 public static toObject(message: berty.messenger.v1.ConversationStream, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
-                public static getTypeUrl(typeUrlPrefix?: string): string;
             }
 
             namespace ConversationStream {
@@ -5482,7 +5260,6 @@ export namespace berty {
                     public static fromObject(object: { [k: string]: any }): berty.messenger.v1.ConversationStream.Request;
                     public static toObject(message: berty.messenger.v1.ConversationStream.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
-                    public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
 
                 interface IReply {
@@ -5501,7 +5278,6 @@ export namespace berty {
                     public static fromObject(object: { [k: string]: any }): berty.messenger.v1.ConversationStream.Reply;
                     public static toObject(message: berty.messenger.v1.ConversationStream.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
-                    public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
             }
 
@@ -5519,7 +5295,6 @@ export namespace berty {
                 public static fromObject(object: { [k: string]: any }): berty.messenger.v1.ConversationCreate;
                 public static toObject(message: berty.messenger.v1.ConversationCreate, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
-                public static getTypeUrl(typeUrlPrefix?: string): string;
             }
 
             namespace ConversationCreate {
@@ -5542,7 +5317,6 @@ export namespace berty {
                     public static fromObject(object: { [k: string]: any }): berty.messenger.v1.ConversationCreate.Request;
                     public static toObject(message: berty.messenger.v1.ConversationCreate.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
-                    public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
 
                 interface IReply {
@@ -5561,7 +5335,6 @@ export namespace berty {
                     public static fromObject(object: { [k: string]: any }): berty.messenger.v1.ConversationCreate.Reply;
                     public static toObject(message: berty.messenger.v1.ConversationCreate.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
-                    public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
             }
 
@@ -5579,7 +5352,6 @@ export namespace berty {
                 public static fromObject(object: { [k: string]: any }): berty.messenger.v1.AccountGet;
                 public static toObject(message: berty.messenger.v1.AccountGet, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
-                public static getTypeUrl(typeUrlPrefix?: string): string;
             }
 
             namespace AccountGet {
@@ -5598,7 +5370,6 @@ export namespace berty {
                     public static fromObject(object: { [k: string]: any }): berty.messenger.v1.AccountGet.Request;
                     public static toObject(message: berty.messenger.v1.AccountGet.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
-                    public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
 
                 interface IReply {
@@ -5617,7 +5388,6 @@ export namespace berty {
                     public static fromObject(object: { [k: string]: any }): berty.messenger.v1.AccountGet.Reply;
                     public static toObject(message: berty.messenger.v1.AccountGet.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
-                    public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
             }
 
@@ -5635,7 +5405,6 @@ export namespace berty {
                 public static fromObject(object: { [k: string]: any }): berty.messenger.v1.EventStream;
                 public static toObject(message: berty.messenger.v1.EventStream, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
-                public static getTypeUrl(typeUrlPrefix?: string): string;
             }
 
             namespace EventStream {
@@ -5656,7 +5425,6 @@ export namespace berty {
                     public static fromObject(object: { [k: string]: any }): berty.messenger.v1.EventStream.Request;
                     public static toObject(message: berty.messenger.v1.EventStream.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
-                    public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
 
                 interface IReply {
@@ -5675,7 +5443,6 @@ export namespace berty {
                     public static fromObject(object: { [k: string]: any }): berty.messenger.v1.EventStream.Reply;
                     public static toObject(message: berty.messenger.v1.EventStream.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
-                    public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
             }
 
@@ -5693,7 +5460,6 @@ export namespace berty {
                 public static fromObject(object: { [k: string]: any }): berty.messenger.v1.AccountUpdate;
                 public static toObject(message: berty.messenger.v1.AccountUpdate, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
-                public static getTypeUrl(typeUrlPrefix?: string): string;
             }
 
             namespace AccountUpdate {
@@ -5714,7 +5480,6 @@ export namespace berty {
                     public static fromObject(object: { [k: string]: any }): berty.messenger.v1.AccountUpdate.Request;
                     public static toObject(message: berty.messenger.v1.AccountUpdate.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
-                    public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
 
                 interface IReply {
@@ -5731,7 +5496,6 @@ export namespace berty {
                     public static fromObject(object: { [k: string]: any }): berty.messenger.v1.AccountUpdate.Reply;
                     public static toObject(message: berty.messenger.v1.AccountUpdate.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
-                    public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
             }
 
@@ -5749,7 +5513,6 @@ export namespace berty {
                 public static fromObject(object: { [k: string]: any }): berty.messenger.v1.AccountPushConfigure;
                 public static toObject(message: berty.messenger.v1.AccountPushConfigure, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
-                public static getTypeUrl(typeUrlPrefix?: string): string;
             }
 
             namespace AccountPushConfigure {
@@ -5782,7 +5545,6 @@ export namespace berty {
                     public static fromObject(object: { [k: string]: any }): berty.messenger.v1.AccountPushConfigure.Request;
                     public static toObject(message: berty.messenger.v1.AccountPushConfigure.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
-                    public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
 
                 interface IReply {
@@ -5799,7 +5561,6 @@ export namespace berty {
                     public static fromObject(object: { [k: string]: any }): berty.messenger.v1.AccountPushConfigure.Reply;
                     public static toObject(message: berty.messenger.v1.AccountPushConfigure.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
-                    public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
             }
 
@@ -5817,7 +5578,6 @@ export namespace berty {
                 public static fromObject(object: { [k: string]: any }): berty.messenger.v1.ContactRequest;
                 public static toObject(message: berty.messenger.v1.ContactRequest, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
-                public static getTypeUrl(typeUrlPrefix?: string): string;
             }
 
             namespace ContactRequest {
@@ -5840,7 +5600,6 @@ export namespace berty {
                     public static fromObject(object: { [k: string]: any }): berty.messenger.v1.ContactRequest.Request;
                     public static toObject(message: berty.messenger.v1.ContactRequest.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
-                    public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
 
                 interface IReply {
@@ -5857,7 +5616,6 @@ export namespace berty {
                     public static fromObject(object: { [k: string]: any }): berty.messenger.v1.ContactRequest.Reply;
                     public static toObject(message: berty.messenger.v1.ContactRequest.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
-                    public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
             }
 
@@ -5875,7 +5633,6 @@ export namespace berty {
                 public static fromObject(object: { [k: string]: any }): berty.messenger.v1.ContactAccept;
                 public static toObject(message: berty.messenger.v1.ContactAccept, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
-                public static getTypeUrl(typeUrlPrefix?: string): string;
             }
 
             namespace ContactAccept {
@@ -5896,7 +5653,6 @@ export namespace berty {
                     public static fromObject(object: { [k: string]: any }): berty.messenger.v1.ContactAccept.Request;
                     public static toObject(message: berty.messenger.v1.ContactAccept.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
-                    public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
 
                 interface IReply {
@@ -5913,7 +5669,6 @@ export namespace berty {
                     public static fromObject(object: { [k: string]: any }): berty.messenger.v1.ContactAccept.Reply;
                     public static toObject(message: berty.messenger.v1.ContactAccept.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
-                    public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
             }
 
@@ -5931,7 +5686,6 @@ export namespace berty {
                 public static fromObject(object: { [k: string]: any }): berty.messenger.v1.Interact;
                 public static toObject(message: berty.messenger.v1.Interact, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
-                public static getTypeUrl(typeUrlPrefix?: string): string;
             }
 
             namespace Interact {
@@ -5960,7 +5714,6 @@ export namespace berty {
                     public static fromObject(object: { [k: string]: any }): berty.messenger.v1.Interact.Request;
                     public static toObject(message: berty.messenger.v1.Interact.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
-                    public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
 
                 interface IReply {
@@ -5979,7 +5732,6 @@ export namespace berty {
                     public static fromObject(object: { [k: string]: any }): berty.messenger.v1.Interact.Reply;
                     public static toObject(message: berty.messenger.v1.Interact.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
-                    public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
             }
 
@@ -5997,7 +5749,6 @@ export namespace berty {
                 public static fromObject(object: { [k: string]: any }): berty.messenger.v1.ReplicationServiceRegisterGroup;
                 public static toObject(message: berty.messenger.v1.ReplicationServiceRegisterGroup, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
-                public static getTypeUrl(typeUrlPrefix?: string): string;
             }
 
             namespace ReplicationServiceRegisterGroup {
@@ -6020,7 +5771,6 @@ export namespace berty {
                     public static fromObject(object: { [k: string]: any }): berty.messenger.v1.ReplicationServiceRegisterGroup.Request;
                     public static toObject(message: berty.messenger.v1.ReplicationServiceRegisterGroup.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
-                    public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
 
                 interface IReply {
@@ -6037,7 +5787,6 @@ export namespace berty {
                     public static fromObject(object: { [k: string]: any }): berty.messenger.v1.ReplicationServiceRegisterGroup.Reply;
                     public static toObject(message: berty.messenger.v1.ReplicationServiceRegisterGroup.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
-                    public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
             }
 
@@ -6055,7 +5804,6 @@ export namespace berty {
                 public static fromObject(object: { [k: string]: any }): berty.messenger.v1.ReplicationSetAutoEnable;
                 public static toObject(message: berty.messenger.v1.ReplicationSetAutoEnable, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
-                public static getTypeUrl(typeUrlPrefix?: string): string;
             }
 
             namespace ReplicationSetAutoEnable {
@@ -6076,7 +5824,6 @@ export namespace berty {
                     public static fromObject(object: { [k: string]: any }): berty.messenger.v1.ReplicationSetAutoEnable.Request;
                     public static toObject(message: berty.messenger.v1.ReplicationSetAutoEnable.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
-                    public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
 
                 interface IReply {
@@ -6093,7 +5840,6 @@ export namespace berty {
                     public static fromObject(object: { [k: string]: any }): berty.messenger.v1.ReplicationSetAutoEnable.Reply;
                     public static toObject(message: berty.messenger.v1.ReplicationSetAutoEnable.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
-                    public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
             }
 
@@ -6111,7 +5857,6 @@ export namespace berty {
                 public static fromObject(object: { [k: string]: any }): berty.messenger.v1.BannerQuote;
                 public static toObject(message: berty.messenger.v1.BannerQuote, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
-                public static getTypeUrl(typeUrlPrefix?: string): string;
             }
 
             namespace BannerQuote {
@@ -6132,7 +5877,6 @@ export namespace berty {
                     public static fromObject(object: { [k: string]: any }): berty.messenger.v1.BannerQuote.Request;
                     public static toObject(message: berty.messenger.v1.BannerQuote.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
-                    public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
 
                 interface IReply {
@@ -6153,7 +5897,6 @@ export namespace berty {
                     public static fromObject(object: { [k: string]: any }): berty.messenger.v1.BannerQuote.Reply;
                     public static toObject(message: berty.messenger.v1.BannerQuote.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
-                    public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
             }
 
@@ -6171,7 +5914,6 @@ export namespace berty {
                 public static fromObject(object: { [k: string]: any }): berty.messenger.v1.InstanceExportData;
                 public static toObject(message: berty.messenger.v1.InstanceExportData, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
-                public static getTypeUrl(typeUrlPrefix?: string): string;
             }
 
             namespace InstanceExportData {
@@ -6190,7 +5932,6 @@ export namespace berty {
                     public static fromObject(object: { [k: string]: any }): berty.messenger.v1.InstanceExportData.Request;
                     public static toObject(message: berty.messenger.v1.InstanceExportData.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
-                    public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
 
                 interface IReply {
@@ -6209,7 +5950,6 @@ export namespace berty {
                     public static fromObject(object: { [k: string]: any }): berty.messenger.v1.InstanceExportData.Reply;
                     public static toObject(message: berty.messenger.v1.InstanceExportData.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
-                    public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
             }
 
@@ -6239,7 +5979,6 @@ export namespace berty {
                 public static fromObject(object: { [k: string]: any }): berty.messenger.v1.LocalDatabaseState;
                 public static toObject(message: berty.messenger.v1.LocalDatabaseState, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
-                public static getTypeUrl(typeUrlPrefix?: string): string;
             }
 
             interface ILocalConversationState {
@@ -6264,7 +6003,6 @@ export namespace berty {
                 public static fromObject(object: { [k: string]: any }): berty.messenger.v1.LocalConversationState;
                 public static toObject(message: berty.messenger.v1.LocalConversationState, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
-                public static getTypeUrl(typeUrlPrefix?: string): string;
             }
 
             interface IMessageSearch {
@@ -6281,7 +6019,6 @@ export namespace berty {
                 public static fromObject(object: { [k: string]: any }): berty.messenger.v1.MessageSearch;
                 public static toObject(message: berty.messenger.v1.MessageSearch, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
-                public static getTypeUrl(typeUrlPrefix?: string): string;
             }
 
             namespace MessageSearch {
@@ -6312,7 +6049,6 @@ export namespace berty {
                     public static fromObject(object: { [k: string]: any }): berty.messenger.v1.MessageSearch.Request;
                     public static toObject(message: berty.messenger.v1.MessageSearch.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
-                    public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
 
                 interface IReply {
@@ -6331,7 +6067,6 @@ export namespace berty {
                     public static fromObject(object: { [k: string]: any }): berty.messenger.v1.MessageSearch.Reply;
                     public static toObject(message: berty.messenger.v1.MessageSearch.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
-                    public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
             }
 
@@ -6349,7 +6084,6 @@ export namespace berty {
                 public static fromObject(object: { [k: string]: any }): berty.messenger.v1.TyberHostSearch;
                 public static toObject(message: berty.messenger.v1.TyberHostSearch, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
-                public static getTypeUrl(typeUrlPrefix?: string): string;
             }
 
             namespace TyberHostSearch {
@@ -6368,7 +6102,6 @@ export namespace berty {
                     public static fromObject(object: { [k: string]: any }): berty.messenger.v1.TyberHostSearch.Request;
                     public static toObject(message: berty.messenger.v1.TyberHostSearch.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
-                    public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
 
                 interface IReply {
@@ -6391,7 +6124,6 @@ export namespace berty {
                     public static fromObject(object: { [k: string]: any }): berty.messenger.v1.TyberHostSearch.Reply;
                     public static toObject(message: berty.messenger.v1.TyberHostSearch.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
-                    public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
             }
 
@@ -6409,7 +6141,6 @@ export namespace berty {
                 public static fromObject(object: { [k: string]: any }): berty.messenger.v1.TyberHostAttach;
                 public static toObject(message: berty.messenger.v1.TyberHostAttach, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
-                public static getTypeUrl(typeUrlPrefix?: string): string;
             }
 
             namespace TyberHostAttach {
@@ -6430,7 +6161,6 @@ export namespace berty {
                     public static fromObject(object: { [k: string]: any }): berty.messenger.v1.TyberHostAttach.Request;
                     public static toObject(message: berty.messenger.v1.TyberHostAttach.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
-                    public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
 
                 interface IReply {
@@ -6449,7 +6179,6 @@ export namespace berty {
                     public static fromObject(object: { [k: string]: any }): berty.messenger.v1.TyberHostAttach.Reply;
                     public static toObject(message: berty.messenger.v1.TyberHostAttach.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
-                    public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
             }
 
@@ -6467,7 +6196,6 @@ export namespace berty {
                 public static fromObject(object: { [k: string]: any }): berty.messenger.v1.PushSetDeviceToken;
                 public static toObject(message: berty.messenger.v1.PushSetDeviceToken, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
-                public static getTypeUrl(typeUrlPrefix?: string): string;
             }
 
             namespace PushSetDeviceToken {
@@ -6488,7 +6216,6 @@ export namespace berty {
                     public static fromObject(object: { [k: string]: any }): berty.messenger.v1.PushSetDeviceToken.Request;
                     public static toObject(message: berty.messenger.v1.PushSetDeviceToken.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
-                    public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
 
                 interface IReply {
@@ -6505,7 +6232,6 @@ export namespace berty {
                     public static fromObject(object: { [k: string]: any }): berty.messenger.v1.PushSetDeviceToken.Reply;
                     public static toObject(message: berty.messenger.v1.PushSetDeviceToken.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
-                    public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
             }
 
@@ -6523,7 +6249,6 @@ export namespace berty {
                 public static fromObject(object: { [k: string]: any }): berty.messenger.v1.PushSetAutoShare;
                 public static toObject(message: berty.messenger.v1.PushSetAutoShare, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
-                public static getTypeUrl(typeUrlPrefix?: string): string;
             }
 
             namespace PushSetAutoShare {
@@ -6544,7 +6269,6 @@ export namespace berty {
                     public static fromObject(object: { [k: string]: any }): berty.messenger.v1.PushSetAutoShare.Request;
                     public static toObject(message: berty.messenger.v1.PushSetAutoShare.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
-                    public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
 
                 interface IReply {
@@ -6561,7 +6285,6 @@ export namespace berty {
                     public static fromObject(object: { [k: string]: any }): berty.messenger.v1.PushSetAutoShare.Reply;
                     public static toObject(message: berty.messenger.v1.PushSetAutoShare.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
-                    public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
             }
 
@@ -6591,7 +6314,6 @@ export namespace berty {
                 public static fromObject(object: { [k: string]: any }): berty.messenger.v1.PushReceivedData;
                 public static toObject(message: berty.messenger.v1.PushReceivedData, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
-                public static getTypeUrl(typeUrlPrefix?: string): string;
             }
 
             interface IPushReceive {
@@ -6608,7 +6330,6 @@ export namespace berty {
                 public static fromObject(object: { [k: string]: any }): berty.messenger.v1.PushReceive;
                 public static toObject(message: berty.messenger.v1.PushReceive, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
-                public static getTypeUrl(typeUrlPrefix?: string): string;
             }
 
             namespace PushReceive {
@@ -6629,7 +6350,6 @@ export namespace berty {
                     public static fromObject(object: { [k: string]: any }): berty.messenger.v1.PushReceive.Request;
                     public static toObject(message: berty.messenger.v1.PushReceive.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
-                    public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
 
                 interface IReply {
@@ -6648,7 +6368,6 @@ export namespace berty {
                     public static fromObject(object: { [k: string]: any }): berty.messenger.v1.PushReceive.Reply;
                     public static toObject(message: berty.messenger.v1.PushReceive.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
-                    public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
             }
 
@@ -6666,7 +6385,6 @@ export namespace berty {
                 public static fromObject(object: { [k: string]: any }): berty.messenger.v1.ListMemberDevices;
                 public static toObject(message: berty.messenger.v1.ListMemberDevices, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
-                public static getTypeUrl(typeUrlPrefix?: string): string;
             }
 
             namespace ListMemberDevices {
@@ -6689,7 +6407,6 @@ export namespace berty {
                     public static fromObject(object: { [k: string]: any }): berty.messenger.v1.ListMemberDevices.Request;
                     public static toObject(message: berty.messenger.v1.ListMemberDevices.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
-                    public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
 
                 interface IReply {
@@ -6708,7 +6425,6 @@ export namespace berty {
                     public static fromObject(object: { [k: string]: any }): berty.messenger.v1.ListMemberDevices.Reply;
                     public static toObject(message: berty.messenger.v1.ListMemberDevices.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
-                    public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
             }
 
@@ -6726,7 +6442,6 @@ export namespace berty {
                 public static fromObject(object: { [k: string]: any }): berty.messenger.v1.PushShareTokenForConversation;
                 public static toObject(message: berty.messenger.v1.PushShareTokenForConversation, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
-                public static getTypeUrl(typeUrlPrefix?: string): string;
             }
 
             namespace PushShareTokenForConversation {
@@ -6747,7 +6462,6 @@ export namespace berty {
                     public static fromObject(object: { [k: string]: any }): berty.messenger.v1.PushShareTokenForConversation.Request;
                     public static toObject(message: berty.messenger.v1.PushShareTokenForConversation.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
-                    public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
 
                 interface IReply {
@@ -6764,7 +6478,6 @@ export namespace berty {
                     public static fromObject(object: { [k: string]: any }): berty.messenger.v1.PushShareTokenForConversation.Reply;
                     public static toObject(message: berty.messenger.v1.PushShareTokenForConversation.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
-                    public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
             }
 
@@ -6782,7 +6495,6 @@ export namespace berty {
                 public static fromObject(object: { [k: string]: any }): berty.messenger.v1.PushTokenSharedForConversation;
                 public static toObject(message: berty.messenger.v1.PushTokenSharedForConversation, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
-                public static getTypeUrl(typeUrlPrefix?: string): string;
             }
 
             namespace PushTokenSharedForConversation {
@@ -6803,7 +6515,6 @@ export namespace berty {
                     public static fromObject(object: { [k: string]: any }): berty.messenger.v1.PushTokenSharedForConversation.Request;
                     public static toObject(message: berty.messenger.v1.PushTokenSharedForConversation.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
-                    public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
 
                 interface IReply {
@@ -6822,7 +6533,6 @@ export namespace berty {
                     public static fromObject(object: { [k: string]: any }): berty.messenger.v1.PushTokenSharedForConversation.Reply;
                     public static toObject(message: berty.messenger.v1.PushTokenSharedForConversation.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
-                    public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
             }
 
@@ -6840,7 +6550,6 @@ export namespace berty {
                 public static fromObject(object: { [k: string]: any }): berty.messenger.v1.DirectoryServiceRegister;
                 public static toObject(message: berty.messenger.v1.DirectoryServiceRegister, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
-                public static getTypeUrl(typeUrlPrefix?: string): string;
             }
 
             namespace DirectoryServiceRegister {
@@ -6867,7 +6576,6 @@ export namespace berty {
                     public static fromObject(object: { [k: string]: any }): berty.messenger.v1.DirectoryServiceRegister.Request;
                     public static toObject(message: berty.messenger.v1.DirectoryServiceRegister.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
-                    public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
 
                 interface IReply {
@@ -6886,7 +6594,6 @@ export namespace berty {
                     public static fromObject(object: { [k: string]: any }): berty.messenger.v1.DirectoryServiceRegister.Reply;
                     public static toObject(message: berty.messenger.v1.DirectoryServiceRegister.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
-                    public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
             }
 
@@ -6904,7 +6611,6 @@ export namespace berty {
                 public static fromObject(object: { [k: string]: any }): berty.messenger.v1.DirectoryServiceUnregister;
                 public static toObject(message: berty.messenger.v1.DirectoryServiceUnregister, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
-                public static getTypeUrl(typeUrlPrefix?: string): string;
             }
 
             namespace DirectoryServiceUnregister {
@@ -6927,7 +6633,6 @@ export namespace berty {
                     public static fromObject(object: { [k: string]: any }): berty.messenger.v1.DirectoryServiceUnregister.Request;
                     public static toObject(message: berty.messenger.v1.DirectoryServiceUnregister.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
-                    public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
 
                 interface IReply {
@@ -6944,7 +6649,6 @@ export namespace berty {
                     public static fromObject(object: { [k: string]: any }): berty.messenger.v1.DirectoryServiceUnregister.Reply;
                     public static toObject(message: berty.messenger.v1.DirectoryServiceUnregister.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
-                    public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
             }
 
@@ -6962,7 +6666,6 @@ export namespace berty {
                 public static fromObject(object: { [k: string]: any }): berty.messenger.v1.DirectoryServiceQuery;
                 public static toObject(message: berty.messenger.v1.DirectoryServiceQuery, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
-                public static getTypeUrl(typeUrlPrefix?: string): string;
             }
 
             namespace DirectoryServiceQuery {
@@ -6985,7 +6688,6 @@ export namespace berty {
                     public static fromObject(object: { [k: string]: any }): berty.messenger.v1.DirectoryServiceQuery.Request;
                     public static toObject(message: berty.messenger.v1.DirectoryServiceQuery.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
-                    public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
 
                 interface IReply {
@@ -7010,7 +6712,6 @@ export namespace berty {
                     public static fromObject(object: { [k: string]: any }): berty.messenger.v1.DirectoryServiceQuery.Reply;
                     public static toObject(message: berty.messenger.v1.DirectoryServiceQuery.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
-                    public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
             }
 
@@ -7032,7 +6733,6 @@ export namespace berty {
                 public static fromObject(object: { [k: string]: any }): berty.messenger.v1.PushServer;
                 public static toObject(message: berty.messenger.v1.PushServer, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
-                public static getTypeUrl(typeUrlPrefix?: string): string;
             }
 
             interface IPushLocalDeviceSharedToken {
@@ -7053,7 +6753,6 @@ export namespace berty {
                 public static fromObject(object: { [k: string]: any }): berty.messenger.v1.PushLocalDeviceSharedToken;
                 public static toObject(message: berty.messenger.v1.PushLocalDeviceSharedToken, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
-                public static getTypeUrl(typeUrlPrefix?: string): string;
             }
 
             interface IPushMemberToken {
@@ -7082,7 +6781,6 @@ export namespace berty {
                 public static fromObject(object: { [k: string]: any }): berty.messenger.v1.PushMemberToken;
                 public static toObject(message: berty.messenger.v1.PushMemberToken, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
-                public static getTypeUrl(typeUrlPrefix?: string): string;
             }
 
             interface IPushMemberTokenUpdate {
@@ -7105,7 +6803,6 @@ export namespace berty {
                 public static fromObject(object: { [k: string]: any }): berty.messenger.v1.PushMemberTokenUpdate;
                 public static toObject(message: berty.messenger.v1.PushMemberTokenUpdate, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
-                public static getTypeUrl(typeUrlPrefix?: string): string;
             }
 
             interface IMemberWithDevices {
@@ -7126,7 +6823,6 @@ export namespace berty {
                 public static fromObject(object: { [k: string]: any }): berty.messenger.v1.MemberWithDevices;
                 public static toObject(message: berty.messenger.v1.MemberWithDevices, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
-                public static getTypeUrl(typeUrlPrefix?: string): string;
             }
 
             interface IPushSend {
@@ -7143,7 +6839,6 @@ export namespace berty {
                 public static fromObject(object: { [k: string]: any }): berty.messenger.v1.PushSend;
                 public static toObject(message: berty.messenger.v1.PushSend, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
-                public static getTypeUrl(typeUrlPrefix?: string): string;
             }
 
             namespace PushSend {
@@ -7168,7 +6863,6 @@ export namespace berty {
                     public static fromObject(object: { [k: string]: any }): berty.messenger.v1.PushSend.Request;
                     public static toObject(message: berty.messenger.v1.PushSend.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
-                    public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
 
                 interface IReply {
@@ -7187,7 +6881,6 @@ export namespace berty {
                     public static fromObject(object: { [k: string]: any }): berty.messenger.v1.PushSend.Reply;
                     public static toObject(message: berty.messenger.v1.PushSend.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
-                    public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
             }
 
@@ -7205,7 +6898,6 @@ export namespace berty {
                 public static fromObject(object: { [k: string]: any }): berty.messenger.v1.PushShareToken;
                 public static toObject(message: berty.messenger.v1.PushShareToken, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
-                public static getTypeUrl(typeUrlPrefix?: string): string;
             }
 
             namespace PushShareToken {
@@ -7232,7 +6924,6 @@ export namespace berty {
                     public static fromObject(object: { [k: string]: any }): berty.messenger.v1.PushShareToken.Request;
                     public static toObject(message: berty.messenger.v1.PushShareToken.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
-                    public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
 
                 interface IReply {
@@ -7249,7 +6940,6 @@ export namespace berty {
                     public static fromObject(object: { [k: string]: any }): berty.messenger.v1.PushShareToken.Reply;
                     public static toObject(message: berty.messenger.v1.PushShareToken.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
-                    public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
             }
 
@@ -7267,7 +6957,6 @@ export namespace berty {
                 public static fromObject(object: { [k: string]: any }): berty.messenger.v1.PushSetServer;
                 public static toObject(message: berty.messenger.v1.PushSetServer, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
-                public static getTypeUrl(typeUrlPrefix?: string): string;
             }
 
             namespace PushSetServer {
@@ -7288,7 +6977,6 @@ export namespace berty {
                     public static fromObject(object: { [k: string]: any }): berty.messenger.v1.PushSetServer.Request;
                     public static toObject(message: berty.messenger.v1.PushSetServer.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
-                    public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
 
                 interface IReply {
@@ -7305,7 +6993,6 @@ export namespace berty {
                     public static fromObject(object: { [k: string]: any }): berty.messenger.v1.PushSetServer.Reply;
                     public static toObject(message: berty.messenger.v1.PushSetServer.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
-                    public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
             }
 
@@ -7333,7 +7020,6 @@ export namespace berty {
                 public static fromObject(object: { [k: string]: any }): berty.messenger.v1.AuthExchangeResponse;
                 public static toObject(message: berty.messenger.v1.AuthExchangeResponse, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
-                public static getTypeUrl(typeUrlPrefix?: string): string;
             }
 
             interface IServicesTokenCode {
@@ -7356,7 +7042,6 @@ export namespace berty {
                 public static fromObject(object: { [k: string]: any }): berty.messenger.v1.ServicesTokenCode;
                 public static toObject(message: berty.messenger.v1.ServicesTokenCode, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
-                public static getTypeUrl(typeUrlPrefix?: string): string;
             }
         }
     }
@@ -7590,7 +7275,6 @@ export namespace weshnet {
                 public static fromObject(object: { [k: string]: any }): weshnet.protocol.v1.Account;
                 public static toObject(message: weshnet.protocol.v1.Account, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
-                public static getTypeUrl(typeUrlPrefix?: string): string;
             }
 
             interface IGroup {
@@ -7621,7 +7305,6 @@ export namespace weshnet {
                 public static fromObject(object: { [k: string]: any }): weshnet.protocol.v1.Group;
                 public static toObject(message: weshnet.protocol.v1.Group, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
-                public static getTypeUrl(typeUrlPrefix?: string): string;
             }
 
             interface IGroupHeadsExport {
@@ -7648,7 +7331,6 @@ export namespace weshnet {
                 public static fromObject(object: { [k: string]: any }): weshnet.protocol.v1.GroupHeadsExport;
                 public static toObject(message: weshnet.protocol.v1.GroupHeadsExport, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
-                public static getTypeUrl(typeUrlPrefix?: string): string;
             }
 
             interface IGroupMetadata {
@@ -7673,7 +7355,6 @@ export namespace weshnet {
                 public static fromObject(object: { [k: string]: any }): weshnet.protocol.v1.GroupMetadata;
                 public static toObject(message: weshnet.protocol.v1.GroupMetadata, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
-                public static getTypeUrl(typeUrlPrefix?: string): string;
             }
 
             interface IGroupEnvelope {
@@ -7694,7 +7375,6 @@ export namespace weshnet {
                 public static fromObject(object: { [k: string]: any }): weshnet.protocol.v1.GroupEnvelope;
                 public static toObject(message: weshnet.protocol.v1.GroupEnvelope, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
-                public static getTypeUrl(typeUrlPrefix?: string): string;
             }
 
             interface IMessageHeaders {
@@ -7719,7 +7399,6 @@ export namespace weshnet {
                 public static fromObject(object: { [k: string]: any }): weshnet.protocol.v1.MessageHeaders;
                 public static toObject(message: weshnet.protocol.v1.MessageHeaders, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
-                public static getTypeUrl(typeUrlPrefix?: string): string;
             }
 
             interface IProtocolMetadata {
@@ -7736,7 +7415,6 @@ export namespace weshnet {
                 public static fromObject(object: { [k: string]: any }): weshnet.protocol.v1.ProtocolMetadata;
                 public static toObject(message: weshnet.protocol.v1.ProtocolMetadata, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
-                public static getTypeUrl(typeUrlPrefix?: string): string;
             }
 
             interface IEncryptedMessage {
@@ -7757,7 +7435,6 @@ export namespace weshnet {
                 public static fromObject(object: { [k: string]: any }): weshnet.protocol.v1.EncryptedMessage;
                 public static toObject(message: weshnet.protocol.v1.EncryptedMessage, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
-                public static getTypeUrl(typeUrlPrefix?: string): string;
             }
 
             interface IMessageEnvelope {
@@ -7780,7 +7457,6 @@ export namespace weshnet {
                 public static fromObject(object: { [k: string]: any }): weshnet.protocol.v1.MessageEnvelope;
                 public static toObject(message: weshnet.protocol.v1.MessageEnvelope, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
-                public static getTypeUrl(typeUrlPrefix?: string): string;
             }
 
             interface IEventContext {
@@ -7803,7 +7479,6 @@ export namespace weshnet {
                 public static fromObject(object: { [k: string]: any }): weshnet.protocol.v1.EventContext;
                 public static toObject(message: weshnet.protocol.v1.EventContext, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
-                public static getTypeUrl(typeUrlPrefix?: string): string;
             }
 
             interface IGroupMetadataPayloadSent {
@@ -7824,7 +7499,6 @@ export namespace weshnet {
                 public static fromObject(object: { [k: string]: any }): weshnet.protocol.v1.GroupMetadataPayloadSent;
                 public static toObject(message: weshnet.protocol.v1.GroupMetadataPayloadSent, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
-                public static getTypeUrl(typeUrlPrefix?: string): string;
             }
 
             interface IContactAliasKeyAdded {
@@ -7845,7 +7519,6 @@ export namespace weshnet {
                 public static fromObject(object: { [k: string]: any }): weshnet.protocol.v1.ContactAliasKeyAdded;
                 public static toObject(message: weshnet.protocol.v1.ContactAliasKeyAdded, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
-                public static getTypeUrl(typeUrlPrefix?: string): string;
             }
 
             interface IGroupMemberDeviceAdded {
@@ -7868,7 +7541,6 @@ export namespace weshnet {
                 public static fromObject(object: { [k: string]: any }): weshnet.protocol.v1.GroupMemberDeviceAdded;
                 public static toObject(message: weshnet.protocol.v1.GroupMemberDeviceAdded, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
-                public static getTypeUrl(typeUrlPrefix?: string): string;
             }
 
             interface IDeviceChainKey {
@@ -7889,7 +7561,6 @@ export namespace weshnet {
                 public static fromObject(object: { [k: string]: any }): weshnet.protocol.v1.DeviceChainKey;
                 public static toObject(message: weshnet.protocol.v1.DeviceChainKey, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
-                public static getTypeUrl(typeUrlPrefix?: string): string;
             }
 
             interface IGroupDeviceChainKeyAdded {
@@ -7912,7 +7583,6 @@ export namespace weshnet {
                 public static fromObject(object: { [k: string]: any }): weshnet.protocol.v1.GroupDeviceChainKeyAdded;
                 public static toObject(message: weshnet.protocol.v1.GroupDeviceChainKeyAdded, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
-                public static getTypeUrl(typeUrlPrefix?: string): string;
             }
 
             interface IMultiMemberGroupAliasResolverAdded {
@@ -7935,7 +7605,6 @@ export namespace weshnet {
                 public static fromObject(object: { [k: string]: any }): weshnet.protocol.v1.MultiMemberGroupAliasResolverAdded;
                 public static toObject(message: weshnet.protocol.v1.MultiMemberGroupAliasResolverAdded, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
-                public static getTypeUrl(typeUrlPrefix?: string): string;
             }
 
             interface IMultiMemberGroupAdminRoleGranted {
@@ -7956,7 +7625,6 @@ export namespace weshnet {
                 public static fromObject(object: { [k: string]: any }): weshnet.protocol.v1.MultiMemberGroupAdminRoleGranted;
                 public static toObject(message: weshnet.protocol.v1.MultiMemberGroupAdminRoleGranted, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
-                public static getTypeUrl(typeUrlPrefix?: string): string;
             }
 
             interface IMultiMemberGroupInitialMemberAnnounced {
@@ -7975,7 +7643,6 @@ export namespace weshnet {
                 public static fromObject(object: { [k: string]: any }): weshnet.protocol.v1.MultiMemberGroupInitialMemberAnnounced;
                 public static toObject(message: weshnet.protocol.v1.MultiMemberGroupInitialMemberAnnounced, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
-                public static getTypeUrl(typeUrlPrefix?: string): string;
             }
 
             interface IGroupAddAdditionalRendezvousSeed {
@@ -7996,7 +7663,6 @@ export namespace weshnet {
                 public static fromObject(object: { [k: string]: any }): weshnet.protocol.v1.GroupAddAdditionalRendezvousSeed;
                 public static toObject(message: weshnet.protocol.v1.GroupAddAdditionalRendezvousSeed, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
-                public static getTypeUrl(typeUrlPrefix?: string): string;
             }
 
             interface IGroupRemoveAdditionalRendezvousSeed {
@@ -8017,7 +7683,6 @@ export namespace weshnet {
                 public static fromObject(object: { [k: string]: any }): weshnet.protocol.v1.GroupRemoveAdditionalRendezvousSeed;
                 public static toObject(message: weshnet.protocol.v1.GroupRemoveAdditionalRendezvousSeed, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
-                public static getTypeUrl(typeUrlPrefix?: string): string;
             }
 
             interface IAccountGroupJoined {
@@ -8038,7 +7703,6 @@ export namespace weshnet {
                 public static fromObject(object: { [k: string]: any }): weshnet.protocol.v1.AccountGroupJoined;
                 public static toObject(message: weshnet.protocol.v1.AccountGroupJoined, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
-                public static getTypeUrl(typeUrlPrefix?: string): string;
             }
 
             interface IAccountGroupLeft {
@@ -8059,7 +7723,6 @@ export namespace weshnet {
                 public static fromObject(object: { [k: string]: any }): weshnet.protocol.v1.AccountGroupLeft;
                 public static toObject(message: weshnet.protocol.v1.AccountGroupLeft, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
-                public static getTypeUrl(typeUrlPrefix?: string): string;
             }
 
             interface IAccountContactRequestDisabled {
@@ -8078,7 +7741,6 @@ export namespace weshnet {
                 public static fromObject(object: { [k: string]: any }): weshnet.protocol.v1.AccountContactRequestDisabled;
                 public static toObject(message: weshnet.protocol.v1.AccountContactRequestDisabled, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
-                public static getTypeUrl(typeUrlPrefix?: string): string;
             }
 
             interface IAccountContactRequestEnabled {
@@ -8097,7 +7759,6 @@ export namespace weshnet {
                 public static fromObject(object: { [k: string]: any }): weshnet.protocol.v1.AccountContactRequestEnabled;
                 public static toObject(message: weshnet.protocol.v1.AccountContactRequestEnabled, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
-                public static getTypeUrl(typeUrlPrefix?: string): string;
             }
 
             interface IAccountContactRequestReferenceReset {
@@ -8118,7 +7779,6 @@ export namespace weshnet {
                 public static fromObject(object: { [k: string]: any }): weshnet.protocol.v1.AccountContactRequestReferenceReset;
                 public static toObject(message: weshnet.protocol.v1.AccountContactRequestReferenceReset, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
-                public static getTypeUrl(typeUrlPrefix?: string): string;
             }
 
             interface IAccountContactRequestOutgoingEnqueued {
@@ -8143,7 +7803,6 @@ export namespace weshnet {
                 public static fromObject(object: { [k: string]: any }): weshnet.protocol.v1.AccountContactRequestOutgoingEnqueued;
                 public static toObject(message: weshnet.protocol.v1.AccountContactRequestOutgoingEnqueued, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
-                public static getTypeUrl(typeUrlPrefix?: string): string;
             }
 
             interface IAccountContactRequestOutgoingSent {
@@ -8164,7 +7823,6 @@ export namespace weshnet {
                 public static fromObject(object: { [k: string]: any }): weshnet.protocol.v1.AccountContactRequestOutgoingSent;
                 public static toObject(message: weshnet.protocol.v1.AccountContactRequestOutgoingSent, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
-                public static getTypeUrl(typeUrlPrefix?: string): string;
             }
 
             interface IAccountContactRequestIncomingReceived {
@@ -8189,7 +7847,6 @@ export namespace weshnet {
                 public static fromObject(object: { [k: string]: any }): weshnet.protocol.v1.AccountContactRequestIncomingReceived;
                 public static toObject(message: weshnet.protocol.v1.AccountContactRequestIncomingReceived, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
-                public static getTypeUrl(typeUrlPrefix?: string): string;
             }
 
             interface IAccountContactRequestIncomingDiscarded {
@@ -8210,7 +7867,6 @@ export namespace weshnet {
                 public static fromObject(object: { [k: string]: any }): weshnet.protocol.v1.AccountContactRequestIncomingDiscarded;
                 public static toObject(message: weshnet.protocol.v1.AccountContactRequestIncomingDiscarded, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
-                public static getTypeUrl(typeUrlPrefix?: string): string;
             }
 
             interface IAccountContactRequestIncomingAccepted {
@@ -8233,7 +7889,6 @@ export namespace weshnet {
                 public static fromObject(object: { [k: string]: any }): weshnet.protocol.v1.AccountContactRequestIncomingAccepted;
                 public static toObject(message: weshnet.protocol.v1.AccountContactRequestIncomingAccepted, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
-                public static getTypeUrl(typeUrlPrefix?: string): string;
             }
 
             interface IAccountContactBlocked {
@@ -8254,7 +7909,6 @@ export namespace weshnet {
                 public static fromObject(object: { [k: string]: any }): weshnet.protocol.v1.AccountContactBlocked;
                 public static toObject(message: weshnet.protocol.v1.AccountContactBlocked, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
-                public static getTypeUrl(typeUrlPrefix?: string): string;
             }
 
             interface IAccountContactUnblocked {
@@ -8275,7 +7929,6 @@ export namespace weshnet {
                 public static fromObject(object: { [k: string]: any }): weshnet.protocol.v1.AccountContactUnblocked;
                 public static toObject(message: weshnet.protocol.v1.AccountContactUnblocked, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
-                public static getTypeUrl(typeUrlPrefix?: string): string;
             }
 
             interface IGroupReplicating {
@@ -8298,7 +7951,6 @@ export namespace weshnet {
                 public static fromObject(object: { [k: string]: any }): weshnet.protocol.v1.GroupReplicating;
                 public static toObject(message: weshnet.protocol.v1.GroupReplicating, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
-                public static getTypeUrl(typeUrlPrefix?: string): string;
             }
 
             interface IServiceExportData {
@@ -8315,7 +7967,6 @@ export namespace weshnet {
                 public static fromObject(object: { [k: string]: any }): weshnet.protocol.v1.ServiceExportData;
                 public static toObject(message: weshnet.protocol.v1.ServiceExportData, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
-                public static getTypeUrl(typeUrlPrefix?: string): string;
             }
 
             namespace ServiceExportData {
@@ -8334,7 +7985,6 @@ export namespace weshnet {
                     public static fromObject(object: { [k: string]: any }): weshnet.protocol.v1.ServiceExportData.Request;
                     public static toObject(message: weshnet.protocol.v1.ServiceExportData.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
-                    public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
 
                 interface IReply {
@@ -8353,7 +8003,6 @@ export namespace weshnet {
                     public static fromObject(object: { [k: string]: any }): weshnet.protocol.v1.ServiceExportData.Reply;
                     public static toObject(message: weshnet.protocol.v1.ServiceExportData.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
-                    public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
             }
 
@@ -8371,7 +8020,6 @@ export namespace weshnet {
                 public static fromObject(object: { [k: string]: any }): weshnet.protocol.v1.ServiceGetConfiguration;
                 public static toObject(message: weshnet.protocol.v1.ServiceGetConfiguration, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
-                public static getTypeUrl(typeUrlPrefix?: string): string;
             }
 
             namespace ServiceGetConfiguration {
@@ -8397,7 +8045,6 @@ export namespace weshnet {
                     public static fromObject(object: { [k: string]: any }): weshnet.protocol.v1.ServiceGetConfiguration.Request;
                     public static toObject(message: weshnet.protocol.v1.ServiceGetConfiguration.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
-                    public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
 
                 interface IReply {
@@ -8432,7 +8079,6 @@ export namespace weshnet {
                     public static fromObject(object: { [k: string]: any }): weshnet.protocol.v1.ServiceGetConfiguration.Reply;
                     public static toObject(message: weshnet.protocol.v1.ServiceGetConfiguration.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
-                    public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
             }
 
@@ -8450,7 +8096,6 @@ export namespace weshnet {
                 public static fromObject(object: { [k: string]: any }): weshnet.protocol.v1.ContactRequestReference;
                 public static toObject(message: weshnet.protocol.v1.ContactRequestReference, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
-                public static getTypeUrl(typeUrlPrefix?: string): string;
             }
 
             namespace ContactRequestReference {
@@ -8469,7 +8114,6 @@ export namespace weshnet {
                     public static fromObject(object: { [k: string]: any }): weshnet.protocol.v1.ContactRequestReference.Request;
                     public static toObject(message: weshnet.protocol.v1.ContactRequestReference.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
-                    public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
 
                 interface IReply {
@@ -8490,7 +8134,6 @@ export namespace weshnet {
                     public static fromObject(object: { [k: string]: any }): weshnet.protocol.v1.ContactRequestReference.Reply;
                     public static toObject(message: weshnet.protocol.v1.ContactRequestReference.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
-                    public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
             }
 
@@ -8508,7 +8151,6 @@ export namespace weshnet {
                 public static fromObject(object: { [k: string]: any }): weshnet.protocol.v1.ContactRequestDisable;
                 public static toObject(message: weshnet.protocol.v1.ContactRequestDisable, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
-                public static getTypeUrl(typeUrlPrefix?: string): string;
             }
 
             namespace ContactRequestDisable {
@@ -8527,7 +8169,6 @@ export namespace weshnet {
                     public static fromObject(object: { [k: string]: any }): weshnet.protocol.v1.ContactRequestDisable.Request;
                     public static toObject(message: weshnet.protocol.v1.ContactRequestDisable.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
-                    public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
 
                 interface IReply {
@@ -8544,7 +8185,6 @@ export namespace weshnet {
                     public static fromObject(object: { [k: string]: any }): weshnet.protocol.v1.ContactRequestDisable.Reply;
                     public static toObject(message: weshnet.protocol.v1.ContactRequestDisable.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
-                    public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
             }
 
@@ -8562,7 +8202,6 @@ export namespace weshnet {
                 public static fromObject(object: { [k: string]: any }): weshnet.protocol.v1.ContactRequestEnable;
                 public static toObject(message: weshnet.protocol.v1.ContactRequestEnable, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
-                public static getTypeUrl(typeUrlPrefix?: string): string;
             }
 
             namespace ContactRequestEnable {
@@ -8581,7 +8220,6 @@ export namespace weshnet {
                     public static fromObject(object: { [k: string]: any }): weshnet.protocol.v1.ContactRequestEnable.Request;
                     public static toObject(message: weshnet.protocol.v1.ContactRequestEnable.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
-                    public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
 
                 interface IReply {
@@ -8600,7 +8238,6 @@ export namespace weshnet {
                     public static fromObject(object: { [k: string]: any }): weshnet.protocol.v1.ContactRequestEnable.Reply;
                     public static toObject(message: weshnet.protocol.v1.ContactRequestEnable.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
-                    public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
             }
 
@@ -8618,7 +8255,6 @@ export namespace weshnet {
                 public static fromObject(object: { [k: string]: any }): weshnet.protocol.v1.ContactRequestResetReference;
                 public static toObject(message: weshnet.protocol.v1.ContactRequestResetReference, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
-                public static getTypeUrl(typeUrlPrefix?: string): string;
             }
 
             namespace ContactRequestResetReference {
@@ -8637,7 +8273,6 @@ export namespace weshnet {
                     public static fromObject(object: { [k: string]: any }): weshnet.protocol.v1.ContactRequestResetReference.Request;
                     public static toObject(message: weshnet.protocol.v1.ContactRequestResetReference.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
-                    public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
 
                 interface IReply {
@@ -8656,7 +8291,6 @@ export namespace weshnet {
                     public static fromObject(object: { [k: string]: any }): weshnet.protocol.v1.ContactRequestResetReference.Reply;
                     public static toObject(message: weshnet.protocol.v1.ContactRequestResetReference.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
-                    public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
             }
 
@@ -8674,7 +8308,6 @@ export namespace weshnet {
                 public static fromObject(object: { [k: string]: any }): weshnet.protocol.v1.ContactRequestSend;
                 public static toObject(message: weshnet.protocol.v1.ContactRequestSend, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
-                public static getTypeUrl(typeUrlPrefix?: string): string;
             }
 
             namespace ContactRequestSend {
@@ -8697,7 +8330,6 @@ export namespace weshnet {
                     public static fromObject(object: { [k: string]: any }): weshnet.protocol.v1.ContactRequestSend.Request;
                     public static toObject(message: weshnet.protocol.v1.ContactRequestSend.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
-                    public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
 
                 interface IReply {
@@ -8714,7 +8346,6 @@ export namespace weshnet {
                     public static fromObject(object: { [k: string]: any }): weshnet.protocol.v1.ContactRequestSend.Reply;
                     public static toObject(message: weshnet.protocol.v1.ContactRequestSend.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
-                    public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
             }
 
@@ -8732,7 +8363,6 @@ export namespace weshnet {
                 public static fromObject(object: { [k: string]: any }): weshnet.protocol.v1.ContactRequestAccept;
                 public static toObject(message: weshnet.protocol.v1.ContactRequestAccept, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
-                public static getTypeUrl(typeUrlPrefix?: string): string;
             }
 
             namespace ContactRequestAccept {
@@ -8753,7 +8383,6 @@ export namespace weshnet {
                     public static fromObject(object: { [k: string]: any }): weshnet.protocol.v1.ContactRequestAccept.Request;
                     public static toObject(message: weshnet.protocol.v1.ContactRequestAccept.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
-                    public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
 
                 interface IReply {
@@ -8770,7 +8399,6 @@ export namespace weshnet {
                     public static fromObject(object: { [k: string]: any }): weshnet.protocol.v1.ContactRequestAccept.Reply;
                     public static toObject(message: weshnet.protocol.v1.ContactRequestAccept.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
-                    public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
             }
 
@@ -8788,7 +8416,6 @@ export namespace weshnet {
                 public static fromObject(object: { [k: string]: any }): weshnet.protocol.v1.ContactRequestDiscard;
                 public static toObject(message: weshnet.protocol.v1.ContactRequestDiscard, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
-                public static getTypeUrl(typeUrlPrefix?: string): string;
             }
 
             namespace ContactRequestDiscard {
@@ -8809,7 +8436,6 @@ export namespace weshnet {
                     public static fromObject(object: { [k: string]: any }): weshnet.protocol.v1.ContactRequestDiscard.Request;
                     public static toObject(message: weshnet.protocol.v1.ContactRequestDiscard.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
-                    public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
 
                 interface IReply {
@@ -8826,7 +8452,6 @@ export namespace weshnet {
                     public static fromObject(object: { [k: string]: any }): weshnet.protocol.v1.ContactRequestDiscard.Reply;
                     public static toObject(message: weshnet.protocol.v1.ContactRequestDiscard.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
-                    public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
             }
 
@@ -8844,7 +8469,6 @@ export namespace weshnet {
                 public static fromObject(object: { [k: string]: any }): weshnet.protocol.v1.ShareContact;
                 public static toObject(message: weshnet.protocol.v1.ShareContact, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
-                public static getTypeUrl(typeUrlPrefix?: string): string;
             }
 
             namespace ShareContact {
@@ -8863,7 +8487,6 @@ export namespace weshnet {
                     public static fromObject(object: { [k: string]: any }): weshnet.protocol.v1.ShareContact.Request;
                     public static toObject(message: weshnet.protocol.v1.ShareContact.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
-                    public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
 
                 interface IReply {
@@ -8882,7 +8505,6 @@ export namespace weshnet {
                     public static fromObject(object: { [k: string]: any }): weshnet.protocol.v1.ShareContact.Reply;
                     public static toObject(message: weshnet.protocol.v1.ShareContact.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
-                    public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
             }
 
@@ -8900,7 +8522,6 @@ export namespace weshnet {
                 public static fromObject(object: { [k: string]: any }): weshnet.protocol.v1.DecodeContact;
                 public static toObject(message: weshnet.protocol.v1.DecodeContact, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
-                public static getTypeUrl(typeUrlPrefix?: string): string;
             }
 
             namespace DecodeContact {
@@ -8921,7 +8542,6 @@ export namespace weshnet {
                     public static fromObject(object: { [k: string]: any }): weshnet.protocol.v1.DecodeContact.Request;
                     public static toObject(message: weshnet.protocol.v1.DecodeContact.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
-                    public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
 
                 interface IReply {
@@ -8940,7 +8560,6 @@ export namespace weshnet {
                     public static fromObject(object: { [k: string]: any }): weshnet.protocol.v1.DecodeContact.Reply;
                     public static toObject(message: weshnet.protocol.v1.DecodeContact.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
-                    public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
             }
 
@@ -8958,7 +8577,6 @@ export namespace weshnet {
                 public static fromObject(object: { [k: string]: any }): weshnet.protocol.v1.ContactBlock;
                 public static toObject(message: weshnet.protocol.v1.ContactBlock, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
-                public static getTypeUrl(typeUrlPrefix?: string): string;
             }
 
             namespace ContactBlock {
@@ -8979,7 +8597,6 @@ export namespace weshnet {
                     public static fromObject(object: { [k: string]: any }): weshnet.protocol.v1.ContactBlock.Request;
                     public static toObject(message: weshnet.protocol.v1.ContactBlock.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
-                    public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
 
                 interface IReply {
@@ -8996,7 +8613,6 @@ export namespace weshnet {
                     public static fromObject(object: { [k: string]: any }): weshnet.protocol.v1.ContactBlock.Reply;
                     public static toObject(message: weshnet.protocol.v1.ContactBlock.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
-                    public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
             }
 
@@ -9014,7 +8630,6 @@ export namespace weshnet {
                 public static fromObject(object: { [k: string]: any }): weshnet.protocol.v1.ContactUnblock;
                 public static toObject(message: weshnet.protocol.v1.ContactUnblock, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
-                public static getTypeUrl(typeUrlPrefix?: string): string;
             }
 
             namespace ContactUnblock {
@@ -9035,7 +8650,6 @@ export namespace weshnet {
                     public static fromObject(object: { [k: string]: any }): weshnet.protocol.v1.ContactUnblock.Request;
                     public static toObject(message: weshnet.protocol.v1.ContactUnblock.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
-                    public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
 
                 interface IReply {
@@ -9052,7 +8666,6 @@ export namespace weshnet {
                     public static fromObject(object: { [k: string]: any }): weshnet.protocol.v1.ContactUnblock.Reply;
                     public static toObject(message: weshnet.protocol.v1.ContactUnblock.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
-                    public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
             }
 
@@ -9070,7 +8683,6 @@ export namespace weshnet {
                 public static fromObject(object: { [k: string]: any }): weshnet.protocol.v1.ContactAliasKeySend;
                 public static toObject(message: weshnet.protocol.v1.ContactAliasKeySend, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
-                public static getTypeUrl(typeUrlPrefix?: string): string;
             }
 
             namespace ContactAliasKeySend {
@@ -9091,7 +8703,6 @@ export namespace weshnet {
                     public static fromObject(object: { [k: string]: any }): weshnet.protocol.v1.ContactAliasKeySend.Request;
                     public static toObject(message: weshnet.protocol.v1.ContactAliasKeySend.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
-                    public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
 
                 interface IReply {
@@ -9108,7 +8719,6 @@ export namespace weshnet {
                     public static fromObject(object: { [k: string]: any }): weshnet.protocol.v1.ContactAliasKeySend.Reply;
                     public static toObject(message: weshnet.protocol.v1.ContactAliasKeySend.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
-                    public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
             }
 
@@ -9126,7 +8736,6 @@ export namespace weshnet {
                 public static fromObject(object: { [k: string]: any }): weshnet.protocol.v1.MultiMemberGroupCreate;
                 public static toObject(message: weshnet.protocol.v1.MultiMemberGroupCreate, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
-                public static getTypeUrl(typeUrlPrefix?: string): string;
             }
 
             namespace MultiMemberGroupCreate {
@@ -9145,7 +8754,6 @@ export namespace weshnet {
                     public static fromObject(object: { [k: string]: any }): weshnet.protocol.v1.MultiMemberGroupCreate.Request;
                     public static toObject(message: weshnet.protocol.v1.MultiMemberGroupCreate.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
-                    public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
 
                 interface IReply {
@@ -9164,7 +8772,6 @@ export namespace weshnet {
                     public static fromObject(object: { [k: string]: any }): weshnet.protocol.v1.MultiMemberGroupCreate.Reply;
                     public static toObject(message: weshnet.protocol.v1.MultiMemberGroupCreate.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
-                    public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
             }
 
@@ -9182,7 +8789,6 @@ export namespace weshnet {
                 public static fromObject(object: { [k: string]: any }): weshnet.protocol.v1.MultiMemberGroupJoin;
                 public static toObject(message: weshnet.protocol.v1.MultiMemberGroupJoin, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
-                public static getTypeUrl(typeUrlPrefix?: string): string;
             }
 
             namespace MultiMemberGroupJoin {
@@ -9203,7 +8809,6 @@ export namespace weshnet {
                     public static fromObject(object: { [k: string]: any }): weshnet.protocol.v1.MultiMemberGroupJoin.Request;
                     public static toObject(message: weshnet.protocol.v1.MultiMemberGroupJoin.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
-                    public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
 
                 interface IReply {
@@ -9220,7 +8825,6 @@ export namespace weshnet {
                     public static fromObject(object: { [k: string]: any }): weshnet.protocol.v1.MultiMemberGroupJoin.Reply;
                     public static toObject(message: weshnet.protocol.v1.MultiMemberGroupJoin.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
-                    public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
             }
 
@@ -9238,7 +8842,6 @@ export namespace weshnet {
                 public static fromObject(object: { [k: string]: any }): weshnet.protocol.v1.MultiMemberGroupLeave;
                 public static toObject(message: weshnet.protocol.v1.MultiMemberGroupLeave, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
-                public static getTypeUrl(typeUrlPrefix?: string): string;
             }
 
             namespace MultiMemberGroupLeave {
@@ -9259,7 +8862,6 @@ export namespace weshnet {
                     public static fromObject(object: { [k: string]: any }): weshnet.protocol.v1.MultiMemberGroupLeave.Request;
                     public static toObject(message: weshnet.protocol.v1.MultiMemberGroupLeave.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
-                    public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
 
                 interface IReply {
@@ -9276,7 +8878,6 @@ export namespace weshnet {
                     public static fromObject(object: { [k: string]: any }): weshnet.protocol.v1.MultiMemberGroupLeave.Reply;
                     public static toObject(message: weshnet.protocol.v1.MultiMemberGroupLeave.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
-                    public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
             }
 
@@ -9294,7 +8895,6 @@ export namespace weshnet {
                 public static fromObject(object: { [k: string]: any }): weshnet.protocol.v1.MultiMemberGroupAliasResolverDisclose;
                 public static toObject(message: weshnet.protocol.v1.MultiMemberGroupAliasResolverDisclose, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
-                public static getTypeUrl(typeUrlPrefix?: string): string;
             }
 
             namespace MultiMemberGroupAliasResolverDisclose {
@@ -9315,7 +8915,6 @@ export namespace weshnet {
                     public static fromObject(object: { [k: string]: any }): weshnet.protocol.v1.MultiMemberGroupAliasResolverDisclose.Request;
                     public static toObject(message: weshnet.protocol.v1.MultiMemberGroupAliasResolverDisclose.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
-                    public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
 
                 interface IReply {
@@ -9332,7 +8931,6 @@ export namespace weshnet {
                     public static fromObject(object: { [k: string]: any }): weshnet.protocol.v1.MultiMemberGroupAliasResolverDisclose.Reply;
                     public static toObject(message: weshnet.protocol.v1.MultiMemberGroupAliasResolverDisclose.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
-                    public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
             }
 
@@ -9350,7 +8948,6 @@ export namespace weshnet {
                 public static fromObject(object: { [k: string]: any }): weshnet.protocol.v1.MultiMemberGroupAdminRoleGrant;
                 public static toObject(message: weshnet.protocol.v1.MultiMemberGroupAdminRoleGrant, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
-                public static getTypeUrl(typeUrlPrefix?: string): string;
             }
 
             namespace MultiMemberGroupAdminRoleGrant {
@@ -9373,7 +8970,6 @@ export namespace weshnet {
                     public static fromObject(object: { [k: string]: any }): weshnet.protocol.v1.MultiMemberGroupAdminRoleGrant.Request;
                     public static toObject(message: weshnet.protocol.v1.MultiMemberGroupAdminRoleGrant.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
-                    public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
 
                 interface IReply {
@@ -9390,7 +8986,6 @@ export namespace weshnet {
                     public static fromObject(object: { [k: string]: any }): weshnet.protocol.v1.MultiMemberGroupAdminRoleGrant.Reply;
                     public static toObject(message: weshnet.protocol.v1.MultiMemberGroupAdminRoleGrant.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
-                    public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
             }
 
@@ -9408,7 +9003,6 @@ export namespace weshnet {
                 public static fromObject(object: { [k: string]: any }): weshnet.protocol.v1.MultiMemberGroupInvitationCreate;
                 public static toObject(message: weshnet.protocol.v1.MultiMemberGroupInvitationCreate, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
-                public static getTypeUrl(typeUrlPrefix?: string): string;
             }
 
             namespace MultiMemberGroupInvitationCreate {
@@ -9429,7 +9023,6 @@ export namespace weshnet {
                     public static fromObject(object: { [k: string]: any }): weshnet.protocol.v1.MultiMemberGroupInvitationCreate.Request;
                     public static toObject(message: weshnet.protocol.v1.MultiMemberGroupInvitationCreate.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
-                    public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
 
                 interface IReply {
@@ -9448,7 +9041,6 @@ export namespace weshnet {
                     public static fromObject(object: { [k: string]: any }): weshnet.protocol.v1.MultiMemberGroupInvitationCreate.Reply;
                     public static toObject(message: weshnet.protocol.v1.MultiMemberGroupInvitationCreate.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
-                    public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
             }
 
@@ -9466,7 +9058,6 @@ export namespace weshnet {
                 public static fromObject(object: { [k: string]: any }): weshnet.protocol.v1.AppMetadataSend;
                 public static toObject(message: weshnet.protocol.v1.AppMetadataSend, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
-                public static getTypeUrl(typeUrlPrefix?: string): string;
             }
 
             namespace AppMetadataSend {
@@ -9489,7 +9080,6 @@ export namespace weshnet {
                     public static fromObject(object: { [k: string]: any }): weshnet.protocol.v1.AppMetadataSend.Request;
                     public static toObject(message: weshnet.protocol.v1.AppMetadataSend.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
-                    public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
 
                 interface IReply {
@@ -9508,7 +9098,6 @@ export namespace weshnet {
                     public static fromObject(object: { [k: string]: any }): weshnet.protocol.v1.AppMetadataSend.Reply;
                     public static toObject(message: weshnet.protocol.v1.AppMetadataSend.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
-                    public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
             }
 
@@ -9526,7 +9115,6 @@ export namespace weshnet {
                 public static fromObject(object: { [k: string]: any }): weshnet.protocol.v1.AppMessageSend;
                 public static toObject(message: weshnet.protocol.v1.AppMessageSend, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
-                public static getTypeUrl(typeUrlPrefix?: string): string;
             }
 
             namespace AppMessageSend {
@@ -9549,7 +9137,6 @@ export namespace weshnet {
                     public static fromObject(object: { [k: string]: any }): weshnet.protocol.v1.AppMessageSend.Request;
                     public static toObject(message: weshnet.protocol.v1.AppMessageSend.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
-                    public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
 
                 interface IReply {
@@ -9568,7 +9155,6 @@ export namespace weshnet {
                     public static fromObject(object: { [k: string]: any }): weshnet.protocol.v1.AppMessageSend.Reply;
                     public static toObject(message: weshnet.protocol.v1.AppMessageSend.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
-                    public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
             }
 
@@ -9592,7 +9178,6 @@ export namespace weshnet {
                 public static fromObject(object: { [k: string]: any }): weshnet.protocol.v1.GroupMetadataEvent;
                 public static toObject(message: weshnet.protocol.v1.GroupMetadataEvent, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
-                public static getTypeUrl(typeUrlPrefix?: string): string;
             }
 
             interface IGroupMessageEvent {
@@ -9615,7 +9200,6 @@ export namespace weshnet {
                 public static fromObject(object: { [k: string]: any }): weshnet.protocol.v1.GroupMessageEvent;
                 public static toObject(message: weshnet.protocol.v1.GroupMessageEvent, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
-                public static getTypeUrl(typeUrlPrefix?: string): string;
             }
 
             interface IGroupMetadataList {
@@ -9632,7 +9216,6 @@ export namespace weshnet {
                 public static fromObject(object: { [k: string]: any }): weshnet.protocol.v1.GroupMetadataList;
                 public static toObject(message: weshnet.protocol.v1.GroupMetadataList, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
-                public static getTypeUrl(typeUrlPrefix?: string): string;
             }
 
             namespace GroupMetadataList {
@@ -9663,7 +9246,6 @@ export namespace weshnet {
                     public static fromObject(object: { [k: string]: any }): weshnet.protocol.v1.GroupMetadataList.Request;
                     public static toObject(message: weshnet.protocol.v1.GroupMetadataList.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
-                    public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
             }
 
@@ -9681,7 +9263,6 @@ export namespace weshnet {
                 public static fromObject(object: { [k: string]: any }): weshnet.protocol.v1.GroupMessageList;
                 public static toObject(message: weshnet.protocol.v1.GroupMessageList, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
-                public static getTypeUrl(typeUrlPrefix?: string): string;
             }
 
             namespace GroupMessageList {
@@ -9712,7 +9293,6 @@ export namespace weshnet {
                     public static fromObject(object: { [k: string]: any }): weshnet.protocol.v1.GroupMessageList.Request;
                     public static toObject(message: weshnet.protocol.v1.GroupMessageList.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
-                    public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
             }
 
@@ -9730,7 +9310,6 @@ export namespace weshnet {
                 public static fromObject(object: { [k: string]: any }): weshnet.protocol.v1.GroupInfo;
                 public static toObject(message: weshnet.protocol.v1.GroupInfo, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
-                public static getTypeUrl(typeUrlPrefix?: string): string;
             }
 
             namespace GroupInfo {
@@ -9753,7 +9332,6 @@ export namespace weshnet {
                     public static fromObject(object: { [k: string]: any }): weshnet.protocol.v1.GroupInfo.Request;
                     public static toObject(message: weshnet.protocol.v1.GroupInfo.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
-                    public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
 
                 interface IReply {
@@ -9776,7 +9354,6 @@ export namespace weshnet {
                     public static fromObject(object: { [k: string]: any }): weshnet.protocol.v1.GroupInfo.Reply;
                     public static toObject(message: weshnet.protocol.v1.GroupInfo.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
-                    public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
             }
 
@@ -9794,7 +9371,6 @@ export namespace weshnet {
                 public static fromObject(object: { [k: string]: any }): weshnet.protocol.v1.ActivateGroup;
                 public static toObject(message: weshnet.protocol.v1.ActivateGroup, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
-                public static getTypeUrl(typeUrlPrefix?: string): string;
             }
 
             namespace ActivateGroup {
@@ -9817,7 +9393,6 @@ export namespace weshnet {
                     public static fromObject(object: { [k: string]: any }): weshnet.protocol.v1.ActivateGroup.Request;
                     public static toObject(message: weshnet.protocol.v1.ActivateGroup.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
-                    public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
 
                 interface IReply {
@@ -9834,7 +9409,6 @@ export namespace weshnet {
                     public static fromObject(object: { [k: string]: any }): weshnet.protocol.v1.ActivateGroup.Reply;
                     public static toObject(message: weshnet.protocol.v1.ActivateGroup.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
-                    public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
             }
 
@@ -9852,7 +9426,6 @@ export namespace weshnet {
                 public static fromObject(object: { [k: string]: any }): weshnet.protocol.v1.DeactivateGroup;
                 public static toObject(message: weshnet.protocol.v1.DeactivateGroup, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
-                public static getTypeUrl(typeUrlPrefix?: string): string;
             }
 
             namespace DeactivateGroup {
@@ -9873,7 +9446,6 @@ export namespace weshnet {
                     public static fromObject(object: { [k: string]: any }): weshnet.protocol.v1.DeactivateGroup.Request;
                     public static toObject(message: weshnet.protocol.v1.DeactivateGroup.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
-                    public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
 
                 interface IReply {
@@ -9890,7 +9462,6 @@ export namespace weshnet {
                     public static fromObject(object: { [k: string]: any }): weshnet.protocol.v1.DeactivateGroup.Reply;
                     public static toObject(message: weshnet.protocol.v1.DeactivateGroup.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
-                    public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
             }
 
@@ -9908,7 +9479,6 @@ export namespace weshnet {
                 public static fromObject(object: { [k: string]: any }): weshnet.protocol.v1.GroupDeviceStatus;
                 public static toObject(message: weshnet.protocol.v1.GroupDeviceStatus, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
-                public static getTypeUrl(typeUrlPrefix?: string): string;
             }
 
             namespace GroupDeviceStatus {
@@ -9943,7 +9513,6 @@ export namespace weshnet {
                     public static fromObject(object: { [k: string]: any }): weshnet.protocol.v1.GroupDeviceStatus.Request;
                     public static toObject(message: weshnet.protocol.v1.GroupDeviceStatus.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
-                    public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
 
                 interface IReply {
@@ -9964,7 +9533,6 @@ export namespace weshnet {
                     public static fromObject(object: { [k: string]: any }): weshnet.protocol.v1.GroupDeviceStatus.Reply;
                     public static toObject(message: weshnet.protocol.v1.GroupDeviceStatus.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
-                    public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
 
                 namespace Reply {
@@ -9991,7 +9559,6 @@ export namespace weshnet {
                         public static fromObject(object: { [k: string]: any }): weshnet.protocol.v1.GroupDeviceStatus.Reply.PeerConnected;
                         public static toObject(message: weshnet.protocol.v1.GroupDeviceStatus.Reply.PeerConnected, options?: $protobuf.IConversionOptions): { [k: string]: any };
                         public toJSON(): { [k: string]: any };
-                        public static getTypeUrl(typeUrlPrefix?: string): string;
                     }
 
                     interface IPeerReconnecting {
@@ -10010,7 +9577,6 @@ export namespace weshnet {
                         public static fromObject(object: { [k: string]: any }): weshnet.protocol.v1.GroupDeviceStatus.Reply.PeerReconnecting;
                         public static toObject(message: weshnet.protocol.v1.GroupDeviceStatus.Reply.PeerReconnecting, options?: $protobuf.IConversionOptions): { [k: string]: any };
                         public toJSON(): { [k: string]: any };
-                        public static getTypeUrl(typeUrlPrefix?: string): string;
                     }
 
                     interface IPeerDisconnected {
@@ -10029,7 +9595,6 @@ export namespace weshnet {
                         public static fromObject(object: { [k: string]: any }): weshnet.protocol.v1.GroupDeviceStatus.Reply.PeerDisconnected;
                         public static toObject(message: weshnet.protocol.v1.GroupDeviceStatus.Reply.PeerDisconnected, options?: $protobuf.IConversionOptions): { [k: string]: any };
                         public toJSON(): { [k: string]: any };
-                        public static getTypeUrl(typeUrlPrefix?: string): string;
                     }
                 }
             }
@@ -10048,7 +9613,6 @@ export namespace weshnet {
                 public static fromObject(object: { [k: string]: any }): weshnet.protocol.v1.DebugListGroups;
                 public static toObject(message: weshnet.protocol.v1.DebugListGroups, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
-                public static getTypeUrl(typeUrlPrefix?: string): string;
             }
 
             namespace DebugListGroups {
@@ -10067,7 +9631,6 @@ export namespace weshnet {
                     public static fromObject(object: { [k: string]: any }): weshnet.protocol.v1.DebugListGroups.Request;
                     public static toObject(message: weshnet.protocol.v1.DebugListGroups.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
-                    public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
 
                 interface IReply {
@@ -10090,7 +9653,6 @@ export namespace weshnet {
                     public static fromObject(object: { [k: string]: any }): weshnet.protocol.v1.DebugListGroups.Reply;
                     public static toObject(message: weshnet.protocol.v1.DebugListGroups.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
-                    public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
             }
 
@@ -10108,7 +9670,6 @@ export namespace weshnet {
                 public static fromObject(object: { [k: string]: any }): weshnet.protocol.v1.DebugInspectGroupStore;
                 public static toObject(message: weshnet.protocol.v1.DebugInspectGroupStore, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
-                public static getTypeUrl(typeUrlPrefix?: string): string;
             }
 
             namespace DebugInspectGroupStore {
@@ -10131,7 +9692,6 @@ export namespace weshnet {
                     public static fromObject(object: { [k: string]: any }): weshnet.protocol.v1.DebugInspectGroupStore.Request;
                     public static toObject(message: weshnet.protocol.v1.DebugInspectGroupStore.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
-                    public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
 
                 interface IReply {
@@ -10158,7 +9718,6 @@ export namespace weshnet {
                     public static fromObject(object: { [k: string]: any }): weshnet.protocol.v1.DebugInspectGroupStore.Reply;
                     public static toObject(message: weshnet.protocol.v1.DebugInspectGroupStore.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
-                    public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
             }
 
@@ -10176,7 +9735,6 @@ export namespace weshnet {
                 public static fromObject(object: { [k: string]: any }): weshnet.protocol.v1.DebugGroup;
                 public static toObject(message: weshnet.protocol.v1.DebugGroup, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
-                public static getTypeUrl(typeUrlPrefix?: string): string;
             }
 
             namespace DebugGroup {
@@ -10197,7 +9755,6 @@ export namespace weshnet {
                     public static fromObject(object: { [k: string]: any }): weshnet.protocol.v1.DebugGroup.Request;
                     public static toObject(message: weshnet.protocol.v1.DebugGroup.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
-                    public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
 
                 interface IReply {
@@ -10216,7 +9773,6 @@ export namespace weshnet {
                     public static fromObject(object: { [k: string]: any }): weshnet.protocol.v1.DebugGroup.Reply;
                     public static toObject(message: weshnet.protocol.v1.DebugGroup.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
-                    public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
             }
 
@@ -10256,7 +9812,6 @@ export namespace weshnet {
                 public static fromObject(object: { [k: string]: any }): weshnet.protocol.v1.ShareableContact;
                 public static toObject(message: weshnet.protocol.v1.ShareableContact, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
-                public static getTypeUrl(typeUrlPrefix?: string): string;
             }
 
             interface IServiceTokenSupportedService {
@@ -10277,7 +9832,6 @@ export namespace weshnet {
                 public static fromObject(object: { [k: string]: any }): weshnet.protocol.v1.ServiceTokenSupportedService;
                 public static toObject(message: weshnet.protocol.v1.ServiceTokenSupportedService, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
-                public static getTypeUrl(typeUrlPrefix?: string): string;
             }
 
             interface IServiceToken {
@@ -10302,7 +9856,6 @@ export namespace weshnet {
                 public static fromObject(object: { [k: string]: any }): weshnet.protocol.v1.ServiceToken;
                 public static toObject(message: weshnet.protocol.v1.ServiceToken, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
-                public static getTypeUrl(typeUrlPrefix?: string): string;
             }
 
             interface ICredentialVerificationServiceInitFlow {
@@ -10319,7 +9872,6 @@ export namespace weshnet {
                 public static fromObject(object: { [k: string]: any }): weshnet.protocol.v1.CredentialVerificationServiceInitFlow;
                 public static toObject(message: weshnet.protocol.v1.CredentialVerificationServiceInitFlow, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
-                public static getTypeUrl(typeUrlPrefix?: string): string;
             }
 
             namespace CredentialVerificationServiceInitFlow {
@@ -10344,7 +9896,6 @@ export namespace weshnet {
                     public static fromObject(object: { [k: string]: any }): weshnet.protocol.v1.CredentialVerificationServiceInitFlow.Request;
                     public static toObject(message: weshnet.protocol.v1.CredentialVerificationServiceInitFlow.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
-                    public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
 
                 interface IReply {
@@ -10365,7 +9916,6 @@ export namespace weshnet {
                     public static fromObject(object: { [k: string]: any }): weshnet.protocol.v1.CredentialVerificationServiceInitFlow.Reply;
                     public static toObject(message: weshnet.protocol.v1.CredentialVerificationServiceInitFlow.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
-                    public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
             }
 
@@ -10383,7 +9933,6 @@ export namespace weshnet {
                 public static fromObject(object: { [k: string]: any }): weshnet.protocol.v1.CredentialVerificationServiceCompleteFlow;
                 public static toObject(message: weshnet.protocol.v1.CredentialVerificationServiceCompleteFlow, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
-                public static getTypeUrl(typeUrlPrefix?: string): string;
             }
 
             namespace CredentialVerificationServiceCompleteFlow {
@@ -10404,7 +9953,6 @@ export namespace weshnet {
                     public static fromObject(object: { [k: string]: any }): weshnet.protocol.v1.CredentialVerificationServiceCompleteFlow.Request;
                     public static toObject(message: weshnet.protocol.v1.CredentialVerificationServiceCompleteFlow.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
-                    public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
 
                 interface IReply {
@@ -10423,7 +9971,6 @@ export namespace weshnet {
                     public static fromObject(object: { [k: string]: any }): weshnet.protocol.v1.CredentialVerificationServiceCompleteFlow.Reply;
                     public static toObject(message: weshnet.protocol.v1.CredentialVerificationServiceCompleteFlow.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
-                    public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
             }
 
@@ -10441,7 +9988,6 @@ export namespace weshnet {
                 public static fromObject(object: { [k: string]: any }): weshnet.protocol.v1.VerifiedCredentialsList;
                 public static toObject(message: weshnet.protocol.v1.VerifiedCredentialsList, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
-                public static getTypeUrl(typeUrlPrefix?: string): string;
             }
 
             namespace VerifiedCredentialsList {
@@ -10466,7 +10012,6 @@ export namespace weshnet {
                     public static fromObject(object: { [k: string]: any }): weshnet.protocol.v1.VerifiedCredentialsList.Request;
                     public static toObject(message: weshnet.protocol.v1.VerifiedCredentialsList.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
-                    public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
 
                 interface IReply {
@@ -10485,7 +10030,6 @@ export namespace weshnet {
                     public static fromObject(object: { [k: string]: any }): weshnet.protocol.v1.VerifiedCredentialsList.Reply;
                     public static toObject(message: weshnet.protocol.v1.VerifiedCredentialsList.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
-                    public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
             }
 
@@ -10503,7 +10047,6 @@ export namespace weshnet {
                 public static fromObject(object: { [k: string]: any }): weshnet.protocol.v1.ReplicationServiceRegisterGroup;
                 public static toObject(message: weshnet.protocol.v1.ReplicationServiceRegisterGroup, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
-                public static getTypeUrl(typeUrlPrefix?: string): string;
             }
 
             namespace ReplicationServiceRegisterGroup {
@@ -10530,7 +10073,6 @@ export namespace weshnet {
                     public static fromObject(object: { [k: string]: any }): weshnet.protocol.v1.ReplicationServiceRegisterGroup.Request;
                     public static toObject(message: weshnet.protocol.v1.ReplicationServiceRegisterGroup.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
-                    public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
 
                 interface IReply {
@@ -10547,7 +10089,6 @@ export namespace weshnet {
                     public static fromObject(object: { [k: string]: any }): weshnet.protocol.v1.ReplicationServiceRegisterGroup.Reply;
                     public static toObject(message: weshnet.protocol.v1.ReplicationServiceRegisterGroup.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
-                    public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
             }
 
@@ -10565,7 +10106,6 @@ export namespace weshnet {
                 public static fromObject(object: { [k: string]: any }): weshnet.protocol.v1.ReplicationServiceReplicateGroup;
                 public static toObject(message: weshnet.protocol.v1.ReplicationServiceReplicateGroup, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
-                public static getTypeUrl(typeUrlPrefix?: string): string;
             }
 
             namespace ReplicationServiceReplicateGroup {
@@ -10586,7 +10126,6 @@ export namespace weshnet {
                     public static fromObject(object: { [k: string]: any }): weshnet.protocol.v1.ReplicationServiceReplicateGroup.Request;
                     public static toObject(message: weshnet.protocol.v1.ReplicationServiceReplicateGroup.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
-                    public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
 
                 interface IReply {
@@ -10605,7 +10144,6 @@ export namespace weshnet {
                     public static fromObject(object: { [k: string]: any }): weshnet.protocol.v1.ReplicationServiceReplicateGroup.Reply;
                     public static toObject(message: weshnet.protocol.v1.ReplicationServiceReplicateGroup.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
-                    public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
             }
 
@@ -10623,7 +10161,6 @@ export namespace weshnet {
                 public static fromObject(object: { [k: string]: any }): weshnet.protocol.v1.SystemInfo;
                 public static toObject(message: weshnet.protocol.v1.SystemInfo, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
-                public static getTypeUrl(typeUrlPrefix?: string): string;
             }
 
             namespace SystemInfo {
@@ -10642,7 +10179,6 @@ export namespace weshnet {
                     public static fromObject(object: { [k: string]: any }): weshnet.protocol.v1.SystemInfo.Request;
                     public static toObject(message: weshnet.protocol.v1.SystemInfo.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
-                    public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
 
                 interface IReply {
@@ -10667,7 +10203,6 @@ export namespace weshnet {
                     public static fromObject(object: { [k: string]: any }): weshnet.protocol.v1.SystemInfo.Reply;
                     public static toObject(message: weshnet.protocol.v1.SystemInfo.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
-                    public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
 
                 interface IOrbitDB {
@@ -10686,7 +10221,6 @@ export namespace weshnet {
                     public static fromObject(object: { [k: string]: any }): weshnet.protocol.v1.SystemInfo.OrbitDB;
                     public static toObject(message: weshnet.protocol.v1.SystemInfo.OrbitDB, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
-                    public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
 
                 namespace OrbitDB {
@@ -10713,7 +10247,6 @@ export namespace weshnet {
                         public static fromObject(object: { [k: string]: any }): weshnet.protocol.v1.SystemInfo.OrbitDB.ReplicationStatus;
                         public static toObject(message: weshnet.protocol.v1.SystemInfo.OrbitDB.ReplicationStatus, options?: $protobuf.IConversionOptions): { [k: string]: any };
                         public toJSON(): { [k: string]: any };
-                        public static getTypeUrl(typeUrlPrefix?: string): string;
                     }
                 }
 
@@ -10733,7 +10266,6 @@ export namespace weshnet {
                     public static fromObject(object: { [k: string]: any }): weshnet.protocol.v1.SystemInfo.P2P;
                     public static toObject(message: weshnet.protocol.v1.SystemInfo.P2P, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
-                    public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
 
                 interface IProcess {
@@ -10794,7 +10326,6 @@ export namespace weshnet {
                     public static fromObject(object: { [k: string]: any }): weshnet.protocol.v1.SystemInfo.Process;
                     public static toObject(message: weshnet.protocol.v1.SystemInfo.Process, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
-                    public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
             }
 
@@ -10812,7 +10343,6 @@ export namespace weshnet {
                 public static fromObject(object: { [k: string]: any }): weshnet.protocol.v1.PeerList;
                 public static toObject(message: weshnet.protocol.v1.PeerList, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
-                public static getTypeUrl(typeUrlPrefix?: string): string;
             }
 
             namespace PeerList {
@@ -10831,7 +10361,6 @@ export namespace weshnet {
                     public static fromObject(object: { [k: string]: any }): weshnet.protocol.v1.PeerList.Request;
                     public static toObject(message: weshnet.protocol.v1.PeerList.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
-                    public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
 
                 interface IReply {
@@ -10850,7 +10379,6 @@ export namespace weshnet {
                     public static fromObject(object: { [k: string]: any }): weshnet.protocol.v1.PeerList.Reply;
                     public static toObject(message: weshnet.protocol.v1.PeerList.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
-                    public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
 
                 interface IPeer {
@@ -10881,7 +10409,6 @@ export namespace weshnet {
                     public static fromObject(object: { [k: string]: any }): weshnet.protocol.v1.PeerList.Peer;
                     public static toObject(message: weshnet.protocol.v1.PeerList.Peer, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
-                    public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
 
                 interface IRoute {
@@ -10908,7 +10435,6 @@ export namespace weshnet {
                     public static fromObject(object: { [k: string]: any }): weshnet.protocol.v1.PeerList.Route;
                     public static toObject(message: weshnet.protocol.v1.PeerList.Route, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
-                    public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
 
                 interface IStream {
@@ -10927,7 +10453,6 @@ export namespace weshnet {
                     public static fromObject(object: { [k: string]: any }): weshnet.protocol.v1.PeerList.Stream;
                     public static toObject(message: weshnet.protocol.v1.PeerList.Stream, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
-                    public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
 
                 enum Feature {
@@ -10973,7 +10498,6 @@ export namespace weshnet {
                 public static fromObject(object: { [k: string]: any }): weshnet.protocol.v1.Progress;
                 public static toObject(message: weshnet.protocol.v1.Progress, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
-                public static getTypeUrl(typeUrlPrefix?: string): string;
             }
 
             interface IOutOfStoreMessage {
@@ -11004,7 +10528,6 @@ export namespace weshnet {
                 public static fromObject(object: { [k: string]: any }): weshnet.protocol.v1.OutOfStoreMessage;
                 public static toObject(message: weshnet.protocol.v1.OutOfStoreMessage, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
-                public static getTypeUrl(typeUrlPrefix?: string): string;
             }
 
             interface IOutOfStoreMessageEnvelope {
@@ -11027,7 +10550,6 @@ export namespace weshnet {
                 public static fromObject(object: { [k: string]: any }): weshnet.protocol.v1.OutOfStoreMessageEnvelope;
                 public static toObject(message: weshnet.protocol.v1.OutOfStoreMessageEnvelope, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
-                public static getTypeUrl(typeUrlPrefix?: string): string;
             }
 
             interface IOutOfStoreReceive {
@@ -11044,7 +10566,6 @@ export namespace weshnet {
                 public static fromObject(object: { [k: string]: any }): weshnet.protocol.v1.OutOfStoreReceive;
                 public static toObject(message: weshnet.protocol.v1.OutOfStoreReceive, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
-                public static getTypeUrl(typeUrlPrefix?: string): string;
             }
 
             namespace OutOfStoreReceive {
@@ -11065,7 +10586,6 @@ export namespace weshnet {
                     public static fromObject(object: { [k: string]: any }): weshnet.protocol.v1.OutOfStoreReceive.Request;
                     public static toObject(message: weshnet.protocol.v1.OutOfStoreReceive.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
-                    public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
 
                 interface IReply {
@@ -11090,7 +10610,6 @@ export namespace weshnet {
                     public static fromObject(object: { [k: string]: any }): weshnet.protocol.v1.OutOfStoreReceive.Reply;
                     public static toObject(message: weshnet.protocol.v1.OutOfStoreReceive.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
-                    public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
             }
 
@@ -11108,7 +10627,6 @@ export namespace weshnet {
                 public static fromObject(object: { [k: string]: any }): weshnet.protocol.v1.OutOfStoreSeal;
                 public static toObject(message: weshnet.protocol.v1.OutOfStoreSeal, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
-                public static getTypeUrl(typeUrlPrefix?: string): string;
             }
 
             namespace OutOfStoreSeal {
@@ -11131,7 +10649,6 @@ export namespace weshnet {
                     public static fromObject(object: { [k: string]: any }): weshnet.protocol.v1.OutOfStoreSeal.Request;
                     public static toObject(message: weshnet.protocol.v1.OutOfStoreSeal.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
-                    public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
 
                 interface IReply {
@@ -11150,7 +10667,6 @@ export namespace weshnet {
                     public static fromObject(object: { [k: string]: any }): weshnet.protocol.v1.OutOfStoreSeal.Reply;
                     public static toObject(message: weshnet.protocol.v1.OutOfStoreSeal.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
-                    public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
             }
 
@@ -11182,7 +10698,6 @@ export namespace weshnet {
                 public static fromObject(object: { [k: string]: any }): weshnet.protocol.v1.AccountVerifiedCredentialRegistered;
                 public static toObject(message: weshnet.protocol.v1.AccountVerifiedCredentialRegistered, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
-                public static getTypeUrl(typeUrlPrefix?: string): string;
             }
 
             interface IFirstLastCounters {
@@ -11203,7 +10718,6 @@ export namespace weshnet {
                 public static fromObject(object: { [k: string]: any }): weshnet.protocol.v1.FirstLastCounters;
                 public static toObject(message: weshnet.protocol.v1.FirstLastCounters, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
-                public static getTypeUrl(typeUrlPrefix?: string): string;
             }
 
             interface IOrbitDBMessageHeads {
@@ -11224,7 +10738,6 @@ export namespace weshnet {
                 public static fromObject(object: { [k: string]: any }): weshnet.protocol.v1.OrbitDBMessageHeads;
                 public static toObject(message: weshnet.protocol.v1.OrbitDBMessageHeads, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
-                public static getTypeUrl(typeUrlPrefix?: string): string;
             }
 
             namespace OrbitDBMessageHeads {
@@ -11251,7 +10764,6 @@ export namespace weshnet {
                     public static fromObject(object: { [k: string]: any }): weshnet.protocol.v1.OrbitDBMessageHeads.Box;
                     public static toObject(message: weshnet.protocol.v1.OrbitDBMessageHeads.Box, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
-                    public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
             }
 
@@ -11269,7 +10781,6 @@ export namespace weshnet {
                 public static fromObject(object: { [k: string]: any }): weshnet.protocol.v1.RefreshContactRequest;
                 public static toObject(message: weshnet.protocol.v1.RefreshContactRequest, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
-                public static getTypeUrl(typeUrlPrefix?: string): string;
             }
 
             namespace RefreshContactRequest {
@@ -11292,7 +10803,6 @@ export namespace weshnet {
                     public static fromObject(object: { [k: string]: any }): weshnet.protocol.v1.RefreshContactRequest.Peer;
                     public static toObject(message: weshnet.protocol.v1.RefreshContactRequest.Peer, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
-                    public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
 
                 interface IRequest {
@@ -11313,7 +10823,6 @@ export namespace weshnet {
                     public static fromObject(object: { [k: string]: any }): weshnet.protocol.v1.RefreshContactRequest.Request;
                     public static toObject(message: weshnet.protocol.v1.RefreshContactRequest.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
-                    public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
 
                 interface IReply {
@@ -11332,7 +10841,6 @@ export namespace weshnet {
                     public static fromObject(object: { [k: string]: any }): weshnet.protocol.v1.RefreshContactRequest.Reply;
                     public static toObject(message: weshnet.protocol.v1.RefreshContactRequest.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
-                    public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
             }
         }
@@ -11445,728 +10953,6 @@ export namespace weshnet {
             public static fromObject(object: { [k: string]: any }): weshnet.errcode.ErrDetails;
             public static toObject(message: weshnet.errcode.ErrDetails, options?: $protobuf.IConversionOptions): { [k: string]: any };
             public toJSON(): { [k: string]: any };
-            public static getTypeUrl(typeUrlPrefix?: string): string;
-        }
-    }
-}
-
-export namespace google {
-
-    namespace protobuf {
-
-        interface IFileDescriptorSet {
-            file?: (google.protobuf.IFileDescriptorProto[]|null);
-        }
-
-        class FileDescriptorSet implements IFileDescriptorSet {
-
-            public file: google.protobuf.IFileDescriptorProto[];
-            public static create(properties?: google.protobuf.IFileDescriptorSet): google.protobuf.FileDescriptorSet;
-            public static encode(message: google.protobuf.IFileDescriptorSet, writer?: $protobuf.Writer): $protobuf.Writer;
-            public static encodeDelimited(message: google.protobuf.IFileDescriptorSet, writer?: $protobuf.Writer): $protobuf.Writer;
-            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.protobuf.FileDescriptorSet;
-            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.protobuf.FileDescriptorSet;
-            public static verify(message: { [k: string]: any }): (string|null);
-            public static fromObject(object: { [k: string]: any }): google.protobuf.FileDescriptorSet;
-            public static toObject(message: google.protobuf.FileDescriptorSet, options?: $protobuf.IConversionOptions): { [k: string]: any };
-            public toJSON(): { [k: string]: any };
-            public static getTypeUrl(typeUrlPrefix?: string): string;
-        }
-
-        interface IFileDescriptorProto {
-            name?: (string|null);
-            "package"?: (string|null);
-            dependency?: (string[]|null);
-            publicDependency?: (number[]|null);
-            weakDependency?: (number[]|null);
-            messageType?: (google.protobuf.IDescriptorProto[]|null);
-            enumType?: (google.protobuf.IEnumDescriptorProto[]|null);
-            service?: (google.protobuf.IServiceDescriptorProto[]|null);
-            extension?: (google.protobuf.IFieldDescriptorProto[]|null);
-            options?: (google.protobuf.IFileOptions|null);
-            sourceCodeInfo?: (google.protobuf.ISourceCodeInfo|null);
-            syntax?: (string|null);
-        }
-
-        class FileDescriptorProto implements IFileDescriptorProto {
-
-            public name: string;
-            public package: string;
-            public dependency: string[];
-            public publicDependency: number[];
-            public weakDependency: number[];
-            public messageType: google.protobuf.IDescriptorProto[];
-            public enumType: google.protobuf.IEnumDescriptorProto[];
-            public service: google.protobuf.IServiceDescriptorProto[];
-            public extension: google.protobuf.IFieldDescriptorProto[];
-            public options?: (google.protobuf.IFileOptions|null);
-            public sourceCodeInfo?: (google.protobuf.ISourceCodeInfo|null);
-            public syntax: string;
-            public static create(properties?: google.protobuf.IFileDescriptorProto): google.protobuf.FileDescriptorProto;
-            public static encode(message: google.protobuf.IFileDescriptorProto, writer?: $protobuf.Writer): $protobuf.Writer;
-            public static encodeDelimited(message: google.protobuf.IFileDescriptorProto, writer?: $protobuf.Writer): $protobuf.Writer;
-            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.protobuf.FileDescriptorProto;
-            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.protobuf.FileDescriptorProto;
-            public static verify(message: { [k: string]: any }): (string|null);
-            public static fromObject(object: { [k: string]: any }): google.protobuf.FileDescriptorProto;
-            public static toObject(message: google.protobuf.FileDescriptorProto, options?: $protobuf.IConversionOptions): { [k: string]: any };
-            public toJSON(): { [k: string]: any };
-            public static getTypeUrl(typeUrlPrefix?: string): string;
-        }
-
-        interface IDescriptorProto {
-            name?: (string|null);
-            field?: (google.protobuf.IFieldDescriptorProto[]|null);
-            extension?: (google.protobuf.IFieldDescriptorProto[]|null);
-            nestedType?: (google.protobuf.IDescriptorProto[]|null);
-            enumType?: (google.protobuf.IEnumDescriptorProto[]|null);
-            extensionRange?: (google.protobuf.DescriptorProto.IExtensionRange[]|null);
-            oneofDecl?: (google.protobuf.IOneofDescriptorProto[]|null);
-            options?: (google.protobuf.IMessageOptions|null);
-            reservedRange?: (google.protobuf.DescriptorProto.IReservedRange[]|null);
-            reservedName?: (string[]|null);
-        }
-
-        class DescriptorProto implements IDescriptorProto {
-
-            public name: string;
-            public field: google.protobuf.IFieldDescriptorProto[];
-            public extension: google.protobuf.IFieldDescriptorProto[];
-            public nestedType: google.protobuf.IDescriptorProto[];
-            public enumType: google.protobuf.IEnumDescriptorProto[];
-            public extensionRange: google.protobuf.DescriptorProto.IExtensionRange[];
-            public oneofDecl: google.protobuf.IOneofDescriptorProto[];
-            public options?: (google.protobuf.IMessageOptions|null);
-            public reservedRange: google.protobuf.DescriptorProto.IReservedRange[];
-            public reservedName: string[];
-            public static create(properties?: google.protobuf.IDescriptorProto): google.protobuf.DescriptorProto;
-            public static encode(message: google.protobuf.IDescriptorProto, writer?: $protobuf.Writer): $protobuf.Writer;
-            public static encodeDelimited(message: google.protobuf.IDescriptorProto, writer?: $protobuf.Writer): $protobuf.Writer;
-            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.protobuf.DescriptorProto;
-            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.protobuf.DescriptorProto;
-            public static verify(message: { [k: string]: any }): (string|null);
-            public static fromObject(object: { [k: string]: any }): google.protobuf.DescriptorProto;
-            public static toObject(message: google.protobuf.DescriptorProto, options?: $protobuf.IConversionOptions): { [k: string]: any };
-            public toJSON(): { [k: string]: any };
-            public static getTypeUrl(typeUrlPrefix?: string): string;
-        }
-
-        namespace DescriptorProto {
-
-            interface IExtensionRange {
-                start?: (number|null);
-                end?: (number|null);
-            }
-
-            class ExtensionRange implements IExtensionRange {
-
-                public start: number;
-                public end: number;
-                public static create(properties?: google.protobuf.DescriptorProto.IExtensionRange): google.protobuf.DescriptorProto.ExtensionRange;
-                public static encode(message: google.protobuf.DescriptorProto.IExtensionRange, writer?: $protobuf.Writer): $protobuf.Writer;
-                public static encodeDelimited(message: google.protobuf.DescriptorProto.IExtensionRange, writer?: $protobuf.Writer): $protobuf.Writer;
-                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.protobuf.DescriptorProto.ExtensionRange;
-                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.protobuf.DescriptorProto.ExtensionRange;
-                public static verify(message: { [k: string]: any }): (string|null);
-                public static fromObject(object: { [k: string]: any }): google.protobuf.DescriptorProto.ExtensionRange;
-                public static toObject(message: google.protobuf.DescriptorProto.ExtensionRange, options?: $protobuf.IConversionOptions): { [k: string]: any };
-                public toJSON(): { [k: string]: any };
-                public static getTypeUrl(typeUrlPrefix?: string): string;
-            }
-
-            interface IReservedRange {
-                start?: (number|null);
-                end?: (number|null);
-            }
-
-            class ReservedRange implements IReservedRange {
-
-                public start: number;
-                public end: number;
-                public static create(properties?: google.protobuf.DescriptorProto.IReservedRange): google.protobuf.DescriptorProto.ReservedRange;
-                public static encode(message: google.protobuf.DescriptorProto.IReservedRange, writer?: $protobuf.Writer): $protobuf.Writer;
-                public static encodeDelimited(message: google.protobuf.DescriptorProto.IReservedRange, writer?: $protobuf.Writer): $protobuf.Writer;
-                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.protobuf.DescriptorProto.ReservedRange;
-                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.protobuf.DescriptorProto.ReservedRange;
-                public static verify(message: { [k: string]: any }): (string|null);
-                public static fromObject(object: { [k: string]: any }): google.protobuf.DescriptorProto.ReservedRange;
-                public static toObject(message: google.protobuf.DescriptorProto.ReservedRange, options?: $protobuf.IConversionOptions): { [k: string]: any };
-                public toJSON(): { [k: string]: any };
-                public static getTypeUrl(typeUrlPrefix?: string): string;
-            }
-        }
-
-        interface IFieldDescriptorProto {
-            name?: (string|null);
-            number?: (number|null);
-            label?: (google.protobuf.FieldDescriptorProto.Label|null);
-            type?: (google.protobuf.FieldDescriptorProto.Type|null);
-            typeName?: (string|null);
-            extendee?: (string|null);
-            defaultValue?: (string|null);
-            oneofIndex?: (number|null);
-            jsonName?: (string|null);
-            options?: (google.protobuf.IFieldOptions|null);
-        }
-
-        class FieldDescriptorProto implements IFieldDescriptorProto {
-
-            public name: string;
-            public number: number;
-            public label: google.protobuf.FieldDescriptorProto.Label;
-            public type: google.protobuf.FieldDescriptorProto.Type;
-            public typeName: string;
-            public extendee: string;
-            public defaultValue: string;
-            public oneofIndex: number;
-            public jsonName: string;
-            public options?: (google.protobuf.IFieldOptions|null);
-            public static create(properties?: google.protobuf.IFieldDescriptorProto): google.protobuf.FieldDescriptorProto;
-            public static encode(message: google.protobuf.IFieldDescriptorProto, writer?: $protobuf.Writer): $protobuf.Writer;
-            public static encodeDelimited(message: google.protobuf.IFieldDescriptorProto, writer?: $protobuf.Writer): $protobuf.Writer;
-            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.protobuf.FieldDescriptorProto;
-            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.protobuf.FieldDescriptorProto;
-            public static verify(message: { [k: string]: any }): (string|null);
-            public static fromObject(object: { [k: string]: any }): google.protobuf.FieldDescriptorProto;
-            public static toObject(message: google.protobuf.FieldDescriptorProto, options?: $protobuf.IConversionOptions): { [k: string]: any };
-            public toJSON(): { [k: string]: any };
-            public static getTypeUrl(typeUrlPrefix?: string): string;
-        }
-
-        namespace FieldDescriptorProto {
-
-            enum Type {
-                TYPE_DOUBLE = 1,
-                TYPE_FLOAT = 2,
-                TYPE_INT64 = 3,
-                TYPE_UINT64 = 4,
-                TYPE_INT32 = 5,
-                TYPE_FIXED64 = 6,
-                TYPE_FIXED32 = 7,
-                TYPE_BOOL = 8,
-                TYPE_STRING = 9,
-                TYPE_GROUP = 10,
-                TYPE_MESSAGE = 11,
-                TYPE_BYTES = 12,
-                TYPE_UINT32 = 13,
-                TYPE_ENUM = 14,
-                TYPE_SFIXED32 = 15,
-                TYPE_SFIXED64 = 16,
-                TYPE_SINT32 = 17,
-                TYPE_SINT64 = 18
-            }
-
-            enum Label {
-                LABEL_OPTIONAL = 1,
-                LABEL_REQUIRED = 2,
-                LABEL_REPEATED = 3
-            }
-        }
-
-        interface IOneofDescriptorProto {
-            name?: (string|null);
-            options?: (google.protobuf.IOneofOptions|null);
-        }
-
-        class OneofDescriptorProto implements IOneofDescriptorProto {
-
-            public name: string;
-            public options?: (google.protobuf.IOneofOptions|null);
-            public static create(properties?: google.protobuf.IOneofDescriptorProto): google.protobuf.OneofDescriptorProto;
-            public static encode(message: google.protobuf.IOneofDescriptorProto, writer?: $protobuf.Writer): $protobuf.Writer;
-            public static encodeDelimited(message: google.protobuf.IOneofDescriptorProto, writer?: $protobuf.Writer): $protobuf.Writer;
-            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.protobuf.OneofDescriptorProto;
-            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.protobuf.OneofDescriptorProto;
-            public static verify(message: { [k: string]: any }): (string|null);
-            public static fromObject(object: { [k: string]: any }): google.protobuf.OneofDescriptorProto;
-            public static toObject(message: google.protobuf.OneofDescriptorProto, options?: $protobuf.IConversionOptions): { [k: string]: any };
-            public toJSON(): { [k: string]: any };
-            public static getTypeUrl(typeUrlPrefix?: string): string;
-        }
-
-        interface IEnumDescriptorProto {
-            name?: (string|null);
-            value?: (google.protobuf.IEnumValueDescriptorProto[]|null);
-            options?: (google.protobuf.IEnumOptions|null);
-        }
-
-        class EnumDescriptorProto implements IEnumDescriptorProto {
-
-            public name: string;
-            public value: google.protobuf.IEnumValueDescriptorProto[];
-            public options?: (google.protobuf.IEnumOptions|null);
-            public static create(properties?: google.protobuf.IEnumDescriptorProto): google.protobuf.EnumDescriptorProto;
-            public static encode(message: google.protobuf.IEnumDescriptorProto, writer?: $protobuf.Writer): $protobuf.Writer;
-            public static encodeDelimited(message: google.protobuf.IEnumDescriptorProto, writer?: $protobuf.Writer): $protobuf.Writer;
-            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.protobuf.EnumDescriptorProto;
-            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.protobuf.EnumDescriptorProto;
-            public static verify(message: { [k: string]: any }): (string|null);
-            public static fromObject(object: { [k: string]: any }): google.protobuf.EnumDescriptorProto;
-            public static toObject(message: google.protobuf.EnumDescriptorProto, options?: $protobuf.IConversionOptions): { [k: string]: any };
-            public toJSON(): { [k: string]: any };
-            public static getTypeUrl(typeUrlPrefix?: string): string;
-        }
-
-        interface IEnumValueDescriptorProto {
-            name?: (string|null);
-            number?: (number|null);
-            options?: (google.protobuf.IEnumValueOptions|null);
-        }
-
-        class EnumValueDescriptorProto implements IEnumValueDescriptorProto {
-
-            public name: string;
-            public number: number;
-            public options?: (google.protobuf.IEnumValueOptions|null);
-            public static create(properties?: google.protobuf.IEnumValueDescriptorProto): google.protobuf.EnumValueDescriptorProto;
-            public static encode(message: google.protobuf.IEnumValueDescriptorProto, writer?: $protobuf.Writer): $protobuf.Writer;
-            public static encodeDelimited(message: google.protobuf.IEnumValueDescriptorProto, writer?: $protobuf.Writer): $protobuf.Writer;
-            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.protobuf.EnumValueDescriptorProto;
-            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.protobuf.EnumValueDescriptorProto;
-            public static verify(message: { [k: string]: any }): (string|null);
-            public static fromObject(object: { [k: string]: any }): google.protobuf.EnumValueDescriptorProto;
-            public static toObject(message: google.protobuf.EnumValueDescriptorProto, options?: $protobuf.IConversionOptions): { [k: string]: any };
-            public toJSON(): { [k: string]: any };
-            public static getTypeUrl(typeUrlPrefix?: string): string;
-        }
-
-        interface IServiceDescriptorProto {
-            name?: (string|null);
-            method?: (google.protobuf.IMethodDescriptorProto[]|null);
-            options?: (google.protobuf.IServiceOptions|null);
-        }
-
-        class ServiceDescriptorProto implements IServiceDescriptorProto {
-
-            public name: string;
-            public method: google.protobuf.IMethodDescriptorProto[];
-            public options?: (google.protobuf.IServiceOptions|null);
-            public static create(properties?: google.protobuf.IServiceDescriptorProto): google.protobuf.ServiceDescriptorProto;
-            public static encode(message: google.protobuf.IServiceDescriptorProto, writer?: $protobuf.Writer): $protobuf.Writer;
-            public static encodeDelimited(message: google.protobuf.IServiceDescriptorProto, writer?: $protobuf.Writer): $protobuf.Writer;
-            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.protobuf.ServiceDescriptorProto;
-            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.protobuf.ServiceDescriptorProto;
-            public static verify(message: { [k: string]: any }): (string|null);
-            public static fromObject(object: { [k: string]: any }): google.protobuf.ServiceDescriptorProto;
-            public static toObject(message: google.protobuf.ServiceDescriptorProto, options?: $protobuf.IConversionOptions): { [k: string]: any };
-            public toJSON(): { [k: string]: any };
-            public static getTypeUrl(typeUrlPrefix?: string): string;
-        }
-
-        interface IMethodDescriptorProto {
-            name?: (string|null);
-            inputType?: (string|null);
-            outputType?: (string|null);
-            options?: (google.protobuf.IMethodOptions|null);
-            clientStreaming?: (boolean|null);
-            serverStreaming?: (boolean|null);
-        }
-
-        class MethodDescriptorProto implements IMethodDescriptorProto {
-
-            public name: string;
-            public inputType: string;
-            public outputType: string;
-            public options?: (google.protobuf.IMethodOptions|null);
-            public clientStreaming: boolean;
-            public serverStreaming: boolean;
-            public static create(properties?: google.protobuf.IMethodDescriptorProto): google.protobuf.MethodDescriptorProto;
-            public static encode(message: google.protobuf.IMethodDescriptorProto, writer?: $protobuf.Writer): $protobuf.Writer;
-            public static encodeDelimited(message: google.protobuf.IMethodDescriptorProto, writer?: $protobuf.Writer): $protobuf.Writer;
-            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.protobuf.MethodDescriptorProto;
-            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.protobuf.MethodDescriptorProto;
-            public static verify(message: { [k: string]: any }): (string|null);
-            public static fromObject(object: { [k: string]: any }): google.protobuf.MethodDescriptorProto;
-            public static toObject(message: google.protobuf.MethodDescriptorProto, options?: $protobuf.IConversionOptions): { [k: string]: any };
-            public toJSON(): { [k: string]: any };
-            public static getTypeUrl(typeUrlPrefix?: string): string;
-        }
-
-        interface IFileOptions {
-            javaPackage?: (string|null);
-            javaOuterClassname?: (string|null);
-            javaMultipleFiles?: (boolean|null);
-            javaGenerateEqualsAndHash?: (boolean|null);
-            javaStringCheckUtf8?: (boolean|null);
-            optimizeFor?: (google.protobuf.FileOptions.OptimizeMode|null);
-            goPackage?: (string|null);
-            ccGenericServices?: (boolean|null);
-            javaGenericServices?: (boolean|null);
-            pyGenericServices?: (boolean|null);
-            deprecated?: (boolean|null);
-            ccEnableArenas?: (boolean|null);
-            objcClassPrefix?: (string|null);
-            csharpNamespace?: (string|null);
-            uninterpretedOption?: (google.protobuf.IUninterpretedOption[]|null);
-        }
-
-        class FileOptions implements IFileOptions {
-
-            public javaPackage: string;
-            public javaOuterClassname: string;
-            public javaMultipleFiles: boolean;
-            public javaGenerateEqualsAndHash: boolean;
-            public javaStringCheckUtf8: boolean;
-            public optimizeFor: google.protobuf.FileOptions.OptimizeMode;
-            public goPackage: string;
-            public ccGenericServices: boolean;
-            public javaGenericServices: boolean;
-            public pyGenericServices: boolean;
-            public deprecated: boolean;
-            public ccEnableArenas: boolean;
-            public objcClassPrefix: string;
-            public csharpNamespace: string;
-            public uninterpretedOption: google.protobuf.IUninterpretedOption[];
-            public static create(properties?: google.protobuf.IFileOptions): google.protobuf.FileOptions;
-            public static encode(message: google.protobuf.IFileOptions, writer?: $protobuf.Writer): $protobuf.Writer;
-            public static encodeDelimited(message: google.protobuf.IFileOptions, writer?: $protobuf.Writer): $protobuf.Writer;
-            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.protobuf.FileOptions;
-            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.protobuf.FileOptions;
-            public static verify(message: { [k: string]: any }): (string|null);
-            public static fromObject(object: { [k: string]: any }): google.protobuf.FileOptions;
-            public static toObject(message: google.protobuf.FileOptions, options?: $protobuf.IConversionOptions): { [k: string]: any };
-            public toJSON(): { [k: string]: any };
-            public static getTypeUrl(typeUrlPrefix?: string): string;
-        }
-
-        namespace FileOptions {
-
-            enum OptimizeMode {
-                SPEED = 1,
-                CODE_SIZE = 2,
-                LITE_RUNTIME = 3
-            }
-        }
-
-        interface IMessageOptions {
-            messageSetWireFormat?: (boolean|null);
-            noStandardDescriptorAccessor?: (boolean|null);
-            deprecated?: (boolean|null);
-            mapEntry?: (boolean|null);
-            uninterpretedOption?: (google.protobuf.IUninterpretedOption[]|null);
-        }
-
-        class MessageOptions implements IMessageOptions {
-
-            public messageSetWireFormat: boolean;
-            public noStandardDescriptorAccessor: boolean;
-            public deprecated: boolean;
-            public mapEntry: boolean;
-            public uninterpretedOption: google.protobuf.IUninterpretedOption[];
-            public static create(properties?: google.protobuf.IMessageOptions): google.protobuf.MessageOptions;
-            public static encode(message: google.protobuf.IMessageOptions, writer?: $protobuf.Writer): $protobuf.Writer;
-            public static encodeDelimited(message: google.protobuf.IMessageOptions, writer?: $protobuf.Writer): $protobuf.Writer;
-            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.protobuf.MessageOptions;
-            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.protobuf.MessageOptions;
-            public static verify(message: { [k: string]: any }): (string|null);
-            public static fromObject(object: { [k: string]: any }): google.protobuf.MessageOptions;
-            public static toObject(message: google.protobuf.MessageOptions, options?: $protobuf.IConversionOptions): { [k: string]: any };
-            public toJSON(): { [k: string]: any };
-            public static getTypeUrl(typeUrlPrefix?: string): string;
-        }
-
-        interface IFieldOptions {
-            ctype?: (google.protobuf.FieldOptions.CType|null);
-            packed?: (boolean|null);
-            jstype?: (google.protobuf.FieldOptions.JSType|null);
-            lazy?: (boolean|null);
-            deprecated?: (boolean|null);
-            weak?: (boolean|null);
-            uninterpretedOption?: (google.protobuf.IUninterpretedOption[]|null);
-            ".tagger.tags"?: (string|null);
-        }
-
-        class FieldOptions implements IFieldOptions {
-
-            public ctype: google.protobuf.FieldOptions.CType;
-            public packed: boolean;
-            public jstype: google.protobuf.FieldOptions.JSType;
-            public lazy: boolean;
-            public deprecated: boolean;
-            public weak: boolean;
-            public uninterpretedOption: google.protobuf.IUninterpretedOption[];
-            public static create(properties?: google.protobuf.IFieldOptions): google.protobuf.FieldOptions;
-            public static encode(message: google.protobuf.IFieldOptions, writer?: $protobuf.Writer): $protobuf.Writer;
-            public static encodeDelimited(message: google.protobuf.IFieldOptions, writer?: $protobuf.Writer): $protobuf.Writer;
-            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.protobuf.FieldOptions;
-            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.protobuf.FieldOptions;
-            public static verify(message: { [k: string]: any }): (string|null);
-            public static fromObject(object: { [k: string]: any }): google.protobuf.FieldOptions;
-            public static toObject(message: google.protobuf.FieldOptions, options?: $protobuf.IConversionOptions): { [k: string]: any };
-            public toJSON(): { [k: string]: any };
-            public static getTypeUrl(typeUrlPrefix?: string): string;
-        }
-
-        namespace FieldOptions {
-
-            enum CType {
-                STRING = 0,
-                CORD = 1,
-                STRING_PIECE = 2
-            }
-
-            enum JSType {
-                JS_NORMAL = 0,
-                JS_STRING = 1,
-                JS_NUMBER = 2
-            }
-        }
-
-        interface IOneofOptions {
-            uninterpretedOption?: (google.protobuf.IUninterpretedOption[]|null);
-            ".tagger.oneofTags"?: (string|null);
-        }
-
-        class OneofOptions implements IOneofOptions {
-
-            public uninterpretedOption: google.protobuf.IUninterpretedOption[];
-            public static create(properties?: google.protobuf.IOneofOptions): google.protobuf.OneofOptions;
-            public static encode(message: google.protobuf.IOneofOptions, writer?: $protobuf.Writer): $protobuf.Writer;
-            public static encodeDelimited(message: google.protobuf.IOneofOptions, writer?: $protobuf.Writer): $protobuf.Writer;
-            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.protobuf.OneofOptions;
-            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.protobuf.OneofOptions;
-            public static verify(message: { [k: string]: any }): (string|null);
-            public static fromObject(object: { [k: string]: any }): google.protobuf.OneofOptions;
-            public static toObject(message: google.protobuf.OneofOptions, options?: $protobuf.IConversionOptions): { [k: string]: any };
-            public toJSON(): { [k: string]: any };
-            public static getTypeUrl(typeUrlPrefix?: string): string;
-        }
-
-        interface IEnumOptions {
-            allowAlias?: (boolean|null);
-            deprecated?: (boolean|null);
-            uninterpretedOption?: (google.protobuf.IUninterpretedOption[]|null);
-        }
-
-        class EnumOptions implements IEnumOptions {
-
-            public allowAlias: boolean;
-            public deprecated: boolean;
-            public uninterpretedOption: google.protobuf.IUninterpretedOption[];
-            public static create(properties?: google.protobuf.IEnumOptions): google.protobuf.EnumOptions;
-            public static encode(message: google.protobuf.IEnumOptions, writer?: $protobuf.Writer): $protobuf.Writer;
-            public static encodeDelimited(message: google.protobuf.IEnumOptions, writer?: $protobuf.Writer): $protobuf.Writer;
-            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.protobuf.EnumOptions;
-            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.protobuf.EnumOptions;
-            public static verify(message: { [k: string]: any }): (string|null);
-            public static fromObject(object: { [k: string]: any }): google.protobuf.EnumOptions;
-            public static toObject(message: google.protobuf.EnumOptions, options?: $protobuf.IConversionOptions): { [k: string]: any };
-            public toJSON(): { [k: string]: any };
-            public static getTypeUrl(typeUrlPrefix?: string): string;
-        }
-
-        interface IEnumValueOptions {
-            deprecated?: (boolean|null);
-            uninterpretedOption?: (google.protobuf.IUninterpretedOption[]|null);
-        }
-
-        class EnumValueOptions implements IEnumValueOptions {
-
-            public deprecated: boolean;
-            public uninterpretedOption: google.protobuf.IUninterpretedOption[];
-            public static create(properties?: google.protobuf.IEnumValueOptions): google.protobuf.EnumValueOptions;
-            public static encode(message: google.protobuf.IEnumValueOptions, writer?: $protobuf.Writer): $protobuf.Writer;
-            public static encodeDelimited(message: google.protobuf.IEnumValueOptions, writer?: $protobuf.Writer): $protobuf.Writer;
-            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.protobuf.EnumValueOptions;
-            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.protobuf.EnumValueOptions;
-            public static verify(message: { [k: string]: any }): (string|null);
-            public static fromObject(object: { [k: string]: any }): google.protobuf.EnumValueOptions;
-            public static toObject(message: google.protobuf.EnumValueOptions, options?: $protobuf.IConversionOptions): { [k: string]: any };
-            public toJSON(): { [k: string]: any };
-            public static getTypeUrl(typeUrlPrefix?: string): string;
-        }
-
-        interface IServiceOptions {
-            deprecated?: (boolean|null);
-            uninterpretedOption?: (google.protobuf.IUninterpretedOption[]|null);
-        }
-
-        class ServiceOptions implements IServiceOptions {
-
-            public deprecated: boolean;
-            public uninterpretedOption: google.protobuf.IUninterpretedOption[];
-            public static create(properties?: google.protobuf.IServiceOptions): google.protobuf.ServiceOptions;
-            public static encode(message: google.protobuf.IServiceOptions, writer?: $protobuf.Writer): $protobuf.Writer;
-            public static encodeDelimited(message: google.protobuf.IServiceOptions, writer?: $protobuf.Writer): $protobuf.Writer;
-            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.protobuf.ServiceOptions;
-            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.protobuf.ServiceOptions;
-            public static verify(message: { [k: string]: any }): (string|null);
-            public static fromObject(object: { [k: string]: any }): google.protobuf.ServiceOptions;
-            public static toObject(message: google.protobuf.ServiceOptions, options?: $protobuf.IConversionOptions): { [k: string]: any };
-            public toJSON(): { [k: string]: any };
-            public static getTypeUrl(typeUrlPrefix?: string): string;
-        }
-
-        interface IMethodOptions {
-            deprecated?: (boolean|null);
-            uninterpretedOption?: (google.protobuf.IUninterpretedOption[]|null);
-        }
-
-        class MethodOptions implements IMethodOptions {
-
-            public deprecated: boolean;
-            public uninterpretedOption: google.protobuf.IUninterpretedOption[];
-            public static create(properties?: google.protobuf.IMethodOptions): google.protobuf.MethodOptions;
-            public static encode(message: google.protobuf.IMethodOptions, writer?: $protobuf.Writer): $protobuf.Writer;
-            public static encodeDelimited(message: google.protobuf.IMethodOptions, writer?: $protobuf.Writer): $protobuf.Writer;
-            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.protobuf.MethodOptions;
-            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.protobuf.MethodOptions;
-            public static verify(message: { [k: string]: any }): (string|null);
-            public static fromObject(object: { [k: string]: any }): google.protobuf.MethodOptions;
-            public static toObject(message: google.protobuf.MethodOptions, options?: $protobuf.IConversionOptions): { [k: string]: any };
-            public toJSON(): { [k: string]: any };
-            public static getTypeUrl(typeUrlPrefix?: string): string;
-        }
-
-        interface IUninterpretedOption {
-            name?: (google.protobuf.UninterpretedOption.INamePart[]|null);
-            identifierValue?: (string|null);
-            positiveIntValue?: (Long|null);
-            negativeIntValue?: (Long|null);
-            doubleValue?: (number|null);
-            stringValue?: (Uint8Array|null);
-            aggregateValue?: (string|null);
-        }
-
-        class UninterpretedOption implements IUninterpretedOption {
-
-            public name: google.protobuf.UninterpretedOption.INamePart[];
-            public identifierValue: string;
-            public positiveIntValue: Long;
-            public negativeIntValue: Long;
-            public doubleValue: number;
-            public stringValue: Uint8Array;
-            public aggregateValue: string;
-            public static create(properties?: google.protobuf.IUninterpretedOption): google.protobuf.UninterpretedOption;
-            public static encode(message: google.protobuf.IUninterpretedOption, writer?: $protobuf.Writer): $protobuf.Writer;
-            public static encodeDelimited(message: google.protobuf.IUninterpretedOption, writer?: $protobuf.Writer): $protobuf.Writer;
-            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.protobuf.UninterpretedOption;
-            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.protobuf.UninterpretedOption;
-            public static verify(message: { [k: string]: any }): (string|null);
-            public static fromObject(object: { [k: string]: any }): google.protobuf.UninterpretedOption;
-            public static toObject(message: google.protobuf.UninterpretedOption, options?: $protobuf.IConversionOptions): { [k: string]: any };
-            public toJSON(): { [k: string]: any };
-            public static getTypeUrl(typeUrlPrefix?: string): string;
-        }
-
-        namespace UninterpretedOption {
-
-            interface INamePart {
-                namePart: string;
-                isExtension: boolean;
-            }
-
-            class NamePart implements INamePart {
-
-                public namePart: string;
-                public isExtension: boolean;
-                public static create(properties?: google.protobuf.UninterpretedOption.INamePart): google.protobuf.UninterpretedOption.NamePart;
-                public static encode(message: google.protobuf.UninterpretedOption.INamePart, writer?: $protobuf.Writer): $protobuf.Writer;
-                public static encodeDelimited(message: google.protobuf.UninterpretedOption.INamePart, writer?: $protobuf.Writer): $protobuf.Writer;
-                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.protobuf.UninterpretedOption.NamePart;
-                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.protobuf.UninterpretedOption.NamePart;
-                public static verify(message: { [k: string]: any }): (string|null);
-                public static fromObject(object: { [k: string]: any }): google.protobuf.UninterpretedOption.NamePart;
-                public static toObject(message: google.protobuf.UninterpretedOption.NamePart, options?: $protobuf.IConversionOptions): { [k: string]: any };
-                public toJSON(): { [k: string]: any };
-                public static getTypeUrl(typeUrlPrefix?: string): string;
-            }
-        }
-
-        interface ISourceCodeInfo {
-            location?: (google.protobuf.SourceCodeInfo.ILocation[]|null);
-        }
-
-        class SourceCodeInfo implements ISourceCodeInfo {
-
-            public location: google.protobuf.SourceCodeInfo.ILocation[];
-            public static create(properties?: google.protobuf.ISourceCodeInfo): google.protobuf.SourceCodeInfo;
-            public static encode(message: google.protobuf.ISourceCodeInfo, writer?: $protobuf.Writer): $protobuf.Writer;
-            public static encodeDelimited(message: google.protobuf.ISourceCodeInfo, writer?: $protobuf.Writer): $protobuf.Writer;
-            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.protobuf.SourceCodeInfo;
-            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.protobuf.SourceCodeInfo;
-            public static verify(message: { [k: string]: any }): (string|null);
-            public static fromObject(object: { [k: string]: any }): google.protobuf.SourceCodeInfo;
-            public static toObject(message: google.protobuf.SourceCodeInfo, options?: $protobuf.IConversionOptions): { [k: string]: any };
-            public toJSON(): { [k: string]: any };
-            public static getTypeUrl(typeUrlPrefix?: string): string;
-        }
-
-        namespace SourceCodeInfo {
-
-            interface ILocation {
-                path?: (number[]|null);
-                span?: (number[]|null);
-                leadingComments?: (string|null);
-                trailingComments?: (string|null);
-                leadingDetachedComments?: (string[]|null);
-            }
-
-            class Location implements ILocation {
-
-                public path: number[];
-                public span: number[];
-                public leadingComments: string;
-                public trailingComments: string;
-                public leadingDetachedComments: string[];
-                public static create(properties?: google.protobuf.SourceCodeInfo.ILocation): google.protobuf.SourceCodeInfo.Location;
-                public static encode(message: google.protobuf.SourceCodeInfo.ILocation, writer?: $protobuf.Writer): $protobuf.Writer;
-                public static encodeDelimited(message: google.protobuf.SourceCodeInfo.ILocation, writer?: $protobuf.Writer): $protobuf.Writer;
-                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.protobuf.SourceCodeInfo.Location;
-                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.protobuf.SourceCodeInfo.Location;
-                public static verify(message: { [k: string]: any }): (string|null);
-                public static fromObject(object: { [k: string]: any }): google.protobuf.SourceCodeInfo.Location;
-                public static toObject(message: google.protobuf.SourceCodeInfo.Location, options?: $protobuf.IConversionOptions): { [k: string]: any };
-                public toJSON(): { [k: string]: any };
-                public static getTypeUrl(typeUrlPrefix?: string): string;
-            }
-        }
-
-        interface IGeneratedCodeInfo {
-            annotation?: (google.protobuf.GeneratedCodeInfo.IAnnotation[]|null);
-        }
-
-        class GeneratedCodeInfo implements IGeneratedCodeInfo {
-
-            public annotation: google.protobuf.GeneratedCodeInfo.IAnnotation[];
-            public static create(properties?: google.protobuf.IGeneratedCodeInfo): google.protobuf.GeneratedCodeInfo;
-            public static encode(message: google.protobuf.IGeneratedCodeInfo, writer?: $protobuf.Writer): $protobuf.Writer;
-            public static encodeDelimited(message: google.protobuf.IGeneratedCodeInfo, writer?: $protobuf.Writer): $protobuf.Writer;
-            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.protobuf.GeneratedCodeInfo;
-            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.protobuf.GeneratedCodeInfo;
-            public static verify(message: { [k: string]: any }): (string|null);
-            public static fromObject(object: { [k: string]: any }): google.protobuf.GeneratedCodeInfo;
-            public static toObject(message: google.protobuf.GeneratedCodeInfo, options?: $protobuf.IConversionOptions): { [k: string]: any };
-            public toJSON(): { [k: string]: any };
-            public static getTypeUrl(typeUrlPrefix?: string): string;
-        }
-
-        namespace GeneratedCodeInfo {
-
-            interface IAnnotation {
-                path?: (number[]|null);
-                sourceFile?: (string|null);
-                begin?: (number|null);
-                end?: (number|null);
-            }
-
-            class Annotation implements IAnnotation {
-
-                public path: number[];
-                public sourceFile: string;
-                public begin: number;
-                public end: number;
-                public static create(properties?: google.protobuf.GeneratedCodeInfo.IAnnotation): google.protobuf.GeneratedCodeInfo.Annotation;
-                public static encode(message: google.protobuf.GeneratedCodeInfo.IAnnotation, writer?: $protobuf.Writer): $protobuf.Writer;
-                public static encodeDelimited(message: google.protobuf.GeneratedCodeInfo.IAnnotation, writer?: $protobuf.Writer): $protobuf.Writer;
-                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.protobuf.GeneratedCodeInfo.Annotation;
-                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.protobuf.GeneratedCodeInfo.Annotation;
-                public static verify(message: { [k: string]: any }): (string|null);
-                public static fromObject(object: { [k: string]: any }): google.protobuf.GeneratedCodeInfo.Annotation;
-                public static toObject(message: google.protobuf.GeneratedCodeInfo.Annotation, options?: $protobuf.IConversionOptions): { [k: string]: any };
-                public toJSON(): { [k: string]: any };
-                public static getTypeUrl(typeUrlPrefix?: string): string;
-            }
         }
     }
 }

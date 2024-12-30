@@ -1,5 +1,0 @@
-0ede6de49ef7dac9bdec9fda912f2ce6bc463c74  ../api/pushtypes/bertypushtypes.proto
-875ae95e993f38ce9e11a2cd53f696e6d2bf20e8  ../api/accounttypes/accounttypes.proto
-ab71d8fc859110e823899c1d5bb78956c135a44d  Makefile
-b241fd5eec5c157a472df665cf21289a84612d5e  ../api/messengertypes/messengertypes.proto
-e8196156efc4aece892fc42ebc2b91c20127e910  ../api/bertybridge/bertybridge.proto
