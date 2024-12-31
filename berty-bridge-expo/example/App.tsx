@@ -1,73 +1,46 @@
-import { useEvent } from 'expo';
-import BertyBridgeExpo, { BertyBridgeExpoView } from 'berty-bridge-expo';
-import { Button, SafeAreaView, ScrollView, Text, View } from 'react-native';
+import BertyBridgeExpo from "berty-bridge-expo";
+import React, { useEffect, useState } from "react";
+import { StyleSheet, Text, View } from "react-native";
+
+import beapi from "./api";
+import { GRPCError, createServiceClient } from "./grpc-bridge";
+import { logger } from "./grpc-bridge/middleware";
+import { bridge as rpcBridge } from "./grpc-bridge/rpc";
 
 export default function App() {
-  const onChangePayload = useEvent(BertyBridgeExpo, 'onChange');
+	const [greeting, setGreeting] = useState("");
 
-  return (
-    <SafeAreaView style={styles.container}>
-      <ScrollView style={styles.container}>
-        <Text style={styles.header}>Module API Example</Text>
-        <Group name="Constants">
-          <Text>{BertyBridgeExpo.PI}</Text>
-        </Group>
-        <Group name="Functions">
-          <Text>{BertyBridgeExpo.hello()}</Text>
-        </Group>
-        <Group name="Async functions">
-          <Button
-            title="Set value"
-            onPress={async () => {
-              await BertyBridgeExpo.setValueAsync('Hello from JS!');
-            }}
-          />
-        </Group>
-        <Group name="Events">
-          <Text>{onChangePayload?.value}</Text>
-        </Group>
-        <Group name="Views">
-          <BertyBridgeExpoView
-            url="https://www.example.com"
-            onLoad={({ nativeEvent: { url } }) => console.log(`Loaded: ${url}`)}
-            style={styles.view}
-          />
-        </Group>
-      </ScrollView>
-    </SafeAreaView>
-  );
+	const protocolClient = createServiceClient(
+		beapi.protocol.ProtocolService,
+		rpcBridge,
+		logger.create("PROTOCOL")
+	);
+
+	useEffect(() => {
+		(async () => {
+			try {
+				await BertyBridgeExpo.initBridge();
+				protocolClient.serviceGetConfiguration({});
+				setGreeting("hello from berty");
+			} catch (error) {
+				console.log(error);
+			}
+		})();
+	}, []);
+
+	return (
+		<View style={styles.container}>
+			<Text>Berty Expo Module Example App</Text>
+			<Text>{greeting}</Text>
+		</View>
+	);
 }
 
-function Group(props: { name: string; children: React.ReactNode }) {
-  return (
-    <View style={styles.group}>
-      <Text style={styles.groupHeader}>{props.name}</Text>
-      {props.children}
-    </View>
-  );
-}
-
-const styles = {
-  header: {
-    fontSize: 30,
-    margin: 20,
-  },
-  groupHeader: {
-    fontSize: 20,
-    marginBottom: 20,
-  },
-  group: {
-    margin: 20,
-    backgroundColor: '#fff',
-    borderRadius: 10,
-    padding: 20,
-  },
-  container: {
-    flex: 1,
-    backgroundColor: '#eee',
-  },
-  view: {
-    flex: 1,
-    height: 200,
-  },
-};
+const styles = StyleSheet.create({
+	container: {
+		flex: 1,
+		backgroundColor: "#fff",
+		alignItems: "center",
+		justifyContent: "center",
+	},
+});

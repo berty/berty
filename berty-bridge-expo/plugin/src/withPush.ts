@@ -2,7 +2,7 @@ import {
 	ConfigPlugin,
 	withXcodeProject,
 	withDangerousMod,
-	ModConfig
+	withEntitlementsPlist
 } from "@expo/config-plugins";
 import type { XcodeProject } from "@expo/config-plugins";
 import * as fs from "fs";
@@ -11,6 +11,7 @@ import * as path from "path";
 const TARGET_NAME = "NotificationService";
 const SOURCE_FILES = ["Common.swift", "NotificationService.swift", "KeystoreDriver.swift", "RootDir.swift"];
 const EXT_FILES = ["NotificationService-Info.plist"];
+const ENTITLEMENTS_FILE = "ProdNS.entitlements"
 const FRAMEWORKS = ["Bertypush.xcframework"];
 
 let iosPath: string;
@@ -27,6 +28,14 @@ const findFileReferenceByName = (
 		})
 	);
 };
+const withEntitlements: ConfigPlugin = (config) => {
+	return withEntitlementsPlist(config, (config) => {
+		config.modResults['com.apple.security.application-groups'] = ['group.tech.berty'];
+		config.modResults['keychain-access-groups'] = ['$(AppIdentifierPrefix)tech.berty.ios'];
+		config.modResults['com.apple.developer.usernotifications.filtering'] = true;
+		return config;
+	  });
+};
 
 const withCopyFiles: ConfigPlugin = (config) => {
 	// support for monorepos where node_modules can be above the project directory.
@@ -40,7 +49,7 @@ const withCopyFiles: ConfigPlugin = (config) => {
 			/* COPY OVER EXTENSION FILES */
 			fs.mkdirSync(`${iosPath}/${TARGET_NAME}`, { recursive: true });
 
-			const allFiles = SOURCE_FILES.concat(EXT_FILES);
+			const allFiles = SOURCE_FILES.concat(EXT_FILES).concat(ENTITLEMENTS_FILE);
 
 			for (let i = 0; i < allFiles.length; i++) {
 				const file = allFiles[i];
@@ -138,7 +147,7 @@ const withPush: ConfigPlugin = (config) => {
 			nseTarget.uuid
 		);
 
-		// Add Swift_Version
+		// Set Swift Version, Entitlements and Development Team
 		const buildConfs = xcodeProject.hash.project.objects.XCBuildConfiguration;
 		Object.keys(buildConfs).forEach(function (key) {
 			if (
@@ -147,6 +156,8 @@ const withPush: ConfigPlugin = (config) => {
 				buildConfs[key].buildSettings["PRODUCT_NAME"] === `\"${TARGET_NAME}\"`
 			) {
 				buildConfs[key].buildSettings["SWIFT_VERSION"] = '5.0'
+				buildConfs[key].buildSettings["CODE_SIGN_ENTITLEMENTS"] = `${iosPath}/${TARGET_NAME}/${ENTITLEMENTS_FILE}`
+				buildConfs[key].buildSettings["DEVELOPMENT_TEAM"] = 'WMBQ84HN4T';
 			}
 		});
 

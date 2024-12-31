@@ -4,7 +4,8 @@
     "strict": true,
     "paths": {
       "berty-bridge-expo": ["../src/index"],
-      "berty-bridge-expo/*": ["../src/*"]
+      "berty-bridge-expo/*": ["../src/*"],
+      "@berty/*": ["./*"]
     }
   }
 }

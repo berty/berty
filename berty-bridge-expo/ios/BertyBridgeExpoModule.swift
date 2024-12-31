@@ -65,7 +65,7 @@ public class BertyBridgeExpoModule: Module {
         "debug": self.debug
     ])
       
-    AsyncFunction("init") { (promise: Promise) in
+    AsyncFunction("initBridge") { (promise: Promise) in
         do {
             if self.bridgeMessenger != nil || self.remoteBridge != nil || self.serviceClient != nil {
                 throw NSError(domain: "tech.berty.gobridge", code: 1, userInfo: [NSLocalizedDescriptionKey : "already started"])

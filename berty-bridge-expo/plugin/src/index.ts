@@ -3,6 +3,7 @@ import { withPlugins } from "expo/config-plugins";
 
 import withAppleTeamId from "./withAppleTeamId";
 import withBundleIdentifier from "./withBundleIdentifier";
+import withEntitlements from "./withEntitlements";
 import withPlist from "./withPlist";
 import withPush from "./withPush";
 
@@ -12,6 +13,7 @@ const withConfig: ConfigPlugin = (config) => {
 		withPlist,
 		withAppleTeamId,
 		withPush,
+		withEntitlements,
 	]);
 };
 
