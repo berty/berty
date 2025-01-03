@@ -56,6 +56,9 @@ yarn-error.log
 # Expo
 .expo/*
 
+# cache
+ios/.gomobile-cache
+
 # Go Framework
 android/libs
 ios/Frameworks

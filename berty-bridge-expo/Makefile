@@ -1,9 +1,11 @@
 check-program = $(foreach exec,$(1),$(if $(shell PATH="$(PATH)" which $(exec)),,$(error "Missing deps: no '$(exec)' in PATH")))
+rwildcard = $(foreach d,$(wildcard $1*),$(call rwildcard,$d/,$2) $(filter $(subst *,%,$2),$d))
 GO ?= go # this allows to override the go version used
 GO_TAGS ?= -tags "fts5 sqlite sqlite_unlock_notify"
 GOMOBILE_IOS_TARGET ?= ios
 GOMOBILE_ANDROID_TARGET ?= android
 
+bridge_src := $(call rwildcard,../go,*.go *.m *.h) ../go.sum
 ios_gomobile_cache="$(PWD)/ios/.gomobile-cache"
 android_gomobile_cache="$(PWD)/android/.gomobile-cache"
 ext_ldflags = -ldflags="-X berty.tech/berty/v2/go/pkg/bertyversion.VcsRef=$(VCS_REF) -X berty.tech/berty/v2/go/pkg/bertyversion.Version=$(VERSION)"
@@ -18,7 +20,7 @@ node_modules: package.json
 #### iOS
 
 .PHONY: ios.gomobile
-ios.gomobile: ios/Frameworks/Bertybridge.xcframework ios/Frameworks/Bertypush.xcframework
+ios.gomobile: ios/Frameworks/Bertybridge.xcframework plugin/src/NotificationService/Bertypush.xcframework
 
 ios/Frameworks/Bertybridge.xcframework: $(bridge_src)
 	cd .. && $(GO) mod download
@@ -42,11 +44,11 @@ ios/Frameworks/Bertybridge.xcframework: $(bridge_src)
 	touch $@
 	cd .. && $(GO) mod tidy
 
-ios/Frameworks/Bertypush.xcframework: $(bridge_src)
+plugin/src/NotificationService/Bertypush.xcframework: $(bridge_src)
 	cd .. && $(GO) mod download
 	cd .. && $(GO) install golang.org/x/mobile/cmd/gobind
 	cd .. && $(GO) run golang.org/x/mobile/cmd/gomobile init
-	mkdir -p $(ios_gomobile_cache) ios/Frameworks
+	mkdir -p $(ios_gomobile_cache) plugin/src/NotificationService
 
 # use `nowatchdog` tags, see https://github.com/libp2p/go-libp2p-connmgr/issues/98
 	cd .. && \
