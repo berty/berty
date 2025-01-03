@@ -12,3 +12,7 @@ __tests__
 /android/src/test/
 /android/build/
 /example/
+
+/ios/.gomobile-cache/
+/ios/Frameworks/
+/plugin/src/NotificationService/BertyPush.xcframework/
