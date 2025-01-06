@@ -1,6 +1,6 @@
 import { ConfigPlugin } from "@expo/config-plugins";
 
-const withPlist: ConfigPlugin = (config) => {
+const withIosPlist: ConfigPlugin = (config) => {
 	if (!config.ios) {
 		config.ios = {};
 	}
@@ -13,4 +13,4 @@ const withPlist: ConfigPlugin = (config) => {
 	return config;
 };
 
-export default withPlist;
+export default withIosPlist;

@@ -2,40 +2,22 @@ import {
 	ConfigPlugin,
 	withXcodeProject,
 	withDangerousMod,
-	withEntitlementsPlist
 } from "@expo/config-plugins";
-import type { XcodeProject } from "@expo/config-plugins";
 import * as fs from "fs";
 import * as path from "path";
 
 const TARGET_NAME = "NotificationService";
-const SOURCE_FILES = ["Common.swift", "NotificationService.swift", "KeystoreDriver.swift", "RootDir.swift"];
+const SOURCE_FILES = [
+	"Common.swift",
+	"NotificationService.swift",
+	"KeystoreDriver.swift",
+	"RootDir.swift",
+];
 const EXT_FILES = ["NotificationService-Info.plist"];
-const ENTITLEMENTS_FILE = "ProdNS.entitlements"
+const ENTITLEMENTS_FILE = "ProdNS.entitlements";
 const FRAMEWORKS = ["Bertypush.xcframework"];
 
 let iosPath: string;
-
-const findFileReferenceByName = (
-	xcodeProject: XcodeProject,
-	fileName: string
-) => {
-	const fileReferences = xcodeProject.hash.project.objects["PBXFileReference"];
-	return Object.fromEntries(
-		Object.entries(fileReferences).filter(([key, value]: [string, any]) => {
-			console.log("remi: file: " + value.name);
-			return value.name === `"${fileName}"`;
-		})
-	);
-};
-const withEntitlements: ConfigPlugin = (config) => {
-	return withEntitlementsPlist(config, (config) => {
-		config.modResults['com.apple.security.application-groups'] = ['group.tech.berty'];
-		config.modResults['keychain-access-groups'] = ['$(AppIdentifierPrefix)tech.berty.ios'];
-		config.modResults['com.apple.developer.usernotifications.filtering'] = true;
-		return config;
-	  });
-};
 
 const withCopyFiles: ConfigPlugin = (config) => {
 	// support for monorepos where node_modules can be above the project directory.
@@ -70,7 +52,7 @@ const withCopyFiles: ConfigPlugin = (config) => {
 	]);
 };
 
-const withPush: ConfigPlugin = (config) => {
+const withIosPush: ConfigPlugin = (config) => {
 	config = withCopyFiles(config);
 
 	return withXcodeProject(config, (newConfig) => {
@@ -135,7 +117,7 @@ const withPush: ConfigPlugin = (config) => {
 			nseTarget.uuid
 		);
 
-		const podsRoot = path.join(iosPath, "Pods")
+		const podsRoot = path.join(iosPath, "Pods");
 		xcodeProject.addBuildPhase(
 			[
 				"NotificationService/Bertypush.xcframework",
@@ -155,9 +137,11 @@ const withPush: ConfigPlugin = (config) => {
 				typeof buildConfs[key].buildSettings === "object" &&
 				buildConfs[key].buildSettings["PRODUCT_NAME"] === `\"${TARGET_NAME}\"`
 			) {
-				buildConfs[key].buildSettings["SWIFT_VERSION"] = '5.0'
-				buildConfs[key].buildSettings["CODE_SIGN_ENTITLEMENTS"] = `${iosPath}/${TARGET_NAME}/${ENTITLEMENTS_FILE}`
-				buildConfs[key].buildSettings["DEVELOPMENT_TEAM"] = 'WMBQ84HN4T';
+				buildConfs[key].buildSettings["SWIFT_VERSION"] = "5.0";
+				buildConfs[key].buildSettings[
+					"CODE_SIGN_ENTITLEMENTS"
+				] = `${iosPath}/${TARGET_NAME}/${ENTITLEMENTS_FILE}`;
+				buildConfs[key].buildSettings["DEVELOPMENT_TEAM"] = "WMBQ84HN4T";
 			}
 		});
 
@@ -165,4 +149,4 @@ const withPush: ConfigPlugin = (config) => {
 	});
 };
 
-export default withPush;
+export default withIosPush;
