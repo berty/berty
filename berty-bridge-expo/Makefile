@@ -5,9 +5,12 @@ GO_TAGS ?= -tags "fts5 sqlite sqlite_unlock_notify"
 GOMOBILE_IOS_TARGET ?= ios
 GOMOBILE_ANDROID_TARGET ?= android
 
+make_dir := $(realpath $(dir $(abspath $(lastword $(MAKEFILE_LIST)))))
 bridge_src := $(call rwildcard,../go,*.go *.m *.h) ../go.sum
-ios_gomobile_cache="$(PWD)/ios/.gomobile-cache"
-android_gomobile_cache="$(PWD)/android/.gomobile-cache"
+gomobile_cache="$(make_dir)/.gomobile-cache"
+IOS_OUTPUT_BERTYPUSH_FRAMEWORK ?= $(make_dir)/plugin/src/NotificationService/Bertypush.xcframework
+IOS_OUTPUT_BERTYBRIDGE_FRAMEWORK ?= $(make_dir)/ios/Frameworks/Bertybridge.xcframework
+ANDROID_OUTPUT_LIBS ?= $(make_dir)/android/libs/gobridge.aar
 ext_ldflags = -ldflags="-X berty.tech/berty/v2/go/pkg/bertyversion.VcsRef=$(VCS_REF) -X berty.tech/berty/v2/go/pkg/bertyversion.Version=$(VERSION)"
 minimum_ios_ver = 12.0
 minimum_android_ver = 21
@@ -20,13 +23,13 @@ node_modules: package.json
 #### iOS
 
 .PHONY: ios.gomobile
-ios.gomobile: ios/Frameworks/Bertybridge.xcframework plugin/src/NotificationService/Bertypush.xcframework
+ios.gomobile: node_modules $(IOS_OUTPUT_BERTYBRIDGE_FRAMEWORK) $(IOS_OUTPUT_BERTYPUSH_FRAMEWORK)
 
-ios/Frameworks/Bertybridge.xcframework: $(bridge_src)
+$(IOS_OUTPUT_BERTYBRIDGE_FRAMEWORK): $(bridge_src)
 	cd .. && $(GO) mod download
 	cd .. && $(GO) install golang.org/x/mobile/cmd/gobind
 	cd .. && $(GO) run golang.org/x/mobile/cmd/gomobile init
-	mkdir -p $(ios_gomobile_cache) ios/Frameworks
+	mkdir -p $(gomobile_cache) ios/Frameworks
 
 # use `nowatchdog` tags, see https://github.com/libp2p/go-libp2p-connmgr/issues/98
 	cd .. && \
@@ -34,9 +37,9 @@ ios/Frameworks/Bertybridge.xcframework: $(bridge_src)
 		CGO_CPPFLAGS=-DHAVE_GETHOSTUUID=0 \
 		$(GO) run golang.org/x/mobile/cmd/gomobile bind \
 			-v $(ext_ldflags) \
-			-o $(PWD)/$@ \
+			-o $@ \
 			$(GO_TAGS) -tags 'nowatchdog' \
-			-cache $(ios_gomobile_cache)/bertybridge \
+			-cache $(gomobile_cache)/bertybridge \
 			-target $(GOMOBILE_IOS_TARGET) \
 			-iosversion $(minimum_ios_ver) \
 			./go/framework/bertybridge
@@ -44,21 +47,21 @@ ios/Frameworks/Bertybridge.xcframework: $(bridge_src)
 	touch $@
 	cd .. && $(GO) mod tidy
 
-plugin/src/NotificationService/Bertypush.xcframework: $(bridge_src)
+$(IOS_OUTPUT_BERTYPUSH_FRAMEWORK): $(bridge_src)
 	cd .. && $(GO) mod download
 	cd .. && $(GO) install golang.org/x/mobile/cmd/gobind
 	cd .. && $(GO) run golang.org/x/mobile/cmd/gomobile init
-	mkdir -p $(ios_gomobile_cache) plugin/src/NotificationService
+	mkdir -p $(gomobile_cache) plugin/src/NotificationService
 
 # use `nowatchdog` tags, see https://github.com/libp2p/go-libp2p-connmgr/issues/98
 	cd .. && \
 		PATH="$(PATH):`go env GOPATH`/bin" \
 		CGO_CPPFLAGS=-DHAVE_GETHOSTUUID=0 \
 		$(GO) run golang.org/x/mobile/cmd/gomobile bind \
-			-o $(PWD)/$@ \
+			-o $@ \
 			-v $(ext_ldflags) \
 			$(GO_TAGS) -tags 'nowatchdog,noproximitytransport' \
-			-cache $(ios_gomobile_cache)/bertypush \
+			-cache $(gomobile_cache)/bertypush \
 			-target $(GOMOBILE_IOS_TARGET) \
 			-iosversion $(minimum_ios_ver) \
 			./go/framework/bertypush
@@ -69,17 +72,17 @@ plugin/src/NotificationService/Bertypush.xcframework: $(bridge_src)
 #### Android
 
 .PHONY: android.gomobile
-android.gomobile: android/libs/gobridge.aar
+android.gomobile: node_modules $(ANDROID_OUTPUT_LIBS)
 
-android/libs/gobridge.aar: $(bridge_src)
+$(ANDROID_OUTPUT_LIBS): $(bridge_src)
 	cd .. && $(GO) mod download
 	cd .. && $(GO) run golang.org/x/mobile/cmd/gomobile init
-	mkdir -p $(android_gomobile_cache) android/libs
+	mkdir -p $(gomobile_cache) android/libs
 	cd .. && GO111MODULE=on $(GO) run golang.org/x/mobile/cmd/gomobile bind \
-		-o $(PWD)/$@ \
+		-o $@ \
 		-v $(ext_ldflags) \
 		$(GO_TAGS) \
-		-cache $(android_gomobile_cache) \
+		-cache $(gomobile_cache)/android_bertybridge \
 		-target $(GOMOBILE_ANDROID_TARGET) \
 		-androidapi $(minimum_android_ver) \
 		./go/framework/bertybridge
@@ -90,8 +93,7 @@ android/libs/gobridge.aar: $(bridge_src)
 clean:
 	rm -fr node_modules
 
-	rm -fr $(ios_gomobile_cache)
-	rm -fr $(android_gomobile_cache)
+	rm -fr $(gomobile_cache)
 	rm -fr ios/Frameworks
 	rm -fr android/libs
 
