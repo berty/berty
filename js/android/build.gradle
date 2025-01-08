@@ -5,7 +5,7 @@ buildscript {
         androidXVersion = "1.3.0"
         androidXAnnotation = "1.2.0"
         buildToolsVersion = "29.0.3"
-        minSdkVersion = 23
+        minSdkVersion = 24
         compileSdkVersion = 33
         targetSdkVersion = 33
         ndkVersion = "22.1.7171670"
