@@ -1,22 +1,25 @@
-import { StatusBar, Text, View } from "react-native";
+import { StatusBar, View } from "react-native";
 import { useTranslation } from 'react-i18next'
 import BertyGradientSquareSvg from "@berty/assets/logo/berty-gradient-square-svg";
 import { useStyles } from '@berty/contexts/styles'
 import { useThemeColor } from "@berty/hooks";
 import { UnifiedText } from "@berty/components/shared-components/UnifiedText";
 import { PrimaryButton } from "@berty/components";
+import { initI18N } from '@berty/i18n'
+
+initI18N()
 
 export default function GetStarted() {
-		const { margin, padding, text } = useStyles()
+	const { margin, padding, text } = useStyles()
 	const colors = useThemeColor()
 	const { t } = useTranslation()
 
-  return (
-    <View
-			style={[
-				padding.medium,
-				{ backgroundColor: colors['main-background'], flex: 1, justifyContent: 'center' },
-			]}
+return (
+	<View
+		style={[
+			padding.medium,
+			{ backgroundColor: colors['main-background'], flex: 1, justifyContent: 'center' },
+		]}
 		>
 			<StatusBar backgroundColor={colors['main-background']} barStyle='dark-content' />
 			<View style={[margin.bottom.big, { flexDirection: 'row', justifyContent: 'center' }]}>
@@ -53,6 +56,6 @@ export default function GetStarted() {
 					</View>
 				</View>
 			</View>
-			    </View>
-  );
+		</View>
+	);
 }
