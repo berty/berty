@@ -3,6 +3,17 @@ apply plugin: 'com.android.library'
 group = 'tech.berty.bertybridgeexpo'
 version = '0.1.0'
 
+// Define the custom task to run the make build command
+task makeBuild(type: Exec) {
+    workingDir '..'
+    commandLine 'make', 'android.gomobile'
+}
+
+// Make the build depend on the makeBuild task
+tasks.named('preBuild').configure {
+    dependsOn(makeBuild)
+}
+
 def expoModulesCorePlugin = new File(project(":expo-modules-core").projectDir.absolutePath, "ExpoModulesCorePlugin.gradle")
 apply from: expoModulesCorePlugin
 applyKotlinExpoModulesCorePlugin()
@@ -40,4 +51,20 @@ android {
   lintOptions {
     abortOnError false
   }
+}
+
+dependencies {
+    implementation fileTree(dir: "libs", include: ['*.aar', '*.jar'])
+
+    // Add keystore, 1.1 is required to use the MasterKey class
+    implementation "androidx.security:security-crypto:1.1.0-alpha06"
+    implementation "com.google.android.gms:play-services-tasks:18.2.0"
+
+    // Import the Firebase BoM
+    implementation(platform("com.google.firebase:firebase-bom:33.7.0"))
+    implementation 'com.google.firebase:firebase-messaging'
+
+    // Add Android Nearby
+    implementation "com.google.android.gms:play-services-nearby:16.0.0"
+    implementation 'com.google.android.gms:play-services-location:17.0.0'
 }
