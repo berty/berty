@@ -1,4 +1,3 @@
-import mem from 'mem'
 import { StyleSheet, Platform } from 'react-native'
 
 import { initialScaleSize } from './constant'
@@ -66,7 +65,7 @@ const mapBorderShadowIOS = (
 		big: { ..._defaultValues, shadowRadius: 8, shadowOffset: { width: 0, height: 4 } },
 		huge: { ..._defaultValues, shadowRadius: 13, shadowOffset: { width: 0, height: 6.5 } },
 	}),
-	scale: mem(
+	scale:
 		(size: number) =>
 			StyleSheet.create({
 				scale: {
@@ -75,7 +74,6 @@ const mapBorderShadowIOS = (
 					shadowOffset: { width: 0, height: size / 2 },
 				},
 			}).scale,
-	),
 })
 
 const mapBorderShadowAndroid = (): Sizes<{}> => ({
@@ -87,7 +85,7 @@ const mapBorderShadowAndroid = (): Sizes<{}> => ({
 		big: { elevation: 5 },
 		huge: { elevation: 6 },
 	}),
-	scale: mem((size: number) => StyleSheet.create({ scale: { elevation: size } }).scale),
+	scale: (size: number) => StyleSheet.create({ scale: { elevation: size } }).scale,
 })
 
 export const mapBorder = (
@@ -105,9 +103,9 @@ export const mapBorder = (
 			huge: 5 * scaleSize,
 		},
 	),
-	scale: mem((size: number) => {
+	scale: (size: number) => {
 		return StyleSheet.create({ scale: { borderWidth: size * scaleSize } }).scale
-	}),
+	},
 	radius: {
 		...mapSizes(
 			decl.sides,

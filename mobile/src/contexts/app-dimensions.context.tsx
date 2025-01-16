@@ -1,6 +1,5 @@
-import { useDimensions } from '@react-native-community/hooks'
 import React, { createContext, useContext, useState } from 'react'
-import { PixelRatio } from 'react-native'
+import { PixelRatio, useWindowDimensions } from 'react-native'
 
 import {
 	initialScaleHeight,
@@ -35,7 +34,7 @@ const appDimensionsContext = createContext<{
 })
 
 export const AppDimensionsProvider: React.FC = ({ children }) => {
-	const { height: windowHeight, width: windowWidth } = useDimensions().window
+	const { height: windowHeight, width: windowWidth } = useWindowDimensions()
 	const [scaleHeight, setScaleHeight] = useState(initialScaleHeight)
 	const [scaleSize, setScaleSize] = useState(initialScaleSize)
 	const [fontScale, setFontScale] = useState(initialFontScale)

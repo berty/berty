@@ -8,7 +8,6 @@ import { UnifiedText } from '@berty/components/shared-components/UnifiedText'
 import { useStyles } from '@berty/contexts/styles'
 import { useNotificationsInhibitor, useThemeColor } from '@berty/hooks'
 import { ScreenFC, useNavigation } from '@berty/navigation'
-import { importAccountFromDocumentPicker } from '@berty/utils/accounts/accountBackup'
 import * as testIDs from '@berty/utils/testing/testIDs.json'
 
 export const GetStarted: ScreenFC<'Onboarding.GetStarted'> = () => {
@@ -59,24 +58,6 @@ export const GetStarted: ScreenFC<'Onboarding.GetStarted'> = () => {
 							{t('onboarding.getstarted.create-button')}
 						</PrimaryButton>
 					</View>
-					{Platform.OS !== 'web' && (
-						<View style={[margin.top.small]}>
-							<SecondaryButton
-								onPress={async () => {
-									const filePath = await importAccountFromDocumentPicker()
-									if (!filePath) {
-										console.warn("imported file doesn't exist")
-										return
-									}
-									reset({
-										routes: [{ name: 'Account.Importing', params: { filePath } }],
-									})
-								}}
-							>
-								{t('onboarding.getstarted.import-button')}
-							</SecondaryButton>
-						</View>
-					)}
 				</View>
 			</View>
 		</View>
