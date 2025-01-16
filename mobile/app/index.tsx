@@ -5,9 +5,6 @@ import { useStyles } from '@berty/contexts/styles'
 import { useThemeColor } from "@berty/hooks";
 import { UnifiedText } from "@berty/components/shared-components/UnifiedText";
 import { PrimaryButton } from "@berty/components";
-import { initI18N } from '@berty/i18n'
-
-initI18N()
 
 export default function GetStarted() {
 	const { margin, padding, text } = useStyles()
