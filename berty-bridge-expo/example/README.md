@@ -11,7 +11,7 @@ cd .. # cd to the parent folder
 make ios.gomobile # or make android.gomobile
 ```
 
-For developpement, you can also run in new terminals:
+For development, you can also run in new terminals:
 
 ```
 npm run build
@@ -30,7 +30,7 @@ npx expo run:ios # or npx expo run:android
 
 ### Xcode build
 
-If you prefer to compile with Xcode, open a second terminal in this folder and run::
+If you prefer to compile with Xcode, open a new terminal in this folder and run::
 
 ```
 npm install
