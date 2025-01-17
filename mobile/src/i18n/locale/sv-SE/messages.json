@@ -1,0 +1,646 @@
+{
+	"onboarding": {
+		"getstarted": {
+			"screenTitle": "",
+			"title": "",
+			"desc": "gratis & säker peer-to-peer kommunikation",
+			"create-button": "Skapa nytt konto",
+			"import-button": "Importera konto"
+		},
+		"default-mode": {
+			"summary": {
+				"title": "Standardläge",
+				"screenTitle": "",
+				"subtitle": "Kom igång snabbt",
+				"first-point": "",
+				"second-point": "",
+				"third-point": "",
+				"back-button": "",
+				"accept-button": "Kom igång"
+			}
+		},
+		"custom-mode": {
+			"summary": {
+				"screenTitle": "",
+				"title": "Anpassat läge",
+				"subtitle": "Anpassad sekretess/komfort balans",
+				"first-point": "",
+				"second-point": "",
+				"back-button": "",
+				"accept-button": ""
+			},
+			"settings": {
+				"off-grid": {
+					"title": "",
+					"ble-button": "Bluetooth Low Energy",
+					"nearby-button": "",
+					"mc-button": "",
+					"mdns-button": ""
+				},
+				"routing": {
+					"title": "",
+					"dht-button": "Distribuerad hashtabell",
+					"rdvp-button": ""
+				},
+				"access": {
+					"title": "",
+					"relay-button": "",
+					"bootstrap-button": ""
+				},
+				"modals": {
+					"add": {
+						"title": {
+							"relay": "",
+							"bootstrap": "",
+							"rdvp": ""
+						}
+					},
+					"edit": {
+						"title": {
+							"relay": "",
+							"bootstrap": "",
+							"rdvp": ""
+						}
+					},
+					"errors": {
+						"alias-already-exists": "",
+						"multiaddr-alread-exists": "",
+						"multiaddr-bad-format": "",
+						"multiaddr-p2p": ""
+					},
+					"buttons": {
+						"add": "Lägg till",
+						"edit": "",
+						"delete": ""
+					},
+					"multiaddress": "",
+					"alias": ""
+				},
+				"all-button": "",
+				"accept-button": ""
+			}
+		},
+		"create-account": {
+			"title": "Skapa ditt konto",
+			"first-button": "",
+			"second-button": "",
+			"placeholder": "Välj ditt smeknamn",
+			"good-to-know": {
+				"title": "Bra att veta:",
+				"first-point": "Ditt konto är skapat lokalt",
+				"second-point": ""
+			}
+		},
+		"generate-key": {
+			"title": "Startar Berty-noden…",
+			"desc": "Det här kan ta några sekunder"
+		},
+		"setup-finished": {
+			"title": "Genomgång slutförd!",
+			"desc": "Du kan nu använda appen, börja lägga till kontakter och prata fritt med dem utan övervakning",
+			"button": ""
+		},
+		"web-views": {
+			"title": "",
+			"desc": "",
+			"first-button": "Avbryt",
+			"second-button": "Ja"
+		}
+	},
+	"main": {
+		"home": {
+			"title": "",
+			"requests": {
+				"title": "Förfrågningar",
+				"accept": "Acceptera",
+				"card-title": "Kontaktförfrågan!"
+			},
+			"input-placeholder": "Sökord",
+			"no-contacts": "Du har inga kontakter eller chatter ännu",
+			"no-network": {
+				"title": "",
+				"description": "",
+				"cancel": "",
+				"activate": ""
+			},
+			"search": {
+				"no-results": "Inga resultat hittades"
+			},
+			"create-group": {
+				"title": "Ny grupp",
+				"add-members": "Lägg till medlemmar",
+				"group-info": "Gruppinformation",
+				"search-placeholder": "Sök",
+				"continue": "",
+				"create-group": ""
+			},
+			"create-group-finalize": {
+				"placeholder": "Gruppnamn",
+				"about": "Om grupperna",
+				"first-bullet-point": "Vem som helst i gruppen kan byta namn på den eller bjuda in nya medlemmar",
+				"second-bullet-point": "Du kan bjuda in medlemmar via länk",
+				"third-bullet-point": "Du kan lämna denna grupp",
+				"fourth-bullet-point": "Du kan inte ta bort denna grupp",
+				"fifth-bullet-point": "Du kan inte ta bort medlemmar från denna grupp"
+			},
+			"conversations": {
+				"request-sent": "",
+				"draft": "Utkast: {{message}}"
+			}
+		},
+		"suggestion-display-name-initial": "Klicka här för att lägga till"
+	},
+	"settings": {
+		"home": {
+			"title": "Inställningar",
+			"proximity-button": "Kommunikation utanför rutnät",
+			"notifications-button": "Aviseringar",
+			"appearance-button": "",
+			"accounts-button": "Konton",
+			"network-button": "Nätverk",
+			"linked-identities-button": "",
+			"directory-search-button": "",
+			"bug-button": "Rapportera en bugg",
+			"about-button": "Om Berty",
+			"version-button": "",
+			"devtools-button": "Utvecklingsverktyg"
+		},
+		"about": {
+			"title": "Om Berty",
+			"faq-button": "Vanliga frågor",
+			"roadmap-button": "Roadmap",
+			"policy-button": "",
+			"license-button": "",
+			"terms-of-use": "Användarvillkor"
+		},
+		"accounts": {
+			"title": "Konton",
+			"backup-button": "",
+			"backup-notif-title": "",
+			"backup-notif-desc": "",
+			"accounts-button": "Konton",
+			"create-button": "",
+			"import-button": "",
+			"delete-button": "",
+			"delete-title": ""
+		},
+		"appearance": {
+			"title": "",
+			"dark-button": "",
+			"editor-button": "",
+			"theme-editor": {
+				"title": ""
+			}
+		},
+		"contact-convs": {
+			"title": "",
+			"reset-button": "",
+			"request-button": ""
+		},
+		"network": {
+			"title": "Nätverk",
+			"ble-button": "Bluetooth Low Energy",
+			"mc-button": "",
+			"nearby-button": "",
+			"mdns-button": "Multicast DNS",
+			"dht-button": "Distribuerad hashtabell",
+			"rdvp-button": "",
+			"relay-button": "",
+			"bootstrap-button": ""
+		},
+		"notifications": {
+			"title": "Aviseringar"
+		},
+		"edit-profile": {
+			"title": "Redigera min profil",
+			"qr-will-update": "Ditt Berty ID (QR-kod) kommer att uppdateras",
+			"ocr-wont-update": "Dina pågående kontaktförfrågningar kommer inte att uppdateras",
+			"save": "Spara ändringar",
+			"cancel": "Avbryt",
+			"name-input-placeholder": "Namn..."
+		},
+		"delete-account": {
+			"title": "Radera konto!",
+			"first-desc": "Är du säker på att du vill radera ditt konto?",
+			"desc-please": "",
+			"desc-delete": "",
+			"desc-confirm": "",
+			"cancel-button": "Avbryt",
+			"delete-button": ""
+		},
+		"faq": {
+			"title": "Vanliga frågor"
+		},
+		"roadmap": {
+			"title": "Roadmap"
+		},
+		"privacy-policy": {
+			"title": ""
+		},
+		"license": {
+			"title": ""
+		},
+		"devtools": {
+			"title": "Utvecklingsverktyg",
+			"header-left-button": "Enhetsinformation",
+			"header-middle-button": "Generera låtsatsdata",
+			"header-right-button": "Starta om bakgrundstjänst",
+			"allow-unsecure-grpc": "",
+			"force-mock-button": "",
+			"simulate-button": "Simulera streaming fel",
+			"simulate-js-error-button": "Simulera JavaScript-fel",
+			"system-info-button": "Systeminformation",
+			"select-node": {
+				"title": "",
+				"node-type": "",
+				"address": "",
+				"account-port": "",
+				"messenger-port": "",
+				"dont-ask": "",
+				"button-continue": ""
+			},
+			"debug-button": "Debug",
+			"log-button": {
+				"name": "Loggformat",
+				"bullet-point": "Starta om appen efter att du ändrat detta fält"
+			},
+			"log-filters-button": {
+				"name": "Loggfilter",
+				"bullet-point": "Starta om appen efter att du ändrat detta fält"
+			},
+			"export-logs-button": "",
+			"add-dev-conversations-button": "Lägg till utvecklarkonversationer",
+			"share-button": {
+				"title": "Dela ID via Discord",
+				"alert-title": "Vill du dela din QR-kod till \"#dev-logs\" på Berty's Discord?",
+				"alert-message": "Detta kommer att tillåta annan personal att skanna din QR-kod eller kopiera din kontaktlänk.",
+				"alert-accept-button": "Javisst 👍",
+				"alert-cancel-button": "Nej"
+			},
+			"dump-account-button": "Dumpa konto",
+			"dump-contacts-button": "Dumpa kontakter",
+			"dump-conversations-button": "Dumpa konversationer",
+			"dump-interactions-button": "Dumpa interaktioner",
+			"dump-members-button": "Dumpa medlemmar",
+			"stop-node-button": "Stoppa nod",
+			"local-grpc-button": "lokal gRPC",
+			"console-logs-button": "Konsolloggar",
+			"ipfs-webui-button": "IPFS webbgränssnitt",
+			"send-to-all-button": {
+				"title": "Skicka meddelanden till alla kontakter",
+				"sending": "Skickar...",
+				"test": "Test, ",
+				"tried": "✔ Försökte skicka till {{length}} kontakter"
+			},
+			"tyber-attach": "Tyber anknyt till {{host}}",
+			"tyber-host-button": {
+				"name": "Tyber",
+				"bullet-point": "Starta om appen efter att du ändrat detta fält"
+			},
+			"footer-left-button": "Enhetsinformation",
+			"footer-middle-button": "Visa händelser",
+			"footer-right-button": "Starta om bakgrundstjänst"
+		},
+		"system-info": {
+			"title": "Systeminformation"
+		},
+		"fake-data": {
+			"title": "Generera låtsatsdata",
+			"contacts-button": "Generera låtsatskontakter",
+			"multi-members-button": "Generera låtsats multi-användare",
+			"messages-button": "Generera låtsatsmeddelanden",
+			"delete-button": "Radera låtsatsdata"
+		},
+		"add-dev-conversations": {
+			"title": "Lägg till utvecklarkonversationer",
+			"add": "Lägg till {{name}}",
+			"tag-bot": "Bot",
+			"tag-contact": "Kontakt",
+			"tag-conversation": ""
+		},
+		"ipfs-webui": {
+			"title": "IPFS webbgränssnitt"
+		},
+		"theme-editor": {
+			"randomize": "Generera tema",
+			"save": "Spara temat",
+			"export": "Exportera valt tema till fil",
+			"share": "Dela valt tema som fil",
+			"import": "Importera en tema fil",
+			"delete": "",
+			"bad-format-title": "",
+			"bad-format-desc": "",
+			"notification-file-saved": {
+				"title": "Data sparad!",
+				"desc": "Tillgänglig i din nedladdningsmapp"
+			}
+		},
+		"my-berty-ID": {
+			"title": ""
+		},
+		"share": {
+			"invite": "",
+			"tap-to-scan": "",
+			"create-group": "Skapa grupp"
+		},
+		"linked-identities": {
+			"title": ""
+		},
+		"directory-search": {
+			"title": ""
+		}
+	},
+	"tabs": {
+		"qr": "QR",
+		"fingerprint": "Fingeravtryck",
+		"info": "Detaljer",
+		"devices": "Enheter"
+	},
+	"modals": {
+		"manage-deep-link": {
+			"invalid-link": "Ogiltig länk!",
+			"invalid-qr": "Ogiltig QR-kod!",
+			"error": "Något gick fel!",
+			"contact-already-added": "Kontakten är redan tillagd",
+			"contact-already-added-message": "Du kan inte lägga till samma kontakt flera gånger"
+		},
+		"invalid-scan": {
+			"dismiss-button": ""
+		},
+		"group-invitation": {
+			"join": "",
+			"password-label": "",
+			"password-placeholder": "Lösenord..."
+		},
+		"save-theme": {
+			"title": "Sparar temat",
+			"desc": "Vänligen välj ett namn för ditt tema!",
+			"placeholder": "Temats namn...",
+			"cancel": "Avbryt",
+			"add": "Lägg till!"
+		}
+	},
+	"chat": {
+		"title-unknown": "",
+		"sending": "Skickar...",
+		"sent": "Skickat",
+		"contact-settings": {
+			"my-devices": ""
+		},
+		"multi-member": {
+			"input-placeholder": "Skriv här..."
+		},
+		"push-notifications": {
+			"title": "Aviseringar",
+			"unsupported": "",
+			"check-device-settings": "",
+			"check-account-settings": "",
+			"warning-disable": {
+				"title": "",
+				"subtitle": "",
+				"accept": "",
+				"refuse": ""
+			},
+			"why-cant-disable": "",
+			"why-cant-disable-account": "",
+			"errors": {
+				"no-token": "",
+				"no-server": ""
+			},
+			"warning-enable-all": {
+				"title": "",
+				"subtitle": "",
+				"refuse": "",
+				"accept": "Acceptera"
+			},
+			"warning-disable-mute": {
+				"title": "",
+				"refuse": "",
+				"accept": ""
+			},
+			"receive-push": "Ta emot push-aviseringar",
+			"hide-previews": "",
+			"auto-enable": "",
+			"show-in-app": ""
+		},
+		"devices": {
+			"title": "Enheter",
+			"push": {
+				"enabled": "",
+				"not-enabled": "Push-aviseringar avstängda"
+			}
+		},
+		"multi-member-settings": {
+			"title": "",
+			"members-button": {
+				"title": ""
+			},
+			"add-member-button": "Lägg till medlem",
+			"members-dropdown": {
+				"search-placeholder": "",
+				"conversation-booster": "",
+				"replication-type": "",
+				"user-type": ""
+			},
+			"invite-button": "Bjud in via länk",
+			"save-button": "Spara konversation på servern"
+		},
+		"add-members": {
+			"members": "Medlemmar",
+			"contacts": "Kontakter",
+			"add": "Lägg till!"
+		},
+		"multi-member-qr": {
+			"title": "QR Grupp"
+		},
+		"one-to-one": {
+			"contact-request-box": {
+				"title": "Kontaktförfrågan",
+				"group-invitation": "",
+				"refuse-button": "",
+				"accept-button": "Acceptera",
+				"accepted-button": "",
+				"error": "",
+				"you-invited": "",
+				"this-contact": "",
+				"to-a-group": ""
+			},
+			"infos-chat": {
+				"connection-confirmed": "👋 Berty anslutning bekräftad! 🎉",
+				"request-sent": "Förfrågan skickad ✈",
+				"incoming": "Besvara denna förfrågan för att svara!",
+				"outgoing": "Väntar på att ditt kontaktsvar ska ansluta!",
+				"refresh-button": ""
+			},
+			"incoming-input-placeholder": "Godkänn förfrågan för att skriva här...",
+			"input-placeholder": "Skriv här..."
+		},
+		"one-to-one-settings": {
+			"title": "",
+			"save-button": "Spara konversation på servern"
+		},
+		"replicate-group-settings": {
+			"title": "Registrera konversation på server",
+			"no-registered-button": "Ingen replikeringstjänst registrerad",
+			"connect-button": "Anslut till Berty-drivna tjänster",
+			"manage-add-button": "Hantera eller lägga till tjänster"
+		},
+		"user-message": {
+			"read-more": "Läs mer",
+			"show-less": "Visa mindre"
+		}
+	},
+	"account": {
+		"deleting": "",
+		"creating": "",
+		"opening": {
+			"alert-push-title": "Push-aviseringar",
+			"alert-push-go-failed": "",
+			"alert-push-fetch-failed": "",
+			"alert-push-perm-denied": "",
+			"alert-push-desc": "",
+			"alert-push-button": ""
+		}
+	},
+	"permission": {
+		"notification": {
+			"title": "",
+			"desc": "Berty appen behöver din tillåtelse för att skicka lokala- eller push-aviseringar. Detta gör att du kan informeras när du får ett meddelande."
+		},
+		"proximity": {
+			"title": "",
+			"android-desc": "För att kunna utbyta meddelanden offline via Bluetooth även när appen är i bakgrunden kräver Android API åtkomst till platsdata. Vi använder inte dina platsdata på något sätt.",
+			"ios-desc": "För att kunna utbyta meddelanden offline via Bluetooth kräver iOS behörighets-API tillåtelse."
+		},
+		"camera": {
+			"title": "Kamera",
+			"desc": ""
+		},
+		"audio": {
+			"title": "",
+			"desc": "För att skicka ljudmeddelande till dina kontakter måste du tillåta mikrofonbehörighet till Berty appen."
+		},
+		"gallery": {
+			"title": "",
+			"desc": ""
+		},
+		"contacts": {
+			"title": "Kontakter",
+			"desc": ""
+		},
+		"button-labels": {
+			"allow": "Tillåt",
+			"settings": "Gå till inställningar"
+		},
+		"skip": "",
+		"cancel": "Avbryt",
+		"settings-text": "Du kan aktivera {{title}} behörighet från inställningar."
+	},
+	"notification": {
+		"need-restart": {
+			"title": "",
+			"desc": ""
+		}
+	},
+	"error": {
+		"labels": {
+			"bug": "Bugg upptäckt",
+			"crash": "Krasch upptäckt"
+		},
+		"restart-app": "Starta om appen",
+		"wtf-screen": {
+			"title": "Vad är felet?",
+			"desc": "Applikationen kraschade.",
+			"desc-report": ""
+		},
+		"sorry-screen": {
+			"title": "Ledsen för detta fel!",
+			"desc": "Det är Francis fel, intern utvecklare hos Berty, som måste ha gjort ett misstag. Inte klok, denna Francis!",
+			"desc-em": "*Nja, okej, det finns ingen Francis på Bertys avdelning.",
+			"desc-report": "Klicka på knappen för att avsluta och starta om appen."
+		}
+	},
+	"debug": {
+		"inspector": {
+			"show-button": "Visa appinspektör",
+			"hide-button": "Stäng",
+			"title": "Inspektör",
+			"accounts": {
+				"title": "Konton",
+				"data-not-found": "Kontot finns inte i listan",
+				"action-delete": {
+					"file-exists": "Kontot {{accountId}} finns inte, en fil har detta namn dock.",
+					"account-exists": "Kontot {{accountId}} finns för närvarande.",
+					"fs-read-error": "Fel vid hämtning av information om filsystemet för kontot",
+					"actions-title": "Hur ska vi gå tillväga?",
+					"action-account-manager": "Ta bort det via kontohanteraren",
+					"action-account-manager-confirm": "Bekräfta borttagning av konto",
+					"action-force-delete": "Tvinga borttagning",
+					"action-force-delete-confirm": "Bekräfta tvingad borttagning av konto",
+					"error-close": "Fel vid stängning av konto",
+					"error-delete": "Fel vid borttagning av konto",
+					"success-feedback": "Konto borttaget",
+					"action-cancel": "Avbryt"
+				},
+				"status": {
+					"datastore-found": "Datalagring hittades",
+					"datastore-not-found": "Datalagring hittades ej",
+					"ipfs-repo-found": "IPFS repository hittades",
+					"ipfs-repo-not-found": "IPFS repository hittades ej",
+					"messenger-db-found": "Meddelandedatabas hittades",
+					"messenger-db-not-found": "Meddelandedatabas kunde ej hittas"
+				},
+				"infos": {
+					"aligned": {
+						"name": "Namn: {{name}}",
+						"created": "Skapad: {{created}}",
+						"opened": "Öppnad:  {{opened}}",
+						"error": "Fel: {{error}}"
+					}
+				}
+			},
+			"errors": {
+				"title": "Felmeddelanden",
+				"header-reported": "Rapporterat fel:",
+				"header-all-clear": "Inga fel rapporterade",
+				"listing-files-failed": "Fel vid listning av katalogens innehåll",
+				"listing-accounts-failed": "Fel vid listning av konton",
+				"listing-accounts-failed-grpc": "GRPC Fel vid listning av konton"
+			},
+			"dump": {
+				"button": "Dumpa appens tillstånd"
+			},
+			"refresh": "Uppdatera",
+			"confirm-alert": {
+				"button-confirm": "Bekräfta",
+				"button-cancel": "Avbryt"
+			}
+		}
+	},
+	"time-for": {
+		"minutes": "",
+		"hours": "",
+		"days": ""
+	},
+	"share": {
+		"sharing-id-message": ""
+	},
+	"directory": {
+		"phone": {
+			"register": "",
+			"associated": "",
+			"expired": "",
+			"proof-service-unavailable": "",
+			"register-service": "",
+			"unregister-service": ""
+		},
+		"email": {
+			"register": "",
+			"associated": "",
+			"expired": "",
+			"proof-service-unavailable": "",
+			"register-service": "",
+			"unregister-service": ""
+		}
+	}
+}

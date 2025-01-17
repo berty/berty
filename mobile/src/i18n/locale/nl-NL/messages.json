@@ -1,0 +1,646 @@
+{
+	"onboarding": {
+		"getstarted": {
+			"screenTitle": "Bescherm uw privacy",
+			"title": "Bescherm uw privacy",
+			"desc": "gratis & veilig peer-to-peer berichten",
+			"create-button": "Maak een nieuw account",
+			"import-button": "Importeer een account"
+		},
+		"default-mode": {
+			"summary": {
+				"title": "Standaard modus",
+				"screenTitle": "Maak een account",
+				"subtitle": "Snel aan de slag",
+				"first-point": "Begin met voorinstellingen die een privacy/comfortbalans bieden die bij de meest past. Berty nodes worden gebruikt om prestaties en asynchrone communicatie te verbeteren.",
+				"second-point": "Push-meldingen zijn standaard ingeschakeld en je kunt deze nog niet uitschakelen in iOS.",
+				"third-point": "",
+				"back-button": "Terug",
+				"accept-button": "Laten we beginnen"
+			}
+		},
+		"custom-mode": {
+			"summary": {
+				"screenTitle": "Account maken - Instellingen aanpassen",
+				"title": "Aangepaste Modus",
+				"subtitle": "Aangepaste Privacy/Comfort Balans",
+				"first-point": "",
+				"second-point": "",
+				"back-button": "Terug",
+				"accept-button": "Doorgaan"
+			},
+			"settings": {
+				"off-grid": {
+					"title": "Off-Grid Communicatie",
+					"ble-button": "Bluetooth Low Energy",
+					"nearby-button": "Android Nearby",
+					"mc-button": "Apple Multipeer Connectiviteit",
+					"mdns-button": ""
+				},
+				"routing": {
+					"title": "",
+					"dht-button": "Gedistribueerde Hash Tabel",
+					"rdvp-button": ""
+				},
+				"access": {
+					"title": "Netwerk toegankelijkheid",
+					"relay-button": "",
+					"bootstrap-button": ""
+				},
+				"modals": {
+					"add": {
+						"title": {
+							"relay": "",
+							"bootstrap": "",
+							"rdvp": ""
+						}
+					},
+					"edit": {
+						"title": {
+							"relay": "",
+							"bootstrap": "",
+							"rdvp": ""
+						}
+					},
+					"errors": {
+						"alias-already-exists": "Alias bestaat al",
+						"multiaddr-alread-exists": "",
+						"multiaddr-bad-format": "",
+						"multiaddr-p2p": ""
+					},
+					"buttons": {
+						"add": "Toevoegen",
+						"edit": "Bewerken",
+						"delete": "Verwijderen"
+					},
+					"multiaddress": "",
+					"alias": "Alias"
+				},
+				"all-button": "Alle",
+				"accept-button": "Aan de slag"
+			}
+		},
+		"create-account": {
+			"title": "Maak jouw account",
+			"first-button": "Standaard modus",
+			"second-button": "Aangepaste modus",
+			"placeholder": "Kies uw bijnaam",
+			"good-to-know": {
+				"title": "Goed om te weten:",
+				"first-point": "Uw account wordt lokaal aangemaakt",
+				"second-point": "Bijnaam is optioneel en kan later bewerkt worden"
+			}
+		},
+		"generate-key": {
+			"title": "De Berty node wordt gestart…",
+			"desc": "Dit kan enkele seconden duren"
+		},
+		"setup-finished": {
+			"title": "Setup voltooid!",
+			"desc": "Je kunt nu de app gebruiken, begin met het toevoegen van contacten om vrij en privé te communiceren",
+			"button": "Start met Berty"
+		},
+		"web-views": {
+			"title": "",
+			"desc": "",
+			"first-button": "Annuleren",
+			"second-button": "Ja"
+		}
+	},
+	"main": {
+		"home": {
+			"title": "Berty",
+			"requests": {
+				"title": "Aanvragen",
+				"accept": "Accepteren",
+				"card-title": "Contact verzoek!"
+			},
+			"input-placeholder": "Zoek op trefwoord",
+			"no-contacts": "Je hebt nog geen contacten of gesprekken",
+			"no-network": {
+				"title": "Geen Netwerk gevonden!",
+				"description": "",
+				"cancel": "NIET NU",
+				"activate": "ACTIVEREN"
+			},
+			"search": {
+				"no-results": "Geen resultaten gevonden"
+			},
+			"create-group": {
+				"title": "Nieuwe Groep",
+				"add-members": "Deelnemers toevoegen",
+				"group-info": "Groep info",
+				"search-placeholder": "Zoeken",
+				"continue": "Doorgaan",
+				"create-group": "Nieuwe groep aanmaken"
+			},
+			"create-group-finalize": {
+				"placeholder": "Groepsnaam",
+				"about": "Over groepen",
+				"first-bullet-point": "Iedereen in de groep kan deze hernoemen of nieuwe leden uitnodigen",
+				"second-bullet-point": "U kunt leden uitnodigen via een link",
+				"third-bullet-point": "Je kunt deze groep verlaten",
+				"fourth-bullet-point": "Je kunt deze groep niet verwijderen",
+				"fifth-bullet-point": "Je kunt een lid van deze groep niet verwijderen"
+			},
+			"conversations": {
+				"request-sent": "Verzoek verzonden. In behandeling...",
+				"draft": "Concept: {{message}}"
+			}
+		},
+		"suggestion-display-name-initial": "Klik hier om toe te voegen"
+	},
+	"settings": {
+		"home": {
+			"title": "Instellingen",
+			"proximity-button": "Off-Grid Communicatie",
+			"notifications-button": "Notificaties",
+			"appearance-button": "",
+			"accounts-button": "Accounts",
+			"network-button": "Netwerk",
+			"linked-identities-button": "",
+			"directory-search-button": "",
+			"bug-button": "",
+			"about-button": "Over Berty",
+			"version-button": "",
+			"devtools-button": "Ontwikkelaars tools"
+		},
+		"about": {
+			"title": "Over Berty",
+			"faq-button": "FAQ",
+			"roadmap-button": "Roadmap",
+			"policy-button": "",
+			"license-button": "",
+			"terms-of-use": "Gebruiksvoorwaarden"
+		},
+		"accounts": {
+			"title": "Accounts",
+			"backup-button": "",
+			"backup-notif-title": "",
+			"backup-notif-desc": "",
+			"accounts-button": "Accounts",
+			"create-button": "",
+			"import-button": "",
+			"delete-button": "",
+			"delete-title": ""
+		},
+		"appearance": {
+			"title": "",
+			"dark-button": "",
+			"editor-button": "",
+			"theme-editor": {
+				"title": ""
+			}
+		},
+		"contact-convs": {
+			"title": "",
+			"reset-button": "",
+			"request-button": ""
+		},
+		"network": {
+			"title": "",
+			"ble-button": "Bluetooth Low Energy",
+			"mc-button": "",
+			"nearby-button": "Android Nearby",
+			"mdns-button": "Multicast DNS",
+			"dht-button": "Gedistribueerde Hash Tabel",
+			"rdvp-button": "",
+			"relay-button": "",
+			"bootstrap-button": ""
+		},
+		"notifications": {
+			"title": "Notificaties"
+		},
+		"edit-profile": {
+			"title": "Bewerk mijn profiel",
+			"qr-will-update": "Je Berty ID (QR-code) zal worden bijgewerkt",
+			"ocr-wont-update": "Je openstaande contactverzoeken worden niet bijgewerkt",
+			"save": "Wijzigingen opslaan",
+			"cancel": "Annuleren",
+			"name-input-placeholder": "Naam..."
+		},
+		"delete-account": {
+			"title": "Account verwijderen!",
+			"first-desc": "Weet je zeker dat je je account wilt verwijderen?",
+			"desc-please": "",
+			"desc-delete": "",
+			"desc-confirm": "",
+			"cancel-button": "Annuleren",
+			"delete-button": ""
+		},
+		"faq": {
+			"title": "FAQ"
+		},
+		"roadmap": {
+			"title": "Roadmap"
+		},
+		"privacy-policy": {
+			"title": ""
+		},
+		"license": {
+			"title": ""
+		},
+		"devtools": {
+			"title": "Ontwikkeling tools",
+			"header-left-button": "Apparaat informatie",
+			"header-middle-button": "Nep gegevens genereren",
+			"header-right-button": "Daemon herstarten",
+			"allow-unsecure-grpc": "",
+			"force-mock-button": "",
+			"simulate-button": "Simuleer stream fout",
+			"simulate-js-error-button": "Simuleer JavaScript-fout",
+			"system-info-button": "Systeem informatie",
+			"select-node": {
+				"title": "",
+				"node-type": "",
+				"address": "",
+				"account-port": "",
+				"messenger-port": "",
+				"dont-ask": "",
+				"button-continue": ""
+			},
+			"debug-button": "Debug",
+			"log-button": {
+				"name": "Log formaat",
+				"bullet-point": "Herstart de app na het wijzigen van dit veld"
+			},
+			"log-filters-button": {
+				"name": "Log filters",
+				"bullet-point": "Herstart de app na het wijzigen van dit veld"
+			},
+			"export-logs-button": "",
+			"add-dev-conversations-button": "Voeg ontwikkelaar gesprekken toe",
+			"share-button": {
+				"title": "Deel ID op discord",
+				"alert-title": "Wil je je QR-code delen met \"#dev-logs\" op Berty Discord?",
+				"alert-message": "Hiermee kunnen andere medewerkers je QR-code scannen of je contactlink kopiëren.",
+				"alert-accept-button": "Yep 👍",
+				"alert-cancel-button": "Nope"
+			},
+			"dump-account-button": "Dump account",
+			"dump-contacts-button": "Dump contacten",
+			"dump-conversations-button": "Dump gesprekken",
+			"dump-interactions-button": "Gesprekken dumpen",
+			"dump-members-button": "Dump leden",
+			"stop-node-button": "Stop node",
+			"local-grpc-button": "lokale gRPC",
+			"console-logs-button": "Console logs",
+			"ipfs-webui-button": "IPFS WebUI",
+			"send-to-all-button": {
+				"title": "Verstuur berichten naar alle contacten",
+				"sending": "Verzenden...",
+				"test": "Test, ",
+				"tried": "✔ Geprobeerd om te verzenden naar {{length}} contacten"
+			},
+			"tyber-attach": "",
+			"tyber-host-button": {
+				"name": "",
+				"bullet-point": "Herstart de app na het wijzigen van dit veld"
+			},
+			"footer-left-button": "Apparaat informatie",
+			"footer-middle-button": "Toon gebeurtenissen",
+			"footer-right-button": "Herstart daemon"
+		},
+		"system-info": {
+			"title": "Systeem informatie"
+		},
+		"fake-data": {
+			"title": "Nep gegevens genereren",
+			"contacts-button": "Gen nep contacten",
+			"multi-members-button": "Gen nep meerdere leden",
+			"messages-button": "Gen nep berichten",
+			"delete-button": "Nep gegevens verwijderen"
+		},
+		"add-dev-conversations": {
+			"title": "Voeg ontwikkelaar gesprekken toe",
+			"add": "Voeg {{name}} toe",
+			"tag-bot": "Bot",
+			"tag-contact": "Contact",
+			"tag-conversation": ""
+		},
+		"ipfs-webui": {
+			"title": "IPFS WebUI"
+		},
+		"theme-editor": {
+			"randomize": "Thema genereren",
+			"save": "Sla dit thema op",
+			"export": "Exporteer geselecteerde thema als bestand",
+			"share": "Geselecteerde thema als bestand delen",
+			"import": "Een bestandsthema importeren",
+			"delete": "",
+			"bad-format-title": "",
+			"bad-format-desc": "",
+			"notification-file-saved": {
+				"title": "Gegevens opgeslagen!",
+				"desc": "Beschikbaar in de downloads map"
+			}
+		},
+		"my-berty-ID": {
+			"title": ""
+		},
+		"share": {
+			"invite": "",
+			"tap-to-scan": "",
+			"create-group": ""
+		},
+		"linked-identities": {
+			"title": ""
+		},
+		"directory-search": {
+			"title": ""
+		}
+	},
+	"tabs": {
+		"qr": "QR",
+		"fingerprint": "Vingerafdruk",
+		"info": "Informatie",
+		"devices": "Apparaten"
+	},
+	"modals": {
+		"manage-deep-link": {
+			"invalid-link": "Ongeldige link!",
+			"invalid-qr": "Ongeldige QR code!",
+			"error": "Fout!",
+			"contact-already-added": "Contact is al toegevoegd",
+			"contact-already-added-message": "Je kan niet meerdere keren hetzelfde contact toevoegen"
+		},
+		"invalid-scan": {
+			"dismiss-button": ""
+		},
+		"group-invitation": {
+			"join": "",
+			"password-label": "",
+			"password-placeholder": "Wachtwoord..."
+		},
+		"save-theme": {
+			"title": "Thema opslaan",
+			"desc": "Kies een naam voor je thema!",
+			"placeholder": "Thema naam...",
+			"cancel": "Annuleren",
+			"add": "Toevoegen!"
+		}
+	},
+	"chat": {
+		"title-unknown": "",
+		"sending": "Verzenden...",
+		"sent": "",
+		"contact-settings": {
+			"my-devices": ""
+		},
+		"multi-member": {
+			"input-placeholder": "Voer hier in..."
+		},
+		"push-notifications": {
+			"title": "Notificaties",
+			"unsupported": "",
+			"check-device-settings": "",
+			"check-account-settings": "",
+			"warning-disable": {
+				"title": "",
+				"subtitle": "",
+				"accept": "",
+				"refuse": ""
+			},
+			"why-cant-disable": "",
+			"why-cant-disable-account": "",
+			"errors": {
+				"no-token": "",
+				"no-server": ""
+			},
+			"warning-enable-all": {
+				"title": "",
+				"subtitle": "",
+				"refuse": "",
+				"accept": "Accepteren"
+			},
+			"warning-disable-mute": {
+				"title": "",
+				"refuse": "",
+				"accept": ""
+			},
+			"receive-push": "Ontvang push notificaties",
+			"hide-previews": "",
+			"auto-enable": "",
+			"show-in-app": ""
+		},
+		"devices": {
+			"title": "Apparaten",
+			"push": {
+				"enabled": "",
+				"not-enabled": "Push notificaties uitgeschakeld"
+			}
+		},
+		"multi-member-settings": {
+			"title": "",
+			"members-button": {
+				"title": ""
+			},
+			"add-member-button": "Voeg deelnemer toe",
+			"members-dropdown": {
+				"search-placeholder": "",
+				"conversation-booster": "",
+				"replication-type": "",
+				"user-type": ""
+			},
+			"invite-button": "Uitnodigen per link",
+			"save-button": "Gesprek opslaan op server"
+		},
+		"add-members": {
+			"members": "Leden",
+			"contacts": "Contacten",
+			"add": "Toevoegen!"
+		},
+		"multi-member-qr": {
+			"title": "QR Groep"
+		},
+		"one-to-one": {
+			"contact-request-box": {
+				"title": "Contact verzoek",
+				"group-invitation": "",
+				"refuse-button": "",
+				"accept-button": "Accepteren",
+				"accepted-button": "",
+				"error": "",
+				"you-invited": "",
+				"this-contact": "",
+				"to-a-group": ""
+			},
+			"infos-chat": {
+				"connection-confirmed": "👋 Berty verbinding bevestigd! 🎉",
+				"request-sent": "Verzoek verzonden ✈",
+				"incoming": "Accepteer dit verzoek om te reageren!",
+				"outgoing": "Wachten op antwoord van je contact om te verbinden!",
+				"refresh-button": ""
+			},
+			"incoming-input-placeholder": "Accepteer het verzoek om hier te schrijven...",
+			"input-placeholder": "Voer hier in..."
+		},
+		"one-to-one-settings": {
+			"title": "",
+			"save-button": "Gesprek opslaan op server"
+		},
+		"replicate-group-settings": {
+			"title": "Registreer gesprek op server",
+			"no-registered-button": "Geen replicatie service geregistreerd",
+			"connect-button": "Gebruik diensten van Berty",
+			"manage-add-button": "Beheer of voeg diensten toe"
+		},
+		"user-message": {
+			"read-more": "",
+			"show-less": ""
+		}
+	},
+	"account": {
+		"deleting": "",
+		"creating": "",
+		"opening": {
+			"alert-push-title": "Pushmeldingen",
+			"alert-push-go-failed": "",
+			"alert-push-fetch-failed": "",
+			"alert-push-perm-denied": "",
+			"alert-push-desc": "",
+			"alert-push-button": ""
+		}
+	},
+	"permission": {
+		"notification": {
+			"title": "",
+			"desc": "Berty app heeft toestemming nodig om lokale of push-meldingen te sturen. Hiermee kun je worden geïnformeerd wanneer je een bericht ontvangt."
+		},
+		"proximity": {
+			"title": "",
+			"android-desc": "Om offline berichten via Bluetooth te kunnen versturen met de app werkend op de achtergrond, vereist de Android API dat gebruik van de locatie wordt toegestaan. We gebruiken jouw locatiegegevens op geen enkele manier.",
+			"ios-desc": "Om offline berichten via Bluetooth uit te kunnen wisselen, heeft de iOS API toestemming nodig."
+		},
+		"camera": {
+			"title": "Camera",
+			"desc": ""
+		},
+		"audio": {
+			"title": "",
+			"desc": "Om audioberichten naar je contactpersonen te versturen, moet de Berty app toegang tot je microfoon krijgen."
+		},
+		"gallery": {
+			"title": "",
+			"desc": ""
+		},
+		"contacts": {
+			"title": "Contacten",
+			"desc": ""
+		},
+		"button-labels": {
+			"allow": "Toestaan",
+			"settings": "Ga naar Instellingen"
+		},
+		"skip": "",
+		"cancel": "Annuleren",
+		"settings-text": "Je kunt {{title}} rechten inschakelen via de Instellingen."
+	},
+	"notification": {
+		"need-restart": {
+			"title": "",
+			"desc": ""
+		}
+	},
+	"error": {
+		"labels": {
+			"bug": "Bug gedetecteerd",
+			"crash": "Crash gedetecteerd"
+		},
+		"restart-app": "Herstart de app",
+		"wtf-screen": {
+			"title": "Wat is het fout?",
+			"desc": "Applicatie is net gecrasht.",
+			"desc-report": ""
+		},
+		"sorry-screen": {
+			"title": "Sorry voor deze bug!",
+			"desc": "Het is de fout van Franciscus, de interne ontwikkelaar bij Berty. Wat een rotzak, die Francis!",
+			"desc-em": "*Nou, goed, er werkt geen Francis het Berty team.",
+			"desc-report": ""
+		}
+	},
+	"debug": {
+		"inspector": {
+			"show-button": "Toon app inspector",
+			"hide-button": "Sluiten",
+			"title": "Inspector",
+			"accounts": {
+				"title": "Accounts",
+				"data-not-found": "Account komt niet voor in de lijst",
+				"action-delete": {
+					"file-exists": "Account {{accountId}} bestaat niet, maar een bestand heeft wel deze naam.",
+					"account-exists": "Account {{accountId}} bestaat momenteel.",
+					"fs-read-error": "Fout bij het verkrijgen van FS informatie over het account",
+					"actions-title": "Wat moeten we doen?",
+					"action-account-manager": "Verwijder het via accountmanager",
+					"action-account-manager-confirm": "Bevestig verwijdering van account",
+					"action-force-delete": "Geforceerd verwijderen",
+					"action-force-delete-confirm": "Bevestig geforceerde verwijdering van account",
+					"error-close": "Fout tijdens het sluiten van account",
+					"error-delete": "Fout tijdens het verwijderen van account",
+					"success-feedback": "Account verwijderd",
+					"action-cancel": "Annuleren"
+				},
+				"status": {
+					"datastore-found": "Dataopslag gevonden",
+					"datastore-not-found": "Dataopslag niet gevonden",
+					"ipfs-repo-found": "IPFS repository gevonden",
+					"ipfs-repo-not-found": "IPFS repository niet gevonden",
+					"messenger-db-found": "Messenger database gevonden",
+					"messenger-db-not-found": "Messenger database niet gevonden"
+				},
+				"infos": {
+					"aligned": {
+						"name": "Naam: {{name}}",
+						"created": "Aangemaakt: {{created}}",
+						"opened": "Geopend:  {{opened}}",
+						"error": "Fout: {{error}}"
+					}
+				}
+			},
+			"errors": {
+				"title": "Fouten",
+				"header-reported": "Fout gerapporteerd:",
+				"header-all-clear": "Geen fout gerapporteerd",
+				"listing-files-failed": "Fout bij het weergeven van de inhoud van de map",
+				"listing-accounts-failed": "Fout tijdens het weergeven van de accounts",
+				"listing-accounts-failed-grpc": "GRPC fout bij het weergeven van accounts"
+			},
+			"dump": {
+				"button": "Dump app status"
+			},
+			"refresh": "Vernieuwen",
+			"confirm-alert": {
+				"button-confirm": "Bevestigen",
+				"button-cancel": "Annuleren"
+			}
+		}
+	},
+	"time-for": {
+		"minutes": "",
+		"hours": "",
+		"days": ""
+	},
+	"share": {
+		"sharing-id-message": ""
+	},
+	"directory": {
+		"phone": {
+			"register": "",
+			"associated": "",
+			"expired": "",
+			"proof-service-unavailable": "",
+			"register-service": "",
+			"unregister-service": ""
+		},
+		"email": {
+			"register": "",
+			"associated": "",
+			"expired": "",
+			"proof-service-unavailable": "",
+			"register-service": "",
+			"unregister-service": ""
+		}
+	}
+}

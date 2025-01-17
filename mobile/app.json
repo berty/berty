@@ -1,0 +1,50 @@
+{
+  "expo": {
+    "name": "Berty",
+    "slug": "berty",
+    "platforms": ["ios", "android"],
+    "version": "0.0.1",
+    "orientation": "portrait",
+    "icon": "./assets/images/icon.png",
+    "scheme": "tech.berty",
+    "userInterfaceStyle": "automatic",
+    "newArchEnabled": true,
+    "githubUrl": "https://github.com/berty/berty",
+    "splash": {
+      "image": "./assets/images/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#F8F9FA"
+    },
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "tech.berty.ios",
+      "config": {
+        "usesNonExemptEncryption": false
+      }
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/images/adaptive-icon.png",
+        "backgroundColor": "#F8F9FA"
+      },
+      "package": "tech.berty.android"
+    },
+    "web": {
+      "bundler": "metro",
+      "output": "static",
+      "favicon": "./assets/images/favicon.png"
+    },
+    "plugins": [
+      "expo-router"
+    ],
+    "experiments": {
+      "typedRoutes": true
+    },
+    "extra": {
+      "eas": {
+        "projectId": "01cd0667-80ee-4f67-8a43-0d1de5958bce"
+      }
+    },
+    "owner": "bertytechnologies"
+  }
+}

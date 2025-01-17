@@ -1,0 +1,646 @@
+{
+	"onboarding": {
+		"getstarted": {
+			"screenTitle": "Beskyt dit privatliv",
+			"title": "Beskyt dit privatliv",
+			"desc": "gratis & sikker peer-to-peer chat",
+			"create-button": "Opret en konto",
+			"import-button": "Importer konto"
+		},
+		"default-mode": {
+			"summary": {
+				"title": "Standard Tilstand",
+				"screenTitle": "Opret konto",
+				"subtitle": "Kom hurtigt i gang",
+				"first-point": "",
+				"second-point": "",
+				"third-point": "",
+				"back-button": "Tilbage",
+				"accept-button": ""
+			}
+		},
+		"custom-mode": {
+			"summary": {
+				"screenTitle": "",
+				"title": "Tilpasset tilstand",
+				"subtitle": "",
+				"first-point": "",
+				"second-point": "",
+				"back-button": "Tilbage",
+				"accept-button": "Fortsæt"
+			},
+			"settings": {
+				"off-grid": {
+					"title": "",
+					"ble-button": "Bluetooth Low Energy",
+					"nearby-button": "Android tæt på",
+					"mc-button": "Apple Multipeer-tilslutning",
+					"mdns-button": "Multicast-DNS (LAN)"
+				},
+				"routing": {
+					"title": "Dirigering",
+					"dht-button": "Distribueret Hash Tabel",
+					"rdvp-button": ""
+				},
+				"access": {
+					"title": "",
+					"relay-button": "",
+					"bootstrap-button": ""
+				},
+				"modals": {
+					"add": {
+						"title": {
+							"relay": "",
+							"bootstrap": "",
+							"rdvp": ""
+						}
+					},
+					"edit": {
+						"title": {
+							"relay": "",
+							"bootstrap": "",
+							"rdvp": ""
+						}
+					},
+					"errors": {
+						"alias-already-exists": "",
+						"multiaddr-alread-exists": "",
+						"multiaddr-bad-format": "",
+						"multiaddr-p2p": ""
+					},
+					"buttons": {
+						"add": "Tilføj",
+						"edit": "Rediger",
+						"delete": "Slet"
+					},
+					"multiaddress": "Multiadresse",
+					"alias": "Alias"
+				},
+				"all-button": "Alle",
+				"accept-button": ""
+			}
+		},
+		"create-account": {
+			"title": "Opret din konto",
+			"first-button": "Standard tilstand",
+			"second-button": "Tilpasset tilstand",
+			"placeholder": "Vælg dit kaldenavn",
+			"good-to-know": {
+				"title": "Værd at vide:",
+				"first-point": "Din konto er oprettet lokalt",
+				"second-point": "Et kaldenavn er valgfrit og kan ændres senere"
+			}
+		},
+		"generate-key": {
+			"title": "Starter Berty node…",
+			"desc": "Dette kan tage et par sekunder"
+		},
+		"setup-finished": {
+			"title": "Opsætning fuldført!",
+			"desc": "Du kan nu bruge appen, begynd tilføjelse af kontakter og tal frit og privat med dem",
+			"button": "Begynd at bruge Berty"
+		},
+		"web-views": {
+			"title": "Webindholds-tilladelse",
+			"desc": "Berty er ved at indlæse indhold fra internettet. Vil du åbne denne side?",
+			"first-button": "Annuller",
+			"second-button": "Ja"
+		}
+	},
+	"main": {
+		"home": {
+			"title": "Berty",
+			"requests": {
+				"title": "Anmodninger",
+				"accept": "Accepter",
+				"card-title": "Anmodning om kontakt!"
+			},
+			"input-placeholder": "Søg efter nøgleord",
+			"no-contacts": "Du har ingen kontakter eller chats endnu",
+			"no-network": {
+				"title": "Intet Netværk Fundet!",
+				"description": "Det ligner du er offline! Aktiver Bluetooth-funktionen for at chatte med venner!",
+				"cancel": "IKKE NU",
+				"activate": "AKTIVER"
+			},
+			"search": {
+				"no-results": "Ingen resultater fundet"
+			},
+			"create-group": {
+				"title": "Ny Gruppe",
+				"add-members": "Tilføj medlemmer",
+				"group-info": "Gruppeinfo",
+				"search-placeholder": "Søg",
+				"continue": "Fortsæt",
+				"create-group": "Opret en gruppe"
+			},
+			"create-group-finalize": {
+				"placeholder": "Gruppenavn",
+				"about": "Om grupper",
+				"first-bullet-point": "Alle i gruppen kan omdøbe den og invitere nye medlemmer",
+				"second-bullet-point": "Du kan invitere medlemmer via link",
+				"third-bullet-point": "Du kan forlade denne gruppe",
+				"fourth-bullet-point": "Du kan ikke slette denne gruppe",
+				"fifth-bullet-point": "Du kan ikke fjerne et medlem fra denne gruppe"
+			},
+			"conversations": {
+				"request-sent": "Anmodning sendt. Afventer...",
+				"draft": "Kladde: {{message}}"
+			}
+		},
+		"suggestion-display-name-initial": "Klik her for at tilføje"
+	},
+	"settings": {
+		"home": {
+			"title": "Indstillinger",
+			"proximity-button": "",
+			"notifications-button": "Notifikationer",
+			"appearance-button": "",
+			"accounts-button": "",
+			"network-button": "",
+			"linked-identities-button": "",
+			"directory-search-button": "",
+			"bug-button": "",
+			"about-button": "",
+			"version-button": "",
+			"devtools-button": ""
+		},
+		"about": {
+			"title": "",
+			"faq-button": "",
+			"roadmap-button": "",
+			"policy-button": "",
+			"license-button": "",
+			"terms-of-use": ""
+		},
+		"accounts": {
+			"title": "",
+			"backup-button": "",
+			"backup-notif-title": "",
+			"backup-notif-desc": "",
+			"accounts-button": "",
+			"create-button": "",
+			"import-button": "",
+			"delete-button": "",
+			"delete-title": ""
+		},
+		"appearance": {
+			"title": "",
+			"dark-button": "Mørketilstand",
+			"editor-button": "Tema Redigering",
+			"theme-editor": {
+				"title": "Tema Redigering"
+			}
+		},
+		"contact-convs": {
+			"title": "Kontakt og samtaler",
+			"reset-button": "Nulstil mit kontaktlink/QR-kode",
+			"request-button": "Tillad indgående kontaktanmodninger"
+		},
+		"network": {
+			"title": "Netværk",
+			"ble-button": "Bluetooth Low Energy",
+			"mc-button": "Multipeer-tilslutning",
+			"nearby-button": "Android tæt på",
+			"mdns-button": "Multicast-DNS",
+			"dht-button": "Distribueret Hash Tabel",
+			"rdvp-button": "",
+			"relay-button": "",
+			"bootstrap-button": ""
+		},
+		"notifications": {
+			"title": "Notifikationer"
+		},
+		"edit-profile": {
+			"title": "Rediger min profil",
+			"qr-will-update": "Dit Berty ID (QR-kode) vil blive opdateret",
+			"ocr-wont-update": "Dine ventende kontaktanmodninger vil ikke blive opdateret",
+			"save": "Gem ændringer",
+			"cancel": "Annuller",
+			"name-input-placeholder": "Navn..."
+		},
+		"delete-account": {
+			"title": "Slet konto!",
+			"first-desc": "Er du sikker på, at du vil slette din konto?",
+			"desc-please": "",
+			"desc-delete": "",
+			"desc-confirm": "",
+			"cancel-button": "Annuller",
+			"delete-button": "Slet"
+		},
+		"faq": {
+			"title": "FAQ"
+		},
+		"roadmap": {
+			"title": ""
+		},
+		"privacy-policy": {
+			"title": "Privatlivspolitik"
+		},
+		"license": {
+			"title": ""
+		},
+		"devtools": {
+			"title": "Udvikler værktøjer",
+			"header-left-button": "Enhedsinfo",
+			"header-middle-button": "Generer falske data",
+			"header-right-button": "",
+			"allow-unsecure-grpc": "",
+			"force-mock-button": "Gennemtving imitation",
+			"simulate-button": "Simuler streaming fejl",
+			"simulate-js-error-button": "Simuler JavaScript fejl",
+			"system-info-button": "Systeminfo",
+			"select-node": {
+				"title": "Vælg en node",
+				"node-type": "Intern / Ekstern node",
+				"address": "Adresse",
+				"account-port": "Kontotjeneste port",
+				"messenger-port": "",
+				"dont-ask": "Spørg ikke igen",
+				"button-continue": "Fortsæt"
+			},
+			"debug-button": "",
+			"log-button": {
+				"name": "Logformat",
+				"bullet-point": "Genstart app efter ændring af dette felt"
+			},
+			"log-filters-button": {
+				"name": "Logfiltre",
+				"bullet-point": "Genstart app efter ændring af dette felt"
+			},
+			"export-logs-button": "Eksporter logfiler",
+			"add-dev-conversations-button": "Tilføj udviklersamtaler",
+			"share-button": {
+				"title": "Del ID på Discord",
+				"alert-title": "",
+				"alert-message": "",
+				"alert-accept-button": "Jep 👍",
+				"alert-cancel-button": "Nej"
+			},
+			"dump-account-button": "",
+			"dump-contacts-button": "",
+			"dump-conversations-button": "",
+			"dump-interactions-button": "",
+			"dump-members-button": "",
+			"stop-node-button": "Stop node",
+			"local-grpc-button": "lokal gRPC",
+			"console-logs-button": "",
+			"ipfs-webui-button": "",
+			"send-to-all-button": {
+				"title": "",
+				"sending": "Sender...",
+				"test": "Test, ",
+				"tried": "✔ Forsøgt at sende til {{length}} kontakter"
+			},
+			"tyber-attach": "",
+			"tyber-host-button": {
+				"name": "",
+				"bullet-point": "Genstart app efter ændring af dette felt"
+			},
+			"footer-left-button": "",
+			"footer-middle-button": "",
+			"footer-right-button": ""
+		},
+		"system-info": {
+			"title": ""
+		},
+		"fake-data": {
+			"title": "",
+			"contacts-button": "",
+			"multi-members-button": "",
+			"messages-button": "",
+			"delete-button": ""
+		},
+		"add-dev-conversations": {
+			"title": "",
+			"add": "",
+			"tag-bot": "",
+			"tag-contact": "Kontakt",
+			"tag-conversation": ""
+		},
+		"ipfs-webui": {
+			"title": "IPFS WebUI"
+		},
+		"theme-editor": {
+			"randomize": "Generer tema",
+			"save": "Gem dette tema",
+			"export": "Eksporter valgte tema som fil",
+			"share": "Del valgte tema som fil",
+			"import": "Importer en temafil",
+			"delete": "",
+			"bad-format-title": "",
+			"bad-format-desc": "",
+			"notification-file-saved": {
+				"title": "",
+				"desc": ""
+			}
+		},
+		"my-berty-ID": {
+			"title": ""
+		},
+		"share": {
+			"invite": "",
+			"tap-to-scan": "",
+			"create-group": ""
+		},
+		"linked-identities": {
+			"title": ""
+		},
+		"directory-search": {
+			"title": ""
+		}
+	},
+	"tabs": {
+		"qr": "",
+		"fingerprint": "",
+		"info": "",
+		"devices": ""
+	},
+	"modals": {
+		"manage-deep-link": {
+			"invalid-link": "Ugyldigt link!",
+			"invalid-qr": "Ugyldig QR kode!",
+			"error": "Fejl!",
+			"contact-already-added": "Kontakten er allerede tilføjet",
+			"contact-already-added-message": "Du kan ikke tilføje samme kontakt flere gange"
+		},
+		"invalid-scan": {
+			"dismiss-button": ""
+		},
+		"group-invitation": {
+			"join": "Deltag i denne gruppe",
+			"password-label": "Angiv gruppekodeord",
+			"password-placeholder": "Adgangskode..."
+		},
+		"save-theme": {
+			"title": "Gemmer tema",
+			"desc": "Navngiv venligst dit tema!",
+			"placeholder": "Temanavn...",
+			"cancel": "Annuller",
+			"add": "Tilføj!"
+		}
+	},
+	"chat": {
+		"title-unknown": "Ukendt samtale",
+		"sending": "Sender...",
+		"sent": "Sendt",
+		"contact-settings": {
+			"my-devices": "Mine enheder"
+		},
+		"multi-member": {
+			"input-placeholder": "Skriv her..."
+		},
+		"push-notifications": {
+			"title": "Notifikationer",
+			"unsupported": "Notifikationer ikke understøttet",
+			"check-device-settings": "",
+			"check-account-settings": "",
+			"warning-disable": {
+				"title": "",
+				"subtitle": "",
+				"accept": "Aktiver",
+				"refuse": "Spring Over"
+			},
+			"why-cant-disable": "",
+			"why-cant-disable-account": "",
+			"errors": {
+				"no-token": "",
+				"no-server": ""
+			},
+			"warning-enable-all": {
+				"title": "",
+				"subtitle": "",
+				"refuse": "",
+				"accept": "Accepter"
+			},
+			"warning-disable-mute": {
+				"title": "Aktiver notifikationer for denne samtale?",
+				"refuse": "Behold tavs",
+				"accept": ""
+			},
+			"receive-push": "",
+			"hide-previews": "",
+			"auto-enable": "",
+			"show-in-app": ""
+		},
+		"devices": {
+			"title": "Enheder",
+			"push": {
+				"enabled": "",
+				"not-enabled": ""
+			}
+		},
+		"multi-member-settings": {
+			"title": "",
+			"members-button": {
+				"title": ""
+			},
+			"add-member-button": "Tilføj medlem",
+			"members-dropdown": {
+				"search-placeholder": "Søg efter medlem",
+				"conversation-booster": "Tilføj en samtalesbooster",
+				"replication-type": "",
+				"user-type": ""
+			},
+			"invite-button": "",
+			"save-button": ""
+		},
+		"add-members": {
+			"members": "",
+			"contacts": "",
+			"add": ""
+		},
+		"multi-member-qr": {
+			"title": ""
+		},
+		"one-to-one": {
+			"contact-request-box": {
+				"title": "",
+				"group-invitation": "",
+				"refuse-button": "",
+				"accept-button": "",
+				"accepted-button": "",
+				"error": "",
+				"you-invited": "",
+				"this-contact": "",
+				"to-a-group": ""
+			},
+			"infos-chat": {
+				"connection-confirmed": "",
+				"request-sent": "",
+				"incoming": "",
+				"outgoing": "",
+				"refresh-button": ""
+			},
+			"incoming-input-placeholder": "",
+			"input-placeholder": "Skriv her..."
+		},
+		"one-to-one-settings": {
+			"title": "",
+			"save-button": ""
+		},
+		"replicate-group-settings": {
+			"title": "",
+			"no-registered-button": "",
+			"connect-button": "",
+			"manage-add-button": ""
+		},
+		"user-message": {
+			"read-more": "Læs mere",
+			"show-less": "Vis mindre"
+		}
+	},
+	"account": {
+		"deleting": "Sletter konto...",
+		"creating": "Opretter konto...",
+		"opening": {
+			"alert-push-title": "Push-notifikationer",
+			"alert-push-go-failed": "Der opstod en fejl under registrering til Berty push-notifikationstjenesten.",
+			"alert-push-fetch-failed": "Kunne ikke forbinde til Berty push-notifikationstjenesten.",
+			"alert-push-perm-denied": "",
+			"alert-push-desc": "",
+			"alert-push-button": ""
+		}
+	},
+	"permission": {
+		"notification": {
+			"title": "",
+			"desc": ""
+		},
+		"proximity": {
+			"title": "",
+			"android-desc": "",
+			"ios-desc": ""
+		},
+		"camera": {
+			"title": "",
+			"desc": ""
+		},
+		"audio": {
+			"title": "",
+			"desc": ""
+		},
+		"gallery": {
+			"title": "",
+			"desc": ""
+		},
+		"contacts": {
+			"title": "",
+			"desc": ""
+		},
+		"button-labels": {
+			"allow": "",
+			"settings": ""
+		},
+		"skip": "",
+		"cancel": "",
+		"settings-text": ""
+	},
+	"notification": {
+		"need-restart": {
+			"title": "",
+			"desc": ""
+		}
+	},
+	"error": {
+		"labels": {
+			"bug": "",
+			"crash": ""
+		},
+		"restart-app": "",
+		"wtf-screen": {
+			"title": "",
+			"desc": "",
+			"desc-report": ""
+		},
+		"sorry-screen": {
+			"title": "",
+			"desc": "",
+			"desc-em": "",
+			"desc-report": ""
+		}
+	},
+	"debug": {
+		"inspector": {
+			"show-button": "",
+			"hide-button": "",
+			"title": "",
+			"accounts": {
+				"title": "",
+				"data-not-found": "",
+				"action-delete": {
+					"file-exists": "",
+					"account-exists": "",
+					"fs-read-error": "",
+					"actions-title": "",
+					"action-account-manager": "",
+					"action-account-manager-confirm": "",
+					"action-force-delete": "",
+					"action-force-delete-confirm": "",
+					"error-close": "",
+					"error-delete": "",
+					"success-feedback": "",
+					"action-cancel": ""
+				},
+				"status": {
+					"datastore-found": "",
+					"datastore-not-found": "",
+					"ipfs-repo-found": "",
+					"ipfs-repo-not-found": "",
+					"messenger-db-found": "",
+					"messenger-db-not-found": ""
+				},
+				"infos": {
+					"aligned": {
+						"name": "",
+						"created": "",
+						"opened": "",
+						"error": ""
+					}
+				}
+			},
+			"errors": {
+				"title": "",
+				"header-reported": "",
+				"header-all-clear": "",
+				"listing-files-failed": "",
+				"listing-accounts-failed": "",
+				"listing-accounts-failed-grpc": ""
+			},
+			"dump": {
+				"button": ""
+			},
+			"refresh": "",
+			"confirm-alert": {
+				"button-confirm": "",
+				"button-cancel": ""
+			}
+		}
+	},
+	"time-for": {
+		"minutes": "",
+		"hours": "",
+		"days": ""
+	},
+	"share": {
+		"sharing-id-message": ""
+	},
+	"directory": {
+		"phone": {
+			"register": "",
+			"associated": "",
+			"expired": "",
+			"proof-service-unavailable": "",
+			"register-service": "",
+			"unregister-service": ""
+		},
+		"email": {
+			"register": "",
+			"associated": "",
+			"expired": "",
+			"proof-service-unavailable": "",
+			"register-service": "",
+			"unregister-service": ""
+		}
+	}
+}

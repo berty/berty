@@ -1,0 +1,1 @@
+export { CenteredTextScreen } from './CenteredTextScreen'

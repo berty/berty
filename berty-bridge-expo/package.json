@@ -1,0 +1,49 @@
+{
+  "name": "berty-bridge-expo",
+  "version": "0.1.0",
+  "description": "This is the bertybridge Expo module.",
+  "main": "build/index.js",
+  "types": "build/index.d.ts",
+  "scripts": {
+    "build": "expo-module build",
+    "clean": "expo-module clean",
+    "lint": "expo-module lint",
+    "test": "expo-module test",
+    "prepare": "expo-module prepare",
+    "prepublishOnly": "expo-module prepublishOnly",
+    "expo-module": "expo-module",
+    "open:ios": "xed example/ios",
+    "open:android": "open -a \"Android Studio\" example/android",
+    "android": "expo run:android",
+    "ios": "expo run:ios"
+  },
+  "keywords": [
+    "react-native",
+    "expo",
+    "berty-bridge-expo",
+    "BertyBridgeExpo"
+  ],
+  "repository": "https://github.com/berty/berty",
+  "bugs": {
+    "url": "https://github.com/berty/berty/issues"
+  },
+  "author": "Berty Technologies <hello@berty.tech> (https://github.com/berty/berty)",
+  "license": "MIT",
+  "homepage": "https://github.com/berty/berty#readme",
+  "dependencies": {
+    "expo": "~52.0.11",
+    "react": "18.3.1",
+    "react-native": "0.76.3"
+  },
+  "devDependencies": {
+    "@types/react": "~18.3.12",
+    "expo-module-scripts": "^4.0.2",
+    "expo": "~52.0.0",
+    "react-native": "0.76.0"
+  },
+  "peerDependencies": {
+    "expo": "*",
+    "react": "*",
+    "react-native": "*"
+  }
+}

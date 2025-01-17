@@ -1,0 +1,646 @@
+{
+	"onboarding": {
+		"getstarted": {
+			"screenTitle": "Chroń swoją prywatność",
+			"title": "Chroń swoją prywatność",
+			"desc": "darmowe i bezpieczne wiadomości peer-to-peer",
+			"create-button": "Stwórz konto",
+			"import-button": "Importuj konto"
+		},
+		"default-mode": {
+			"summary": {
+				"title": "Tryb domyślny",
+				"screenTitle": "Stwórz konto",
+				"subtitle": "Szybki start",
+				"first-point": "Zacznij od ustawień wstępnych, które oferują równowagę między prywatnością a komfortem, które odpowiadają większości użytkowników. Węzły Berty są używane do poprawy wydajności i komunikacji asynchronicznej.",
+				"second-point": "Powiadomienia push są domyślnie włączone i nie można ich jeszcze wyłączyć na systemie iOS.",
+				"third-point": "Aby samodzielnie dostosować równowagę między prywatnością a komfortem, wybierz tryb niestandardowy.",
+				"back-button": "Wróć",
+				"accept-button": "Zaczynajmy"
+			}
+		},
+		"custom-mode": {
+			"summary": {
+				"screenTitle": "Utwórz konto - Dostosuj ustawienia",
+				"title": "Tryb niestandardowy",
+				"subtitle": "Niestandardowa równowaga między prywatnością a komfortem",
+				"first-point": "",
+				"second-point": "",
+				"back-button": "",
+				"accept-button": ""
+			},
+			"settings": {
+				"off-grid": {
+					"title": "",
+					"ble-button": "",
+					"nearby-button": "Android Nearby",
+					"mc-button": "",
+					"mdns-button": ""
+				},
+				"routing": {
+					"title": "",
+					"dht-button": "",
+					"rdvp-button": ""
+				},
+				"access": {
+					"title": "",
+					"relay-button": "",
+					"bootstrap-button": ""
+				},
+				"modals": {
+					"add": {
+						"title": {
+							"relay": "",
+							"bootstrap": "",
+							"rdvp": ""
+						}
+					},
+					"edit": {
+						"title": {
+							"relay": "",
+							"bootstrap": "",
+							"rdvp": ""
+						}
+					},
+					"errors": {
+						"alias-already-exists": "",
+						"multiaddr-alread-exists": "",
+						"multiaddr-bad-format": "",
+						"multiaddr-p2p": ""
+					},
+					"buttons": {
+						"add": "Dodaj",
+						"edit": "Edytuj",
+						"delete": "Usuń"
+					},
+					"multiaddress": "",
+					"alias": ""
+				},
+				"all-button": "Wszystkie",
+				"accept-button": "Zaczynajmy"
+			}
+		},
+		"create-account": {
+			"title": "Utwórz swoje konto",
+			"first-button": "Tryb Domyślny",
+			"second-button": "Tryb niestandardowy",
+			"placeholder": "Wybierz swój pseudonim",
+			"good-to-know": {
+				"title": "Dobrze wiedzieć:",
+				"first-point": "Twoje konto jest tworzone lokalnie",
+				"second-point": "Pseudonim jest opcjonalny i może zostać zmieniony później"
+			}
+		},
+		"generate-key": {
+			"title": "Uruchamianie węzła Berty…",
+			"desc": "To może potrwać kilka sekund"
+		},
+		"setup-finished": {
+			"title": "Konfiguracja zakończona!",
+			"desc": "Teraz możesz korzystać z aplikacji, dodawać kontakty i rozmawiać z nimi swobodnie i prywatnie",
+			"button": "Zacznij używać Berty"
+		},
+		"web-views": {
+			"title": "",
+			"desc": "",
+			"first-button": "Anuluj",
+			"second-button": "Tak"
+		}
+	},
+	"main": {
+		"home": {
+			"title": "Berty",
+			"requests": {
+				"title": "Prośby",
+				"accept": "Akceptuj",
+				"card-title": "Prośba o kontakt!"
+			},
+			"input-placeholder": "Szukaj słowa",
+			"no-contacts": "Nie masz jeszcze żadnych kontaktów ani czatu",
+			"no-network": {
+				"title": "Nie znaleziono sieci!",
+				"description": "",
+				"cancel": "NIE TERAZ",
+				"activate": "AKTYWUJ"
+			},
+			"search": {
+				"no-results": "Nie znaleziono wyników"
+			},
+			"create-group": {
+				"title": "Nowa Grupa",
+				"add-members": "Dodaj członków",
+				"group-info": "Informacje o grupie",
+				"search-placeholder": "Szukaj",
+				"continue": "Kontynuuj",
+				"create-group": "Utwórz grupę"
+			},
+			"create-group-finalize": {
+				"placeholder": "Nazwa grupy",
+				"about": "O grupach",
+				"first-bullet-point": "Każdy członek grupy może zmienić jej nazwę lub zaprosić nowych członków",
+				"second-bullet-point": "Możesz zapraszać członków przez link",
+				"third-bullet-point": "",
+				"fourth-bullet-point": "",
+				"fifth-bullet-point": ""
+			},
+			"conversations": {
+				"request-sent": "Żądanie wysłane. Oczekiwanie...",
+				"draft": "Szkic: {{message}}"
+			}
+		},
+		"suggestion-display-name-initial": "Kliknij tutaj, aby dodać"
+	},
+	"settings": {
+		"home": {
+			"title": "Ustawienia",
+			"proximity-button": "",
+			"notifications-button": "Powiadomienia",
+			"appearance-button": "Wygląd",
+			"accounts-button": "Konta",
+			"network-button": "Sieć",
+			"linked-identities-button": "",
+			"directory-search-button": "",
+			"bug-button": "",
+			"about-button": "O Berty",
+			"version-button": "Wersja: {{version}}",
+			"devtools-button": "Narzędzia Deweloperskie"
+		},
+		"about": {
+			"title": "O Berty",
+			"faq-button": "",
+			"roadmap-button": "",
+			"policy-button": "Polityka prywatności",
+			"license-button": "Licencje Open Source",
+			"terms-of-use": "Warunki użytkowania"
+		},
+		"accounts": {
+			"title": "Konta",
+			"backup-button": "Kopia zapasowa",
+			"backup-notif-title": "Sukces",
+			"backup-notif-desc": "",
+			"accounts-button": "Konta",
+			"create-button": "",
+			"import-button": "Importuj konto",
+			"delete-button": "Usuń to konto",
+			"delete-title": "Usuwanie konta"
+		},
+		"appearance": {
+			"title": "Wygląd",
+			"dark-button": "",
+			"editor-button": "",
+			"theme-editor": {
+				"title": ""
+			}
+		},
+		"contact-convs": {
+			"title": "",
+			"reset-button": "",
+			"request-button": ""
+		},
+		"network": {
+			"title": "Sieć",
+			"ble-button": "",
+			"mc-button": "",
+			"nearby-button": "Android Nearby",
+			"mdns-button": "Multiemisja DNS",
+			"dht-button": "Rozproszona Tablica Hash'ów",
+			"rdvp-button": "",
+			"relay-button": "",
+			"bootstrap-button": ""
+		},
+		"notifications": {
+			"title": "Powiadomienia"
+		},
+		"edit-profile": {
+			"title": "Edytuj mój profil",
+			"qr-will-update": "Twój identyfikator Berty (kod QR) zostanie zaktualizowany",
+			"ocr-wont-update": "Twoje oczekujące prośby o kontakt nie zostaną zaktualizowane",
+			"save": "Zapisz zmiany",
+			"cancel": "Anuluj",
+			"name-input-placeholder": "Nazwa..."
+		},
+		"delete-account": {
+			"title": "Usuń konto!",
+			"first-desc": "Czy na pewno chcesz usunąć swoje konto?",
+			"desc-please": "",
+			"desc-delete": "",
+			"desc-confirm": "",
+			"cancel-button": "Anuluj",
+			"delete-button": "Usuń"
+		},
+		"faq": {
+			"title": "FAQ"
+		},
+		"roadmap": {
+			"title": "Plan działania"
+		},
+		"privacy-policy": {
+			"title": "Polityka prywatności"
+		},
+		"license": {
+			"title": ""
+		},
+		"devtools": {
+			"title": "Narzędzia deweloperskie",
+			"header-left-button": "Informacje o urządzeniu",
+			"header-middle-button": "Generuj fałszywe dane",
+			"header-right-button": "Zrestartuj daemon",
+			"allow-unsecure-grpc": "",
+			"force-mock-button": "",
+			"simulate-button": "Symuluj błąd strumienia",
+			"simulate-js-error-button": "Symuluj błąd JavaScript",
+			"system-info-button": "Informacje systemowe",
+			"select-node": {
+				"title": "",
+				"node-type": "",
+				"address": "",
+				"account-port": "",
+				"messenger-port": "",
+				"dont-ask": "",
+				"button-continue": "Kontynuuj"
+			},
+			"debug-button": "Debuguj",
+			"log-button": {
+				"name": "Format dziennika",
+				"bullet-point": "Uruchom ponownie aplikację po zmianie tego pola"
+			},
+			"log-filters-button": {
+				"name": "Filtry dzienników",
+				"bullet-point": "Uruchom ponownie aplikację po zmianie tego pola"
+			},
+			"export-logs-button": "Eksportuj logi",
+			"add-dev-conversations-button": "Dodaj rozmowy deweloperskie",
+			"share-button": {
+				"title": "Udostępnij ID na discordzie",
+				"alert-title": "",
+				"alert-message": "Umożliwi to innemu personelowi skanowanie kodu QR lub skopiowanie linku do kontaktu.",
+				"alert-accept-button": "Tak👍",
+				"alert-cancel-button": "Nie"
+			},
+			"dump-account-button": "Zrzuć konto",
+			"dump-contacts-button": "Zrzuć kontakty",
+			"dump-conversations-button": "Zrzuć rozmowy",
+			"dump-interactions-button": "Zrzuć interakcje",
+			"dump-members-button": "Zrzuć członków",
+			"stop-node-button": "Zatrzymaj węzeł",
+			"local-grpc-button": "lokalny gRPC",
+			"console-logs-button": "Logi konsoli",
+			"ipfs-webui-button": "IPFS WebUI",
+			"send-to-all-button": {
+				"title": "Wyślij wiadomości do wszystkich kontaktów",
+				"sending": "Wysyłanie...",
+				"test": "Test, ",
+				"tried": "✔ Próbowano wysłać do {{length}} kontaktów"
+			},
+			"tyber-attach": "",
+			"tyber-host-button": {
+				"name": "Tyber",
+				"bullet-point": "Uruchom ponownie aplikację po zmianie tego pola"
+			},
+			"footer-left-button": "Informacje o urządzeniu",
+			"footer-middle-button": "Lista wydarzeń",
+			"footer-right-button": "Zrestartuj daemon"
+		},
+		"system-info": {
+			"title": "Informacje systemowe"
+		},
+		"fake-data": {
+			"title": "Generuj fałszywe dane",
+			"contacts-button": "Generuj fałszywe kontakty",
+			"multi-members-button": "Generuj wiele fałszywych członków",
+			"messages-button": "Generuj fałszywe wiadomości",
+			"delete-button": "Usuń fałszywe dane"
+		},
+		"add-dev-conversations": {
+			"title": "Dodaj rozmowy deweloperskie",
+			"add": "Dodaj {{name}}",
+			"tag-bot": "Bot",
+			"tag-contact": "Kontakt",
+			"tag-conversation": ""
+		},
+		"ipfs-webui": {
+			"title": "IPFS WebUI"
+		},
+		"theme-editor": {
+			"randomize": "",
+			"save": "Zapisz ten motyw",
+			"export": "",
+			"share": "",
+			"import": "",
+			"delete": "Usuń wszystkie niedomyślne motywy",
+			"bad-format-title": "",
+			"bad-format-desc": "",
+			"notification-file-saved": {
+				"title": "",
+				"desc": ""
+			}
+		},
+		"my-berty-ID": {
+			"title": ""
+		},
+		"share": {
+			"invite": "Zaproś",
+			"tap-to-scan": "",
+			"create-group": ""
+		},
+		"linked-identities": {
+			"title": ""
+		},
+		"directory-search": {
+			"title": ""
+		}
+	},
+	"tabs": {
+		"qr": "QR",
+		"fingerprint": "Odcisk palca",
+		"info": "Informacje",
+		"devices": "Urządzenia"
+	},
+	"modals": {
+		"manage-deep-link": {
+			"invalid-link": "Nieprawidłowy link!",
+			"invalid-qr": "Nieprawidłowy kod QR!",
+			"error": "Błąd!",
+			"contact-already-added": "Kontakt jest już dodany",
+			"contact-already-added-message": "Nie możesz dodać tego samego kontaktu wiele razy"
+		},
+		"invalid-scan": {
+			"dismiss-button": ""
+		},
+		"group-invitation": {
+			"join": "Dołącz do tej grupy",
+			"password-label": "Wprowadź hasło grupy",
+			"password-placeholder": "Hasło..."
+		},
+		"save-theme": {
+			"title": "Zapisywanie motywu",
+			"desc": "",
+			"placeholder": "Nazwa motywu...",
+			"cancel": "Anuluj",
+			"add": "Dodaj!"
+		}
+	},
+	"chat": {
+		"title-unknown": "",
+		"sending": "Wysyłanie...",
+		"sent": "Wyślij",
+		"contact-settings": {
+			"my-devices": "Moje urządzenia"
+		},
+		"multi-member": {
+			"input-placeholder": "Wpisz tutaj..."
+		},
+		"push-notifications": {
+			"title": "Powiadomienia",
+			"unsupported": "",
+			"check-device-settings": "",
+			"check-account-settings": "",
+			"warning-disable": {
+				"title": "",
+				"subtitle": "",
+				"accept": "Aktywuj",
+				"refuse": "Pomiń"
+			},
+			"why-cant-disable": "",
+			"why-cant-disable-account": "",
+			"errors": {
+				"no-token": "",
+				"no-server": ""
+			},
+			"warning-enable-all": {
+				"title": "",
+				"subtitle": "",
+				"refuse": "",
+				"accept": "Akceptuj"
+			},
+			"warning-disable-mute": {
+				"title": "",
+				"refuse": "",
+				"accept": ""
+			},
+			"receive-push": "Otrzymuj powiadomienia push",
+			"hide-previews": "",
+			"auto-enable": "",
+			"show-in-app": ""
+		},
+		"devices": {
+			"title": "Urządzenia",
+			"push": {
+				"enabled": "",
+				"not-enabled": "Powiadomienia push wyłączone"
+			}
+		},
+		"multi-member-settings": {
+			"title": "Ustawienia konwersacji",
+			"members-button": {
+				"title": ""
+			},
+			"add-member-button": "Dodaj członka",
+			"members-dropdown": {
+				"search-placeholder": "",
+				"conversation-booster": "",
+				"replication-type": "",
+				"user-type": "Urządzenie użytkownika"
+			},
+			"invite-button": "Zaproś przez link",
+			"save-button": "Zapisz konwersację na serwerze"
+		},
+		"add-members": {
+			"members": "Członkowie",
+			"contacts": "Kontakty",
+			"add": "Dodaj!"
+		},
+		"multi-member-qr": {
+			"title": "QR Grupy"
+		},
+		"one-to-one": {
+			"contact-request-box": {
+				"title": "Prośba o kontakt",
+				"group-invitation": "",
+				"refuse-button": "",
+				"accept-button": "Akceptuj",
+				"accepted-button": "Zaakceptowano",
+				"error": "",
+				"you-invited": "Zaprosiłeś",
+				"this-contact": "ten kontakt",
+				"to-a-group": "do grupy! 💌"
+			},
+			"infos-chat": {
+				"connection-confirmed": "👋 Połączenie Berty potwierdzone! 🎉",
+				"request-sent": "Prośba wysłana ✈",
+				"incoming": "Zaakceptuj tę prośbę aby odpowiedzieć!",
+				"outgoing": "Oczekiwanie na odpowiedź na Twojego kontaktu aby się połączyć!",
+				"refresh-button": ""
+			},
+			"incoming-input-placeholder": "Zaakceptuj prośbę aby pisać tutaj...",
+			"input-placeholder": "Wpisz tutaj..."
+		},
+		"one-to-one-settings": {
+			"title": "Ustawienia konwersacji",
+			"save-button": "Zapisz konwersację na serwerze"
+		},
+		"replicate-group-settings": {
+			"title": "Zarejestruj konwersację na serwerze",
+			"no-registered-button": "Brak zarejestrowanej usługi replikacji",
+			"connect-button": "Połącz z usługami świadczonymi przez Berty",
+			"manage-add-button": "Zarządzaj lub dodaj usługi"
+		},
+		"user-message": {
+			"read-more": "Czytaj więcej",
+			"show-less": "Pokaż mniej"
+		}
+	},
+	"account": {
+		"deleting": "Usuwanie konta...",
+		"creating": "Tworzenie konta...",
+		"opening": {
+			"alert-push-title": "",
+			"alert-push-go-failed": "",
+			"alert-push-fetch-failed": "",
+			"alert-push-perm-denied": "",
+			"alert-push-desc": "",
+			"alert-push-button": "Kontynuuj"
+		}
+	},
+	"permission": {
+		"notification": {
+			"title": "",
+			"desc": ""
+		},
+		"proximity": {
+			"title": "",
+			"android-desc": "",
+			"ios-desc": ""
+		},
+		"camera": {
+			"title": "Aparat",
+			"desc": ""
+		},
+		"audio": {
+			"title": "",
+			"desc": ""
+		},
+		"gallery": {
+			"title": "",
+			"desc": ""
+		},
+		"contacts": {
+			"title": "Kontakty",
+			"desc": ""
+		},
+		"button-labels": {
+			"allow": "Zezwól",
+			"settings": "Przejdź do ustawień"
+		},
+		"skip": "Pomiń",
+		"cancel": "Anuluj",
+		"settings-text": ""
+	},
+	"notification": {
+		"need-restart": {
+			"title": "",
+			"desc": ""
+		}
+	},
+	"error": {
+		"labels": {
+			"bug": "Wykryto błąd",
+			"crash": "Wykryto awarię"
+		},
+		"restart-app": "Zrestartuj aplikację",
+		"wtf-screen": {
+			"title": "Jaki jest błąd?",
+			"desc": "Aplikacja właśnie uległa awarii.",
+			"desc-report": ""
+		},
+		"sorry-screen": {
+			"title": "Przepraszamy za ten błąd!",
+			"desc": "Jest to wina Francisa, twórcy wewnętrznego Berty, który musiał popełnić błąd. Co za szaleństwo tego Francisa!",
+			"desc-em": "*No dobra, w zespole Berty nie ma Francisa.",
+			"desc-report": ""
+		}
+	},
+	"debug": {
+		"inspector": {
+			"show-button": "Pokaż inspektora aplikacji",
+			"hide-button": "Zamknij",
+			"title": "Inspektor",
+			"accounts": {
+				"title": "Konta",
+				"data-not-found": "Konto nie jest na liście",
+				"action-delete": {
+					"file-exists": "Konto {{accountId}} nie istnieje, jednak plik ma taką nazwę.",
+					"account-exists": "Konto {{accountId}} aktualnie istnieje.",
+					"fs-read-error": "Błąd podczas uzyskiwania informacji FS o koncie",
+					"actions-title": "Co powinniśmy zrobić?",
+					"action-account-manager": "Usuń go poprzez menedżera kont",
+					"action-account-manager-confirm": "Potwierdź usunięcie konta",
+					"action-force-delete": "Wymuś usunięcie",
+					"action-force-delete-confirm": "Potwierdź wymuszenie usunięcia konta",
+					"error-close": "Błąd podczas zamykania konta",
+					"error-delete": "Błąd podczas usuwania konta",
+					"success-feedback": "Konto usunięte",
+					"action-cancel": "Anuluj"
+				},
+				"status": {
+					"datastore-found": "",
+					"datastore-not-found": "",
+					"ipfs-repo-found": "Znaleziono repozytorium IPFS",
+					"ipfs-repo-not-found": "Nie znaleziono repozytorium IPFS",
+					"messenger-db-found": "Znaleziono DB komunikatora",
+					"messenger-db-not-found": "Nie znaleziono DB komunikatora"
+				},
+				"infos": {
+					"aligned": {
+						"name": "Nazwa: {{name}}",
+						"created": "Utworzono: {{created}}",
+						"opened": "Otwarto:  {{opened}}",
+						"error": "Błąd: {{error}}"
+					}
+				}
+			},
+			"errors": {
+				"title": "Błędy",
+				"header-reported": "Zgłoszono błąd:",
+				"header-all-clear": "Nie zgłoszono błędu",
+				"listing-files-failed": "Wystąpił błąd podczas wyświetlania zawartości katalogu",
+				"listing-accounts-failed": "Błąd podczas wyświetlania kont",
+				"listing-accounts-failed-grpc": "Błąd GRPC podczas wyświetlania kont"
+			},
+			"dump": {
+				"button": "Zrzuć stan aplikacji"
+			},
+			"refresh": "Odśwież",
+			"confirm-alert": {
+				"button-confirm": "Potwierdź",
+				"button-cancel": "Anuluj"
+			}
+		}
+	},
+	"time-for": {
+		"minutes": "",
+		"hours": "",
+		"days": "{{days}} dni"
+	},
+	"share": {
+		"sharing-id-message": ""
+	},
+	"directory": {
+		"phone": {
+			"register": "",
+			"associated": "",
+			"expired": "",
+			"proof-service-unavailable": "",
+			"register-service": "",
+			"unregister-service": ""
+		},
+		"email": {
+			"register": "",
+			"associated": "",
+			"expired": "",
+			"proof-service-unavailable": "",
+			"register-service": "",
+			"unregister-service": ""
+		}
+	}
+}

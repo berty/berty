@@ -1,0 +1,7 @@
+export { GetStarted } from './GetStarted/GetStarted'
+export { CreateAccount } from './CreateAccount/CreateAccount'
+export { SetupFinished } from './SetupFinished/SetupFinished'
+export { CustomModeSettings } from './CustomModeSettings/CustomModeSettings'
+export { WebViews } from './WebViews/WebViews'
+export { DefaultMode } from './DefaultMode/DefaultMode'
+export { CustomMode } from './CustomMode/CustomMode'

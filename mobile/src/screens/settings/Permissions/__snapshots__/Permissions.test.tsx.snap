@@ -1,0 +1,238 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Settings.Permissions renders correctly 1`] = `
+<RNCSafeAreaProvider
+  onInsetsChange={[Function]}
+  style={
+    Array [
+      Object {
+        "flex": 1,
+      },
+      undefined,
+    ]
+  }
+>
+  <View
+    style={
+      Object {
+        "flex": 1,
+      }
+    }
+  >
+    <View
+      style={
+        Array [
+          Object {
+            "flex": 1,
+          },
+          Object {
+            "backgroundColor": "#535AE4",
+          },
+        ]
+      }
+    >
+      <View
+        style={
+          Array [
+            Object {
+              "alignItems": "center",
+              "flex": 1,
+              "justifyContent": "center",
+            },
+          ]
+        }
+      >
+        <LottieViewMock
+          autoPlay={true}
+          sourceHash="x91P9W2nzCeOqtdVpZUSHLr9AyCqidQI22ixb+aj3K4="
+          style={
+            Array [
+              Object {
+                "marginVertical": 10,
+              },
+            ]
+          }
+        />
+      </View>
+      <View
+        style={
+          Array [
+            Object {
+              "borderTopLeftRadius": 24,
+              "borderTopRightRadius": 24,
+            },
+            Object {
+              "paddingBottom": 30,
+              "paddingHorizontal": 32,
+              "paddingTop": 24,
+            },
+            Object {
+              "backgroundColor": "#FFFFFF",
+            },
+          ]
+        }
+      >
+        <Text
+          style={
+            Array [
+              Object {
+                "fontSize": 30,
+              },
+              Object {
+                "color": "#383B62",
+                "fontFamily": "Open Sans",
+              },
+              Array [
+                Object {
+                  "fontFamily": "Bold Open Sans",
+                  "fontSize": 26,
+                  "textAlign": "center",
+                },
+                Object {
+                  "color": "#535AE4",
+                },
+              ],
+            ]
+          }
+        >
+          permission.audio.title
+        </Text>
+        <Text
+          style={
+            Array [
+              Object {
+                "fontSize": 30,
+              },
+              Object {
+                "color": "#383B62",
+                "fontFamily": "Open Sans",
+              },
+              Array [
+                Object {
+                  "lineHeight": 25,
+                  "marginTop": 20,
+                  "textAlign": "center",
+                },
+              ],
+            ]
+          }
+        >
+          permission.audio.desc
+        </Text>
+        <View
+          style={
+            Array [
+              Object {
+                "paddingHorizontal": 20,
+                "width": "100%",
+              },
+              Object {
+                "marginTop": 16,
+              },
+            ]
+          }
+        >
+          <View
+            accessible={true}
+            focusable={true}
+            onClick={[Function]}
+            onResponderGrant={[Function]}
+            onResponderMove={[Function]}
+            onResponderRelease={[Function]}
+            onResponderTerminate={[Function]}
+            onResponderTerminationRequest={[Function]}
+            onStartShouldSetResponder={[Function]}
+            style={
+              Object {
+                "alignItems": "center",
+                "backgroundColor": "#535AE4",
+                "borderRadius": 8,
+                "flexDirection": "row",
+                "height": 44,
+                "justifyContent": "center",
+                "opacity": 1,
+              }
+            }
+          >
+            <Text
+              style={
+                Array [
+                  Object {
+                    "fontSize": 30,
+                  },
+                  Object {
+                    "color": "#383B62",
+                    "fontFamily": "Open Sans",
+                  },
+                  Array [
+                    Object {
+                      "textTransform": "uppercase",
+                    },
+                    Object {
+                      "color": "#F2F2F2",
+                    },
+                    Object {
+                      "fontFamily": "Bold Open Sans",
+                    },
+                  ],
+                ]
+              }
+            >
+              permission.button-labels.allow
+            </Text>
+          </View>
+        </View>
+        <View
+          accessible={true}
+          focusable={true}
+          onClick={[Function]}
+          onResponderGrant={[Function]}
+          onResponderMove={[Function]}
+          onResponderRelease={[Function]}
+          onResponderTerminate={[Function]}
+          onResponderTerminationRequest={[Function]}
+          onStartShouldSetResponder={[Function]}
+          style={
+            Object {
+              "alignItems": "center",
+              "borderRadius": 8,
+              "flexDirection": "row",
+              "height": 44,
+              "justifyContent": "center",
+              "opacity": 1,
+            }
+          }
+          testID="PermissonAltButton"
+        >
+          <Text
+            style={
+              Array [
+                Object {
+                  "fontSize": 30,
+                },
+                Object {
+                  "color": "#383B62",
+                  "fontFamily": "Open Sans",
+                },
+                Array [
+                  Object {
+                    "textTransform": "uppercase",
+                  },
+                  Object {
+                    "color": "#D2D3E1",
+                  },
+                  Object {
+                    "fontFamily": "Bold Open Sans",
+                  },
+                ],
+              ]
+            }
+          >
+            permission.cancel
+          </Text>
+        </View>
+      </View>
+    </View>
+  </View>
+</RNCSafeAreaProvider>
+`;

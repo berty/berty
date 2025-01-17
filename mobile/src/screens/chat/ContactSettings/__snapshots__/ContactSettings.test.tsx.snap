@@ -1,0 +1,997 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Chat.ContactSettings renders correctly 1`] = `
+<RNCSafeAreaProvider
+  onInsetsChange={[Function]}
+  style={
+    Array [
+      Object {
+        "flex": 1,
+      },
+      undefined,
+    ]
+  }
+>
+  <View
+    style={
+      Object {
+        "flex": 1,
+      }
+    }
+  >
+    <View
+      style={
+        Object {
+          "flex": 1,
+        }
+      }
+    >
+      <RCTScrollView
+        bounces={false}
+        contentContainerStyle={
+          Array [
+            Object {
+              "paddingBottom": 16,
+            },
+          ]
+        }
+        style={
+          Object {
+            "backgroundColor": "#FFFFFF",
+            "flex": 1,
+          }
+        }
+      >
+        <View>
+          <View
+            style={
+              Array [
+                Object {
+                  "padding": 16,
+                },
+                Object {
+                  "backgroundColor": "#535AE4",
+                },
+              ]
+            }
+          >
+            <View
+              style={
+                Array [
+                  Object {
+                    "padding": 16,
+                  },
+                  Object {
+                    "paddingTop": 50,
+                  },
+                ]
+              }
+            >
+              <View
+                style={
+                  Array [
+                    Object {
+                      "borderRadius": 30,
+                    },
+                    Object {
+                      "paddingHorizontal": 16,
+                    },
+                    Object {
+                      "paddingBottom": 16,
+                    },
+                    Object {
+                      "backgroundColor": "#FFFFFF",
+                    },
+                  ]
+                }
+              >
+                <View
+                  style={
+                    Array [
+                      Object {
+                        "alignSelf": "center",
+                      },
+                      Object {
+                        "position": "absolute",
+                        "top": -50,
+                      },
+                    ]
+                  }
+                >
+                  <View
+                    style={
+                      Object {
+                        "zIndex": -1,
+                      }
+                    }
+                  >
+                    <View
+                      style={
+                        Array [
+                          undefined,
+                          Object {
+                            "alignItems": "center",
+                            "backgroundColor": "#FFFFFF",
+                            "borderRadius": 50,
+                            "height": 100,
+                            "justifyContent": "center",
+                            "width": 100,
+                          },
+                        ]
+                      }
+                    >
+                      <View
+                        style={
+                          Object {
+                            "alignItems": "center",
+                            "justifyContent": "center",
+                          }
+                        }
+                      >
+                        <View
+                          style={
+                            Array [
+                              undefined,
+                              Object {
+                                "alignItems": "center",
+                                "backgroundColor": "#e66c2e",
+                                "borderRadius": 50,
+                                "height": 100,
+                                "justifyContent": "center",
+                                "width": 100,
+                              },
+                            ]
+                          }
+                        >
+                          <Text
+                            adjustsFontSizeToFit={true}
+                            style={
+                              Array [
+                                Object {
+                                  "fontSize": 30,
+                                },
+                                Object {
+                                  "color": "#383B62",
+                                  "fontFamily": "Open Sans",
+                                },
+                                Object {
+                                  "color": "#FFFFFF",
+                                  "fontSize": 50,
+                                  "includeFontPadding": false,
+                                  "paddingBottom": 5,
+                                  "textAlign": "center",
+                                },
+                              ]
+                            }
+                          >
+                            S
+                          </Text>
+                        </View>
+                      </View>
+                    </View>
+                  </View>
+                </View>
+                <View
+                  style={
+                    Array [
+                      Object {
+                        "paddingHorizontal": 16,
+                      },
+                      Object {
+                        "paddingBottom": 16,
+                      },
+                      Object {
+                        "paddingTop": 65,
+                      },
+                    ]
+                  }
+                >
+                  <Text
+                    style={
+                      Array [
+                        Object {
+                          "fontSize": 30,
+                        },
+                        Object {
+                          "color": "#383B62",
+                          "fontFamily": "Open Sans",
+                        },
+                        Array [
+                          Object {
+                            "fontSize": 44,
+                            "lineHeight": 44,
+                          },
+                          Object {
+                            "textAlign": "center",
+                          },
+                          Object {
+                            "fontFamily": "Light Open Sans",
+                          },
+                        ],
+                      ]
+                    }
+                  >
+                    Sandra Wisozk
+                  </Text>
+                  <View
+                    style={
+                      Array [
+                        Object {
+                          "marginTop": 16,
+                        },
+                      ]
+                    }
+                  >
+                    <View
+                      style={
+                        Array [
+                          Object {
+                            "alignItems": "stretch",
+                            "flexDirection": "row",
+                            "justifyContent": "space-between",
+                          },
+                        ]
+                      }
+                    >
+                      <View
+                        accessible={true}
+                        focusable={true}
+                        onClick={[Function]}
+                        onResponderGrant={[Function]}
+                        onResponderMove={[Function]}
+                        onResponderRelease={[Function]}
+                        onResponderTerminate={[Function]}
+                        onResponderTerminationRequest={[Function]}
+                        onStartShouldSetResponder={[Function]}
+                        style={
+                          Object {
+                            "flex": 1,
+                            "opacity": 1,
+                            "paddingBottom": 4,
+                          }
+                        }
+                        testID="tabs.fingerprint"
+                      >
+                        <View
+                          style={
+                            Array [
+                              undefined,
+                              Object {
+                                "alignItems": "center",
+                                "justifyContent": "space-between",
+                              },
+                            ]
+                          }
+                        >
+                          <View
+                            style={
+                              Object {
+                                "height": 25,
+                              }
+                            }
+                          >
+                            <View
+                              style={
+                                Object {
+                                  "transform": Array [
+                                    Object {
+                                      "scale": 1,
+                                    },
+                                  ],
+                                }
+                              }
+                            >
+                              <AssetMock
+                                color="#535AE4"
+                                height={25}
+                                style={
+                                  Object {
+                                    "transform": undefined,
+                                  }
+                                }
+                                width={25}
+                              />
+                            </View>
+                          </View>
+                          <Text
+                            style={
+                              Array [
+                                Object {
+                                  "fontSize": 30,
+                                },
+                                Object {
+                                  "color": "#383B62",
+                                  "fontFamily": "Open Sans",
+                                },
+                                Array [
+                                  Object {
+                                    "fontFamily": "Bold Open Sans",
+                                  },
+                                  Object {
+                                    "textAlign": "center",
+                                  },
+                                  Object {
+                                    "fontSize": 26,
+                                  },
+                                  Object {
+                                    "color": "#535AE4",
+                                  },
+                                ],
+                              ]
+                            }
+                          >
+                            tabs.fingerprint
+                          </Text>
+                        </View>
+                        <View
+                          style={
+                            Array [
+                              Object {
+                                "bottom": 0,
+                                "left": "2.5%",
+                                "position": "absolute",
+                                "width": "95%",
+                              },
+                              Object {
+                                "borderWidth": 2,
+                              },
+                              Object {
+                                "borderRadius": 2,
+                              },
+                              Object {
+                                "borderColor": "#535AE4",
+                              },
+                              undefined,
+                            ]
+                          }
+                        />
+                      </View>
+                      <View
+                        accessible={true}
+                        focusable={true}
+                        onClick={[Function]}
+                        onResponderGrant={[Function]}
+                        onResponderMove={[Function]}
+                        onResponderRelease={[Function]}
+                        onResponderTerminate={[Function]}
+                        onResponderTerminationRequest={[Function]}
+                        onStartShouldSetResponder={[Function]}
+                        style={
+                          Object {
+                            "flex": 1,
+                            "opacity": 1,
+                            "paddingBottom": 4,
+                          }
+                        }
+                        testID="tabs.info"
+                      >
+                        <View
+                          style={
+                            Array [
+                              Object {
+                                "opacity": 0.2,
+                              },
+                              Object {
+                                "alignItems": "center",
+                                "justifyContent": "space-between",
+                              },
+                            ]
+                          }
+                        >
+                          <View
+                            style={
+                              Object {
+                                "height": 25,
+                              }
+                            }
+                          >
+                            <View
+                              style={
+                                Object {
+                                  "transform": Array [
+                                    Object {
+                                      "scale": 1,
+                                    },
+                                  ],
+                                }
+                              }
+                            >
+                              <RNSVGMock
+                                fill="#383B62"
+                                height={25}
+                                style={
+                                  Object {
+                                    "transform": undefined,
+                                  }
+                                }
+                                viewBox="0 0 24 24"
+                                width={25}
+                              />
+                            </View>
+                          </View>
+                          <Text
+                            style={
+                              Array [
+                                Object {
+                                  "fontSize": 30,
+                                },
+                                Object {
+                                  "color": "#383B62",
+                                  "fontFamily": "Open Sans",
+                                },
+                                Array [
+                                  Object {
+                                    "fontFamily": "Bold Open Sans",
+                                  },
+                                  Object {
+                                    "textAlign": "center",
+                                  },
+                                  Object {
+                                    "fontSize": 26,
+                                  },
+                                  Object {
+                                    "color": "#383B62",
+                                  },
+                                ],
+                              ]
+                            }
+                          >
+                            tabs.info
+                          </Text>
+                        </View>
+                        <View
+                          style={
+                            Array [
+                              Object {
+                                "bottom": 0,
+                                "left": "2.5%",
+                                "position": "absolute",
+                                "width": "95%",
+                              },
+                              Object {
+                                "borderWidth": 2,
+                              },
+                              Object {
+                                "borderRadius": 2,
+                              },
+                              Object {
+                                "borderColor": "#383B62",
+                              },
+                              Object {
+                                "opacity": 0.2,
+                              },
+                            ]
+                          }
+                        />
+                      </View>
+                    </View>
+                  </View>
+                  <View
+                    style={
+                      Array [
+                        Object {
+                          "marginTop": 32,
+                        },
+                      ]
+                    }
+                  >
+                    <View
+                      style={
+                        Array [
+                          Object {
+                            "borderRadius": 16,
+                          },
+                          Object {
+                            "padding": 16,
+                          },
+                          Object {
+                            "backgroundColor": "#F7F8FF",
+                            "width": "100%",
+                          },
+                        ]
+                      }
+                    >
+                      <View
+                        style={
+                          Array [
+                            Object {
+                              "alignItems": "stretch",
+                              "flexDirection": "column",
+                              "justifyContent": "flex-start",
+                            },
+                          ]
+                        }
+                      >
+                        <View
+                          style={
+                            Array [
+                              Object {
+                                "alignItems": "stretch",
+                                "flexDirection": "row",
+                                "justifyContent": "space-between",
+                              },
+                            ]
+                          }
+                        >
+                          <Text
+                            style={
+                              Array [
+                                Object {
+                                  "fontSize": 30,
+                                },
+                                Object {
+                                  "color": "#383B62",
+                                  "fontFamily": "Open Sans",
+                                },
+                                Array [
+                                  Object {
+                                    "fontFamily": "Bold Open Sans",
+                                  },
+                                  Object {
+                                    "fontSize": 26,
+                                  },
+                                  Object {
+                                    "color": "#535AE4",
+                                    "fontFamily": "Courier",
+                                  },
+                                ],
+                              ]
+                            }
+                          >
+                            E27C
+                          </Text>
+                          <Text
+                            style={
+                              Array [
+                                Object {
+                                  "fontSize": 30,
+                                },
+                                Object {
+                                  "color": "#383B62",
+                                  "fontFamily": "Open Sans",
+                                },
+                                Array [
+                                  Object {
+                                    "fontFamily": "Bold Open Sans",
+                                  },
+                                  Object {
+                                    "fontSize": 26,
+                                  },
+                                  Object {
+                                    "color": "#535AE4",
+                                    "fontFamily": "Courier",
+                                  },
+                                ],
+                              ]
+                            }
+                          >
+                            3357
+                          </Text>
+                          <Text
+                            style={
+                              Array [
+                                Object {
+                                  "fontSize": 30,
+                                },
+                                Object {
+                                  "color": "#383B62",
+                                  "fontFamily": "Open Sans",
+                                },
+                                Array [
+                                  Object {
+                                    "fontFamily": "Bold Open Sans",
+                                  },
+                                  Object {
+                                    "fontSize": 26,
+                                  },
+                                  Object {
+                                    "color": "#535AE4",
+                                    "fontFamily": "Courier",
+                                  },
+                                ],
+                              ]
+                            }
+                          >
+                            0545
+                          </Text>
+                          <Text
+                            style={
+                              Array [
+                                Object {
+                                  "fontSize": 30,
+                                },
+                                Object {
+                                  "color": "#383B62",
+                                  "fontFamily": "Open Sans",
+                                },
+                                Array [
+                                  Object {
+                                    "fontFamily": "Bold Open Sans",
+                                  },
+                                  Object {
+                                    "fontSize": 26,
+                                  },
+                                  Object {
+                                    "color": "#535AE4",
+                                    "fontFamily": "Courier",
+                                  },
+                                ],
+                              ]
+                            }
+                          >
+                            CC56
+                          </Text>
+                        </View>
+                        <View
+                          style={
+                            Array [
+                              Object {
+                                "alignItems": "stretch",
+                                "flexDirection": "row",
+                                "justifyContent": "space-between",
+                              },
+                            ]
+                          }
+                        >
+                          <Text
+                            style={
+                              Array [
+                                Object {
+                                  "fontSize": 30,
+                                },
+                                Object {
+                                  "color": "#383B62",
+                                  "fontFamily": "Open Sans",
+                                },
+                                Array [
+                                  Object {
+                                    "fontFamily": "Bold Open Sans",
+                                  },
+                                  Object {
+                                    "fontSize": 26,
+                                  },
+                                  Object {
+                                    "color": "#535AE4",
+                                    "fontFamily": "Courier",
+                                  },
+                                ],
+                              ]
+                            }
+                          >
+                            3AE6
+                          </Text>
+                          <Text
+                            style={
+                              Array [
+                                Object {
+                                  "fontSize": 30,
+                                },
+                                Object {
+                                  "color": "#383B62",
+                                  "fontFamily": "Open Sans",
+                                },
+                                Array [
+                                  Object {
+                                    "fontFamily": "Bold Open Sans",
+                                  },
+                                  Object {
+                                    "fontSize": 26,
+                                  },
+                                  Object {
+                                    "color": "#535AE4",
+                                    "fontFamily": "Courier",
+                                  },
+                                ],
+                              ]
+                            }
+                          >
+                            AB03
+                          </Text>
+                          <Text
+                            style={
+                              Array [
+                                Object {
+                                  "fontSize": 30,
+                                },
+                                Object {
+                                  "color": "#383B62",
+                                  "fontFamily": "Open Sans",
+                                },
+                                Array [
+                                  Object {
+                                    "fontFamily": "Bold Open Sans",
+                                  },
+                                  Object {
+                                    "fontSize": 26,
+                                  },
+                                  Object {
+                                    "color": "#535AE4",
+                                    "fontFamily": "Courier",
+                                  },
+                                ],
+                              ]
+                            }
+                          >
+                            31E9
+                          </Text>
+                          <Text
+                            style={
+                              Array [
+                                Object {
+                                  "fontSize": 30,
+                                },
+                                Object {
+                                  "color": "#383B62",
+                                  "fontFamily": "Open Sans",
+                                },
+                                Array [
+                                  Object {
+                                    "fontFamily": "Bold Open Sans",
+                                  },
+                                  Object {
+                                    "fontSize": 26,
+                                  },
+                                  Object {
+                                    "color": "#535AE4",
+                                    "fontFamily": "Courier",
+                                  },
+                                ],
+                              ]
+                            }
+                          >
+                            32EC
+                          </Text>
+                        </View>
+                        <View
+                          style={
+                            Array [
+                              Object {
+                                "alignItems": "stretch",
+                                "flexDirection": "row",
+                                "justifyContent": "space-between",
+                              },
+                            ]
+                          }
+                        >
+                          <Text
+                            style={
+                              Array [
+                                Object {
+                                  "fontSize": 30,
+                                },
+                                Object {
+                                  "color": "#383B62",
+                                  "fontFamily": "Open Sans",
+                                },
+                                Array [
+                                  Object {
+                                    "fontFamily": "Bold Open Sans",
+                                  },
+                                  Object {
+                                    "fontSize": 26,
+                                  },
+                                  Object {
+                                    "color": "#535AE4",
+                                    "fontFamily": "Courier",
+                                  },
+                                ],
+                              ]
+                            }
+                          >
+                            259A
+                          </Text>
+                          <Text
+                            style={
+                              Array [
+                                Object {
+                                  "fontSize": 30,
+                                },
+                                Object {
+                                  "color": "#383B62",
+                                  "fontFamily": "Open Sans",
+                                },
+                                Array [
+                                  Object {
+                                    "fontFamily": "Bold Open Sans",
+                                  },
+                                  Object {
+                                    "fontSize": 26,
+                                  },
+                                  Object {
+                                    "color": "#535AE4",
+                                    "fontFamily": "Courier",
+                                  },
+                                ],
+                              ]
+                            }
+                          >
+                            51F8
+                          </Text>
+                          <Text
+                            style={
+                              Array [
+                                Object {
+                                  "fontSize": 30,
+                                },
+                                Object {
+                                  "color": "#383B62",
+                                  "fontFamily": "Open Sans",
+                                },
+                                Array [
+                                  Object {
+                                    "fontFamily": "Bold Open Sans",
+                                  },
+                                  Object {
+                                    "fontSize": 26,
+                                  },
+                                  Object {
+                                    "color": "#535AE4",
+                                    "fontFamily": "Courier",
+                                  },
+                                ],
+                              ]
+                            }
+                          >
+                            AC14
+                          </Text>
+                          <Text
+                            style={
+                              Array [
+                                Object {
+                                  "fontSize": 30,
+                                },
+                                Object {
+                                  "color": "#383B62",
+                                  "fontFamily": "Open Sans",
+                                },
+                                Array [
+                                  Object {
+                                    "fontFamily": "Bold Open Sans",
+                                  },
+                                  Object {
+                                    "fontSize": 26,
+                                  },
+                                  Object {
+                                    "color": "#535AE4",
+                                    "fontFamily": "Courier",
+                                  },
+                                ],
+                              ]
+                            }
+                          >
+                            FD2D
+                          </Text>
+                        </View>
+                        <View
+                          style={
+                            Array [
+                              Object {
+                                "alignItems": "stretch",
+                                "flexDirection": "row",
+                                "justifyContent": "space-between",
+                              },
+                            ]
+                          }
+                        >
+                          <Text
+                            style={
+                              Array [
+                                Object {
+                                  "fontSize": 30,
+                                },
+                                Object {
+                                  "color": "#383B62",
+                                  "fontFamily": "Open Sans",
+                                },
+                                Array [
+                                  Object {
+                                    "fontFamily": "Bold Open Sans",
+                                  },
+                                  Object {
+                                    "fontSize": 26,
+                                  },
+                                  Object {
+                                    "color": "#535AE4",
+                                    "fontFamily": "Courier",
+                                  },
+                                ],
+                              ]
+                            }
+                          >
+                            5781
+                          </Text>
+                          <Text
+                            style={
+                              Array [
+                                Object {
+                                  "fontSize": 30,
+                                },
+                                Object {
+                                  "color": "#383B62",
+                                  "fontFamily": "Open Sans",
+                                },
+                                Array [
+                                  Object {
+                                    "fontFamily": "Bold Open Sans",
+                                  },
+                                  Object {
+                                    "fontSize": 26,
+                                  },
+                                  Object {
+                                    "color": "#535AE4",
+                                    "fontFamily": "Courier",
+                                  },
+                                ],
+                              ]
+                            }
+                          >
+                            B8FC
+                          </Text>
+                          <Text
+                            style={
+                              Array [
+                                Object {
+                                  "fontSize": 30,
+                                },
+                                Object {
+                                  "color": "#383B62",
+                                  "fontFamily": "Open Sans",
+                                },
+                                Array [
+                                  Object {
+                                    "fontFamily": "Bold Open Sans",
+                                  },
+                                  Object {
+                                    "fontSize": 26,
+                                  },
+                                  Object {
+                                    "color": "#535AE4",
+                                    "fontFamily": "Courier",
+                                  },
+                                ],
+                              ]
+                            }
+                          >
+                            ED3A
+                          </Text>
+                          <Text
+                            style={
+                              Array [
+                                Object {
+                                  "fontSize": 30,
+                                },
+                                Object {
+                                  "color": "#383B62",
+                                  "fontFamily": "Open Sans",
+                                },
+                                Array [
+                                  Object {
+                                    "fontFamily": "Bold Open Sans",
+                                  },
+                                  Object {
+                                    "fontSize": 26,
+                                  },
+                                  Object {
+                                    "color": "#535AE4",
+                                    "fontFamily": "Courier",
+                                  },
+                                ],
+                              ]
+                            }
+                          >
+                            DAD8
+                          </Text>
+                        </View>
+                      </View>
+                    </View>
+                  </View>
+                </View>
+              </View>
+            </View>
+          </View>
+        </View>
+      </RCTScrollView>
+    </View>
+  </View>
+</RNCSafeAreaProvider>
+`;

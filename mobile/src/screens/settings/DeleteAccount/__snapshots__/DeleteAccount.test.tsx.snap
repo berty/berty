@@ -1,0 +1,579 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Settings.DeleteAccount renders correctly 1`] = `
+<RNCSafeAreaProvider
+  onInsetsChange={[Function]}
+  style={
+    Array [
+      Object {
+        "flex": 1,
+      },
+      undefined,
+    ]
+  }
+>
+  <View
+    style={
+      Object {
+        "flex": 1,
+      }
+    }
+  >
+    <View
+      appearance="default"
+      level="1"
+      style={
+        Array [
+          Object {
+            "backgroundColor": "#FFFFFF",
+          },
+          Object {
+            "backgroundColor": "#E35179",
+            "flex": 1,
+          },
+        ]
+      }
+    >
+      <View
+        style={
+          Array [
+            Object {
+              "alignItems": "center",
+              "height": 250,
+              "justifyContent": "center",
+              "top": "25%",
+            },
+            Object {
+              "margin": 32,
+            },
+          ]
+        }
+      >
+        <View
+          style={
+            Object {
+              "alignItems": "center",
+              "backgroundColor": "white",
+              "borderRadius": 100,
+              "elevation": 8,
+              "height": 98,
+              "justifyContent": "center",
+              "position": "relative",
+              "shadowColor": "black",
+              "shadowOffset": Object {
+                "height": 10,
+                "width": 0,
+              },
+              "shadowOpacity": 0.1,
+              "shadowRadius": 40,
+              "top": 50,
+              "width": 98,
+              "zIndex": 1,
+            }
+          }
+        >
+          <View
+            style={
+              Object {
+                "transform": Array [
+                  Object {
+                    "scale": 1,
+                  },
+                ],
+              }
+            }
+          >
+            <RNSVGMock
+              fill="#E35179"
+              height={80}
+              style={
+                Array [
+                  Object {
+                    "alignSelf": "center",
+                  },
+                ]
+              }
+              viewBox="0 0 24 24"
+              width={80}
+            />
+          </View>
+        </View>
+        <View
+          style={
+            Array [
+              Object {
+                "paddingHorizontal": 24,
+              },
+              Object {
+                "paddingBottom": 16,
+              },
+              Object {
+                "backgroundColor": "white",
+                "borderRadius": 20,
+                "elevation": 7,
+                "shadowColor": "black",
+                "shadowOffset": Object {
+                  "height": 10,
+                  "width": 0,
+                },
+                "shadowOpacity": 0.1,
+                "shadowRadius": 40,
+              },
+            ]
+          }
+        >
+          <View
+            style={
+              Array [
+                Object {
+                  "marginTop": 70,
+                },
+              ]
+            }
+          >
+            <Text
+              style={
+                Array [
+                  Object {
+                    "fontSize": 30,
+                  },
+                  Object {
+                    "color": "#383B62",
+                    "fontFamily": "Open Sans",
+                  },
+                  Array [
+                    Object {
+                      "textAlign": "center",
+                    },
+                    Object {
+                      "paddingTop": 9,
+                    },
+                    Object {
+                      "fontSize": 44,
+                      "lineHeight": 44,
+                    },
+                    Object {
+                      "fontFamily": "Bold Open Sans",
+                    },
+                    Object {
+                      "color": "#E35179",
+                    },
+                  ],
+                ]
+              }
+            >
+              settings.delete-account.title
+            </Text>
+            <View
+              style={
+                Array [
+                  Object {
+                    "paddingTop": 20,
+                  },
+                  Object {
+                    "flexDirection": "column",
+                  },
+                ]
+              }
+            >
+              <Text
+                style={
+                  Array [
+                    Object {
+                      "fontSize": 30,
+                    },
+                    Object {
+                      "color": "#383B62",
+                      "fontFamily": "Open Sans",
+                    },
+                    Array [
+                      Object {
+                        "textAlign": "center",
+                      },
+                      Object {
+                        "color": "#E35179",
+                      },
+                    ],
+                  ]
+                }
+              >
+                settings.delete-account.first-desc
+              </Text>
+            </View>
+            <View
+              style={
+                Array [
+                  Object {
+                    "marginTop": 16,
+                  },
+                ]
+              }
+            >
+              <View
+                style={
+                  Array [
+                    Object {
+                      "paddingHorizontal": 16,
+                    },
+                    Object {
+                      "paddingBottom": 16,
+                    },
+                  ]
+                }
+              >
+                <Text
+                  style={
+                    Array [
+                      Object {
+                        "fontSize": 30,
+                      },
+                      Object {
+                        "color": "#383B62",
+                        "fontFamily": "Open Sans",
+                      },
+                      undefined,
+                    ]
+                  }
+                >
+                  <Text
+                    style={
+                      Array [
+                        Object {
+                          "fontSize": 30,
+                        },
+                        Object {
+                          "color": "#383B62",
+                          "fontFamily": "Open Sans",
+                        },
+                        Array [
+                          Object {
+                            "fontFamily": "Light Open Sans",
+                          },
+                          Object {
+                            "textAlign": "center",
+                          },
+                          Object {
+                            "color": "#F64278",
+                          },
+                        ],
+                      ]
+                    }
+                  >
+                    settings.delete-account.desc-please
+                  </Text>
+                  <Text
+                    style={
+                      Array [
+                        Object {
+                          "fontSize": 30,
+                        },
+                        Object {
+                          "color": "#383B62",
+                          "fontFamily": "Open Sans",
+                        },
+                        Array [
+                          Object {
+                            "fontFamily": "Bold Open Sans",
+                          },
+                          Object {
+                            "textAlign": "center",
+                          },
+                          Object {
+                            "color": "#F64278",
+                          },
+                        ],
+                      ]
+                    }
+                  >
+                    settings.delete-account.desc-delete
+                  </Text>
+                  <Text
+                    style={
+                      Array [
+                        Object {
+                          "fontSize": 30,
+                        },
+                        Object {
+                          "color": "#383B62",
+                          "fontFamily": "Open Sans",
+                        },
+                        Array [
+                          Object {
+                            "fontFamily": "Light Open Sans",
+                          },
+                          Object {
+                            "textAlign": "center",
+                          },
+                          Object {
+                            "color": "#F64278",
+                          },
+                        ],
+                      ]
+                    }
+                  >
+                    settings.delete-account.desc-confirm
+                  </Text>
+                </Text>
+              </View>
+              <View
+                style={
+                  Array [
+                    Object {
+                      "marginVertical": 16,
+                    },
+                  ]
+                }
+              >
+                <View
+                  accessible={true}
+                  focusable={true}
+                  onClick={[Function]}
+                  onResponderGrant={[Function]}
+                  onResponderMove={[Function]}
+                  onResponderRelease={[Function]}
+                  onResponderTerminate={[Function]}
+                  onResponderTerminationRequest={[Function]}
+                  onStartShouldSetResponder={[Function]}
+                  style={
+                    Object {
+                      "backgroundColor": "#F7F8FE",
+                      "borderRadius": 8,
+                      "height": 36,
+                      "opacity": 1,
+                      "paddingHorizontal": 12,
+                    }
+                  }
+                >
+                  <TextInput
+                    allowFontScaling={true}
+                    autoCapitalize="none"
+                    autoCorrect={false}
+                    onChangeText={[Function]}
+                    placeholderTextColor="#D0D0D6"
+                    rejectResponderTermination={true}
+                    style={
+                      Array [
+                        Object {
+                          "fontSize": 30,
+                        },
+                        Object {
+                          "color": "#393C63",
+                          "flex": 1,
+                          "fontFamily": "Open Sans",
+                        },
+                      ]
+                    }
+                    underlineColorAndroid="transparent"
+                    value=""
+                  />
+                </View>
+              </View>
+            </View>
+          </View>
+          <View
+            style={
+              Array [
+                Object {
+                  "marginTop": 16,
+                },
+                Object {
+                  "marginBottom": 9,
+                },
+              ]
+            }
+          >
+            <View
+              style={
+                Object {
+                  "alignItems": "stretch",
+                  "flexDirection": "row",
+                  "justifyContent": "space-evenly",
+                }
+              }
+            >
+              <View
+                style={
+                  Array [
+                    Object {
+                      "flex": 1,
+                    },
+                    Object {
+                      "marginRight": 9,
+                    },
+                  ]
+                }
+              >
+                <View
+                  accessible={true}
+                  focusable={true}
+                  onClick={[Function]}
+                  onResponderGrant={[Function]}
+                  onResponderMove={[Function]}
+                  onResponderRelease={[Function]}
+                  onResponderTerminate={[Function]}
+                  onResponderTerminationRequest={[Function]}
+                  onStartShouldSetResponder={[Function]}
+                  style={
+                    Object {
+                      "alignItems": "center",
+                      "borderColor": "#D2D3E1",
+                      "borderRadius": 8,
+                      "borderWidth": 1,
+                      "flexDirection": "row",
+                      "height": 44,
+                      "justifyContent": "center",
+                      "opacity": 1,
+                    }
+                  }
+                >
+                  <View
+                    style={
+                      Object {
+                        "marginRight": 9,
+                      }
+                    }
+                  >
+                    <View
+                      style={
+                        Object {
+                          "transform": Array [
+                            Object {
+                              "scale": 1,
+                            },
+                          ],
+                        }
+                      }
+                    >
+                      <RNSVGMock
+                        fill="#D2D3E1"
+                        height={25}
+                        viewBox="0 0 24 24"
+                        width={25}
+                      />
+                    </View>
+                  </View>
+                  <Text
+                    style={
+                      Array [
+                        Object {
+                          "fontSize": 30,
+                        },
+                        Object {
+                          "color": "#383B62",
+                          "fontFamily": "Open Sans",
+                        },
+                        Array [
+                          Object {
+                            "textTransform": "uppercase",
+                          },
+                          Object {
+                            "color": "#D2D3E1",
+                          },
+                          Object {
+                            "fontFamily": "Bold Open Sans",
+                          },
+                        ],
+                      ]
+                    }
+                  >
+                    settings.delete-account.cancel-button
+                  </Text>
+                </View>
+              </View>
+              <View
+                style={
+                  Array [
+                    Object {
+                      "flex": 1,
+                    },
+                    Object {
+                      "marginLeft": 9,
+                    },
+                  ]
+                }
+              >
+                <View
+                  accessible={true}
+                  focusable={true}
+                  onClick={[Function]}
+                  onResponderGrant={[Function]}
+                  onResponderMove={[Function]}
+                  onResponderRelease={[Function]}
+                  onResponderTerminate={[Function]}
+                  onResponderTerminationRequest={[Function]}
+                  onStartShouldSetResponder={[Function]}
+                  style={
+                    Object {
+                      "alignItems": "center",
+                      "borderColor": "#E35179",
+                      "borderRadius": 8,
+                      "borderWidth": 1,
+                      "flexDirection": "row",
+                      "height": 44,
+                      "justifyContent": "center",
+                      "opacity": 1,
+                    }
+                  }
+                >
+                  <View
+                    style={
+                      Object {
+                        "marginRight": 9,
+                      }
+                    }
+                  >
+                    <View
+                      style={
+                        Object {
+                          "transform": Array [
+                            Object {
+                              "scale": 1,
+                            },
+                          ],
+                        }
+                      }
+                    >
+                      <RNSVGMock
+                        fill="#E35179"
+                        height={25}
+                        viewBox="0 0 24 24"
+                        width={25}
+                      />
+                    </View>
+                  </View>
+                  <Text
+                    style={
+                      Array [
+                        Object {
+                          "fontSize": 30,
+                        },
+                        Object {
+                          "color": "#383B62",
+                          "fontFamily": "Open Sans",
+                        },
+                        Array [
+                          Object {
+                            "textTransform": "uppercase",
+                          },
+                          Object {
+                            "color": "#E35179",
+                          },
+                          Object {
+                            "fontFamily": "Bold Open Sans",
+                          },
+                        ],
+                      ]
+                    }
+                  >
+                    settings.delete-account.delete-button
+                  </Text>
+                </View>
+              </View>
+            </View>
+          </View>
+        </View>
+      </View>
+    </View>
+  </View>
+</RNCSafeAreaProvider>
+`;

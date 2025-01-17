@@ -1,0 +1,132 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Settings.Appearance renders correctly 1`] = `
+<RNCSafeAreaProvider
+  onInsetsChange={[Function]}
+  style={
+    Array [
+      Object {
+        "flex": 1,
+      },
+      undefined,
+    ]
+  }
+>
+  <View
+    style={
+      Object {
+        "flex": 1,
+      }
+    }
+  >
+    <View
+      style={
+        Object {
+          "backgroundColor": "#EDEDED",
+          "flex": 1,
+        }
+      }
+    >
+      <RCTScrollView
+        bounces={false}
+        contentContainerStyle={
+          Object {
+            "paddingBottom": 12,
+          }
+        }
+        showsVerticalScrollIndicator={false}
+      >
+        <View>
+          <View
+            style={
+              Array [
+                Object {
+                  "marginTop": 24,
+                },
+                Object {
+                  "marginHorizontal": 16,
+                },
+                Object {
+                  "backgroundColor": "white",
+                  "borderRadius": 14,
+                },
+              ]
+            }
+          >
+            <View
+              accessible={true}
+              focusable={true}
+              onClick={[Function]}
+              onResponderGrant={[Function]}
+              onResponderMove={[Function]}
+              onResponderRelease={[Function]}
+              onResponderTerminate={[Function]}
+              onResponderTerminationRequest={[Function]}
+              onStartShouldSetResponder={[Function]}
+              style={
+                Object {
+                  "alignItems": "center",
+                  "flexDirection": "row",
+                  "height": 48,
+                  "justifyContent": "space-between",
+                  "opacity": 1,
+                  "padding": 12,
+                }
+              }
+            >
+              <View
+                style={
+                  Object {
+                    "flexShrink": 1,
+                    "width": "90%",
+                  }
+                }
+              >
+                <Text
+                  numberOfLines={1}
+                  style={
+                    Array [
+                      Object {
+                        "fontSize": 30,
+                      },
+                      Object {
+                        "color": "#383B62",
+                        "fontFamily": "Open Sans",
+                      },
+                      Array [
+                        Object {
+                          "marginLeft": 9,
+                        },
+                      ],
+                    ]
+                  }
+                >
+                  settings.appearance.editor-button
+                </Text>
+              </View>
+              <View
+                style={
+                  Object {
+                    "transform": Array [
+                      Object {
+                        "scale": 1,
+                      },
+                    ],
+                  }
+                }
+              >
+                <RNSVGMock
+                  fill="#393C63"
+                  height={20}
+                  viewBox="0 0 24 24"
+                  width={20}
+                />
+              </View>
+            </View>
+          </View>
+        </View>
+      </RCTScrollView>
+    </View>
+  </View>
+</RNCSafeAreaProvider>
+`;

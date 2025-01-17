@@ -15,7 +15,7 @@ golang 1.23.2
 # prevent our project from building.
 # More info here: https://github.com/webpack/webpack/issues/14532
 #-----
-nodejs 16.16.0
+nodejs 22.8.0
 
 #-----
 # This is simply the most recent xcodegen version available to date.
@@ -51,7 +51,7 @@ jq 1.6
 # This is simply the most recent java openjdk version available to date.
 # There is no contraindication for updating it.
 #-----
-java openjdk-18.0.1.1
+java openjdk-17.0.2
 
 #-----
 # This is simply the most recent yq version available to date.

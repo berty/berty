@@ -1,0 +1,179 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Onboarding.CreateAccount renders correctly 1`] = `
+<RNCSafeAreaProvider
+  onInsetsChange={[Function]}
+  style={
+    Array [
+      Object {
+        "flex": 1,
+      },
+      undefined,
+    ]
+  }
+>
+  <View
+    style={
+      Object {
+        "flex": 1,
+      }
+    }
+  >
+    <RNCSafeAreaView
+      style={
+        Array [
+          Object {
+            "backgroundColor": "#535AE4",
+            "flex": 1,
+          },
+        ]
+      }
+    >
+      <View
+        style={
+          Array [
+            Object {
+              "flex": 1,
+            },
+          ]
+        }
+      >
+        <View>
+          <LottieViewMock
+            autoPlay={true}
+            loop={true}
+            sourceHash="gf+o5a1DtXJVVOo2h9zM8n3v/jyLcoJp+29qCqU6hsk="
+            style={
+              Object {
+                "position": "absolute",
+                "top": -10,
+                "width": "100%",
+              }
+            }
+          />
+          <LottieViewMock
+            autoPlay={true}
+            loop={false}
+            onAnimationFinish={[Function]}
+            sourceHash="CwYZbPeqiPdwwCkrwUjt9gJRSkK1KBTxlH+iFy6+hgw="
+            style={
+              Object {
+                "position": "absolute",
+                "top": -10,
+                "width": "100%",
+              }
+            }
+          />
+        </View>
+        <View
+          onLayout={[Function]}
+          style={
+            Array [
+              Object {
+                "flex": 1,
+                "justifyContent": "flex-end",
+              },
+              Object {
+                "paddingBottom": 0,
+              },
+            ]
+          }
+        />
+        <View
+          style={
+            Array [
+              Object {
+                "padding": 16,
+              },
+              Object {
+                "marginBottom": 16,
+              },
+              Object {
+                "marginHorizontal": 16,
+              },
+              Object {
+                "borderRadius": 24,
+              },
+              Object {
+                "backgroundColor": "#FFFFFF",
+              },
+            ]
+          }
+        >
+          <View
+            style={
+              Object {
+                "alignItems": "center",
+                "flexDirection": "row",
+              }
+            }
+          >
+            <View
+              style={
+                Object {
+                  "alignItems": "center",
+                  "flex": 1,
+                  "flexDirection": "column",
+                }
+              }
+            >
+              <Text
+                style={
+                  Array [
+                    Object {
+                      "fontSize": 30,
+                    },
+                    Object {
+                      "color": "#383B62",
+                      "fontFamily": "Open Sans",
+                    },
+                    Array [
+                      Object {
+                        "fontFamily": "Bold Open Sans",
+                      },
+                    ],
+                  ]
+                }
+              >
+                onboarding.create-account.good-to-know.title
+              </Text>
+              <Text
+                style={
+                  Array [
+                    Object {
+                      "fontSize": 30,
+                    },
+                    Object {
+                      "color": "#383B62",
+                      "fontFamily": "Open Sans",
+                    },
+                    undefined,
+                  ]
+                }
+              >
+                onboarding.create-account.good-to-know.first-point
+              </Text>
+              <Text
+                style={
+                  Array [
+                    Object {
+                      "fontSize": 30,
+                    },
+                    Object {
+                      "color": "#383B62",
+                      "fontFamily": "Open Sans",
+                    },
+                    undefined,
+                  ]
+                }
+              >
+                onboarding.create-account.good-to-know.second-point
+              </Text>
+            </View>
+          </View>
+        </View>
+      </View>
+    </RNCSafeAreaView>
+  </View>
+</RNCSafeAreaProvider>
+`;

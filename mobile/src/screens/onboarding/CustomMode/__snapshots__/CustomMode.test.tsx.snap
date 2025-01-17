@@ -1,0 +1,421 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Onboarding.CustomMode renders correctly 1`] = `
+<RNCSafeAreaProvider
+  onInsetsChange={[Function]}
+  style={
+    Array [
+      Object {
+        "flex": 1,
+      },
+      undefined,
+    ]
+  }
+>
+  <View
+    style={
+      Object {
+        "flex": 1,
+      }
+    }
+  >
+    <RNCSafeAreaView
+      style={
+        Array [
+          Object {
+            "backgroundColor": "#535AE4",
+            "flex": 1,
+          },
+        ]
+      }
+    >
+      <View
+        style={
+          Array [
+            Object {
+              "flex": 1,
+            },
+          ]
+        }
+      >
+        <LottieViewMock
+          autoPlay={true}
+          loop={true}
+          sourceHash="gf+o5a1DtXJVVOo2h9zM8n3v/jyLcoJp+29qCqU6hsk="
+          style={
+            Object {
+              "position": "absolute",
+              "width": "100%",
+            }
+          }
+        />
+        <LottieViewMock
+          autoPlay={true}
+          loop={false}
+          sourceHash="CwYZbPeqiPdwwCkrwUjt9gJRSkK1KBTxlH+iFy6+hgw="
+          style={
+            Object {
+              "position": "absolute",
+              "top": -20,
+              "width": "100%",
+            }
+          }
+        />
+        <View
+          style={
+            Array [
+              Object {
+                "paddingHorizontal": 16,
+              },
+              Object {
+                "flex": 1,
+                "justifyContent": "flex-end",
+                "top": -30,
+              },
+            ]
+          }
+        >
+          <View
+            style={
+              Array [
+                Object {
+                  "shadowOffset": Object {
+                    "height": 2.5,
+                    "width": 0,
+                  },
+                  "shadowOpacity": 0.2,
+                  "shadowRadius": 5,
+                },
+                Object {
+                  "padding": 16,
+                },
+                Object {
+                  "borderRadius": 16,
+                },
+                Object {
+                  "backgroundColor": "#FFFFFF",
+                  "shadowColor": "#000000",
+                },
+              ]
+            }
+          >
+            <View
+              style={
+                Object {
+                  "alignItems": "center",
+                  "flexDirection": "row",
+                  "justifyContent": "center",
+                }
+              }
+            >
+              <View
+                style={
+                  Object {
+                    "transform": Array [
+                      Object {
+                        "scale": 1,
+                      },
+                    ],
+                  }
+                }
+              >
+                <Text
+                  allowFontScaling={false}
+                  style={
+                    Array [
+                      Object {
+                        "color": "#535AE4",
+                        "fontSize": 23,
+                      },
+                      Array [
+                        Object {
+                          "marginRight": 9,
+                        },
+                      ],
+                      Object {
+                        "fontFamily": "Feather",
+                        "fontStyle": "normal",
+                        "fontWeight": "normal",
+                      },
+                      Object {},
+                    ]
+                  }
+                >
+                  
+                </Text>
+              </View>
+              <Text
+                style={
+                  Array [
+                    Object {
+                      "fontSize": 30,
+                    },
+                    Object {
+                      "color": "#383B62",
+                      "fontFamily": "Open Sans",
+                    },
+                    Array [
+                      Object {
+                        "fontFamily": "Bold Open Sans",
+                      },
+                      Object {
+                        "color": "#535AE4",
+                        "fontSize": 24,
+                      },
+                    ],
+                  ]
+                }
+              >
+                onboarding.custom-mode.summary.title
+              </Text>
+            </View>
+            <View
+              style={
+                Array [
+                  Object {
+                    "marginTop": 16,
+                  },
+                ]
+              }
+            >
+              <Text
+                style={
+                  Array [
+                    Object {
+                      "fontSize": 30,
+                    },
+                    Object {
+                      "color": "#383B62",
+                      "fontFamily": "Open Sans",
+                    },
+                    Array [
+                      Object {
+                        "fontFamily": "Bold Open Sans",
+                      },
+                      Object {
+                        "textAlign": "center",
+                      },
+                    ],
+                  ]
+                }
+              >
+                onboarding.custom-mode.summary.subtitle
+              </Text>
+            </View>
+            <View
+              style={
+                Array [
+                  Object {
+                    "marginTop": 16,
+                  },
+                ]
+              }
+            >
+              <Text
+                style={
+                  Array [
+                    Object {
+                      "fontSize": 30,
+                    },
+                    Object {
+                      "color": "#383B62",
+                      "fontFamily": "Open Sans",
+                    },
+                    Object {
+                      "textAlign": "center",
+                    },
+                  ]
+                }
+              >
+                onboarding.custom-mode.summary.first-point
+              </Text>
+            </View>
+            <View
+              style={
+                Array [
+                  Object {
+                    "marginTop": 16,
+                  },
+                ]
+              }
+            >
+              <Text
+                style={
+                  Array [
+                    Object {
+                      "fontSize": 30,
+                    },
+                    Object {
+                      "color": "#383B62",
+                      "fontFamily": "Open Sans",
+                    },
+                    Array [
+                      Object {
+                        "textAlign": "center",
+                      },
+                    ],
+                  ]
+                }
+              >
+                onboarding.custom-mode.summary.second-point
+              </Text>
+            </View>
+          </View>
+          <View
+            style={
+              Array [
+                Object {
+                  "marginTop": 9,
+                },
+                Object {
+                  "marginBottom": 16,
+                },
+                Object {
+                  "alignItems": "center",
+                  "flexDirection": "row",
+                  "justifyContent": "space-between",
+                },
+              ]
+            }
+          >
+            <View
+              style={
+                Object {
+                  "alignItems": "stretch",
+                  "flexDirection": "row",
+                  "justifyContent": "space-evenly",
+                }
+              }
+            >
+              <View
+                style={
+                  Array [
+                    Object {
+                      "flex": 1,
+                    },
+                    Object {
+                      "marginRight": 24,
+                    },
+                  ]
+                }
+              >
+                <View
+                  accessible={true}
+                  focusable={true}
+                  onClick={[Function]}
+                  onResponderGrant={[Function]}
+                  onResponderMove={[Function]}
+                  onResponderRelease={[Function]}
+                  onResponderTerminate={[Function]}
+                  onResponderTerminationRequest={[Function]}
+                  onStartShouldSetResponder={[Function]}
+                  style={
+                    Object {
+                      "alignItems": "center",
+                      "backgroundColor": "#EAEAFB",
+                      "borderRadius": 14,
+                      "flexDirection": "row",
+                      "height": 44,
+                      "justifyContent": "center",
+                      "opacity": 1,
+                    }
+                  }
+                >
+                  <Text
+                    style={
+                      Array [
+                        Object {
+                          "fontSize": 30,
+                        },
+                        Object {
+                          "color": "#383B62",
+                          "fontFamily": "Open Sans",
+                        },
+                        Array [
+                          Object {
+                            "textTransform": "uppercase",
+                          },
+                          Object {
+                            "color": "#535AE4",
+                          },
+                          Object {
+                            "fontFamily": "Bold Open Sans",
+                          },
+                        ],
+                      ]
+                    }
+                  >
+                    onboarding.custom-mode.summary.back-button
+                  </Text>
+                </View>
+              </View>
+              <View
+                style={
+                  Array [
+                    Object {
+                      "flex": 1,
+                    },
+                    Object {
+                      "marginLeft": 24,
+                    },
+                  ]
+                }
+              >
+                <View
+                  accessible={true}
+                  focusable={true}
+                  onClick={[Function]}
+                  onResponderGrant={[Function]}
+                  onResponderMove={[Function]}
+                  onResponderRelease={[Function]}
+                  onResponderTerminate={[Function]}
+                  onResponderTerminationRequest={[Function]}
+                  onStartShouldSetResponder={[Function]}
+                  style={
+                    Object {
+                      "alignItems": "center",
+                      "backgroundColor": "#3943D4",
+                      "borderRadius": 14,
+                      "flexDirection": "row",
+                      "height": 44,
+                      "justifyContent": "center",
+                      "opacity": 1,
+                    }
+                  }
+                >
+                  <Text
+                    style={
+                      Array [
+                        Object {
+                          "fontSize": 30,
+                        },
+                        Object {
+                          "color": "#383B62",
+                          "fontFamily": "Open Sans",
+                        },
+                        Array [
+                          Object {
+                            "textTransform": "uppercase",
+                          },
+                          Object {
+                            "color": "#F2F2F2",
+                          },
+                          Object {
+                            "fontFamily": "Bold Open Sans",
+                          },
+                        ],
+                      ]
+                    }
+                  >
+                    onboarding.custom-mode.summary.accept-button
+                  </Text>
+                </View>
+              </View>
+            </View>
+          </View>
+        </View>
+      </View>
+    </RNCSafeAreaView>
+  </View>
+</RNCSafeAreaProvider>
+`;
