@@ -8,19 +8,24 @@ Open a terminal in this folder and run:
 
 ```
 cd .. # cd to the parent folder
-make ios.gomobile
+make ios.gomobile # or make android.gomobile
+```
+
+For developpement, you can also run in new terminals:
+
+```
 npm run build
 npm run build plugin
 ```
 
 ### CLI build
 
-Open a second terminal in this folder and run:
+In this folder run:
 
 ```
 npm install
-npx expo run:ios # or npx expo run:android
 npx expo prebuild --clean # optional
+npx expo run:ios # or npx expo run:android
 ```
 
 ### Xcode build
