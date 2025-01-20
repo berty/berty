@@ -8,8 +8,8 @@ berty.tech/go-orbit-db v1.22.2-0.20240719144258-ec7d1faaca68 h1:Y0TmVC11z+CQpQFo
 berty.tech/go-orbit-db v1.22.2-0.20240719144258-ec7d1faaca68/go.mod h1:UoKTs3bAL3Q1eCwj2VKA/LFspSFbacNeZsUkxDh3S3Q=
 berty.tech/ipfs-webui-packed v1.0.0-v2.11.4-1 h1:xXAS7M/RcgIWia1XkXLueirm2zDXnMMNGb3UJhfRzbo=
 berty.tech/ipfs-webui-packed v1.0.0-v2.11.4-1/go.mod h1:n+M4wWEjVxnA0itc1m9oOLAXrNyZr2tiOxLnA1tVnrQ=
-berty.tech/weshnet/v2 v2.0.3 h1:u2lXKKjMko1bHrbkk8ABNdStveWNpiCMYglAYBleiG4=
-berty.tech/weshnet/v2 v2.0.3/go.mod h1:zOkLHCHhGSa+kaBhYLEBvZ0DTLt8o1nGejP2rQVktCQ=
+berty.tech/weshnet/v2 v2.0.4 h1:L+2eaOX/WfFLfb4RrQj9dOosaIMQ1cftwr/j6/2itUY=
+berty.tech/weshnet/v2 v2.0.4/go.mod h1:zOkLHCHhGSa+kaBhYLEBvZ0DTLt8o1nGejP2rQVktCQ=
 cloud.google.com/go v0.26.0/go.mod h1:aQUYkXzVsufM+DwF1aE+0xfcU+56JwCaLick0ClmMTw=
 cloud.google.com/go v0.31.0/go.mod h1:aQUYkXzVsufM+DwF1aE+0xfcU+56JwCaLick0ClmMTw=
 cloud.google.com/go v0.34.0/go.mod h1:aQUYkXzVsufM+DwF1aE+0xfcU+56JwCaLick0ClmMTw=
