@@ -1,15 +1,19 @@
-import { StatusBar, View } from "react-native";
+import { Pressable, StatusBar, View } from "react-native";
 import { useTranslation } from 'react-i18next'
 import BertyGradientSquareSvg from "@berty/assets/logo/berty-gradient-square-svg";
 import { useStyles } from '@berty/contexts/styles'
 import { useThemeColor } from "@berty/hooks";
 import { UnifiedText } from "@berty/components/shared-components/UnifiedText";
 import { PrimaryButton } from "@berty/components";
+import { useRouter } from "expo-router";
+import { Link } from 'expo-router';
 
+// same as Berty v1 screen: GetStarted.tsx
 export default function GetStarted() {
 	const { margin, padding, text } = useStyles()
 	const colors = useThemeColor()
 	const { t } = useTranslation()
+	const router = useRouter()
 
 return (
 	<View
@@ -45,9 +49,7 @@ return (
 				</View>
 				<View style={{ marginHorizontal: 60 }}>
 					<View style={[margin.top.huge]}>
-						<PrimaryButton
-							onPress={() => console.log('navigate')}
-						>
+						<PrimaryButton onPress={() => router.push('/(onboarding)/create-account')}>
 							{t('onboarding.getstarted.create-button')}
 						</PrimaryButton>
 					</View>
