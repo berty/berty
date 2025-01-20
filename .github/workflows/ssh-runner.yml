@@ -45,6 +45,7 @@ jobs:
 
       - name: Setup node
         if: runner.os != 'Windows'
+        working-directory: js
         run: |
           asdf plugin add nodejs
           asdf install nodejs
@@ -52,6 +53,7 @@ jobs:
 
       - name: Setup yarn
         if: runner.os != 'Windows'
+        working-directory: js
         run: |
           asdf plugin add yarn
           asdf install yarn

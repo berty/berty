@@ -112,6 +112,7 @@ jobs:
 
       - name: Setup node
         if: needs.semantic-release.outputs.new-release-published == 'true'
+        working-directory: js
         run: |
           asdf plugin add nodejs
           asdf install nodejs

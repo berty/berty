@@ -103,6 +103,7 @@ jobs:
           echo "go_version=$(asdf current golang | xargs | cut -d ' ' -f 2)" >> $GITHUB_ENV
 
       - name: Setup ruby
+        working-directory: js
         env:
           # TMP fix for OpenSSL 1.1.1q install, see: https://github.com/openssl/openssl/issues/18733
           CFLAGS: -Wno-error=implicit-function-declaration
@@ -112,18 +113,21 @@ jobs:
           echo "ruby_version=$(asdf current ruby | xargs | cut -d ' ' -f 2)" >> $GITHUB_ENV
 
       - name: Setup xcodegen
+        working-directory: js
         run: |
           asdf plugin add xcodegen || ${{ matrix.selfhosted }}
           asdf install xcodegen
           echo "xcodegen_version=$(asdf current xcodegen | xargs | cut -d ' ' -f 2)" >> $GITHUB_ENV
 
       - name: Setup node
+        working-directory: js
         run: |
           asdf plugin add nodejs || ${{ matrix.selfhosted }}
           asdf install nodejs
           echo "node_version=$(asdf current nodejs | xargs | cut -d ' ' -f 2)" >> $GITHUB_ENV
 
       - name: Setup yarn
+        working-directory: js
         run: |
           asdf plugin add yarn || ${{ matrix.selfhosted }}
           asdf install yarn
