@@ -31,6 +31,7 @@
     "expo-symbols": "~0.2.0",
     "expo-system-ui": "~4.0.6",
     "expo-web-browser": "~14.0.1",
+    "i18next": "^24.2.1",
     "lodash": "^4.17.21",
     "long": "^5.2.4",
     "lottie-react-native": "^7.2.2",
