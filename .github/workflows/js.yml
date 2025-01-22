@@ -32,12 +32,14 @@ jobs:
         uses: asdf-vm/actions/setup@v1
 
       - name: Setup node
+        working-directory: js
         run: |
           asdf plugin add nodejs
           asdf install nodejs
           echo "node_version=$(asdf current nodejs | xargs | cut -d ' ' -f 2)" >> $GITHUB_ENV
 
       - name: Setup yarn
+        working-directory: js
         run: |
           asdf plugin add yarn
           asdf install yarn
@@ -46,14 +48,14 @@ jobs:
         uses: actions/cache@v2.1.6
         with:
           path: js/node_modules
-          key:          ${{ runner.OS }}-node-${{ env.node_version }}-${{ env.json_cache-versions_node }}-${{ hashFiles('js/yarn.lock') }}
+          key: ${{ runner.OS }}-node-${{ env.node_version }}-${{ env.json_cache-versions_node }}-${{ hashFiles('js/yarn.lock') }}
           restore-keys: ${{ runner.OS }}-node-${{ env.node_version }}-${{ env.json_cache-versions_node }}-
 
       - name: Cache web node modules
         uses: actions/cache@v2.1.6
         with:
           path: js/web/node_modules
-          key:          ${{ runner.OS }}-nodeweb-${{ env.node_version }}-${{ env.json_cache-versions_nodeweb }}-${{ hashFiles('js/web/yarn.lock') }}
+          key: ${{ runner.OS }}-nodeweb-${{ env.node_version }}-${{ env.json_cache-versions_nodeweb }}-${{ hashFiles('js/web/yarn.lock') }}
           restore-keys: ${{ runner.OS }}-nodeweb-${{ env.node_version }}-${{ env.json_cache-versions_nodeweb }}-
 
       - name: Fetch common node modules

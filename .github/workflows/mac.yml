@@ -100,12 +100,14 @@ jobs:
           echo "go_version=$(asdf current golang | xargs | cut -d ' ' -f 2)" >> $GITHUB_ENV
 
       - name: Setup node
+        working-directory: js
         run: |
           asdf plugin add nodejs || ${{ matrix.selfhosted }}
           asdf install nodejs
           echo "node_version=$(asdf current nodejs | xargs | cut -d ' ' -f 2)" >> $GITHUB_ENV
 
       - name: Setup yarn
+        working-directory: js
         run: |
           asdf plugin add yarn || ${{ matrix.selfhosted }}
           asdf install yarn
@@ -114,21 +116,21 @@ jobs:
         uses: actions/cache@v2.1.6
         with:
           path: ~/go/pkg/mod
-          key:          ${{ runner.os }}-go-${{ env.go_version }}-${{ env.json_cache-versions_go }}-${{ hashFiles('go/**/go.sum') }}
+          key: ${{ runner.os }}-go-${{ env.go_version }}-${{ env.json_cache-versions_go }}-${{ hashFiles('go/**/go.sum') }}
           restore-keys: ${{ runner.os }}-go-${{ env.go_version }}-${{ env.json_cache-versions_go }}-
 
       - name: Cache node modules
         uses: actions/cache@v2.1.6
         with:
           path: js/node_modules
-          key:          ${{ runner.OS }}-node-${{ env.node_version }}-${{ env.json_cache-versions_node }}-${{ hashFiles('js/yarn.lock') }}
+          key: ${{ runner.OS }}-node-${{ env.node_version }}-${{ env.json_cache-versions_node }}-${{ hashFiles('js/yarn.lock') }}
           restore-keys: ${{ runner.OS }}-node-${{ env.node_version }}-${{ env.json_cache-versions_node }}-
 
       - name: Cache web node modules
         uses: actions/cache@v2.1.6
         with:
           path: js/web/node_modules
-          key:          ${{ runner.OS }}-nodeweb-${{ env.node_version }}-${{ env.json_cache-versions_nodeweb }}-${{ hashFiles('js/web/yarn.lock') }}
+          key: ${{ runner.OS }}-nodeweb-${{ env.node_version }}-${{ env.json_cache-versions_nodeweb }}-${{ hashFiles('js/web/yarn.lock') }}
           restore-keys: ${{ runner.OS }}-nodeweb-${{ env.node_version }}-${{ env.json_cache-versions_nodeweb }}-
 
       - name: Build berty binary

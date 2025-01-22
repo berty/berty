@@ -8,7 +8,7 @@ require (
 	berty.tech/go-ipfs-repo-encrypted v1.3.1-0.20240722095251-c6b363b38785
 	berty.tech/go-orbit-db v1.22.2-0.20240719144258-ec7d1faaca68
 	berty.tech/ipfs-webui-packed v1.0.0-v2.11.4-1
-	berty.tech/weshnet/v2 v2.0.3
+	berty.tech/weshnet/v2 v2.0.4
 	firebase.google.com/go/v4 v4.12.0
 	fyne.io/fyne/v2 v2.5.2
 	github.com/Masterminds/semver v1.5.0
