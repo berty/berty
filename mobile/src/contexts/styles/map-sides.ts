@@ -1,12 +1,16 @@
-import Case from 'case'
-import mem from 'mem'
 import { StyleSheet } from 'react-native'
 
 import { initialScaleSize } from './constant'
 import { SizesDeclaration, ScaleSizes } from './types'
 
+const toCamelCase = (str: string) => {
+	return str
+		.toLowerCase()
+		.replace(/[_-](.)/g, (_, char) => char.toUpperCase());
+};
+
 const mapSideSize = (type: string, side: string, value: number) => ({
-	[Case.camel(`${type}_${side}`)]: value,
+	[toCamelCase(`${type}_${side}`)]: value,
 })
 
 const mapSideSizes = (decl: SizesDeclaration<number>, type: string, side: string) => ({
@@ -18,7 +22,7 @@ const mapSideSizes = (decl: SizesDeclaration<number>, type: string, side: string
 		big: mapSideSize(type, side, decl.big),
 		huge: mapSideSize(type, side, decl.huge),
 	}),
-	scale: mem((size: number) => mapSideSize(type, side, size)),
+	scale: (size: number) => mapSideSize(type, side, size),
 })
 
 export const mapSides = (decl: SizesDeclaration<number>, type: string) => ({
@@ -44,9 +48,9 @@ export const mapSizes = (
 			big: map(decl.big),
 			huge: map(decl.huge),
 		}),
-		scale: mem((radius: number) => {
+		scale: (radius: number) => {
 			return StyleSheet.create({ scale: map(radius * scaleSize) }).scale
-		}),
+		},
 	}
 }
 

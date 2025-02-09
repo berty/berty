@@ -1,4 +1,3 @@
-import { grpc } from '@improbable-eng/grpc-web'
 import { Buffer } from 'buffer'
 import { Platform } from 'react-native'
 
@@ -17,24 +16,6 @@ const createAccountClient = () => {
 
 	const isRunningStorybook = __DEV__ && process.env.STORYBOOK
 	if (isRunningStorybook) {
-		return createServiceClient(
-			beapi.account.AccountService,
-			rpcMock(new AccountServiceMock()),
-			middleware,
-		)
-	}
-
-	if (Platform.OS === 'web') {
-		if (window.location.hash) {
-			const defaultMAddr =
-				Platform.OS === 'web' && convertMAddr([window.location.hash.substring(1) || ''])
-			const opts: grpc.ClientRpcOptions = {
-				transport: grpc.CrossBrowserHttpTransport({ withCredentials: false }),
-				host: defaultMAddr || '',
-			}
-			return createServiceClient(beapi.account.AccountService, rpcWeb(opts), middleware)
-		}
-
 		return createServiceClient(
 			beapi.account.AccountService,
 			rpcMock(new AccountServiceMock()),
