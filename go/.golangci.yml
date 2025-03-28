@@ -1,69 +1,74 @@
+version: "2"
 run:
-  deadline: 1m
   tests: false
-issues:
-  exclude-files:
-    - ".*\\.pb\\.go$"
-    - ".*\\.pb\\.gw\\.go$"
-    - ".*\\.gen\\.go$"
-    - "_test\\.go$"
-    - "testing.go$"
-    - ".*doc\\.go$"
-
-linters-settings:
-  golint:
-    min-confidence: 0
-  maligned:
-    suggest-new: true
-  goconst:
-    min-len: 5
-    min-occurrences: 4
-  misspell:
-    locale: US
-  gci:
-    sections:
-      - standard
-      - default
-      - prefix(berty.tech)
-      # - prefix(github.com/libp2p)
-      # - prefix(github.com/ipfs)
-
 linters:
-  disable-all: true
+  default: none
   enable:
     - asciicheck
     - bodyclose
-    #- depguard
+    - copyloopvar
     - dogsled
     - errcheck
-    #- exhaustive    # nice to have
-    - exportloopref
-    - gci
     - gochecknoinits
-    #- gocognit      # nice to have
-    - goconst
     - goconst
     - gocritic
-    #- godot         # nice to have
-    #- goerr113      # nice to have
-    - gofmt
-    - gofumpt
-    - goimports
-    - revive
-    #- gomnd         # nice to have
     - gomodguard
     - gosec
-    - gosimple
     - govet
     - ineffassign
     - misspell
     - nakedret
     - noctx
-    #- nolintlint
-    - exportloopref
+    - revive
     - staticcheck
-    - typecheck
     - unconvert
     - unparam
     - unused
     - whitespace
+  settings:
+    goconst:
+      min-len: 5
+      min-occurrences: 4
+    misspell:
+      locale: US
+  exclusions:
+    generated: lax
+    presets:
+      - comments
+      - common-false-positives
+      - legacy
+      - std-error-handling
+    paths:
+      - .*\.pb\.go$
+      - .*\.pb\.gw\.go$
+      - .*\.gen\.go$
+      - _test\.go$
+      - testing.go$
+      - .*doc\.go$
+      - third_party$
+      - builtin$
+      - examples$
+formatters:
+  enable:
+    - gci
+    - gofmt
+    - gofumpt
+    - goimports
+  settings:
+    gci:
+      sections:
+        - standard
+        - default
+        - prefix(berty.tech)
+  exclusions:
+    generated: lax
+    paths:
+      - .*\.pb\.go$
+      - .*\.pb\.gw\.go$
+      - .*\.gen\.go$
+      - _test\.go$
+      - testing.go$
+      - .*doc\.go$
+      - third_party$
+      - builtin$
+      - examples$

@@ -91,7 +91,7 @@ jobs:
 
       - name: Setup asdf
         if: ${{ !matrix.selfhosted }}
-        uses: asdf-vm/actions/setup@v1
+        uses: asdf-vm/actions/setup@v3.0.2
 
       - name: Setup go
         run: |
@@ -113,21 +113,21 @@ jobs:
           asdf install yarn
 
       - name: Cache go modules
-        uses: actions/cache@v2.1.6
+        uses: actions/cache@v4
         with:
           path: ~/go/pkg/mod
           key: ${{ runner.os }}-go-${{ env.go_version }}-${{ env.json_cache-versions_go }}-${{ hashFiles('go/**/go.sum') }}
           restore-keys: ${{ runner.os }}-go-${{ env.go_version }}-${{ env.json_cache-versions_go }}-
 
       - name: Cache node modules
-        uses: actions/cache@v2.1.6
+        uses: actions/cache@v4
         with:
           path: js/node_modules
           key: ${{ runner.OS }}-node-${{ env.node_version }}-${{ env.json_cache-versions_node }}-${{ hashFiles('js/yarn.lock') }}
           restore-keys: ${{ runner.OS }}-node-${{ env.node_version }}-${{ env.json_cache-versions_node }}-
 
       - name: Cache web node modules
-        uses: actions/cache@v2.1.6
+        uses: actions/cache@v4
         with:
           path: js/web/node_modules
           key: ${{ runner.OS }}-nodeweb-${{ env.node_version }}-${{ env.json_cache-versions_nodeweb }}-${{ hashFiles('js/web/yarn.lock') }}
@@ -165,7 +165,7 @@ jobs:
         run: make electron.mac
 
       - name: Upload the Archive
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           path: js/web/dist/Berty.dmg
           name: berty-yolo-${{github.sha}}.unsigned-dmg

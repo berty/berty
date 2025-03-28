@@ -5,8 +5,7 @@ import (
 	"strconv"
 	"strings"
 
-	//nolint:blank-imports // We need this to load the "sqlite3" driver.
-	_ "github.com/mutecomm/go-sqlcipher/v4"
+	_ "github.com/mutecomm/go-sqlcipher/v4" // We need this to load the "sqlite3" driver.
 	"gorm.io/gorm"
 	"gorm.io/gorm/callbacks"
 	"gorm.io/gorm/clause"

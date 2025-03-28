@@ -11,22 +11,22 @@ on:
     branches:
       - master
     paths:
-      - 'go/**'
-      - '!go/**.md'
-      - 'go.*'
-      - '**.go'
-      - 'js/**'
-      - '!js/packages/i18n/locale/*/*.json'
-      - '.github/workflows/integration.yml'
+      - "go/**"
+      - "!go/**.md"
+      - "go.*"
+      - "**.go"
+      - "js/**"
+      - "!js/packages/i18n/locale/*/*.json"
+      - ".github/workflows/integration.yml"
   pull_request:
     paths:
-      - 'go/**'
-      - '!go/**.md'
-      - 'go.*'
-      - '**.go'
-      - 'js/**'
-      - '!js/packages/i18n/locale/*/*.json'
-      - '.github/workflows/integration.yml'
+      - "go/**"
+      - "!go/**.md"
+      - "go.*"
+      - "**.go"
+      - "js/**"
+      - "!js/packages/i18n/locale/*/*.json"
+      - ".github/workflows/integration.yml"
 
 # FIXME:
 # * test on production periodically with env=production
@@ -53,7 +53,7 @@ jobs:
           filename: .github/workflows/utils/variables.json
 
       - name: Setup asdf
-        uses: asdf-vm/actions/setup@v1
+        uses: asdf-vm/actions/setup@v3.0.2
 
       - name: Setup go
         run: |
@@ -62,10 +62,10 @@ jobs:
           echo "go_version=$(asdf current golang | xargs | cut -d ' ' -f 2)" >> $GITHUB_ENV
 
       - name: Cache Go modules
-        uses: actions/cache@v2.1.6
+        uses: actions/cache@v4
         with:
           path: ~/go/pkg/mod
-          key:          ${{ runner.os }}-go-${{ env.go_version }}-${{ env.json_cache-versions_go }}-${{ hashFiles('**/go.sum') }}
+          key: ${{ runner.os }}-go-${{ env.go_version }}-${{ env.json_cache-versions_go }}-${{ hashFiles('**/go.sum') }}
           restore-keys: ${{ runner.os }}-go-${{ env.go_version }}-${{ env.json_cache-versions_go }}-
 
       - name: Avoid triggering make generate
@@ -76,8 +76,7 @@ jobs:
 
       - name: Compile the integration binary
         working-directory: go
-        run:
-          go install ./cmd/berty-integration
+        run: go install ./cmd/berty-integration
           asdf reshim golang # See: https://github.com/kennyp/asdf-golang/issues/18
 
       - name: Run integration test suite
@@ -88,7 +87,7 @@ jobs:
             -integration.benchmark > benchmark_result.json
 
       - name: Download previous benchmark data
-        uses: actions/cache@v2.1.6
+        uses: actions/cache@v4
         with:
           path: ./cache
           key: ${{runner.os}}-integration-benchmark
@@ -99,7 +98,7 @@ jobs:
           DISCORD_WEBHOOK: ${{ secrets.DISCORD_PROD_WEBHOOK }}
         uses: Ilshidur/action-discord@0.3.2
         with:
-          args: 'Integration failed, see ${{ steps.url.outputs.runUrl }}'
+          args: "Integration failed, see ${{ steps.url.outputs.runUrl }}"
 
   integration-local:
     if: github.event_name == 'push' || github.event_name == 'pull_request'
@@ -146,7 +145,7 @@ jobs:
           filename: .github/workflows/utils/variables.json
 
       - name: Setup asdf
-        uses: asdf-vm/actions/setup@v1
+        uses: asdf-vm/actions/setup@v3.0.2
 
       - name: Setup go
         run: |
@@ -155,10 +154,10 @@ jobs:
           echo "go_version=$(asdf current golang | xargs | cut -d ' ' -f 2)" >> $GITHUB_ENV
 
       - name: Cache Go modules
-        uses: actions/cache@v2.1.6
+        uses: actions/cache@v4
         with:
           path: ~/go/pkg/mod
-          key:          ${{ runner.os }}-go-${{ env.go_version }}-${{ env.json_cache-versions_go }}-${{ hashFiles('**/go.sum') }}
+          key: ${{ runner.os }}-go-${{ env.go_version }}-${{ env.json_cache-versions_go }}-${{ hashFiles('**/go.sum') }}
           restore-keys: ${{ runner.os }}-go-${{ env.go_version }}-${{ env.json_cache-versions_go }}-
 
       - name: Avoid triggering make generate
@@ -182,4 +181,4 @@ jobs:
           DISCORD_WEBHOOK: ${{ secrets.DISCORD_PROD_WEBHOOK }}
         uses: Ilshidur/action-discord@0.3.2
         with:
-          args: 'Doctor failed, see ${{ steps.url.outputs.runUrl }}'
+          args: "Doctor failed, see ${{ steps.url.outputs.runUrl }}"

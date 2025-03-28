@@ -163,11 +163,7 @@ func getDBTablesSchemas(db *gorm.DB) (map[string][]*ColumnInfo, error) {
 
 		defer func() { _ = rows.Close() }()
 
-		for {
-			if !rows.Next() {
-				break
-			}
-
+		for rows.Next() {
 			columnInfo := ColumnInfo{}
 
 			err = rows.Scan(

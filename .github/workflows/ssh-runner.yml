@@ -34,7 +34,7 @@ jobs:
           filename: .github/workflows/utils/variables.json
 
       - name: Setup asdf
-        uses: asdf-vm/actions/setup@v1
+        uses: asdf-vm/actions/setup@v3.0.2
 
       - name: Setup go
         if: runner.os != 'Windows'
@@ -60,7 +60,7 @@ jobs:
 
       - name: Cache go modules
         if: github.event.inputs.mod == 'true' && runner.os != 'Windows'
-        uses: actions/cache@v2.1.6
+        uses: actions/cache@v4
         with:
           path: ~/go/pkg/mod
           key: ${{ runner.os }}-go-${{ env.go_version }}-${{ env.json_cache-versions_go }}-${{ hashFiles('go/**/go.sum') }}
@@ -68,7 +68,7 @@ jobs:
 
       - name: Cache node modules
         if: github.event.inputs.mod == 'true' && runner.os != 'Windows'
-        uses: actions/cache@v2.1.6
+        uses: actions/cache@v4
         with:
           path: js/node_modules
           key: ${{ runner.OS }}-node-${{ env.node_version }}-${{ env.json_cache-versions_node }}-${{ hashFiles('js/yarn.lock') }}
