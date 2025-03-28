@@ -65,6 +65,7 @@ func verifyRunningLeakDetection(t *testing.T) {
 		goleak.IgnoreTopFunction("github.com/quic-go/quic-go.(*packetHandlerMap).runCloseQueue"),                          // managed by ipfs
 		goleak.IgnoreTopFunction("github.com/quic-go/quic-go.(*Transport).runSendQueue"),
 		goleak.IgnoreTopFunction("github.com/ipfs/boxo/bootstrap.startSavePeersAsTemporaryBootstrapProc.func2"),
+		goleak.IgnoreTopFunction("github.com/ipfs/boxo/bootstrap.peersConnect.func1"),
 		goleak.IgnoreTopFunction("net/http.(*persistConn).writeLoop"),                                                        // managed by ipfs
 		goleak.IgnoreTopFunction("github.com/libp2p/go-libp2p/p2p/transport/quic.(*reuse).gc"),                               // quic-go should be manager by libp2p
 		goleak.IgnoreTopFunction("github.com/libp2p/go-libp2p/p2p/host/basic.(*BasicHost).background"),                       // sometimes happening on CI, need more investigation
@@ -89,6 +90,8 @@ func verifyRunningLeakDetection(t *testing.T) {
 		goleak.IgnoreTopFunction("net.(*netFD).connect.func2"),                                  // FIXME - many libraries used this code
 		goleak.IgnoreTopFunction("sync.runtime_Semacquire"),                                     // the closing routine has big timeout
 		goleak.IgnoreTopFunction("sync.runtime_SemacquireMutex"),                                // sometimes happening on CI, need more investigation
+		goleak.IgnoreTopFunction("net.(*Resolver).lookupIPAddr"),
+		goleak.IgnoreTopFunction("github.com/libp2p/go-libp2p-kad-dht.(*query).run"),
 	)
 }
 

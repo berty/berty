@@ -347,7 +347,7 @@ storybook: node_modules
 .PHONY: daemon.start
 daemon.start:
 	cd ../go && $(MAKE) install
-	`$(GO) env GOPATH`/bin/berty $(BERTY_OPTS) daemon -node.listeners=/ip4/$(BERTY_DAEMON_HOST)/tcp/$(BERTY_DAEMON_PORT)/grpcws $(BERTY_DAEMON_STORE) $(BERTY_DAEMON_OPTS)
+	`$(GO) env GOBIN`/berty $(BERTY_OPTS) daemon -node.listeners=/ip4/$(BERTY_DAEMON_HOST)/tcp/$(BERTY_DAEMON_PORT)/grpcws $(BERTY_DAEMON_STORE) $(BERTY_DAEMON_OPTS)
 
 .PHONY: daemon.start.docker
 daemon.start.docker:
@@ -452,7 +452,7 @@ ios/Frameworks/Bertybridge.xcframework: $(bridge_src)
 
 # use `nowatchdog` tags, see https://github.com/libp2p/go-libp2p-connmgr/issues/98
 	cd .. && \
-		PATH="$(PATH):`go env GOPATH`/bin" \
+		PATH="$(PATH):`go env GOBIN`" \
 		CGO_CPPFLAGS=-DHAVE_GETHOSTUUID=0 \
 		$(GO) run golang.org/x/mobile/cmd/gomobile bind \
 			-o js/$@ \
@@ -474,7 +474,7 @@ ios/Frameworks/Bertypush.xcframework: $(bridge_src)
 
 # use `nowatchdog` tags, see https://github.com/libp2p/go-libp2p-connmgr/issues/98
 	cd .. && \
-		PATH="$(PATH):`go env GOPATH`/bin" \
+		PATH="$(PATH):`go env GOBIN`" \
 		CGO_CPPFLAGS=-DHAVE_GETHOSTUUID=0 \
 		$(GO) run golang.org/x/mobile/cmd/gomobile bind \
 			-o js/$@ \
@@ -548,7 +548,7 @@ electron.mac: web/node_modules
 	cd ../go && $(MAKE) install
 	rm -rf ./web/resources/mac/berty
 	mkdir -p ./web/resources/mac/
-	ln `$(GO) env GOPATH`/bin/berty ./web/resources/mac/berty
+	ln `$(GO) env GOBIN`/berty ./web/resources/mac/berty
 	cd ./web && yarn install
 	cd ./web && yarn build
 	cd ./web && yarn run dist:mac -- -c.buildVersion=$(shell echo -n $(shell git rev-list HEAD | wc -l)) -c.extraMetadata.version=$(VERSION)
