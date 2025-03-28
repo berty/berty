@@ -10,7 +10,7 @@ import (
 
 type PromiseBlock interface {
 	CallResolve(reply string)
-	CallReject(error error)
+	CallReject(err error)
 }
 
 type ServiceClient interface {

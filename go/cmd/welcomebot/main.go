@@ -303,13 +303,14 @@ func (bot *Bot) handleContactUpdated(ctx context.Context, _ *messengertypes.Even
 	// auto-accept contact requests
 	contact := payload.(*messengertypes.StreamEvent_ContactUpdated).Contact
 
-	if contact.State == messengertypes.Contact_IncomingRequest {
+	switch contact.State {
+	case messengertypes.Contact_IncomingRequest:
 		req := &messengertypes.ContactAccept_Request{PublicKey: contact.PublicKey}
 		_, err := bot.client.ContactAccept(ctx, req)
 		if err != nil {
 			return fmt.Errorf("contact accept failed: %w", err)
 		}
-	} else if contact.State == messengertypes.Contact_Accepted {
+	case messengertypes.Contact_Accepted:
 		// When contact was established, send message and a group invitation
 		time.Sleep(2 * time.Second)
 		bot.storeMutex.Lock()

@@ -183,10 +183,10 @@ func GetAccountDir(rootDir, accountID string) string {
 }
 
 func CreateDataDir(dir string) error {
-	switch {
-	case dir == "":
+	switch dir {
+	case "":
 		return errcode.ErrCode_TODO.Wrap(fmt.Errorf("missing data dir argument"))
-	case dir == InMemoryDir:
+	case InMemoryDir:
 		return nil
 	}
 
