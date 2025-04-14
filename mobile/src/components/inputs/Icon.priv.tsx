@@ -1,4 +1,4 @@
-import { Icon } from '@ui-kitten/components'
+// import { Icon } from '@ui-kitten/components'
 import React from 'react'
 import { View } from 'react-native'
 
@@ -27,7 +27,8 @@ export const IconPriv: React.FC<IconPrivProps> = props => {
 
 	return (
 		<View style={[row.center]}>
-			<Icon name={props.iconName} fill={getIconColor()} width={20} height={20} />
+			{/* <Icon name={props.iconName} fill={getIconColor()} width={20} height={20} /> */}
+			<></>
 		</View>
 	)
 }

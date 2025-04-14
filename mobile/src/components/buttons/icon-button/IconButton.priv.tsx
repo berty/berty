@@ -1,4 +1,4 @@
-import { Icon } from '@ui-kitten/components'
+// import { Icon } from '@ui-kitten/components'
 import React from 'react'
 
 import { useThemeColor } from '@berty/hooks'
@@ -25,5 +25,6 @@ export const IconButtonPriv: React.FC<
 		}
 	}
 
-	return <Icon fill={getColor()} name={props?.name ?? 'checkmark-outline'} width={25} height={25} />
+	// return <Icon fill={getColor()} name={props?.name ?? 'checkmark-outline'} width={25} height={25} />
+	return <></>
 }
