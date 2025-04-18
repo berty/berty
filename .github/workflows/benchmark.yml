@@ -25,13 +25,15 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Setup asdf
-        uses: asdf-vm/actions/setup@v1
+        uses: asdf-vm/actions/setup@9cd779f40fe38688dd19505ccbc4eaaf018b44e7
+        with:
+          asdf_version: 0.16.7
 
       - name: Setup Graphviz
         uses: ts-graphviz/setup-graphviz@v1
 
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           fetch-depth: 50 # this is to make sure we obtain the target base commit#
 
@@ -40,15 +42,15 @@ jobs:
           asdf plugin add golang
           asdf install golang
           asdf reshim golang
-          echo "go_version=$(asdf current golang | xargs | cut -d ' ' -f 2)" >> $GITHUB_ENV
+          echo "go_version=$(asdf current golang | xargs | cut -d ' ' -f 6)" >> $GITHUB_ENV
           go install golang.org/x/perf/cmd/benchstat@latest
           asdf reshim golang
 
       - name: Cache go modules
-        uses: actions/cache@v2.1.6
+        uses: actions/cache@v4
         with:
           path: ~/go/pkg/mod
-          key:          ${{ runner.os }}-go-${{ env.go_version }}-${{ env.json_cache-versions_go }}-${{ hashFiles('**/go.sum') }}
+          key: ${{ runner.os }}-go-${{ env.go_version }}-${{ env.json_cache-versions_go }}-${{ hashFiles('**/go.sum') }}
           restore-keys: ${{ runner.os }}-go-${{ env.go_version }}-${{ env.json_cache-versions_go }}-
 
       - name: Compile the project on Unix-like operating systems
@@ -74,16 +76,16 @@ jobs:
         if: github.event_name == 'pull_request'
         run: |
           asdf install golang
-          echo "go_version=$(asdf current golang | xargs | cut -d ' ' -f 2)" >> $GITHUB_ENV
+          echo "go_version=$(asdf current golang | xargs | cut -d ' ' -f 6)" >> $GITHUB_ENV
           go install golang.org/x/perf/cmd/benchstat@latest
           asdf reshim golang
 
       - name: Cache go modules (master)
-        uses: actions/cache@v2.1.6
+        uses: actions/cache@v4
         if: github.event_name == 'pull_request'
         with:
           path: ~/go/pkg/mod
-          key:          ${{ runner.os }}-go-${{ env.go_version }}-${{ env.json_cache-versions_go }}-${{ hashFiles('**/go.sum') }}
+          key: ${{ runner.os }}-go-${{ env.go_version }}-${{ env.json_cache-versions_go }}-${{ hashFiles('**/go.sum') }}
           restore-keys: ${{ runner.os }}-go-${{ env.go_version }}-${{ env.json_cache-versions_go }}-
 
       - name: Compile the project on Unix-like operating systems (master)
@@ -174,7 +176,6 @@ jobs:
           </ul>
           EOF
 
-
       - name: Generate pprof html files (PR)
         if: github.event_name == 'pull_request'
         id: pprof-html-files-pr
@@ -217,14 +218,14 @@ jobs:
       # upload arifacts
       #
       - name: upload artifact (master)
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         if: github.ref == 'refs/heads/master'
         with:
           name: "bench-master"
           path: go/pprof_html
 
       - name: upload artifact (PR)
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         if: github.event_name == 'pull_request'
         with:
           name: "bench-${{ github.event.pull_request.number  }}"

@@ -21,7 +21,7 @@ jobs:
     name: Build, lint and test JS
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Load variables from file
         uses: antifree/json-to-variables@v1.0.1
@@ -29,14 +29,16 @@ jobs:
           filename: .github/workflows/utils/variables.json
 
       - name: Setup asdf
-        uses: asdf-vm/actions/setup@v1
+        uses: asdf-vm/actions/setup@9cd779f40fe38688dd19505ccbc4eaaf018b44e7
+        with:
+          asdf_version: 0.16.7
 
       - name: Setup node
         working-directory: js
         run: |
           asdf plugin add nodejs
           asdf install nodejs
-          echo "node_version=$(asdf current nodejs | xargs | cut -d ' ' -f 2)" >> $GITHUB_ENV
+          echo "node_version=$(asdf current nodejs | xargs | cut -d ' ' -f 6)" >> $GITHUB_ENV
 
       - name: Setup yarn
         working-directory: js
@@ -45,14 +47,14 @@ jobs:
           asdf install yarn
 
       - name: Cache node modules
-        uses: actions/cache@v2.1.6
+        uses: actions/cache@v4
         with:
           path: js/node_modules
           key: ${{ runner.OS }}-node-${{ env.node_version }}-${{ env.json_cache-versions_node }}-${{ hashFiles('js/yarn.lock') }}
           restore-keys: ${{ runner.OS }}-node-${{ env.node_version }}-${{ env.json_cache-versions_node }}-
 
       - name: Cache web node modules
-        uses: actions/cache@v2.1.6
+        uses: actions/cache@v4
         with:
           path: js/web/node_modules
           key: ${{ runner.OS }}-nodeweb-${{ env.node_version }}-${{ env.json_cache-versions_nodeweb }}-${{ hashFiles('js/web/yarn.lock') }}

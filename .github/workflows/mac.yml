@@ -34,7 +34,7 @@ jobs:
     outputs:
       matrix: ${{ steps.set-matrix.outputs.matrix }}
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           fetch-depth: 1
 
@@ -72,7 +72,7 @@ jobs:
           done
 
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Post-checkout cleanup
         if: ${{ matrix.selfhosted }}
@@ -91,20 +91,22 @@ jobs:
 
       - name: Setup asdf
         if: ${{ !matrix.selfhosted }}
-        uses: asdf-vm/actions/setup@v1
+        uses: asdf-vm/actions/setup@9cd779f40fe38688dd19505ccbc4eaaf018b44e7
+        with:
+          asdf_version: 0.16.7
 
       - name: Setup go
         run: |
           asdf plugin add golang || ${{ matrix.selfhosted }}
           asdf install golang
-          echo "go_version=$(asdf current golang | xargs | cut -d ' ' -f 2)" >> $GITHUB_ENV
+          echo "go_version=$(asdf current golang | xargs | cut -d ' ' -f 6)" >> $GITHUB_ENV
 
       - name: Setup node
         working-directory: js
         run: |
           asdf plugin add nodejs || ${{ matrix.selfhosted }}
           asdf install nodejs
-          echo "node_version=$(asdf current nodejs | xargs | cut -d ' ' -f 2)" >> $GITHUB_ENV
+          echo "node_version=$(asdf current nodejs | xargs | cut -d ' ' -f 6)" >> $GITHUB_ENV
 
       - name: Setup yarn
         working-directory: js
@@ -113,21 +115,21 @@ jobs:
           asdf install yarn
 
       - name: Cache go modules
-        uses: actions/cache@v2.1.6
+        uses: actions/cache@v4
         with:
           path: ~/go/pkg/mod
           key: ${{ runner.os }}-go-${{ env.go_version }}-${{ env.json_cache-versions_go }}-${{ hashFiles('go/**/go.sum') }}
           restore-keys: ${{ runner.os }}-go-${{ env.go_version }}-${{ env.json_cache-versions_go }}-
 
       - name: Cache node modules
-        uses: actions/cache@v2.1.6
+        uses: actions/cache@v4
         with:
           path: js/node_modules
           key: ${{ runner.OS }}-node-${{ env.node_version }}-${{ env.json_cache-versions_node }}-${{ hashFiles('js/yarn.lock') }}
           restore-keys: ${{ runner.OS }}-node-${{ env.node_version }}-${{ env.json_cache-versions_node }}-
 
       - name: Cache web node modules
-        uses: actions/cache@v2.1.6
+        uses: actions/cache@v4
         with:
           path: js/web/node_modules
           key: ${{ runner.OS }}-nodeweb-${{ env.node_version }}-${{ env.json_cache-versions_nodeweb }}-${{ hashFiles('js/web/yarn.lock') }}
@@ -165,7 +167,7 @@ jobs:
         run: make electron.mac
 
       - name: Upload the Archive
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           path: js/web/dist/Berty.dmg
           name: berty-yolo-${{github.sha}}.unsigned-dmg

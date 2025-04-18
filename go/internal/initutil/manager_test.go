@@ -65,6 +65,7 @@ func verifyRunningLeakDetection(t *testing.T) {
 		goleak.IgnoreTopFunction("github.com/quic-go/quic-go.(*packetHandlerMap).runCloseQueue"),                          // managed by ipfs
 		goleak.IgnoreTopFunction("github.com/quic-go/quic-go.(*Transport).runSendQueue"),
 		goleak.IgnoreTopFunction("github.com/ipfs/boxo/bootstrap.startSavePeersAsTemporaryBootstrapProc.func2"),
+		goleak.IgnoreTopFunction("github.com/ipfs/boxo/bootstrap.peersConnect.func1"),
 		goleak.IgnoreTopFunction("net/http.(*persistConn).writeLoop"),                                                        // managed by ipfs
 		goleak.IgnoreTopFunction("github.com/libp2p/go-libp2p/p2p/transport/quic.(*reuse).gc"),                               // quic-go should be manager by libp2p
 		goleak.IgnoreTopFunction("github.com/libp2p/go-libp2p/p2p/host/basic.(*BasicHost).background"),                       // sometimes happening on CI, need more investigation

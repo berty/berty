@@ -19,10 +19,10 @@ import (
 	"berty.tech/weshnet/v2/pkg/cryptoutil"
 )
 
-func inMinMaxDefault(value, min, max, def int64) int64 {
-	if value < min {
+func inMinMaxDefault(value, minimum, maximum, def int64) int64 {
+	if value < minimum {
 		return def
-	} else if value > max {
+	} else if value > maximum {
 		return def
 	}
 

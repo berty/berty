@@ -298,7 +298,7 @@ func (m *Manager) getGRPCClientConn() (*grpc.ClientConn, error) {
 		m.Node.GRPC.clientConn = cc
 		go func() {
 			err := m.Node.GRPC.bufServer.Serve(bl)
-			if err != nil && !(err == grpc.ErrServerStopped || err.Error() == "closed") {
+			if err != nil && err != grpc.ErrServerStopped && err.Error() != "closed" {
 				panic(err)
 			}
 		}()

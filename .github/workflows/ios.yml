@@ -30,7 +30,7 @@ jobs:
       matrix: ${{ steps.set-matrix.outputs.matrix }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           fetch-depth: 1
 
@@ -72,7 +72,7 @@ jobs:
           done
 
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           fetch-depth: 1
           persist-credentials: false
@@ -94,13 +94,15 @@ jobs:
 
       - name: Setup asdf
         if: ${{ !matrix.selfhosted }}
-        uses: asdf-vm/actions/setup@v1
+        uses: asdf-vm/actions/setup@9cd779f40fe38688dd19505ccbc4eaaf018b44e7
+        with:
+          asdf_version: 0.16.7
 
       - name: Setup go
         run: |
           asdf plugin add golang || ${{ matrix.selfhosted }}
           asdf install golang
-          echo "go_version=$(asdf current golang | xargs | cut -d ' ' -f 2)" >> $GITHUB_ENV
+          echo "go_version=$(asdf current golang | xargs | cut -d ' ' -f 6)" >> $GITHUB_ENV
 
       - name: Setup ruby
         working-directory: js
@@ -110,21 +112,21 @@ jobs:
         run: |
           asdf plugin add ruby || ${{ matrix.selfhosted }}
           asdf install ruby
-          echo "ruby_version=$(asdf current ruby | xargs | cut -d ' ' -f 2)" >> $GITHUB_ENV
+          echo "ruby_version=$(asdf current ruby | xargs | cut -d ' ' -f 6)" >> $GITHUB_ENV
 
       - name: Setup xcodegen
         working-directory: js
         run: |
           asdf plugin add xcodegen || ${{ matrix.selfhosted }}
           asdf install xcodegen
-          echo "xcodegen_version=$(asdf current xcodegen | xargs | cut -d ' ' -f 2)" >> $GITHUB_ENV
+          echo "xcodegen_version=$(asdf current xcodegen | xargs | cut -d ' ' -f 6)" >> $GITHUB_ENV
 
       - name: Setup node
         working-directory: js
         run: |
           asdf plugin add nodejs || ${{ matrix.selfhosted }}
           asdf install nodejs
-          echo "node_version=$(asdf current nodejs | xargs | cut -d ' ' -f 2)" >> $GITHUB_ENV
+          echo "node_version=$(asdf current nodejs | xargs | cut -d ' ' -f 6)" >> $GITHUB_ENV
 
       - name: Setup yarn
         working-directory: js
@@ -151,21 +153,21 @@ jobs:
           fi
 
       - name: Cache go modules
-        uses: actions/cache@v2.1.6
+        uses: actions/cache@v4
         with:
           path: ~/go/pkg/mod
           key: ${{ runner.os }}-go-${{ env.go_version }}-${{ env.json_cache-versions_go }}-${{ hashFiles('go/**/go.sum') }}
           restore-keys: ${{ runner.os }}-go-${{ env.go_version }}-${{ env.json_cache-versions_go }}-
 
       - name: Cache ruby modules
-        uses: actions/cache@v2.1.6
+        uses: actions/cache@v4
         with:
           path: js/ios/vendor/bundle
           key: ${{ runner.os }}-ruby-${{ env.ruby_version }}-${{ env.json_cache-versions_ruby }}-${{ hashFiles('js/ios/Gemfile*') }}
           restore-keys: ${{ runner.os }}-ruby-${{ env.ruby_version }}-${{ env.json_cache-versions_ruby }}-
 
       - name: Cache node modules
-        uses: actions/cache@v2.1.6
+        uses: actions/cache@v4
         with:
           path: js/node_modules
           key: ${{ runner.OS }}-node-${{ env.node_version }}-${{ env.json_cache-versions_node }}-${{ hashFiles('js/yarn.lock') }}
@@ -192,7 +194,7 @@ jobs:
           key: ios-gomobile-push-${{ env.go_version }}-${{ env.json_cache-versions_pushframework }}
 
       - name: Cache XCodeGen and XCode project
-        uses: actions/cache@v2.1.6
+        uses: actions/cache@v4
         with:
           path: |
             js/ios/Berty.xcodeproj
@@ -201,7 +203,7 @@ jobs:
           restore-keys: ios-xcodeproject-${{ env.xcodegen_version }}-${{ env.json_cache-versions_xcodeproject }}-
 
       - name: Cache Pods and XCode workspace
-        uses: actions/cache@v2.1.6
+        uses: actions/cache@v4
         with:
           path: |
             js/ios/Berty.xcworkspace

@@ -27,6 +27,8 @@ import (
 	_ "github.com/grpc-ecosystem/grpc-gateway/protoc-gen-grpc-gateway"
 	// required by protoc
 	_ "github.com/grpc-ecosystem/grpc-gateway/protoc-gen-swagger"
+	// required by protoc
+	_ "github.com/srikrsna/protoc-gen-gotag"
 	// keep switching between disappearing and indirect
 	_ "github.com/kr/pretty"
 	// required by Makefile

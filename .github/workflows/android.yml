@@ -28,7 +28,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
           persist-credentials: false
@@ -39,20 +39,22 @@ jobs:
           filename: .github/workflows/utils/variables.json
 
       - name: Setup asdf
-        uses: asdf-vm/actions/setup@v1
+        uses: asdf-vm/actions/setup@9cd779f40fe38688dd19505ccbc4eaaf018b44e7
+        with:
+          asdf_version: 0.16.7
 
       - name: Setup go
         run: |
           asdf plugin add golang
           asdf install golang
-          echo "go_version=$(asdf current golang | xargs | cut -d ' ' -f 2)" >> $GITHUB_ENV
+          echo "go_version=$(asdf current golang | xargs | cut -d ' ' -f 6)" >> $GITHUB_ENV
 
       - name: Setup node
         working-directory: js
         run: |
           asdf plugin add nodejs
           asdf install nodejs
-          echo "node_version=$(asdf current nodejs | xargs | cut -d ' ' -f 2)" >> $GITHUB_ENV
+          echo "node_version=$(asdf current nodejs | xargs | cut -d ' ' -f 6)" >> $GITHUB_ENV
 
       - name: Setup yarn
         working-directory: js
@@ -67,14 +69,14 @@ jobs:
           asdf install java
 
       - name: Cache go modules
-        uses: actions/cache@v2.1.6
+        uses: actions/cache@v4
         with:
           path: ~/go/pkg/mod
           key: ${{ runner.os }}-go-${{ env.go_version }}-${{ env.json_cache-versions_go }}-${{ hashFiles('go/**/go.sum') }}
           restore-keys: ${{ runner.os }}-go-${{ env.go_version }}-${{ env.json_cache-versions_go }}-
 
       - name: Cache node modules
-        uses: actions/cache@v2.1.6
+        uses: actions/cache@v4
         with:
           path: js/node_modules
           key: ${{ runner.OS }}-node-${{ env.node_version }}-${{ env.json_cache-versions_node }}-${{ hashFiles('js/yarn.lock') }}
@@ -117,7 +119,7 @@ jobs:
           ################################################
 
       - name: Upload the APK
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           path: ${{ github.workspace }}/universal.apk
           name: berty-universal-${{github.sha}}.apk

@@ -25,15 +25,18 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Setup asdf
-        uses: asdf-vm/actions/setup@v1
+        uses: asdf-vm/actions/setup@9cd779f40fe38688dd19505ccbc4eaaf018b44e7
+        with:
+          asdf_version: 0.16.7
 
       - name: Setup golang
         run: |
           asdf plugin add golang
           asdf install golang
+          . ~/.asdf/plugins/golang/set-env.bash
 
       - name: Setup golangci-lint
         run: |
@@ -58,7 +61,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Load variables from file
         uses: antifree/json-to-variables@v1.0.1
@@ -66,19 +69,21 @@ jobs:
           filename: .github/workflows/utils/variables.json
 
       - name: Setup asdf
-        uses: asdf-vm/actions/setup@v1
+        uses: asdf-vm/actions/setup@9cd779f40fe38688dd19505ccbc4eaaf018b44e7
+        with:
+          asdf_version: 0.16.7
 
       - name: Setup go
         run: |
           asdf plugin add golang
           asdf install golang
-          echo "go_version=$(asdf current golang | xargs | cut -d ' ' -f 2)" >> $GITHUB_ENV
+          echo "go_version=$(asdf current golang | xargs | cut -d ' ' -f 6)" >> $GITHUB_ENV
 
       - name: Cache go modules
-        uses: actions/cache@v2.1.6
+        uses: actions/cache@v4
         with:
           path: ~/go/pkg/mod
-          key:          ${{ runner.os }}-go-${{ env.go_version }}-${{ env.json_cache-versions_go }}-${{ hashFiles('**/go.sum') }}
+          key: ${{ runner.os }}-go-${{ env.go_version }}-${{ env.json_cache-versions_go }}-${{ hashFiles('**/go.sum') }}
           restore-keys: ${{ runner.os }}-go-${{ env.go_version }}-${{ env.json_cache-versions_go }}-
 
       - name: Avoid triggering make generate
@@ -109,7 +114,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Load variables from file
         uses: antifree/json-to-variables@v1.0.1
@@ -117,19 +122,21 @@ jobs:
           filename: .github/workflows/utils/variables.json
 
       - name: Setup asdf
-        uses: asdf-vm/actions/setup@v1
+        uses: asdf-vm/actions/setup@9cd779f40fe38688dd19505ccbc4eaaf018b44e7
+        with:
+          asdf_version: 0.16.7
 
       - name: Setup go
         run: |
           asdf plugin add golang
           asdf install golang
-          echo "go_version=$(asdf current golang | xargs | cut -d ' ' -f 2)" >> $GITHUB_ENV
+          echo "go_version=$(asdf current golang | xargs | cut -d ' ' -f 6)" >> $GITHUB_ENV
 
       - name: Cache go modules
-        uses: actions/cache@v2.1.6
+        uses: actions/cache@v4
         with:
           path: ~/go/pkg/mod
-          key:          ${{ runner.os }}-go-${{ env.go_version }}-${{ env.json_cache-versions_go }}-${{ hashFiles('**/go.sum') }}
+          key: ${{ runner.os }}-go-${{ env.go_version }}-${{ env.json_cache-versions_go }}-${{ hashFiles('**/go.sum') }}
           restore-keys: ${{ runner.os }}-go-${{ env.go_version }}-${{ env.json_cache-versions_go }}-
 
       - name: Compile the project on Unix-like operating systems
@@ -182,7 +189,7 @@ jobs:
     runs-on: windows-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Load variables from file
         uses: antifree/json-to-variables@v1.0.1
@@ -191,7 +198,7 @@ jobs:
 
       - name: Get go version
         shell: bash
-        run: echo "go_version=$(cat .tool-versions | grep '^golang [0-9]\+\.[0-9]\+\.[0-9]\+.*$' | cut -d ' ' -f 2)" >> $GITHUB_ENV
+        run: echo "go_version=$(cat .tool-versions | grep '^golang [0-9]\+\.[0-9]\+\.[0-9]\+.*$' | cut -d ' ' -f 6)" >> $GITHUB_ENV
 
       - name: Setup go
         uses: actions/setup-go@v3
@@ -199,10 +206,10 @@ jobs:
           go-version: ${{ env.go_version }}
 
       - name: Cache go modules
-        uses: actions/cache@v2.1.6
+        uses: actions/cache@v4
         with:
           path: ~/go/pkg/mod
-          key:          ${{ runner.os }}-go-${{ env.go_version }}-${{ env.json_cache-versions_go }}-${{ hashFiles('**/go.sum') }}
+          key: ${{ runner.os }}-go-${{ env.go_version }}-${{ env.json_cache-versions_go }}-${{ hashFiles('**/go.sum') }}
           restore-keys: ${{ runner.os }}-go-${{ env.go_version }}-${{ env.json_cache-versions_go }}-
 
       - name: Compile the project on Windows
@@ -230,7 +237,7 @@ jobs:
     runs-on: macos-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Load variables from file
         uses: antifree/json-to-variables@v1.0.1
@@ -238,19 +245,21 @@ jobs:
           filename: .github/workflows/utils/variables.json
 
       - name: Setup asdf
-        uses: asdf-vm/actions/setup@v1
+        uses: asdf-vm/actions/setup@9cd779f40fe38688dd19505ccbc4eaaf018b44e7
+        with:
+          asdf_version: 0.16.7
 
       - name: Setup go
         run: |
           asdf plugin add golang
           asdf install golang
-          echo "go_version=$(asdf current golang | xargs | cut -d ' ' -f 2)" >> $GITHUB_ENV
+          echo "go_version=$(asdf current golang | xargs | cut -d ' ' -f 6)" >> $GITHUB_ENV
 
       - name: Cache go modules
-        uses: actions/cache@v2.1.6
+        uses: actions/cache@v4
         with:
           path: ~/go/pkg/mod
-          key:          ${{ runner.os }}-go-${{ env.go_version }}-${{ env.json_cache-versions_go }}-${{ hashFiles('**/go.sum') }}
+          key: ${{ runner.os }}-go-${{ env.go_version }}-${{ env.json_cache-versions_go }}-${{ hashFiles('**/go.sum') }}
           restore-keys: ${{ runner.os }}-go-${{ env.go_version }}-${{ env.json_cache-versions_go }}-
 
       - name: Compile the project on Unix-like operating systems

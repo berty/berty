@@ -2,7 +2,7 @@ name: Monitor self-hosted runners
 on:
   schedule:
     # Every weekday at 12:00pm
-    - cron:  '0 12 * * 1-5'
+    - cron: "0 12 * * 1-5"
   workflow_dispatch:
 
 jobs:
@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
           persist-credentials: false

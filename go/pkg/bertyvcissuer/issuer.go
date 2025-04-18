@@ -315,7 +315,7 @@ func (i *VCIssuer) checkAuthenticateChallenge(w http.ResponseWriter, r *http.Req
 		return
 	}
 
-	http.Redirect(w, r, makeAuthenticateURL(i.serverRootURL, stateStr), 302)
+	http.Redirect(w, r, makeAuthenticateURL(i.serverRootURL, stateStr), http.StatusFound)
 }
 
 func (i *VCIssuer) sealVerifiableContext(state *verifiablecredstypes.StateCode) (string, error) {
@@ -414,7 +414,7 @@ func (i *VCIssuer) authenticate(w http.ResponseWriter, r *http.Request) {
 				}); err != nil {
 					formErrors = append(formErrors, ErrMsgUnableToSendCode)
 				} else {
-					http.Redirect(w, r, makeProofURL(i.serverRootURL, stateStr), 302)
+					http.Redirect(w, r, makeProofURL(i.serverRootURL, stateStr), http.StatusFound)
 					return
 				}
 			} else {
@@ -449,7 +449,7 @@ func (i *VCIssuer) proof(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if len(state.Code) == 0 {
-		http.Redirect(w, r, makeAuthenticateURL(i.serverRootURL, stateStr), 302)
+		http.Redirect(w, r, makeAuthenticateURL(i.serverRootURL, stateStr), http.StatusFound)
 		return
 	}
 

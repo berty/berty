@@ -66,10 +66,13 @@ jobs:
   gen-go-and-docs:
     name: Generate go protobuf and docs
     runs-on: ubuntu-latest
-    container: bertytech/protoc:31
+    container: bertytech/protoc:32
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
+
+      - name: Mark repository as safe
+        run: git config --global --add safe.directory $GITHUB_WORKSPACE
 
       - name: Unshallow
         run: git fetch --prune --unshallow
@@ -83,13 +86,15 @@ jobs:
           filename: .github/workflows/utils/variables.json
 
       - name: Setup asdf
-        uses: asdf-vm/actions/setup@v1
+        uses: asdf-vm/actions/setup@9cd779f40fe38688dd19505ccbc4eaaf018b44e7
+        with:
+          asdf_version: 0.16.7
 
       - name: Setup go
         run: |
           asdf plugin add golang
           asdf install golang
-          echo "go_version=$(asdf current golang | xargs | cut -d ' ' -f 2)" >> $GITHUB_ENV
+          echo "go_version=$(asdf current golang | xargs | cut -d ' ' -f 6)" >> $GITHUB_ENV
 
       - name: Setup jq
         run: |
@@ -97,7 +102,7 @@ jobs:
           asdf install jq
 
       - name: Cache go modules
-        uses: actions/cache@v2.1.6
+        uses: actions/cache@v4
         with:
           path: ~/go/pkg/mod
           key: ${{ runner.os }}-go-${{ env.go_version }}-${{ env.json_cache-versions_go }}-${{ hashFiles('**/go.sum') }}
@@ -139,10 +144,10 @@ jobs:
   gen-js:
     name: Generate js protobuf
     runs-on: ubuntu-latest
-    container: bertytech/protoc:31
+    container: bertytech/protoc:32
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Load variables from file
         uses: antifree/json-to-variables@v1.0.1
@@ -150,34 +155,42 @@ jobs:
           filename: .github/workflows/utils/variables.json
 
       - name: Setup asdf
-        uses: asdf-vm/actions/setup@v1
+        uses: asdf-vm/actions/setup@9cd779f40fe38688dd19505ccbc4eaaf018b44e7
+        with:
+          asdf_version: 0.16.7
 
       - name: Setup node
         working-directory: js
         run: |
           asdf plugin add nodejs
           asdf install nodejs
-          echo "node_version=$(asdf current nodejs | xargs | cut -d ' ' -f 2)" >> $GITHUB_ENV
+          echo "node_version=$(asdf current nodejs | xargs | cut -d ' ' -f 6)" >> $GITHUB_ENV
+
+      - name: Setup yarn
+        working-directory: js
+        run: |
+          asdf plugin add yarn
+          asdf install yarn
 
       - name: Setup go
         run: |
           asdf plugin add golang
           asdf install golang
-          echo "go_version=$(asdf current golang | xargs | cut -d ' ' -f 2)" >> $GITHUB_ENV
+          echo "go_version=$(asdf current golang | xargs | cut -d ' ' -f 6)" >> $GITHUB_ENV
 
       - name: Cleanup js gen
-      - run: make gen.clean
         working-directory: js
+        run: make gen.clean
 
       - name: Cache node modules
-        uses: actions/cache@v2.1.6
+        uses: actions/cache@v4
         with:
           path: js/node_modules
           key: ${{ runner.OS }}-node-${{ env.node_version }}-${{ env.json_cache-versions_node }}-${{ hashFiles('js/yarn.lock') }}
           restore-keys: ${{ runner.OS }}-node-${{ env.node_version }}-${{ env.json_cache-versions_node }}-
 
       - name: Cache go modules
-        uses: actions/cache@v2.1.6
+        uses: actions/cache@v4
         with:
           path: ~/go/pkg/mod
           key: ${{ runner.os }}-go-${{ env.go_version }}-${{ env.json_cache-versions_go }}-${{ hashFiles('**/go.sum') }}
