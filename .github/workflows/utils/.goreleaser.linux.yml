@@ -17,12 +17,12 @@ archives:
   - name_template: "berty_{{ .Os }}_{{ .Arch }}{{ if .Arm }}v{{ .Arm }}{{ end }}"
     wrap_in_directory: true
     id: berty
-    builds:
+    ids:
       - berty
   - name_template: "bertygui_{{ .Os }}_{{ .Arch }}{{ if .Arm }}v{{ .Arm }}{{ end }}"
     wrap_in_directory: true
     id: bertygui
-    builds:
+    ids:
       - bertygui
 
 builds:
