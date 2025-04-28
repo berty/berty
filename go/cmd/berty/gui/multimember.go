@@ -56,7 +56,7 @@ func newMultiMemberInfo(mc *msgrContext, convPK string) wfr {
 		}
 		a, aOk := members[aKey]
 		b, bOk := members[bKey]
-		if !(aOk && bOk) {
+		if !aOk || !bOk {
 			return 0
 		}
 		return strings.Compare(b.GetDisplayName(), a.GetDisplayName())

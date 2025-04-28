@@ -54,9 +54,10 @@ func (h *historyMessageList) Append(m *historyMessage) {
 
 	for i := 0; i < 3; i++ {
 		cell := h.historyScroll.GetCell(row, i)
-		if m.messageType == messageTypeError {
+		switch m.messageType {
+		case messageTypeError:
 			cell.SetTextColor(tcell.ColorOrangeRed)
-		} else if m.messageType == messageTypeMeta {
+		case messageTypeMeta:
 			cell.SetTextColor(tcell.ColorLimeGreen)
 		}
 	}

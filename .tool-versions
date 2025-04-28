@@ -39,7 +39,7 @@ ruby 3.2.2
 # This is simply the most recent golangci-lint version available to date.
 #
 #-----
-golangci-lint 1.61.0
+golangci-lint 2.0.2
 
 #-----
 # This is simply the most recent jq version available to date.

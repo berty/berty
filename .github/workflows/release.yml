@@ -26,7 +26,7 @@ jobs:
       release-version: ${{ steps.semantic-echo.outputs.release-version }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Unshallow
         run: git fetch --prune --unshallow
@@ -58,10 +58,12 @@ jobs:
     if: github.event_name == 'push' && github.ref == 'refs/heads/master'
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Setup asdf
-        uses: asdf-vm/actions/setup@v1
+        uses: asdf-vm/actions/setup@9cd779f40fe38688dd19505ccbc4eaaf018b44e7
+        with:
+          asdf_version: 0.16.7
 
       - name: Setup jq
         run: |
@@ -97,13 +99,15 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Unshallow
         run: git fetch --prune --unshallow
 
       - name: Setup asdf
-        uses: asdf-vm/actions/setup@v1
+        uses: asdf-vm/actions/setup@9cd779f40fe38688dd19505ccbc4eaaf018b44e7
+        with:
+          asdf_version: 0.16.7
 
       - name: Setup go
         run: |
@@ -148,7 +152,7 @@ jobs:
       matrix:
         config: [
             # @FIXME(gfanton): latest ubuntu version broke `Install Linux Dependencies` step
-            { runs-on: "ubuntu-20.04", goos: "linux" },
+            { runs-on: "ubuntu-latest", goos: "linux" },
             { runs-on: "macos-latest", goos: "darwin" },
             { runs-on: "windows-latest", goos: "windows" },
             # TODO: bertyguy
@@ -157,31 +161,32 @@ jobs:
       OSXCROSS_DIR: /home/runner/work/osxcross
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
-
-      - name: Unshallow
-        run: git fetch --prune --unshallow
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Load variables from file
         uses: antifree/json-to-variables@v1.0.1
         with:
           filename: .github/workflows/utils/variables.json
 
-      - name: Setup asdf (Posix)
+      - name: Setup asdf
         if: matrix.config.goos != 'windows'
-        uses: asdf-vm/actions/setup@v1
+        uses: asdf-vm/actions/setup@9cd779f40fe38688dd19505ccbc4eaaf018b44e7
+        with:
+          asdf_version: 0.16.7
 
       - name: Setup go (Posix)
         if: matrix.config.goos != 'windows'
         run: |
           asdf plugin add golang
           asdf install golang
-          echo "go_version=$(asdf current golang | xargs | cut -d ' ' -f 2)" >> $GITHUB_ENV
+          echo "go_version=$(asdf current golang | xargs | cut -d ' ' -f 6)" >> $GITHUB_ENV
 
       - name: Get go version (Windows)
         if: matrix.config.goos == 'windows'
         shell: bash
-        run: echo "go_version=$(cat .tool-versions | grep '^golang [0-9]\+\.[0-9]\+\.[0-9]\+.*$' | cut -d ' ' -f 2)" >> $GITHUB_ENV
+        run: echo "go_version=$(cat .tool-versions | grep '^golang [0-9]\+\.[0-9]\+\.[0-9]\+.*$' | cut -d ' ' -f 6)" >> $GITHUB_ENV
 
       - name: Setup go (Windows)
         if: matrix.config.goos == 'windows'
@@ -190,7 +195,7 @@ jobs:
           go-version: ${{ env.go_version }}
 
       - name: Cache go modules
-        uses: actions/cache@v2.1.6
+        uses: actions/cache@v4
         with:
           path: ~/go/pkg/mod
           key: ${{ runner.os }}-go-${{ env.go_version }}-${{ env.json_cache-versions_go }}-${{ hashFiles('go/**/go.sum') }}
@@ -199,28 +204,28 @@ jobs:
       - name: Install Linux Dependencies
         if: matrix.config.goos == 'linux'
         run: |
-          echo 'deb http://security.ubuntu.com/ubuntu bionic-security main' | sudo tee -a /etc/apt/sources.list
+          echo 'deb http://security.ubuntu.com/ubuntu noble-security main' | sudo tee -a /etc/apt/sources.list
           sudo apt update
-          sudo apt-cache policy libssl1.0-dev
-          sudo apt install -f libssl1.0-dev
+          sudo apt-cache policy libssl-dev
+          sudo apt install -f libssl-dev
           sudo apt install -f gcc-multilib g++-multilib gcc-mingw-w64 clang
-          sudo apt install -f -y libgl1-mesa-glx libgl1-mesa-dev xorg-dev
+          sudo apt install -f -y libgl1 libglx-mesa0 libgl1-mesa-dev xorg-dev
           mkdir ../../osxcross
           git clone https://github.com/plentico/osxcross-target.git ../../osxcross/target
 
       - name: Run GoReleaser (DryRun)
-        uses: goreleaser/goreleaser-action@v3
+        uses: goreleaser/goreleaser-action@v6
         if: needs.semantic-release.outputs.new-release-published != 'true'
         with:
-          version: latest
-          args: release --clean -f .github/workflows/utils/.goreleaser.${{ matrix.config.goos }}.yml --skip=publish
+          version: "~> v2"
+          args: release --clean -f .github/workflows/utils/.goreleaser.${{ matrix.config.goos }}.yml --skip=publish --snapshot
 
       - name: Run GoReleaser (Publish)
-        uses: goreleaser/goreleaser-action@v3
+        uses: goreleaser/goreleaser-action@v6
         if: needs.semantic-release.outputs.new-release-published == 'true'
         with:
-          version: latest
-          args: release --clean -f .github/workflows/utils/.goreleaser.${{ matrix.config.goos }}.yml
+          version: "~> v2"
+          args: release --clean -f .github/workflows/utils/.goreleaser.${{ matrix.config.goos }}.yml --snapshot
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 

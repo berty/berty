@@ -29,7 +29,6 @@ import (
 	"berty.tech/berty/v2/go/pkg/bertypush"
 	"berty.tech/berty/v2/go/pkg/bertyversion"
 	"berty.tech/berty/v2/go/pkg/errcode"
-	"berty.tech/berty/v2/go/pkg/messengertypes"
 	mt "berty.tech/berty/v2/go/pkg/messengertypes"
 	"berty.tech/berty/v2/go/pkg/pushtypes"
 	"berty.tech/weshnet/v2"
@@ -322,7 +321,7 @@ func New(client protocoltypes.ProtocolServiceClient, opts *Opts) (_ Service, err
 		if err != nil && !errcode.Is(err, errcode.ErrCode_ErrNotFound) {
 			return nil, errcode.ErrCode_ErrInternal.Wrap(err)
 		} else if errcode.Is(err, errcode.ErrCode_ErrNotFound) || (token.TokenType == opts.PlatformPushToken.TokenType && !bytes.Equal(token.Token, opts.PlatformPushToken.Token)) {
-			if _, err := svc.PushSetDeviceToken(ctx, &messengertypes.PushSetDeviceToken_Request{
+			if _, err := svc.PushSetDeviceToken(ctx, &mt.PushSetDeviceToken_Request{
 				Receiver: opts.PlatformPushToken,
 			}); err != nil {
 				return nil, errcode.ErrCode_ErrInternal.Wrap(err)

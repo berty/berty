@@ -153,9 +153,10 @@ func (v *tabbedGroupsView) AddContextGroup(ctx context.Context, g *protocoltypes
 	vg.welcomeGroupEventDisplay()
 	vg.loop(v.ctx)
 
-	if g.GroupType == protocoltypes.GroupType_GroupTypeContact {
+	switch g.GroupType {
+	case protocoltypes.GroupType_GroupTypeContact:
 		v.contactGroupViews = append(v.contactGroupViews, vg)
-	} else if g.GroupType == protocoltypes.GroupType_GroupTypeMultiMember {
+	case protocoltypes.GroupType_GroupTypeMultiMember:
 		v.multiMembersGroupViews = append(v.multiMembersGroupViews, vg)
 	}
 }
