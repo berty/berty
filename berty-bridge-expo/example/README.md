@@ -35,6 +35,7 @@ If you prefer to compile with Xcode, open a new terminal in this folder and run:
 ```
 npm install
 npx expo prebuild --clean
+npm start
 ```
 
 Then open `ios/bertybridgeexpoexample.xcworkspace` with Xcode and compile the project.
