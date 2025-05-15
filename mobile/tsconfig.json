@@ -3,9 +3,7 @@
   "compilerOptions": {
     "strict": true,
     "paths": {
-      "@/*": [
-        "./*"
-      ]
+      "@berty/*": ["./src/*"]
     }
   },
   "include": [

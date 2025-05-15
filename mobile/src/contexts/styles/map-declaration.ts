@@ -1,5 +1,4 @@
 import mapValues from 'lodash/mapValues'
-import mem from 'mem'
 import { StyleSheet } from 'react-native'
 
 import { initialScaleSize, initialFontScale, initialScaleHeight } from './constant'
@@ -78,7 +77,7 @@ const mapDeclarationWithDims = (
 			large: { padding: decl.sides.large },
 			big: { padding: decl.sides.big },
 			huge: { padding: decl.sides.huge },
-			scale: mem(size => StyleSheet.create({ scale: { padding: size * scaleSize } }).scale),
+			scale: size => StyleSheet.create({ scale: { padding: size * scaleSize } }).scale,
 			...mapSides(decl.sides, 'padding'),
 		},
 		margin: {
@@ -88,7 +87,7 @@ const mapDeclarationWithDims = (
 			large: { margin: decl.sides.large },
 			big: { margin: decl.sides.big },
 			huge: { margin: decl.sides.huge },
-			scale: mem(size => StyleSheet.create({ scale: { margin: size * scaleSize } }).scale),
+			scale: size => StyleSheet.create({ scale: { margin: size * scaleSize } }).scale,
 			...mapSides(decl.sides, 'margin'),
 		},
 		border: mapBorder(decl, { scaleSize }),
@@ -110,9 +109,8 @@ const mapDeclarationWithDims = (
 					big: { fontSize: decl.text.sizes.big, lineHeight: decl.text.sizes.big },
 					huge: { fontSize: decl.text.sizes.huge },
 				}),
-				scale: mem(
+				scale:
 					(size: number) => StyleSheet.create({ scale: { fontSize: size * fontScale } }).scale,
-				),
 			},
 			align: StyleSheet.create({
 				top: { textAlignVertical: 'top' },
@@ -180,7 +178,7 @@ const mapDeclarationWithDims = (
 				spaceEvenly: { justifyContent: 'space-evenly' },
 				start: { justifyContent: 'flex-start' },
 			}),
-			scale: mem((size: number) => StyleSheet.create({ scale: { flex: size } }).scale),
+			scale: (size: number) => StyleSheet.create({ scale: { flex: size } }).scale
 		},
 		absolute: {
 			...StyleSheet.create({
@@ -198,7 +196,7 @@ const mapDeclarationWithDims = (
 					bottom: 0,
 				},
 			}),
-			scale: mem(
+			scale:
 				values =>
 					StyleSheet.create({
 						scale: {
@@ -206,31 +204,24 @@ const mapDeclarationWithDims = (
 							...mapValues(values, v => (v || 0) * scaleSize),
 						},
 					}).scale,
-				{ cacheKey: JSON.stringify },
-			),
 		},
-		width: mem((width: number) => StyleSheet.create({ width: { width: width * scaleSize } }).width),
-		height: mem(
+		width: (width: number) => StyleSheet.create({ width: { width: width * scaleSize } }).width,
+		height:
 			(height: number) => StyleSheet.create({ height: { height: height * scaleSize } }).height,
-		),
-		maxWidth: mem(
+		maxWidth:
 			(maxWidth: number) =>
 				StyleSheet.create({ maxWidth: { maxWidth: maxWidth * scaleSize } }).maxWidth,
-		),
-		maxHeight: mem(
+		maxHeight:
 			(maxHeight: number) =>
 				StyleSheet.create({ maxHeight: { maxHeight: maxHeight * scaleSize } }).maxHeight,
-		),
-		minWidth: mem(
+		minWidth:
 			(minWidth: number) =>
 				StyleSheet.create({ minWidth: { minWidth: minWidth * scaleSize } }).minWidth,
-		),
-		minHeight: mem(
+		minHeight:
 			(minHeight: number) =>
 				StyleSheet.create({ minHeight: { minHeight: minHeight * scaleSize } }).minHeight,
-		),
 		overflow: StyleSheet.create({ overflow: { overflow: 'visible' } }).overflow,
-		opacity: mem((opacity: number) => StyleSheet.create({ opacity: { opacity } }).opacity),
+		opacity: (opacity: number) => StyleSheet.create({ opacity: { opacity } }).opacity,
 	}
 }
 
