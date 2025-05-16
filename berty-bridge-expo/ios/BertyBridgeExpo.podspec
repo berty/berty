@@ -24,6 +24,7 @@ Pod::Spec.new do |s|
   s.libraries = 'resolv'
   s.frameworks = 'CoreBluetooth', 'MultipeerConnectivity'
   s.private_header_files = "Frameworks/**/*.h"
+  s.public_header_files = "*.h"
   s.prepare_command = 'make -C .. ios.gomobile'
   s.vendored_frameworks = "Frameworks/Bertybridge.xcframework"
 
