@@ -7,6 +7,7 @@ import withIosEntitlements from "./withIosEntitlements";
 import withIosPlist from "./withIosPlist";
 import withIosPush from "./withIosPush";
 import withIosTeamId from "./withIosTeamId";
+import withBridgingHeader from "./withBridgingHeader";
 
 const withConfig: ConfigPlugin = (config) => {
 	return withPlugins(config, [
@@ -15,6 +16,7 @@ const withConfig: ConfigPlugin = (config) => {
 		withIosTeamId,
 		withIosPush,
 		withIosEntitlements,
+		withBridgingHeader,
 		withAndroidPermissions,
 	]);
 };
