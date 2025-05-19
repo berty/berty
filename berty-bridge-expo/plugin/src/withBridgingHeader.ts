@@ -16,7 +16,7 @@ const withBridgingHeader: ConfigPlugin = (config) => {
 				projectRoot,
 				"..",
 				"ios",
-				"BertyBridgeExpo-Bridging-Header.h",
+				"BertyBridgeExpo-Bridging-Header.h"
 			);
 
 			const projectName = config.modRequest.projectName!;
@@ -25,7 +25,7 @@ const withBridgingHeader: ConfigPlugin = (config) => {
 				projectRoot,
 				"ios",
 				projectName,
-				`${projectName}-Bridging-Header.h`,
+				`${projectName}-Bridging-Header.h`
 			);
 
 			// Create directories if they don't exist
@@ -40,7 +40,7 @@ const withBridgingHeader: ConfigPlugin = (config) => {
 					// Copy the file
 					fs.copyFileSync(sourcePath, destPath);
 					console.log(
-						`Successfully copied bridging header from ${sourcePath} to ${destPath}`,
+						`Successfully copied bridging header from ${sourcePath} to ${destPath}`
 					);
 				} else {
 					console.warn(`Source file not found: ${sourcePath}`);
