@@ -2,92 +2,89 @@
   <img src="https://berty.tech/img/berty.svg" alt="Berty" title="Berty" height="300px" />
 </h1>
 
-<h3 align="center"> Berty is an open, secure, offline-first, peer-to-peer and zero trust messaging app </h3>
+<h3 align="center"> Berty is an open, secure, offline-first, peer-to-peer, and zero trust messaging app </h3>
 
 <p align="center">
-    <a href="https://berty.tech"><img alt="berty.tech" src="https://img.shields.io/badge/berty.tech-2845a7?logo=internet-explorer&style=flat" /></a>
-    <a href="https://crpt.fyi/berty-discord"><img alt="discord" src="https://img.shields.io/badge/discord-gray?logo=discord" /></a>
-    <a href="https://github.com/berty"><img alt="github" src="https://img.shields.io/badge/@berty-471961?logo=github" /></a>
-    <a href="https://twitter.com/berty"><img alt="twitter" src="https://img.shields.io/twitter/follow/berty?label=%40berty&style=flat&logo=twitter" /></a>
+  <strong>Berty</strong> is a privacy-first, censorship-resistant messenger designed to work anywhere — even without internet — using peer-to-peer tech and strong end-to-end encryption.
+</p>
+
+<p align="center">
+    <a href="https://berty.tech"><img alt="Website" src="https://img.shields.io/badge/berty.tech-2845a7?logo=internet-explorer&style=flat" /></a>
+    <a href="https://crpt.fyi/berty-discord"><img alt="Discord" src="https://img.shields.io/badge/discord-gray?logo=discord" /></a>
+    <a href="https://github.com/berty"><img alt="GitHub" src="https://img.shields.io/badge/@berty-471961?logo=github" /></a>
+    <a href="https://twitter.com/berty"><img alt="Twitter" src="https://img.shields.io/twitter/follow/berty?label=%40berty&style=flat&logo=twitter" /></a>
 </p>
 <p align="center">
-    <a href="https://github.com/berty/berty/actions?query=workflow%3AJS"><img src="https://github.com/berty/berty/workflows/JS/badge.svg" /></a>
-    <a href="https://github.com/berty/berty/actions?query=workflow%3AGo"><img src="https://github.com/berty/berty/workflows/Go/badge.svg" /></a>
-    <a href="https://github.com/berty/berty/actions?query=workflow%3AProtobuf"><img src="https://github.com/berty/berty/workflows/Protobuf/badge.svg" /></a>
-    <a href="https://github.com/berty/berty/actions?query=workflow%3ARelease"><img src="https://github.com/berty/berty/workflows/Release/badge.svg" /></a>
-    <a href="https://github.com/berty/berty/actions?query=workflow%3AAndroid"><img src="https://github.com/berty/berty/workflows/Android/badge.svg" /></a>
-    <a href="https://github.com/berty/berty/actions?query=workflow%3AiOS"><img src="https://github.com/berty/berty/workflows/iOS/badge.svg" /></a>
-    <a href="https://github.com/berty/berty/actions?query=workflow%3AIntegration"><img src="https://github.com/berty/berty/workflows/Integration/badge.svg" /></a>
+    <a href="https://github.com/berty/berty/actions?query=workflow%3AJS"><img src="https://github.com/berty/berty/workflows/JS/badge.svg" alt="JS Build Status"/></a>
+    <a href="https://github.com/berty/berty/actions?query=workflow%3AGo"><img src="https://github.com/berty/berty/workflows/Go/badge.svg" alt="Go Build Status"/></a>
+    <a href="https://github.com/berty/berty/actions?query=workflow%3AProtobuf"><img src="https://github.com/berty/berty/workflows/Protobuf/badge.svg" alt="Protobuf Build Status"/></a>
+    <a href="https://github.com/berty/berty/actions?query=workflow%3ARelease"><img src="https://github.com/berty/berty/workflows/Release/badge.svg" alt="Release Status"/></a>
+    <a href="https://github.com/berty/berty/actions?query=workflow%3AAndroid"><img src="https://github.com/berty/berty/workflows/Android/badge.svg" alt="Android Build Status"/></a>
+    <a href="https://github.com/berty/berty/actions?query=workflow%3AiOS"><img src="https://github.com/berty/berty/workflows/iOS/badge.svg" alt="iOS Build Status"/></a>
+    <a href="https://github.com/berty/berty/actions?query=workflow%3AIntegration"><img src="https://github.com/berty/berty/workflows/Integration/badge.svg" alt="Integration Tests"/></a>
 </p>
 <p align="center">
   <a href="https://pkg.go.dev/berty.tech/berty/v2/go?tab=subdirectories"><img alt="GoDoc" src="https://img.shields.io/badge/go.dev-reference-007d9c?logo=go&logoColor=white" /></a>
-  <a title="Crowdin" href="https://translate.berty.community"><img src="https://badges.crowdin.net/e/a4cb8d931040fbe4a794322b86de6721/localized.svg"></a>
+  <a title="Crowdin" href="https://translate.berty.community"><img src="https://badges.crowdin.net/e/a4cb8d931040fbe4a794322b86de6721/localized.svg" alt="Translations"></a>
   <a href="https://github.com/berty/berty/releases"><img alt="GitHub release" src="https://img.shields.io/github/v/release/berty/berty" /></a>
   <a href="https://www.codefactor.io/repository/github/berty/berty"><img src="https://www.codefactor.io/repository/github/berty/berty/badge?s=bf5885a3b2782ead81d91cd423915f2e9ddc9196" alt="CodeFactor" /></a>
-  <!--<a href="https://goreportcard.com/report/berty/berty"><img src="https://goreportcard.com/badge/berty/berty" alt="Go Report Card"></a>-->
-  <!--<a href="https://bump.sh/doc/berty-messenger"/><img src="https://img.shields.io/badge/bump.sh-messenger%20api-black" /></a>-->
-  <!--<a href="https://bump.sh/doc/berty-protocol"/><img src="https://img.shields.io/badge/bump.sh-protocol%20api-black" /></a>-->
 </p>
 
 ---
 
-## TLDR : Install it!
+---
+
+## Quick Start: Install Berty!
 
 ### Mobile
 
-To use the latest released version, install it from [Google Play](https://play.google.com/store/apps/details?id=tech.berty.android)
-or [Apple App Store](https://apps.apple.com/tt/app/berty/id1535500412).
+Install the latest official release from:
 
-To compile and run the mobile application on your device, see [js/README.md](js/README.md).
+- [Google Play Store](https://play.google.com/store/apps/details?id=tech.berty.android)
+- [Apple App Store](https://apps.apple.com/tt/app/berty/id1535500412)
 
-### CLI
+To build and run the mobile app yourself, check the [js/README.md](js/README.md).
 
-You can `go run` or `go install` the CLI tool located in `go/cmd/berty`.
-The two main command line utilities are:
+### Command Line Interface (CLI)
 
-- `berty mini`: a CLI messaging app using the Wesh Protocol.
-- `berty daemon`: a full node manageable through the Wesh Protocol API.
+You can run or install the CLI tools written in Go:
+
+```bash
+go install ./go/cmd/berty@latest
+berty mini       # Start a CLI messenger
+berty daemon     # Run a full node daemon
+
 
 ## Introduction
 
-> **Warning**: Berty is still under active development and should not yet be used to exchange sensitive data.
+> **Warning:** Berty is under active development and not recommended for sensitive data yet.
 
-**[Berty](https://berty.tech/)** is a privacy-first messaging application built on top of [the Wesh Protocol](https://berty.tech/docs/protocol/).
+**Berty** is a privacy-first messenger built on the [Wesh Protocol](https://berty.tech/docs/protocol/), designed to offer:
 
-- *Secure and private* :
-    - Messages are end-to-end encrypted by default
-    - Metadata is kept to a minimum
-    - No phone number or email address is required to create an account
-    - Built to retain its properties even when used on adversarial networks
-- *Censorship-resilient*
-    - Decentralized, distributed, peer-to-peer and serverless
-    - No internet connection is required, thanks to [BLE technology](https://en.wikipedia.org/wiki/Bluetooth_Low_Energy) and [mDNS](https://en.wikipedia.org/wiki/Multicast_DNS).
-- *Open* :
-    - Free forever and open-source
+- End-to-end encrypted messaging with minimal metadata.
+- No phone number or email needed.
+- Resilience against censorship and adversarial networks.
+- Offline-first, peer-to-peer communication via Bluetooth Low Energy and mDNS.
 
-**Berty** is designed to be used as a communication tool when all other traditional messengers fail. Berty Messenger serves the following use cases:
+### Why Use Berty?
 
-- When you need to share sensitive information over untrusted networks, for instance while traveling
-- If you want to communicate anonymously
-- If you want full control over your data and thus don't want to rely on third-party servers
-- In countries that actively monitor and temper with their network, restricting its use and censoring some of its contents
-- In areas with weak or no connection at all
+- Share sensitive information safely on untrusted networks.
+- Communicate anonymously without revealing your identity.
+- Control your data without relying on third-party servers.
+- Operate in countries with network censorship or surveillance.
+- Stay connected where internet is weak or unavailable.
 
-Berty is currently developed by **[Berty Technologies](https://berty.tech/about)**, a French nonprofit organization.
+Berty is developed by **[Berty Technologies](https://berty.tech/about)**, a French nonprofit organization dedicated to secure communication for all.
 
-**Note: this project is led by a small team made of humans, who make mistakes. Please do not hesitate to point out bugs or missing features.** _See the [contribute section](#contribute) below._
+> We’re a small team, always improving. Please report bugs or request features!
 
-> We cannot promise we will offer you the best application, but we dedicate ourselves to doing our best to create a great one.
+### Philosophy
 
-### The philosophy behind Berty
+We envision a world where secure, free communication is the norm, without fear of censorship or surveillance.
 
-We want to contribute to a world where free and secure communications are common and fear of censorship or surveillance are not.
+Open source is core to security: anyone can audit and improve Berty. Our goal is to transition ownership to a global community.
 
-We believe that open-source is more secure, as anyone can examine the code and improve it: this is why we rely on and build open and free software.
-
-As the founding team, our ultimate goal is to progressively relinquish control over Berty and to make it become a truly global community project.
-
-More info on [berty/community](https://github.com/berty/community).
+Learn more at [berty/community](https://github.com/berty/community).
 
 ## Development Status
 
@@ -148,19 +145,14 @@ The Berty Messenger, or simply Berty, is a messaging application written in [Rea
 
 ![Contribute to Berty](https://assets.berty.tech/files/contribute-contribute_v2--Contribute-berty-ultra-light.gif)
 
-We welcome contributions! Your input is deeply appreciated and extremely valuable to us. We thank you in advance for it.
+Contributions are warmly welcomed! Whether you code or support the community, your help is invaluable.
 
-There is no small feat: everyone is encouraged to do what they can to help, based on their ability and interest.
+- Code contributions happen on GitHub.
+- Non-code contributions and suggestions can be opened as tasks.
 
-There are plenty of ways to get involved and to help our community, which can roughly be divided in two distinct parts: everything that is related to the code and everything that is not.
+See the full guide: [CONTRIBUTING.md](https://github.com/berty/community/blob/master/CONTRIBUTING.md).
 
-To put it simply:
-
-- Code-related = GitHub
-- Not code-related = Open a task
-
-Everything about contribution is summed up here: [CONTRIBUTING.MD](https://github.com/berty/community/blob/master/CONTRIBUTING.md)
-
+Your participation helps make Berty better for everyone!
 ## Stargazers over time
 
 [![Star History Chart](https://api.star-history.com/svg?repos=berty/berty&type=Date)](https://star-history.com/#berty/berty&Date)
@@ -171,10 +163,15 @@ Everything about contribution is summed up here: [CONTRIBUTING.MD](https://githu
 - Assets: https://assets.berty.tech/
 - Application assets & mockups: https://assets.berty.tech/categories/app__v2.4/
 
-## Contact
+## Support & Contact
 
-For a direct contact, see our [contact page](https://berty.tech/contact) of our website. Alternatively, take a look at our [community repository](https://github.com/berty/community/).
+For help or questions:
 
+- Visit our [community repository](https://github.com/berty/community)
+- Join us on [Discord](https://crpt.fyi/berty-discord)
+- Reach out via our [contact page](https://berty.tech/contact)
+
+Stay up to date with the latest by subscribing to our [newsletter](https://tech.us20.list-manage.com/subscribe/post?u=5ca3993c7f0b8f646dcda714b&id=4d7828715b).
 ## Licensing
 
 © 2018-2023 [Berty Technologies](https://berty.tech)
