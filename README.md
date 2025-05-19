@@ -53,6 +53,7 @@ You can run or install the CLI tools written in Go:
 go install ./go/cmd/berty@latest
 berty mini       # Start a CLI messenger
 berty daemon     # Run a full node daemon
+```
 
 
 ## Introduction
