@@ -1,4 +1,4 @@
-import beapi from '@berty/api'
+import beapi from '@/src/api'
 
 const logRequest = (name, title, req) => {
 	// Berty messenger specific filters, TODO: extract
