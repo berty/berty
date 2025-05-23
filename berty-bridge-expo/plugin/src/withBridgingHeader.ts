@@ -19,16 +19,13 @@ const withBridgingHeader: ConfigPlugin = (config) => {
 				"BertyBridgeExpo-Bridging-Header.h",
 			);
 
-			// Destination path in the example app
-			// Using the module name to determine the example app name
-			const moduleName = "bertybridgeexpo"; // Your module name
-			const exampleAppName = `${moduleName}example`; // Convention for example app names
+			const projectName = config.modRequest.projectName!;
 
 			const destPath = path.join(
 				projectRoot,
 				"ios",
-				exampleAppName,
-				`${exampleAppName}-Bridging-Header.h`,
+				projectName,
+				`${projectName}-Bridging-Header.h`,
 			);
 
 			// Create directories if they don't exist

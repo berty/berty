@@ -54,7 +54,7 @@
   "private": true,
   "expo": {
     "autolinking": {
-      "nativeModulesDir": "../berty-bridge-expo"
+      "nativeModulesDir": ".."
     }
   }
 }

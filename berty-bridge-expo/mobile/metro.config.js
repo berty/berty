@@ -19,7 +19,7 @@ config.resolver.nodeModulesPaths = [
 ];
 
 config.resolver.extraNodeModules = {
-	"berty-bridge-expo": "../berty-bridge-expo",
+	"berty-bridge-expo": "..",
 };
 
 config.watchFolders = [path.resolve(__dirname, "..")];

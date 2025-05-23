@@ -3,8 +3,8 @@
   "compilerOptions": {
     "strict": true,
     "paths": {
-      "berty-bridge-expo": ["../berty-bridge-expo/src/index"],
-      "berty-bridge-expo/*": ["../berty-bridge-expo/src/*"],
+      "berty-bridge-expo": ["../src/index"],
+      "berty-bridge-expo/*": ["../src/*"],
       "@/*": ["./*"]
     }
   },
