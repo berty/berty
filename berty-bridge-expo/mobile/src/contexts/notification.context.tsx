@@ -1,6 +1,7 @@
 import { CommonActions } from '@react-navigation/native'
 import React, { useContext } from 'react'
 import { EmitterSubscription, NativeEventEmitter, NativeModules, Platform } from 'react-native'
+// @ts-ignore
 import { InAppNotificationProvider, withInAppNotification } from 'react-native-in-app-notification'
 
 import beapi from '@berty/api'

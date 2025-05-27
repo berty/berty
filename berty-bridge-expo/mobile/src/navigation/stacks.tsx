@@ -4,6 +4,7 @@ import {
 	NativeStackNavigationOptions,
 } from '@react-navigation/native-stack'
 import { Icon } from '@ui-kitten/components'
+// @ts-ignore
 import mapValues from 'lodash/mapValues'
 import React, { useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
@@ -41,7 +42,7 @@ const ChatScreenOptions: (
 			backgroundColor: colors['main-background'],
 		},
 		headerTintColor: colors['main-text'],
-		headerBackTitleVisible: false,
+		headerBackButtonDisplayMode: 'minimal',
 		headerShadowVisible: false,
 		...additionalProps,
 	}
@@ -56,7 +57,7 @@ const BackgroundHeaderScreenOptions: (
 			backgroundColor: colors['background-header'],
 		},
 		headerTintColor: colors['reverted-main-text'],
-		headerBackTitleVisible: false,
+		headerBackButtonDisplayMode: 'minimal',
 		headerShadowVisible: false,
 		...additionalProps,
 	}
@@ -71,7 +72,7 @@ const AltBackgroundHeaderScreenOptions: (
 			backgroundColor: colors['alt-secondary-background-header'],
 		},
 		headerTintColor: colors['reverted-main-text'],
-		headerBackTitleVisible: false,
+		headerBackButtonDisplayMode: 'minimal',
 		headerShadowVisible: false,
 		...additionalProps,
 	}
@@ -224,7 +225,7 @@ export const Navigation: React.FC = React.memo(() => {
 						backgroundColor: colors['background-header'],
 					},
 					headerTintColor: colors['reverted-main-text'],
-					headerBackTitleVisible: false,
+					headerBackButtonDisplayMode: 'minimal',
 					title: t('onboarding.getstarted.create-button'),
 					headerTitle: () => <></>,
 				}}
@@ -242,7 +243,7 @@ export const Navigation: React.FC = React.memo(() => {
 						backgroundColor: colors['background-header'],
 					},
 					headerTintColor: colors['reverted-main-text'],
-					headerBackTitleVisible: false,
+					headerBackButtonDisplayMode: 'minimal',
 					title: t('onboarding.custom-mode.summary.screenTitle'),
 					headerTitle: () => <></>,
 				}}
@@ -265,7 +266,7 @@ export const Navigation: React.FC = React.memo(() => {
 						backgroundColor: colors['background-header'],
 					},
 					headerTintColor: colors['reverted-main-text'],
-					headerBackTitleVisible: false,
+					headerBackButtonDisplayMode: 'minimal',
 					title: t('onboarding.default-mode.summary.screenTitle'),
 					headerTitle: () => <></>,
 				}}
@@ -278,7 +279,7 @@ export const Navigation: React.FC = React.memo(() => {
 						backgroundColor: colors['background-header'],
 					},
 					headerTintColor: colors['reverted-main-text'],
-					headerBackTitleVisible: false,
+					headerBackButtonDisplayMode: 'minimal',
 					title: t('onboarding.custom-mode.summary.screenTitle'),
 					headerTitle: () => <></>,
 				}}
@@ -432,7 +433,7 @@ export const Navigation: React.FC = React.memo(() => {
 					},
 
 					headerTintColor: colors['main-text'],
-					headerBackTitleVisible: false,
+					headerBackButtonDisplayMode: 'minimal',
 					title: t('settings.home.title'),
 				}}
 			/>
@@ -444,7 +445,7 @@ export const Navigation: React.FC = React.memo(() => {
 						backgroundColor: colors['secondary-background'],
 					},
 					headerTintColor: colors['main-text'],
-					headerBackTitleVisible: false,
+					headerBackButtonDisplayMode: 'minimal',
 					title: t('settings.network.title'),
 					presentation: 'formSheet',
 				}}
