@@ -3,7 +3,7 @@ rwildcard = $(foreach d,$(wildcard $1*),$(call rwildcard,$d/,$2) $(filter $(subs
 GO ?= go # this allows to override the go version used
 GO_TAGS ?= -tags "fts5 sqlite sqlite_unlock_notify"
 GOMOBILE_IOS_TARGET ?= ios
-GOMOBILE_ANDROID_TARGET ?= android
+GOMOBILE_ANDROID_TARGET ?= android/arm64,android/amd64
 
 make_dir := $(realpath $(dir $(abspath $(lastword $(MAKEFILE_LIST)))))
 bridge_src := $(call rwildcard,../go,*.go *.m *.h) ../go.sum

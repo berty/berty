@@ -1,6 +1,6 @@
 import * as pbjs from 'protobufjs'
 
-import beapi from '@berty/api'
+import beapi from '@/src/api'
 
 import { createServiceClient } from '..'
 import { GRPCError, EOF } from '../error'

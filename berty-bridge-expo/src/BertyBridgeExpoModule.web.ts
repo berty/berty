@@ -12,4 +12,4 @@ class BertyBridgeExpoModule extends NativeModule<BertyBridgeExpoModuleEvents> {
   }
 }
 
-export default registerWebModule(BertyBridgeExpoModule);
+export default registerWebModule(BertyBridgeExpoModule, 'BertyBridgeExpo');

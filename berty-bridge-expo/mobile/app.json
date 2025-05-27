@@ -34,15 +34,25 @@
       "output": "static",
       "favicon": "./assets/images/favicon.png"
     },
-    "plugins": [
-      "expo-router"
-    ],
+    "plugins": ["../app.plugin.js", "expo-router"],
     "experiments": {
       "typedRoutes": true
     },
     "extra": {
       "eas": {
-        "projectId": "01cd0667-80ee-4f67-8a43-0d1de5958bce"
+        "projectId": "01cd0667-80ee-4f67-8a43-0d1de5958bce",
+        "build": {
+          "experimental": {
+            "ios": {
+              "appExtensions": [
+                {
+                  "targetName": "NotificationService",
+                  "bundleIdentifier": "tech.berty.ios.NotificationService"
+                }
+              ]
+            }
+          }
+        }
       }
     },
     "owner": "bertytechnologies"
