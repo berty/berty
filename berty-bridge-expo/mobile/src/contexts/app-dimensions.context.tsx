@@ -1,6 +1,5 @@
-import { useDimensions } from '@react-native-community/hooks'
-import React, { createContext, useContext, useState } from 'react'
-import { PixelRatio } from 'react-native'
+import React, { createContext, useContext, useState } from "react";
+import { PixelRatio, useWindowDimensions } from "react-native";
 
 import {
 	initialScaleHeight,
@@ -12,16 +11,16 @@ import {
 	initialWidth,
 	iPadShortEdge,
 	iPadLongEdge,
-} from './styles/constant'
+} from "./styles/constant";
 
 const appDimensionsContext = createContext<{
-	scaleSize: number
-	scaleHeight: number
-	fontScale: number
-	windowHeight: number
-	windowWidth: number
-	isGteIpadSize: boolean
-	isLandscape: boolean
+	scaleSize: number;
+	scaleHeight: number;
+	fontScale: number;
+	windowHeight: number;
+	windowWidth: number;
+	isGteIpadSize: boolean;
+	isLandscape: boolean;
 }>({
 	scaleSize: initialScaleSize,
 	scaleHeight: initialScaleHeight,
@@ -32,27 +31,36 @@ const appDimensionsContext = createContext<{
 		Math.min(initialHeight, initialWidth) >= iPadShortEdge &&
 		Math.max(initialHeight, initialWidth) >= iPadLongEdge,
 	isLandscape: initialWidth > initialHeight,
-})
+});
 
-export const AppDimensionsProvider: React.FC = ({ children }) => {
-	const { height: windowHeight, width: windowWidth } = useDimensions().window
-	const [scaleHeight, setScaleHeight] = useState(initialScaleHeight)
-	const [scaleSize, setScaleSize] = useState(initialScaleSize)
-	const [fontScale, setFontScale] = useState(initialFontScale)
+interface AppDimensionsProviderProps {
+	children: React.ReactNode;
+}
+
+export const AppDimensionsProvider = ({ children }: AppDimensionsProviderProps) => {
+	const { height: windowHeight, width: windowWidth } = useWindowDimensions();
+	const [scaleHeight, setScaleHeight] = useState(initialScaleHeight);
+	const [scaleSize, setScaleSize] = useState(initialScaleSize);
+	const [fontScale, setFontScale] = useState(initialFontScale);
 	const isGteIpadSize =
 		Math.min(initialHeight, initialWidth) >= iPadShortEdge &&
-		Math.max(initialHeight, initialWidth) >= iPadLongEdge
+		Math.max(initialHeight, initialWidth) >= iPadLongEdge;
 	React.useEffect(() => {
-		const isLandscape = windowHeight < windowWidth
+		const isLandscape = windowHeight < windowWidth;
 		const _scaleHeight =
-			windowHeight / Math.max(isLandscape ? iPhone11ShortEdge : iPhone11LongEdge, windowHeight)
+			windowHeight /
+			Math.max(
+				isLandscape ? iPhone11ShortEdge : iPhone11LongEdge,
+				windowHeight,
+			);
 		const _scaleSize =
-			windowWidth / Math.max(isLandscape ? iPhone11LongEdge : iPhone11ShortEdge, windowWidth)
-		const _fontScale = PixelRatio.getFontScale() * _scaleSize
-		setScaleHeight(_scaleHeight)
-		setScaleSize(_scaleSize)
-		setFontScale(_fontScale)
-	}, [windowHeight, windowWidth])
+			windowWidth /
+			Math.max(isLandscape ? iPhone11LongEdge : iPhone11ShortEdge, windowWidth);
+		const _fontScale = PixelRatio.getFontScale() * _scaleSize;
+		setScaleHeight(_scaleHeight);
+		setScaleSize(_scaleSize);
+		setFontScale(_fontScale);
+	}, [windowHeight, windowWidth]);
 
 	return (
 		<appDimensionsContext.Provider
@@ -68,9 +76,9 @@ export const AppDimensionsProvider: React.FC = ({ children }) => {
 		>
 			<>{children}</>
 		</appDimensionsContext.Provider>
-	)
-}
+	);
+};
 
 export const useAppDimensions = () => {
-	return useContext(appDimensionsContext)
-}
+	return useContext(appDimensionsContext);
+};

@@ -5,6 +5,7 @@
     "paths": {
       "berty-bridge-expo": ["../src/index"],
       "berty-bridge-expo/*": ["../src/*"],
+      "@berty/*": ["./src/*"],
       "@/*": ["./*"]
     }
   },

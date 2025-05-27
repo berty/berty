@@ -1,4 +1,4 @@
-import { useDimensions } from '@react-native-community/hooks'
+import { useWindowDimensions } from "react-native";
 import React, { createContext, useContext, useState } from 'react'
 import { PixelRatio } from 'react-native'
 
@@ -20,8 +20,12 @@ const defaultStyles = mapScaledDeclarationWithDims(defaultStylesDeclaration, {
 
 const styleContext = createContext<Styles>(defaultStyles)
 
-export const StyleProvider: React.FC = ({ children }) => {
-	const { height: windowHeight, width: windowWidth } = useDimensions().window
+interface StyleProviderProps {
+	children: React.ReactNode
+	}
+
+export const StyleProvider = ({ children }: StyleProviderProps) => {
+	const { height: windowHeight, width: windowWidth } = useWindowDimensions()
 	const [stylesState, setStylesState] = useState(defaultStyles)
 	React.useEffect(() => {
 		const isLandscape = windowHeight < windowWidth

@@ -1,6 +1,6 @@
-import React, { createContext, useCallback, useEffect, useState } from 'react'
-import { AppState } from 'react-native'
-import { PermissionStatus, RESULTS } from 'react-native-permissions'
+import React, { createContext, useCallback, useEffect, useState } from "react";
+import { AppState } from "react-native";
+import { PermissionStatus, RESULTS } from "react-native-permissions";
 
 import {
 	defaultPermissionStatus,
@@ -8,45 +8,49 @@ import {
 	Permissions,
 	getPermissions,
 	acquirePermission,
-} from '@berty/utils/permissions/permissions'
+} from "@berty/utils/permissions/permissions";
 
 const PermissionsContext = createContext<{
-	permissions: Permissions
-	refreshPermissions: () => Promise<void>
-	acquirePermission: (_: PermissionType) => Promise<PermissionStatus>
+	permissions: Permissions;
+	refreshPermissions: () => Promise<void>;
+	acquirePermission: (_: PermissionType) => Promise<PermissionStatus>;
 }>({
 	permissions: defaultPermissionStatus,
 	refreshPermissions: async () => {},
 	acquirePermission: async (_: PermissionType) => RESULTS.BLOCKED,
-})
+});
 
-export const PermissionsProvider: React.FC = ({ children }) => {
-	const [state, setState] = useState(defaultPermissionStatus)
+interface PermissionsProviderProps {
+	children: React.ReactNode;
+}
+
+export const PermissionsProvider = ({ children }: PermissionsProviderProps) => {
+	const [state, setState] = useState(defaultPermissionStatus);
 
 	const refreshPermissions = useCallback(async () => {
-		const permissions = await getPermissions()
-		setState(permissions)
-	}, [])
+		const permissions = await getPermissions();
+		setState(permissions);
+	}, []);
 
 	const acquirePermissionCB = useCallback(
 		async (permissionType: PermissionType): Promise<PermissionStatus> => {
-			const result = await acquirePermission(permissionType)
+			const result = await acquirePermission(permissionType);
 
-			refreshPermissions()
+			refreshPermissions();
 
-			return result
+			return result;
 		},
 		[refreshPermissions],
-	)
+	);
 
 	useEffect(() => {
-		refreshPermissions()
-		AppState.addEventListener('change', refreshPermissions)
-		return () => AppState.removeEventListener('change', refreshPermissions)
+		refreshPermissions();
+		const sub = AppState.addEventListener("change", refreshPermissions);
+		return () => sub.remove();
 
 		// const listener = AppState.addEventListener('change', refreshPermissions)
 		// return () => listener.remove()
-	}, [refreshPermissions])
+	}, [refreshPermissions]);
 
 	return (
 		<PermissionsContext.Provider
@@ -58,7 +62,7 @@ export const PermissionsProvider: React.FC = ({ children }) => {
 		>
 			{children}
 		</PermissionsContext.Provider>
-	)
-}
+	);
+};
 
-export default PermissionsContext
+export default PermissionsContext;

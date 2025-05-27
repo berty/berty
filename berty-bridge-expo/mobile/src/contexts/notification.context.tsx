@@ -10,7 +10,7 @@ import { useConversationsDict } from '@berty/hooks'
 import { useNavigation } from '@berty/navigation'
 import { accountClient } from '@berty/utils/accounts/accountClient'
 
-const PushNotificationBridge: React.FC = withInAppNotification(({ showNotification }: any) => {
+const PushNotificationBridge = withInAppNotification(({ showNotification }: any) => {
 	const conversations = useConversationsDict()
 	const { navigate, dispatch } = useNavigation()
 
@@ -75,7 +75,7 @@ const PushNotificationBridge: React.FC = withInAppNotification(({ showNotificati
 	return null
 })
 
-const NotificationBridge: React.FC = withInAppNotification(({ showNotification }: any) => {
+const NotificationBridge = withInAppNotification(({ showNotification }: any) => {
 	const eventEmitter = useContext(EventEmitterContext)
 
 	React.useEffect(() => {
@@ -105,7 +105,11 @@ const NotificationBridge: React.FC = withInAppNotification(({ showNotification }
 	return null
 })
 
-const NotificationProvider: React.FC = ({ children }) =>
+interface NotificationProviderProps {
+	children: React.ReactNode
+}
+
+const NotificationProvider = ({ children }: NotificationProviderProps) =>
 	Platform.OS !== 'web' ? (
 		<InAppNotificationProvider
 			notificationBodyComponent={NotificationBody}
