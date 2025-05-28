@@ -17,6 +17,7 @@
   "dependencies": {
     "@eva-design/eva": "^2.1.0",
     "@expo/vector-icons": "^14.1.0",
+    "@improbable-eng/grpc-web": "^0.15.0",
     "@react-navigation/bottom-tabs": "^7.2.0",
     "@react-navigation/native": "^7.0.14",
     "@reduxjs/toolkit": "^2.8.2",
