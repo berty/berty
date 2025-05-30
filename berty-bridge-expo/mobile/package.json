@@ -48,6 +48,7 @@
     "google-palette": "^1.1.1",
     "i18next": "^21.6.4",
     "libphonenumber-js": "^1.12.8",
+    "linkify-it": "^5.0.0",
     "lodash": "^4.17.21",
     "lottie-react-native": "^7.2.2",
     "mem": "^9.0.2",
@@ -63,8 +64,10 @@
     "react-native-exception-handler": "^2.10.10",
     "react-native-fs": "^2.20.0",
     "react-native-gesture-handler": "~2.24.0",
+    "react-native-hyperlink": "^0.0.22",
     "react-native-in-app-notification": "^3.2.0",
     "react-native-permissions": "^5.4.0",
+    "react-native-progress": "^5.0.1",
     "react-native-qrcode-svg": "^6.3.15",
     "react-native-reanimated": "~3.17.4",
     "react-native-restart": "^0.0.27",
@@ -76,7 +79,8 @@
     "react-native-webview": "13.13.5",
     "react-redux": "^9.2.0",
     "redux-persist": "^6.0.0",
-    "sha3": "^2.1.4"
+    "sha3": "^2.1.4",
+    "tlds": "^1.259.0"
   },
   "devDependencies": {
     "@babel/core": "^7.25.2",
