@@ -15,6 +15,6 @@
 	"devDependencies": {
 		"appium-uiautomator2-driver": "^2.8.0",
 		"appium-xcuitest-driver": "^4.12.1",
-		"webdriverio": "^7.25.1"
+		"webdriverio": "^9.15.0"
 	}
 }
