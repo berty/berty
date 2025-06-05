@@ -1,6 +1,6 @@
 {
   "name": "bertymessenger",
-  "main": "expo-router/entry",
+  "main": "expo/AppEntry.js",
   "version": "1.0.0",
   "scripts": {
     "start": "expo start",
