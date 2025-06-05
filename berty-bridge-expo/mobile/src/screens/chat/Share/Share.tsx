@@ -1,6 +1,5 @@
 import { useFocusEffect } from '@react-navigation/core'
 import { Layout } from '@ui-kitten/components'
-import { BarCodeScanner } from 'expo-barcode-scanner'
 import { Camera } from 'expo-camera'
 import React, { FC, ReactNode, useCallback, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
@@ -90,14 +89,14 @@ const ScanBody: FC<{ visible: boolean }> = ({ visible = true }) => {
 			{visible && (
 				<Camera
 					onBarCodeScanned={({ data, type }) => {
-						if (type === BarCodeScanner.Constants.BarCodeType.qr) {
+						if (type === 'qr') {
 							// I would like to use binary mode in QR but this scanner seems to not support it, extended tests were done
 							navigation.navigate('Chat.ManageDeepLink', { type: 'qr', value: data })
 							Vibration.vibrate(1000)
 						}
 					}}
 					barCodeScannerSettings={{
-						barCodeTypes: [BarCodeScanner.Constants.BarCodeType.qr],
+						barCodeTypes: ['qr'],
 					}}
 					style={{
 						height: '100%',

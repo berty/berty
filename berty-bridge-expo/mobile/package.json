@@ -31,7 +31,6 @@
     "case": "^1.6.3",
     "expo": "^53.0.0",
     "expo-application": "^6.1.4",
-    "expo-barcode-scanner": "^13.0.1",
     "expo-blur": "~14.1.4",
     "expo-camera": "^16.1.6",
     "expo-constants": "~17.1.6",
