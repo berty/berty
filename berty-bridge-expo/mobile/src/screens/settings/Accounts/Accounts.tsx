@@ -1,7 +1,6 @@
 import React from 'react'
 import { useTranslation } from 'react-i18next'
 import { ScrollView, View, Platform } from 'react-native'
-import { withInAppNotification } from 'react-native-in-app-notification'
 import { useSelector } from 'react-redux'
 
 import { MenuItem, ItemSection } from '@berty/components'
@@ -10,9 +9,9 @@ import { useThemeColor } from '@berty/hooks'
 import { ScreenFC, useNavigation } from '@berty/navigation'
 import { selectSelectedAccount } from '@berty/redux/reducers/ui.reducer'
 import { exportAccountToFile, refreshAccountList } from '@berty/utils/accounts'
+import * as Notifications from "expo-notifications";
 
-export const Accounts: ScreenFC<'Settings.Accounts'> = withInAppNotification(
-	({ showNotification }: any) => {
+export const Accounts: ScreenFC<'Settings.Accounts'> = () => {
 		const { scaleSize } = useAppDimensions()
 		const colors = useThemeColor()
 		const { navigate } = useNavigation()
@@ -36,11 +35,13 @@ export const Accounts: ScreenFC<'Settings.Accounts'> = withInAppNotification(
 								onPress={async () => {
 									try {
 										await exportAccountToFile(selectedAccount)
-										showNotification({
-											title: t('settings.accounts.backup-notif-title'),
-											message: t('settings.accounts.backup-notif-desc'),
-											additionalProps: { type: 'message' },
-										})
+										Notifications.scheduleNotificationAsync({
+											content: {
+												title: t("settings.accounts.backup-notif-title"),
+												body: t("settings.accounts.backup-notif-desc"),
+											},
+											trigger: null,
+										});
 									} catch (e) {
 										console.warn('account backup failed:', e)
 									}
@@ -58,5 +59,4 @@ export const Accounts: ScreenFC<'Settings.Accounts'> = withInAppNotification(
 				</ScrollView>
 			</View>
 		)
-	},
-)
+	}

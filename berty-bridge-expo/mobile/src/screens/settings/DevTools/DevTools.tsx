@@ -1,13 +1,19 @@
-import { Player } from '@react-native-community/audio-toolkit'
-import { Layout } from '@ui-kitten/components'
-import i18next from 'i18next'
-import React, { useCallback, useEffect, useRef, useState } from 'react'
-import { useTranslation } from 'react-i18next'
-import { Alert, Platform, ScrollView, StatusBar, Vibration, View } from 'react-native'
-import { withInAppNotification } from 'react-native-in-app-notification'
-import { useSelector } from 'react-redux'
+import { Player } from "@react-native-community/audio-toolkit";
+import { Layout } from "@ui-kitten/components";
+import i18next from "i18next";
+import React, { useCallback, useEffect, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
+import {
+	Alert,
+	Platform,
+	ScrollView,
+	StatusBar,
+	Vibration,
+	View,
+} from "react-native";
+import { useSelector } from "react-redux";
 
-import beapi from '@berty/api'
+import beapi from "@berty/api";
 import {
 	AccountsDropdown,
 	DividerItem,
@@ -15,15 +21,18 @@ import {
 	MenuItem,
 	MenuItemWithIcon,
 	MenuToggleWithIcon,
-} from '@berty/components'
-import { DropDownPicker, Item } from '@berty/components/shared-components/DropDownPicker'
+} from "@berty/components";
+import {
+	DropDownPicker,
+	Item,
+} from "@berty/components/shared-components/DropDownPicker";
 import {
 	ButtonSetting,
 	ButtonSettingItem,
 	ButtonSettingRow,
 	StringOptionInput,
-} from '@berty/components/shared-components/SettingsButtons'
-import { useStyles } from '@berty/contexts/styles'
+} from "@berty/components/shared-components/SettingsButtons";
+import { useStyles } from "@berty/contexts/styles";
 import {
 	useAllConversations,
 	useAllInteractions,
@@ -42,32 +51,32 @@ import {
 	useImportingAccountAfterClosing,
 	useSwitchAccountAfterClosing,
 	useSyncNetworkConfigOnScreenRemoved,
-} from '@berty/hooks'
-import { languages } from '@berty/i18n/locale/languages'
-import { GoBridge } from '@berty/native-modules/GoBridge'
-import { ScreenFC, useNavigation } from '@berty/navigation'
+} from "@berty/hooks";
+import { languages } from "@berty/i18n/locale/languages";
+import { GoBridge } from "@berty/native-modules/GoBridge";
+import { ScreenFC, useNavigation } from "@berty/navigation";
 import {
 	selectEditedNetworkConfig,
 	setCurrentNetworkConfig,
-} from '@berty/redux/reducers/networkConfig.reducer'
+} from "@berty/redux/reducers/networkConfig.reducer";
 import {
 	PersistentOptionsKeys,
 	selectPersistentOptions,
 	setPersistentOption,
-} from '@berty/redux/reducers/persistentOptions.reducer'
+} from "@berty/redux/reducers/persistentOptions.reducer";
 import {
 	selectAccounts,
 	selectSelectedAccount,
 	setDebugMode,
 	setStreamError,
-} from '@berty/redux/reducers/ui.reducer'
-import { importAccountFromDocumentPicker } from '@berty/utils/accounts'
-import { storageGet, storageSet } from '@berty/utils/accounts/accountClient'
-import { exportLogfile } from '@berty/utils/accounts/accountUtils'
-import { pbDateToNum } from '@berty/utils/convert/time'
-import { defaultGlobalPersistentOptions } from '@berty/utils/global-persistent-options/defaults'
-import { GlobalPersistentOptionsKeys } from '@berty/utils/global-persistent-options/types'
-import { showNeedRestartNotification } from '@berty/utils/notification/notif-in-app'
+} from "@berty/redux/reducers/ui.reducer";
+import { importAccountFromDocumentPicker } from "@berty/utils/accounts";
+import { storageGet, storageSet } from "@berty/utils/accounts/accountClient";
+import { exportLogfile } from "@berty/utils/accounts/accountUtils";
+import { pbDateToNum } from "@berty/utils/convert/time";
+import { defaultGlobalPersistentOptions } from "@berty/utils/global-persistent-options/defaults";
+import { GlobalPersistentOptionsKeys } from "@berty/utils/global-persistent-options/types";
+import { showNeedRestartNotification } from "@berty/utils/notification/notif-in-app";
 
 //
 // DevTools
@@ -75,45 +84,45 @@ import { showNeedRestartNotification } from '@berty/utils/notification/notif-in-
 
 // Styles
 const useStylesDevTools = () => {
-	const { margin, height } = useStyles()
+	const { margin, height } = useStyles();
 	return {
 		buttonRow: [margin.right.scale(20), height(90)],
 		lastButtonRow: height(90),
 		buttonRowMarginTop: margin.top.scale(20),
-	}
-}
+	};
+};
 
 const HeaderDevTools: React.FC<{}> = () => {
-	const { navigate } = useNavigation()
-	const { t } = useTranslation()
-	const _styles = useStylesDevTools()
-	const { text } = useStyles()
-	const colors = useThemeColor()
+	const { navigate } = useNavigation();
+	const { t } = useTranslation();
+	const _styles = useStylesDevTools();
+	const { text } = useStyles();
+	const colors = useThemeColor();
 
 	return (
 		<View>
 			<ButtonSettingRow
 				state={[
 					{
-						name: t('settings.devtools.header-left-button'),
-						icon: 'smartphone-outline',
-						color: colors['alt-secondary-background-header'],
+						name: t("settings.devtools.header-left-button"),
+						icon: "smartphone-outline",
+						color: colors["alt-secondary-background-header"],
 						style: _styles.buttonRow,
 						disabled: true,
 					},
 					{
-						name: t('settings.devtools.header-middle-button'),
-						icon: 'book-outline',
-						color: colors['alt-secondary-background-header'],
+						name: t("settings.devtools.header-middle-button"),
+						icon: "book-outline",
+						color: colors["alt-secondary-background-header"],
 						style: _styles.buttonRow,
 						onPress: () => {
-							navigate('Settings.FakeData')
+							navigate("Settings.FakeData");
 						},
 					},
 					{
-						name: t('settings.devtools.header-right-button'),
-						icon: 'repeat-outline',
-						color: colors['background-header'],
+						name: t("settings.devtools.header-right-button"),
+						icon: "repeat-outline",
+						color: colors["background-header"],
 						style: _styles.lastButtonRow,
 						disabled: true,
 					},
@@ -122,253 +131,282 @@ const HeaderDevTools: React.FC<{}> = () => {
 				styleText={[text.bold]}
 			/>
 		</View>
-	)
-}
+	);
+};
 
 const DiscordShareButton: React.FC = () => {
-	const { navigate, goBack } = useNavigation()
-	const account = useAccount()
-	const { call, done, error } = bertyMethodsHooks.useDevShareInstanceBertyID()
-	const { t } = useTranslation()
-	const colors = useThemeColor()
+	const { navigate, goBack } = useNavigation();
+	const account = useAccount();
+	const { call, done, error } = bertyMethodsHooks.useDevShareInstanceBertyID();
+	const { t } = useTranslation();
+	const colors = useThemeColor();
 
 	React.useEffect(() => {
 		if (done) {
-			Vibration.vibrate(500)
+			Vibration.vibrate(500);
 			if (error) {
-				navigate('Settings.DevText', {
+				navigate("Settings.DevText", {
 					text: error.toString(),
-				})
+				});
 			} else {
-				goBack()
+				goBack();
 			}
 		}
-	}, [done, error, goBack, navigate])
+	}, [done, error, goBack, navigate]);
 
 	const createDiscordShareAlert = () =>
 		Alert.alert(
-			t('settings.devtools.share-button.alert-title'),
-			t('settings.devtools.share-button.alert-message'),
+			t("settings.devtools.share-button.alert-title"),
+			t("settings.devtools.share-button.alert-message"),
 			[
 				{
-					text: t('settings.devtools.share-button.alert-cancel-button'),
-					style: 'cancel',
+					text: t("settings.devtools.share-button.alert-cancel-button"),
+					style: "cancel",
 				},
 				{
-					text: t('settings.devtools.share-button.alert-accept-button'),
+					text: t("settings.devtools.share-button.alert-accept-button"),
 					onPress: () => {
 						call({
 							displayName: account.displayName,
-						})
+						});
 					},
-					style: 'default',
+					style: "default",
 				},
 			],
 			{ cancelable: true },
-		)
+		);
 
 	return (
 		<ButtonSetting
-			name={t('settings.devtools.share-button.title')}
-			icon='activity-outline'
+			name={t("settings.devtools.share-button.title")}
+			icon="activity-outline"
 			iconSize={30}
-			iconColor={colors['alt-secondary-background-header']}
+			iconColor={colors["alt-secondary-background-header"]}
 			onPress={() => {
-				createDiscordShareAlert()
+				createDiscordShareAlert();
 			}}
 		/>
-	)
-}
+	);
+};
 
-const DumpButton: React.FC<{ text: string; name: string }> = ({ text, name }) => {
-	const { navigate } = useNavigation()
-	const colors = useThemeColor()
+const DumpButton: React.FC<{ text: string; name: string }> = ({
+	text,
+	name,
+}) => {
+	const { navigate } = useNavigation();
+	const colors = useThemeColor();
 	return (
 		<ButtonSetting
 			name={name}
-			icon='activity-outline'
+			icon="activity-outline"
 			iconSize={30}
-			iconColor={colors['alt-secondary-background-header']}
-			onPress={() => navigate('Settings.DevText', { text })}
+			iconColor={colors["alt-secondary-background-header"]}
+			onPress={() => navigate("Settings.DevText", { text })}
 		/>
-	)
-}
+	);
+};
 
 const DumpAccount: React.FC = () => {
-	const acc = useAccount()
-	const text = JSON.stringify(acc, null, 2)
-	const { t } = useTranslation()
-	return <DumpButton name={t('settings.devtools.dump-account-button')} text={text} />
-}
+	const acc = useAccount();
+	const text = JSON.stringify(acc, null, 2);
+	const { t } = useTranslation();
+	return (
+		<DumpButton name={t("settings.devtools.dump-account-button")} text={text} />
+	);
+};
 
 const DumpContacts: React.FC = () => {
-	const contacts = useContactsDict()
-	const text = JSON.stringify(contacts, null, 2)
-	const { t } = useTranslation()
-	return <DumpButton name={t('settings.devtools.dump-contacts-button')} text={text} />
-}
+	const contacts = useContactsDict();
+	const text = JSON.stringify(contacts, null, 2);
+	const { t } = useTranslation();
+	return (
+		<DumpButton
+			name={t("settings.devtools.dump-contacts-button")}
+			text={text}
+		/>
+	);
+};
 
 const DumpConversations: React.FC = () => {
-	const conversations = useConversationsDict()
-	const text = JSON.stringify(conversations, null, 2)
-	const { t } = useTranslation()
-	return <DumpButton name={t('settings.devtools.dump-conversations-button')} text={text} />
-}
+	const conversations = useConversationsDict();
+	const text = JSON.stringify(conversations, null, 2);
+	const { t } = useTranslation();
+	return (
+		<DumpButton
+			name={t("settings.devtools.dump-conversations-button")}
+			text={text}
+		/>
+	);
+};
 
 const DumpInteractions: React.FC = () => {
-	const interactions = useAllInteractions()
-	const text = JSON.stringify(interactions, null, 2)
-	const { t } = useTranslation()
-	return <DumpButton name={t('settings.devtools.dump-interactions-button')} text={text} />
-}
+	const interactions = useAllInteractions();
+	const text = JSON.stringify(interactions, null, 2);
+	const { t } = useTranslation();
+	return (
+		<DumpButton
+			name={t("settings.devtools.dump-interactions-button")}
+			text={text}
+		/>
+	);
+};
 
 const SendToAllContacts: React.FC = () => {
-	const [disabled, setDisabled] = useState(false)
-	const { t } = useTranslation()
-	const [name, setName] = useState(t('settings.devtools.send-to-all-button.title'))
-	const client = useMessengerClient()
-	const colors = useThemeColor()
-	const conversations = useAllConversations()
+	const [disabled, setDisabled] = useState(false);
+	const { t } = useTranslation();
+	const [name, setName] = useState(
+		t("settings.devtools.send-to-all-button.title"),
+	);
+	const client = useMessengerClient();
+	const colors = useThemeColor();
+	const conversations = useAllConversations();
 	const filteredConvs = conversations.filter(
-		conv => conv.type === beapi.messenger.Conversation.Type.ContactType && !(conv as any)?.fake,
-	)
-	const body = `${t('settings.devtools.send-to-all-button.test')}${new Date(
+		(conv) =>
+			conv.type === beapi.messenger.Conversation.Type.ContactType &&
+			!(conv as any)?.fake,
+	);
+	const body = `${t("settings.devtools.send-to-all-button.test")}${new Date(
 		Date.now(),
-	).toLocaleString()}`
-	const buf = beapi.messenger.AppMessage.UserMessage.encode({ body }).finish()
+	).toLocaleString()}`;
+	const buf = beapi.messenger.AppMessage.UserMessage.encode({ body }).finish();
 	const handleSendToAll = React.useCallback(async () => {
-		setDisabled(true)
-		setName(t('settings.devtools.send-to-all-button.sending'))
+		setDisabled(true);
+		setName(t("settings.devtools.send-to-all-button.sending"));
 		for (const conv of filteredConvs) {
 			try {
 				await client?.interact({
 					conversationPublicKey: conv.publicKey,
 					type: beapi.messenger.AppMessage.Type.TypeUserMessage,
 					payload: buf,
-				})
+				});
 			} catch (e) {
-				console.warn(e)
+				console.warn(e);
 			}
 		}
-		setDisabled(false)
-		setName(`${t('settings.devtools.send-to-all-button.tried', { length: filteredConvs.length })}`)
-		setTimeout(() => setName(t('settings.devtools.send-to-all-button.title')), 1000)
-	}, [buf, filteredConvs, client, t])
+		setDisabled(false);
+		setName(
+			`${t("settings.devtools.send-to-all-button.tried", { length: filteredConvs.length })}`,
+		);
+		setTimeout(
+			() => setName(t("settings.devtools.send-to-all-button.title")),
+			1000,
+		);
+	}, [buf, filteredConvs, client, t]);
 	return (
 		<ButtonSetting
 			name={name}
-			icon='paper-plane-outline'
+			icon="paper-plane-outline"
 			iconSize={30}
-			iconColor={colors['alt-secondary-background-header']}
+			iconColor={colors["alt-secondary-background-header"]}
 			disabled={disabled}
 			onPress={() => {
-				handleSendToAll()
-				Vibration.vibrate(500)
+				handleSendToAll();
+				Vibration.vibrate(500);
 			}}
 		/>
-	)
-}
+	);
+};
 
 const DumpMembers: React.FC = () => {
-	const members = useAppSelector(state => state.messenger.membersBuckets)
-	const text = JSON.stringify(members, null, 2)
-	const { t } = useTranslation()
-	return <DumpButton name={t('settings.devtools.dump-members-button')} text={text} />
-}
+	const members = useAppSelector((state) => state.messenger.membersBuckets);
+	const text = JSON.stringify(members, null, 2);
+	const { t } = useTranslation();
+	return (
+		<DumpButton name={t("settings.devtools.dump-members-button")} text={text} />
+	);
+};
 
 const PlaySound: React.FC = () => {
-	const playSound = usePlaySound()
-	const colors = useThemeColor()
+	const playSound = usePlaySound();
+	const colors = useThemeColor();
 
 	return (
 		<>
 			<ButtonSetting
-				name={'Play sound'}
-				icon='speaker-outline'
+				name={"Play sound"}
+				icon="speaker-outline"
 				iconSize={30}
-				iconColor={colors['alt-secondary-background-header']}
+				iconColor={colors["alt-secondary-background-header"]}
 				onPress={() => {
-					new Player('Notif_Berty02.mp3', { mixWithOthers: true }).play()
+					new Player("Notif_Berty02.mp3", { mixWithOthers: true }).play();
 				}}
 			/>
 			<ButtonSetting
-				name={'Play preloaded sound'}
-				icon='speaker-outline'
+				name={"Play preloaded sound"}
+				icon="speaker-outline"
 				iconSize={30}
-				iconColor={colors['alt-secondary-background-header']}
-				onPress={() => playSound('contactRequestSent')}
+				iconColor={colors["alt-secondary-background-header"]}
+				onPress={() => playSound("contactRequestSent")}
 			/>
 		</>
-	)
-}
+	);
+};
 
-const BodyDevTools: React.FC<{}> = withInAppNotification(({ showNotification }: any) => {
-	const _styles = useStylesDevTools()
-	const { padding, flex, margin, text } = useStyles()
-	const { navigate } = useNavigation()
-	const navigation = useNavigation()
-	const { t } = useTranslation()
-	const tyberHosts = useRef<{ [key: string]: string[] }>({})
-	const [, setRerender] = useState(0)
-	const colors = useThemeColor()
-	const dispatch = useAppDispatch()
-	const persistentOptions = useSelector(selectPersistentOptions)
-	const client = useMessengerClient()
-	const restart = useRestartAfterClosing()
-	const restartBridge = useCloseBridgeAfterClosing()
-	const selectedAccount = useAppSelector(selectSelectedAccount)
-	const restartOnboarding = useOnBoardingAfterClosing()
-	const [forceMock, setForceMock] = useState<boolean>(false)
-	const networkConfig = useSelector(selectEditedNetworkConfig)
+const BodyDevTools = () => {
+	const _styles = useStylesDevTools();
+	const { padding, flex, margin, text } = useStyles();
+	const { navigate } = useNavigation();
+	const navigation = useNavigation();
+	const { t } = useTranslation();
+	const tyberHosts = useRef<{ [key: string]: string[] }>({});
+	const [, setRerender] = useState(0);
+	const colors = useThemeColor();
+	const dispatch = useAppDispatch();
+	const persistentOptions = useSelector(selectPersistentOptions);
+	const client = useMessengerClient();
+	const selectedAccount = useAppSelector(selectSelectedAccount);
+	const restartOnboarding = useOnBoardingAfterClosing();
+	const [forceMock, setForceMock] = useState<boolean>(false);
+	const networkConfig = useSelector(selectEditedNetworkConfig);
 
 	const addTyberHost = useCallback(
 		(host: string, addresses: string[]) => {
 			if (tyberHosts.current[host]) {
-				return
+				return;
 			}
 
-			tyberHosts.current[host] = addresses
-			setRerender(Date.now())
+			tyberHosts.current[host] = addresses;
+			setRerender(Date.now());
 		},
 		[tyberHosts, setRerender],
-	)
+	);
 	const items: any = Object.entries(languages).map(([key, attrs]) => ({
 		label: attrs.localName,
 		value: key,
-	}))
+	}));
 
-	items.push({ label: 'Debug', value: 'cimode' })
+	items.push({ label: "Debug", value: "cimode" });
 
 	useEffect(() => {
-		let subStream: any = null
+		let subStream: any = null;
 
-		client?.tyberHostSearch({}).then(async stream => {
+		client?.tyberHostSearch({}).then(async (stream) => {
 			stream.onMessage((msg, err) => {
 				if (err) {
-					return
+					return;
 				}
 
 				if (!msg) {
-					return
+					return;
 				}
 
 				try {
-					addTyberHost(msg?.hostname!, [...msg?.ipv4, ...msg?.ipv6])
+					addTyberHost(msg?.hostname!, [...msg?.ipv4, ...msg?.ipv6]);
 				} catch (e) {
-					console.warn(e)
+					console.warn(e);
 				}
-			})
+			});
 
-			await stream.start()
-			subStream = stream
-		})
+			await stream.start();
+			subStream = stream;
+		});
 
 		return () => {
 			if (subStream !== null) {
-				subStream.stop()
+				subStream.stop();
 			}
-		}
-	}, [addTyberHost, client])
+		};
+	}, [addTyberHost, client]);
 
 	// effect to get async storage forceMock value
 	useEffect(() => {
@@ -376,47 +414,54 @@ const BodyDevTools: React.FC<{}> = withInAppNotification(({ showNotification }: 
 			try {
 				const finalForceMock =
 					JSON.parse(await storageGet(GlobalPersistentOptionsKeys.ForceMock)) ||
-					defaultGlobalPersistentOptions().forceMock
-				setForceMock(finalForceMock)
+					defaultGlobalPersistentOptions().forceMock;
+				setForceMock(finalForceMock);
 			} catch (e) {
-				console.warn('Failed to get forceMock value:', e)
+				console.warn("Failed to get forceMock value:", e);
 			}
-		}
+		};
 
-		f().then()
-	}, [])
+		f().then();
+	}, []);
 
 	const handleForceMockToggle = useCallback(async () => {
-		const updateForceMock = forceMock ? false : true
-		await storageSet(GlobalPersistentOptionsKeys.ForceMock, JSON.stringify(updateForceMock))
-		setForceMock(updateForceMock)
-	}, [forceMock])
+		const updateForceMock = forceMock ? false : true;
+		await storageSet(
+			GlobalPersistentOptionsKeys.ForceMock,
+			JSON.stringify(updateForceMock),
+		);
+		setForceMock(updateForceMock);
+	}, [forceMock]);
 
-	const importingAccountAfterClosing = useImportingAccountAfterClosing()
-	const [isHandlingPress, setIsHandlingPress] = React.useState(false)
-	const accounts = useSelector(selectAccounts)
-	const switchAccount = useSwitchAccountAfterClosing()
+	const importingAccountAfterClosing = useImportingAccountAfterClosing();
+	const [isHandlingPress, setIsHandlingPress] = React.useState(false);
+	const accounts = useSelector(selectAccounts);
+	const switchAccount = useSwitchAccountAfterClosing();
 	const handlePress = React.useCallback(
 		async (item: beapi.account.IAccountMetadata) => {
 			if (isHandlingPress || !item.accountId) {
-				return
+				return;
 			}
-			setIsHandlingPress(true)
+			setIsHandlingPress(true);
 			if (selectedAccount !== item.accountId) {
-				switchAccount(item.accountId)
+				switchAccount(item.accountId);
 			}
-			return
+			return;
 		},
 		[isHandlingPress, selectedAccount, switchAccount],
-	)
+	);
 
 	return (
 		<View
-			style={[flex.tiny, margin.bottom.small, { backgroundColor: colors['secondary-background'] }]}
+			style={[
+				flex.tiny,
+				margin.bottom.small,
+				{ backgroundColor: colors["secondary-background"] },
+			]}
 		>
 			<ItemSection>
 				<AccountsDropdown
-					placeholder={t('settings.accounts.accounts-button')}
+					placeholder={t("settings.accounts.accounts-button")}
 					items={[...accounts].sort(
 						(a, b) => pbDateToNum(a.creationDate) - pbDateToNum(b.creationDate),
 					)}
@@ -426,22 +471,24 @@ const BodyDevTools: React.FC<{}> = withInAppNotification(({ showNotification }: 
 			</ItemSection>
 
 			<ItemSection>
-				<MenuItem onPress={restartOnboarding}>{t('settings.accounts.create-button')}</MenuItem>
+				<MenuItem onPress={restartOnboarding}>
+					{t("settings.accounts.create-button")}
+				</MenuItem>
 
-				{Platform.OS !== 'web' && (
+				{Platform.OS !== "web" && (
 					<>
 						<DividerItem />
 						<MenuItem
 							onPress={async () => {
-								const filePath = await importAccountFromDocumentPicker()
+								const filePath = await importAccountFromDocumentPicker();
 								if (!filePath) {
-									console.warn("imported file doesn't exist")
-									return
+									console.warn("imported file doesn't exist");
+									return;
 								}
-								importingAccountAfterClosing(filePath)
+								importingAccountAfterClosing(filePath);
 							}}
 						>
-							{t('settings.accounts.import-button')}
+							{t("settings.accounts.import-button")}
 						</MenuItem>
 					</>
 				)}
@@ -450,22 +497,22 @@ const BodyDevTools: React.FC<{}> = withInAppNotification(({ showNotification }: 
 			<ItemSection>
 				<DividerItem />
 				<MenuItemWithIcon
-					iconName='pricetags-outline'
-					onPress={() => navigate('Settings.LinkedIdentities')}
+					iconName="pricetags-outline"
+					onPress={() => navigate("Settings.LinkedIdentities")}
 				>
-					{t('settings.home.linked-identities-button')}
+					{t("settings.home.linked-identities-button")}
 				</MenuItemWithIcon>
 				<MenuItemWithIcon
-					iconName='book-outline'
-					onPress={() => navigate('Settings.DirectorySearch')}
+					iconName="book-outline"
+					onPress={() => navigate("Settings.DirectorySearch")}
 				>
-					{t('settings.home.directory-search-button')}
+					{t("settings.home.directory-search-button")}
 				</MenuItemWithIcon>
 			</ItemSection>
 
 			<ItemSection>
 				<MenuToggleWithIcon
-					iconName='unlock-outline'
+					iconName="unlock-outline"
 					onPress={() =>
 						dispatch(
 							setCurrentNetworkConfig({
@@ -479,73 +526,80 @@ const BodyDevTools: React.FC<{}> = withInAppNotification(({ showNotification }: 
 						)
 					}
 					isToggleOn={
-						networkConfig?.allowUnsecureGrpcConnections === beapi.account.NetworkConfig.Flag.Enabled
+						networkConfig?.allowUnsecureGrpcConnections ===
+						beapi.account.NetworkConfig.Flag.Enabled
 					}
 				>
-					{t('settings.devtools.allow-unsecure-grpc')}
+					{t("settings.devtools.allow-unsecure-grpc")}
 				</MenuToggleWithIcon>
 			</ItemSection>
 			<View style={[padding.horizontal.medium]}>
 				<ButtonSetting
-					name={t('settings.devtools.force-mock-button')}
-					icon='folder-outline'
+					name={t("settings.devtools.force-mock-button")}
+					icon="folder-outline"
 					iconSize={30}
-					iconColor={colors['alt-secondary-background-header']}
+					iconColor={colors["alt-secondary-background-header"]}
 					toggled
 					varToggle={forceMock}
 					actionToggle={handleForceMockToggle}
 				/>
 				<ButtonSetting
-					icon='monitor-outline'
-					iconColor={colors['alt-secondary-background-header']}
-					name={t('settings.devtools.select-node.title')}
+					icon="monitor-outline"
+					iconColor={colors["alt-secondary-background-header"]}
+					name={t("settings.devtools.select-node.title")}
 					onPress={() =>
-						navigate('Account.SelectNode', {
+						navigate("Account.SelectNode", {
 							init: false,
-							action: async (_external: boolean, _address: string, _port: string) => {
-								showNeedRestartNotification(showNotification, restartBridge, t)
-								return true
+							action: async (
+								_external: boolean,
+								_address: string,
+								_port: string,
+							) => {
+								showNeedRestartNotification("restartBridge", t);
+								return true;
 							},
 						})
 					}
 				/>
 				<ButtonSetting
-					icon='eye-outline'
-					iconColor={colors['alt-secondary-background-header']}
-					name={t('settings.home.appearance-button')}
-					onPress={() => navigate('Settings.Appearance')}
+					icon="eye-outline"
+					iconColor={colors["alt-secondary-background-header"]}
+					name={t("settings.home.appearance-button")}
+					onPress={() => navigate("Settings.Appearance")}
 				/>
 				<ButtonSetting
-					name={t('settings.devtools.system-info-button')}
-					icon='info-outline'
+					name={t("settings.devtools.system-info-button")}
+					icon="info-outline"
 					iconSize={30}
-					iconColor={colors['alt-secondary-background-header']}
-					onPress={() => navigate('Settings.SystemInfo')}
+					iconColor={colors["alt-secondary-background-header"]}
+					onPress={() => navigate("Settings.SystemInfo")}
 				/>
 				<ButtonSetting
-					name={t('settings.devtools.simulate-button')}
-					icon='alert-triangle-outline'
+					name={t("settings.devtools.simulate-button")}
+					icon="alert-triangle-outline"
 					iconSize={30}
-					iconColor={colors['alt-secondary-background-header']}
+					iconColor={colors["alt-secondary-background-header"]}
 					onPress={() =>
-						dispatch(setStreamError({ error: t('settings.devtools.simulate-button') }))
+						dispatch(
+							setStreamError({ error: t("settings.devtools.simulate-button") }),
+						)
 					}
 				/>
 				<ButtonSetting
-					name={t('settings.devtools.simulate-js-error-button')}
-					icon='alert-octagon'
-					iconPack='feather'
+					name={t("settings.devtools.simulate-js-error-button")}
+					icon="alert-octagon"
+					iconPack="feather"
 					iconSize={30}
-					iconColor={colors['alt-secondary-background-header']}
+					iconColor={colors["alt-secondary-background-header"]}
 					onPress={() => {
-						throw new Error('test error')
+						throw new Error("test error");
 					}}
 				/>
 				<ButtonSetting
-					name={t('settings.devtools.debug-button')}
-					icon='monitor-outline'
+					name={t("settings.devtools.debug-button")}
+					icon="monitor-outline"
 					iconSize={30}
-					iconColor={colors['alt-secondary-background-header']}
+					iconColor={colors["alt-secondary-background-header"]}
 					toggled
 					varToggle={persistentOptions.debug.enable}
 					actionToggle={() => {
@@ -556,89 +610,93 @@ const BodyDevTools: React.FC<{}> = withInAppNotification(({ showNotification }: 
 									enable: !persistentOptions?.debug.enable,
 								},
 							}),
-						)
+						);
 					}}
 				/>
 				<StringOptionInput
-					name={t('settings.devtools.log-button.name')}
-					bulletPointValue={t('settings.devtools.log-button.bullet-point')}
+					name={t("settings.devtools.log-button.name")}
+					bulletPointValue={t("settings.devtools.log-button.bullet-point")}
 					getOptionValue={() => persistentOptions.log.format}
-					setOptionValue={val => {
+					setOptionValue={(val) => {
 						dispatch(
 							setPersistentOption({
 								type: PersistentOptionsKeys.Log,
 								payload: { format: val },
 							}),
-						)
-						showNeedRestartNotification(showNotification, restart, t)
+						);
+						showNeedRestartNotification("restartAfterClosing", t);
 					}}
 				/>
 				<StringOptionInput
-					name={t('settings.devtools.log-filters-button.name')}
-					bulletPointValue={t('settings.devtools.log-filters-button.bullet-point')}
+					name={t("settings.devtools.log-filters-button.name")}
+					bulletPointValue={t(
+						"settings.devtools.log-filters-button.bullet-point",
+					)}
 					getOptionValue={async () =>
 						(await storageGet(GlobalPersistentOptionsKeys.LogFilters)) ||
 						defaultGlobalPersistentOptions().logFilters.format
 					}
-					setOptionValue={async val => {
-						await storageSet(GlobalPersistentOptionsKeys.LogFilters, val)
-						showNeedRestartNotification(showNotification, restart, t)
+					setOptionValue={async (val) => {
+						await storageSet(GlobalPersistentOptionsKeys.LogFilters, val);
+						showNeedRestartNotification("restartAfterClosing", t);
 					}}
 				/>
 				<ButtonSetting
-					name={t('settings.devtools.export-logs-button')}
-					icon='file-text-outline'
+					name={t("settings.devtools.export-logs-button")}
+					icon="file-text-outline"
 					iconSize={30}
-					iconColor={colors['alt-secondary-background-header']}
+					iconColor={colors["alt-secondary-background-header"]}
 					onPress={async () => {
 						// await logfileList()
-						await exportLogfile(selectedAccount)
+						await exportLogfile(selectedAccount);
 					}}
 				/>
 				<StringOptionInput
-					name={t('settings.devtools.tyber-host-button.name')}
-					bulletPointValue={t('settings.devtools.tyber-host-button.bullet-point')}
+					name={t("settings.devtools.tyber-host-button.name")}
+					bulletPointValue={t(
+						"settings.devtools.tyber-host-button.bullet-point",
+					)}
 					getOptionValue={async () =>
 						(await storageGet(GlobalPersistentOptionsKeys.TyberHost)) ||
 						defaultGlobalPersistentOptions().tyberHost.address
 					}
-					setOptionValue={async val => {
-						await storageSet(GlobalPersistentOptionsKeys.TyberHost, val)
-						showNeedRestartNotification(showNotification, restart, t)
+					setOptionValue={async (val) => {
+						await storageSet(GlobalPersistentOptionsKeys.TyberHost, val);
+						showNeedRestartNotification("restartAfterClosing", t);
 					}}
 				/>
 				{Object.entries(tyberHosts.current).map(([hostname, ipAddresses]) => (
 					<ButtonSetting
 						key={hostname}
-						name={t('settings.devtools.tyber-attach', { host: hostname })}
-						icon='link-2-outline'
+						name={t("settings.devtools.tyber-attach", { host: hostname })}
+						icon="link-2-outline"
 						iconSize={30}
-						iconColor={colors['alt-secondary-background-header']}
+						iconColor={colors["alt-secondary-background-header"]}
 						onPress={async () => {
 							try {
 								await client?.tyberHostAttach({
 									addresses: ipAddresses,
-								})
+								});
 							} catch (e) {
-								console.warn(e)
+								console.warn(e);
 							}
 						}}
 					>
 						<ButtonSettingItem
-							value={ipAddresses.join('\n')}
+							value={ipAddresses.join("\n")}
 							iconSize={15}
 							disabled
-							styleText={{ color: colors['secondary-text'] }}
+							styleText={{ color: colors["secondary-text"] }}
 							styleContainer={[margin.bottom.tiny]}
 						/>
 					</ButtonSetting>
 				))}
 				<ButtonSetting
-					name={t('settings.devtools.add-dev-conversations-button')}
-					icon='plus-outline'
+					name={t("settings.devtools.add-dev-conversations-button")}
+					icon="plus-outline"
 					iconSize={30}
-					iconColor={colors['alt-secondary-background-header']}
-					onPress={() => navigation.navigate('Settings.AddDevConversations')}
+					iconColor={colors["alt-secondary-background-header"]}
+					onPress={() => navigation.navigate("Settings.AddDevConversations")}
 				/>
 				<DiscordShareButton />
 				<DumpAccount />
@@ -647,70 +705,72 @@ const BodyDevTools: React.FC<{}> = withInAppNotification(({ showNotification }: 
 				<DumpInteractions />
 				<DumpMembers />
 				<ButtonSetting
-					name={t('settings.devtools.stop-node-button')}
-					icon='activity-outline'
+					name={t("settings.devtools.stop-node-button")}
+					icon="activity-outline"
 					iconSize={30}
-					iconColor={colors['alt-secondary-background-header']}
+					iconColor={colors["alt-secondary-background-header"]}
 					onPress={() => GoBridge.closeBridge()}
 				/>
 				<ButtonSetting
-					name={t('settings.devtools.local-grpc-button')}
-					icon='hard-drive-outline'
+					name={t("settings.devtools.local-grpc-button")}
+					icon="hard-drive-outline"
 					iconSize={30}
-					iconColor={colors['alt-secondary-background-header']}
+					iconColor={colors["alt-secondary-background-header"]}
 					disabled
 				/>
 				<ButtonSetting
-					name={t('settings.devtools.console-logs-button')}
-					icon='folder-outline'
+					name={t("settings.devtools.console-logs-button")}
+					icon="folder-outline"
 					iconSize={30}
-					iconColor={colors['alt-secondary-background-header']}
-					actionIcon='arrow-ios-forward'
+					iconColor={colors["alt-secondary-background-header"]}
+					actionIcon="arrow-ios-forward"
 					disabled
 				/>
 				<ButtonSetting
-					name={t('settings.devtools.ipfs-webui-button')}
-					icon='smartphone-outline'
+					name={t("settings.devtools.ipfs-webui-button")}
+					icon="smartphone-outline"
 					iconSize={30}
-					iconColor={colors['alt-secondary-background-header']}
-					actionIcon='arrow-ios-forward'
-					onPress={() => navigate('Settings.IpfsWebUI')}
+					iconColor={colors["alt-secondary-background-header"]}
+					actionIcon="arrow-ios-forward"
+					onPress={() => navigate("Settings.IpfsWebUI")}
 				/>
 				<SendToAllContacts />
 				<PlaySound />
 				<DropDownPicker
 					items={items}
 					defaultValue={i18next.language}
-					onChangeItem={async (item: Item) => await i18next.changeLanguage(item.value)}
+					onChangeItem={async (item: Item) =>
+						await i18next.changeLanguage(item.value)
+					}
 				/>
 				<ButtonSetting
-					name={t('debug.inspector.show-button')}
-					icon='umbrella-outline'
+					name={t("debug.inspector.show-button")}
+					icon="umbrella-outline"
 					iconSize={30}
-					iconColor={colors['alt-secondary-background-header']}
-					actionIcon='arrow-ios-forward'
+					iconColor={colors["alt-secondary-background-header"]}
+					actionIcon="arrow-ios-forward"
 					onPress={() => dispatch(setDebugMode(true))}
 				/>
 				<ButtonSettingRow
 					state={[
 						{
-							name: t('settings.devtools.footer-left-button'),
-							icon: 'smartphone-outline',
-							color: colors['alt-secondary-background-header'],
+							name: t("settings.devtools.footer-left-button"),
+							icon: "smartphone-outline",
+							color: colors["alt-secondary-background-header"],
 							style: _styles.buttonRow,
 							disabled: true,
 						},
 						{
-							name: t('settings.devtools.footer-middle-button'),
-							icon: 'list-outline',
-							color: colors['alt-secondary-background-header'],
+							name: t("settings.devtools.footer-middle-button"),
+							icon: "list-outline",
+							color: colors["alt-secondary-background-header"],
 							style: _styles.buttonRow,
 							disabled: true,
 						},
 						{
-							name: t('settings.devtools.footer-right-button'),
-							icon: 'repeat-outline',
-							color: colors['warning-asset'],
+							name: t("settings.devtools.footer-right-button"),
+							icon: "repeat-outline",
+							color: colors["warning-asset"],
 							style: _styles.lastButtonRow,
 							disabled: true,
 						},
@@ -720,28 +780,31 @@ const BodyDevTools: React.FC<{}> = withInAppNotification(({ showNotification }: 
 				/>
 			</View>
 		</View>
-	)
-})
+	);
+};
 
-export const DevTools: ScreenFC<'Settings.DevTools'> = () => {
-	const colors = useThemeColor()
-	const { padding } = useStyles()
-	useSyncNetworkConfigOnScreenRemoved()
+export const DevTools: ScreenFC<"Settings.DevTools"> = () => {
+	const colors = useThemeColor();
+	const { padding } = useStyles();
+	useSyncNetworkConfigOnScreenRemoved();
 
 	return (
-		<Layout style={{ backgroundColor: colors['main-background'], flex: 1 }}>
+		<Layout style={{ backgroundColor: colors["main-background"], flex: 1 }}>
 			<StatusBar
-				backgroundColor={colors['alt-secondary-background-header']}
-				barStyle='light-content'
+				backgroundColor={colors["alt-secondary-background-header"]}
+				barStyle="light-content"
 			/>
 			<ScrollView bounces={false}>
 				<View
-					style={[padding.medium, { backgroundColor: colors['alt-secondary-background-header'] }]}
+					style={[
+						padding.medium,
+						{ backgroundColor: colors["alt-secondary-background-header"] },
+					]}
 				>
 					<HeaderDevTools />
 				</View>
 				<BodyDevTools />
 			</ScrollView>
 		</Layout>
-	)
-}
+	);
+};

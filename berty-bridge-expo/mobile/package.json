@@ -39,6 +39,7 @@
     "expo-haptics": "~14.1.4",
     "expo-linking": "~7.1.5",
     "expo-network": "^7.1.5",
+    "expo-notifications": "^0.31.2",
     "expo-router": "~5.0.7",
     "expo-status-bar": "~2.2.3",
     "expo-symbols": "~0.4.4",
