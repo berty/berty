@@ -22,13 +22,22 @@ config.resolver.extraNodeModules = {
 	"berty-bridge-expo": "..",
 };
 
+config.resolver.assetExts = config.resolver.assetExts.filter(
+	(ext) => ext !== "svg",
+);
+config.resolver.sourceExts = [...config.resolver.sourceExts, "svg"];
+
 config.watchFolders = [path.resolve(__dirname, "..")];
 
-config.transformer.getTransformOptions = async () => ({
-	transform: {
-		experimentalImportSupport: false,
-		inlineRequires: true,
-	},
-});
+config.transformer = {
+	...config.transformer,
+	getTransformOptions: async () => ({
+		transform: {
+			experimentalImportSupport: false,
+			inlineRequires: true,
+		},
+	}),
+	babelTransformerPath: require.resolve("react-native-svg-transformer"),
+};
 
 module.exports = config;

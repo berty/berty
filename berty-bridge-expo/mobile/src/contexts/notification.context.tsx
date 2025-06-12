@@ -1,15 +1,11 @@
 import { CommonActions } from "@react-navigation/native";
 import React, { useContext, useEffect } from "react";
-import {
-	EmitterSubscription,
-	NativeEventEmitter,
-	NativeModules,
-	Platform,
-} from "react-native";
+import { Platform } from "react-native";
+import { useEventListener } from "expo";
+import BertyBridgeExpo from "berty-bridge-expo";
 import * as Notifications from "expo-notifications";
 
 import beapi from "@berty/api";
-import NotificationBody from "@berty/components/NotificationBody";
 import { EventEmitterContext } from "@berty/contexts/eventEmitter.context";
 import { useNavigation } from "@berty/navigation";
 import { accountClient } from "@berty/utils/accounts/accountClient";
@@ -80,48 +76,41 @@ const PushNotificationBridge = () => {
 				}
 			});
 
-		const pushNotifListener = async (data: any) => {
-			const push = await accountClient.pushReceive({
-				payload: data,
-				tokenType:
-					Platform.OS === "ios"
-						? beapi.push.PushServiceTokenType
-								.PushTokenApplePushNotificationService
-						: beapi.push.PushServiceTokenType.PushTokenFirebaseCloudMessaging,
-			});
-			if (!push.pushData?.alreadyReceived) {
-				const convPK = push.pushData?.conversationPublicKey;
-				if (convPK) {
-					Notifications.scheduleNotificationAsync({
-						content: {
-							title: push.push?.title,
-							body: push.push?.body,
-							data: { type: "message", convPK: convPK },
-						},
-						trigger: null,
-					});
-				}
-			}
-		};
-		let eventListener: EmitterSubscription | undefined;
-		if (NativeModules.EventEmitter) {
-			try {
-				eventListener = new NativeEventEmitter(
-					NativeModules.EventEmitter,
-				).addListener("onPushReceived", pushNotifListener);
-			} catch (e) {
-				console.warn("Push notif add listener failed: " + e);
-			}
-		}
 		return () => {
 			try {
 				Notifications.removeNotificationSubscription(responseListener);
-				eventListener?.remove(); // Unsubscribe from native event emitter
 			} catch (e) {
 				console.warn("Push notif remove listener failed: " + e);
 			}
 		};
 	}, [conversations, dispatch, navigate]);
+
+	const pushNotifListener = async (data: any) => {
+		const push = await accountClient.pushReceive({
+			payload: data,
+			tokenType:
+				Platform.OS === "ios"
+					? beapi.push.PushServiceTokenType
+							.PushTokenApplePushNotificationService
+					: beapi.push.PushServiceTokenType.PushTokenFirebaseCloudMessaging,
+		});
+		if (!push.pushData?.alreadyReceived) {
+			const convPK = push.pushData?.conversationPublicKey;
+			if (convPK) {
+				Notifications.scheduleNotificationAsync({
+					content: {
+						title: push.push?.title,
+						body: push.push?.body,
+						data: { type: "message", convPK: convPK },
+					},
+					trigger: null,
+				});
+			}
+		}
+	};
+
+	useEventListener(BertyBridgeExpo, "onPushReceived", pushNotifListener);
+
 	return null;
 };
 

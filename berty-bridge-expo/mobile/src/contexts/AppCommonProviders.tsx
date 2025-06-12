@@ -6,7 +6,6 @@ import { Provider as ReduxProvider } from "react-redux";
 
 import { CustomIconsPack } from "@berty/assets/custom-icons";
 import { FeatherIconsPack } from "@berty/assets/feather-icons";
-import { useFonts } from "@berty/assets/fonts-loader";
 import { AppDimensionsProvider, StyleProvider } from "@berty/contexts/styles";
 import reduxStore from "@berty/redux/store";
 
@@ -15,12 +14,6 @@ interface AppCommonProvidersProps {
 }
 
 const AppCommonProviders = ({ children }: AppCommonProvidersProps) => {
-	const { isFontLoaded } = useFonts();
-
-	if (!isFontLoaded) {
-		return null;
-	}
-
 	return (
 		<SafeAreaProvider>
 			<AppDimensionsProvider>

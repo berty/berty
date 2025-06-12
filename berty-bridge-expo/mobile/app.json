@@ -34,7 +34,23 @@
       "output": "static",
       "favicon": "./assets/images/favicon.png"
     },
-    "plugins": ["../app.plugin.js", "expo-router"],
+    "plugins": [
+      "../app.plugin.js",
+      "expo-router",
+      [
+        "expo-font",
+        {
+          "fonts": [
+            "./src/assets/font/OpenSans-Bold.ttf",
+            "./src/assets/font/OpenSans-Light.ttf",
+            "./src/assets/font/OpenSans-LightItalic.ttf",
+            "./src/assets/font/OpenSans-Regular.ttf",
+            "./src/assets/font/OpenSans-SemiBold.ttf",
+            "./src/assets/font/OpenSans-SemiBoldItalic.ttf"
+          ]
+        }
+      ]
+    ],
     "experiments": {
       "typedRoutes": true
     },

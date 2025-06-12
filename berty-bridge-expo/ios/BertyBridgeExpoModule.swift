@@ -64,6 +64,8 @@ public class BertyBridgeExpoModule: Module {
     Constants([
         "debug": self.debug
     ])
+
+    Events("onPushReceived")
       
     AsyncFunction("initBridge") { (promise: Promise) in
         do {
