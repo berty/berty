@@ -11,6 +11,10 @@ import { UIKittenProvider } from "@berty/contexts/uiKitten.context";
 import { useMountEffect, useThemeColor } from "@berty/hooks";
 import { isReadyRef, navigationRef } from "@berty/navigation";
 import { Navigation } from "@berty/navigation/stacks";
+import { initI18N } from "@berty/i18n";
+import "intl-pluralrules";
+
+initI18N();
 
 const BootSplashInhibitor: React.FC = () => {
 	useMountEffect(() => {
