@@ -97,7 +97,7 @@
     "@types/react-dom": "^17.0.11",
     "concurrently": "^6.5.1",
     "cross-env": "^7.0.3",
-    "electron": "^13.6.7",
+    "electron": "^28.3.2",
     "electron-builder": "^23.0.3",
     "electron-fix": "^1.1.3",
     "electronmon": "^2.0.2",
