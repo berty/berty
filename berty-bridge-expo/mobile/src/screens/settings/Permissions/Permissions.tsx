@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react'
-import { AppState, AppStateStatus, Platform } from 'react-native'
+import { AppState, AppStateStatus, Platform, type NativeEventSubscription } from 'react-native'
 import { openSettings, PermissionStatus, RESULTS } from 'react-native-permissions'
 import { useDispatch } from 'react-redux'
 
@@ -109,11 +109,16 @@ export const Permissions: ScreenFC<'Settings.Permissions'> = ({ route: { params 
 	// listener to handle the change of the app state
 	// (the app state change when we go to the OS settings of the app, so when you come back in the app, we can detect it)
 	useEffect(() => {
+		var sub: NativeEventSubscription
+
 		if (listenerAvailable) {
-			AppState.addEventListener('change', handleAppStateChange)
+			sub = AppState.addEventListener('change', handleAppStateChange)
 		}
+
 		return () => {
-			AppState.removeEventListener('change', handleAppStateChange)
+			if (sub) {
+				sub.remove()
+			}
 		}
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [])
