@@ -1,17 +1,10 @@
 import { Camera } from 'expo-camera'
-import { Platform } from 'react-native'
+import { PermissionsAndroid, Platform } from 'react-native'
 import {
-	check,
-	checkMultiple,
-	checkNotifications,
-	Permission,
-	PERMISSIONS,
 	PermissionStatus,
-	request,
-	requestMultiple,
-	requestNotifications,
 	RESULTS,
 } from 'react-native-permissions'
+import * as Notifications from 'expo-notifications';
 
 export enum PermissionType {
 	proximity = 'proximity',
@@ -22,59 +15,83 @@ export enum PermissionType {
 	contacts = 'contacts',
 }
 
-const permissionsByDevice: Record<
-	Exclude<PermissionType, PermissionType.notification | PermissionType.proximity>,
-	Permission | undefined
-> = {
-	camera: Platform.select({
-		ios: PERMISSIONS?.IOS?.CAMERA,
-		android: PERMISSIONS?.ANDROID?.CAMERA,
-		web: undefined,
-	}),
-	audio: Platform.select({
-		ios: PERMISSIONS?.IOS?.MICROPHONE,
-		android: PERMISSIONS?.ANDROID?.RECORD_AUDIO,
-		web: undefined,
-	}),
-	gallery: Platform.select({
-		ios: PERMISSIONS?.IOS?.PHOTO_LIBRARY,
-		android: PERMISSIONS?.ANDROID?.READ_EXTERNAL_STORAGE,
-		web: undefined,
-	}),
-	contacts: Platform.select({
-		ios: PERMISSIONS?.IOS?.CONTACTS,
-		android: PERMISSIONS?.ANDROID?.READ_CONTACTS,
-		web: undefined,
-	}),
-}
+const checkBluetoothPermission = async () => {
+	if (Platform.OS === "ios") {
+		return true;
+	}
+	if (Platform.OS === "android") {
+		const apiLevel = parseInt(Platform.Version.toString(), 10);
 
-const checkProximity = async (): Promise<PermissionStatus> => {
-	if (Platform.OS === 'web') {
-		return 'denied'
+		if (apiLevel < 31 && PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION) {
+			return await PermissionsAndroid.check(
+				PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+			);
+		}
+		if (
+			PermissionsAndroid.PERMISSIONS.BLUETOOTH_SCAN &&
+			PermissionsAndroid.PERMISSIONS.BLUETOOTH_CONNECT &&
+			PermissionsAndroid.PERMISSIONS.BLUETOOTH_ADVERTISE
+		) {
+			const resultScan = await PermissionsAndroid.check(PermissionsAndroid.PERMISSIONS.BLUETOOTH_SCAN);
+
+			if (!resultScan) {
+				return false;
+			}
+
+			const resultConnect = await PermissionsAndroid.check(PermissionsAndroid.PERMISSIONS.BLUETOOTH_CONNECT);
+
+			if (!resultConnect) {
+				return false;
+			}
+
+			return await PermissionsAndroid.check(PermissionsAndroid.PERMISSIONS.BLUETOOTH_ADVERTISE);
+		}
 	}
 
-	if (Platform.OS === 'ios') {
-		return await check(PERMISSIONS?.IOS?.BLUETOOTH_PERIPHERAL)
+	console.log("Permission have not been granted");
+
+	return false;
+};
+
+const requestBluetoothPermission = async () => {
+	if (Platform.OS === "ios") {
+		return true;
 	}
-	// Android 11 or below
-	if (Platform.Version <= 30) {
-		return await check(PERMISSIONS?.ANDROID?.ACCESS_FINE_LOCATION)
+	if (Platform.OS === "android") {
+		const apiLevel = parseInt(Platform.Version.toString(), 10);
+
+		if (apiLevel < 31 && PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION) {
+			const granted = await PermissionsAndroid.request(
+				PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+			);
+			return granted === PermissionsAndroid.RESULTS.GRANTED;
+		}
+		if (
+			PermissionsAndroid.PERMISSIONS.BLUETOOTH_SCAN &&
+			PermissionsAndroid.PERMISSIONS.BLUETOOTH_CONNECT &&
+			PermissionsAndroid.PERMISSIONS.BLUETOOTH_ADVERTISE
+		) {
+			const result = await PermissionsAndroid.requestMultiple([
+				PermissionsAndroid.PERMISSIONS.BLUETOOTH_SCAN,
+				PermissionsAndroid.PERMISSIONS.BLUETOOTH_CONNECT,
+				PermissionsAndroid.PERMISSIONS.BLUETOOTH_ADVERTISE,
+			]);
+
+			return (
+				result["android.permission.BLUETOOTH_CONNECT"] ===
+					PermissionsAndroid.RESULTS.GRANTED &&
+				result["android.permission.BLUETOOTH_SCAN"] ===
+					PermissionsAndroid.RESULTS.GRANTED &&
+				result["android.permission.BLUETOOTH_ADVERTISE"] ===
+					PermissionsAndroid.RESULTS.GRANTED
+			);
+		}
 	}
-	// Android 12 or above
-	const statuses = await checkMultiple([
-		PERMISSIONS?.ANDROID?.BLUETOOTH_SCAN,
-		PERMISSIONS?.ANDROID?.BLUETOOTH_ADVERTISE,
-		PERMISSIONS?.ANDROID?.BLUETOOTH_CONNECT,
-	])
-	if (
-		statuses[PERMISSIONS?.ANDROID?.BLUETOOTH_SCAN] === 'granted' &&
-		statuses[PERMISSIONS?.ANDROID?.BLUETOOTH_ADVERTISE] === 'granted' &&
-		statuses[PERMISSIONS?.ANDROID?.BLUETOOTH_SCAN] === 'granted'
-	) {
-		return 'granted'
-	}
-	return 'denied'
-}
+
+	console.log("Permission have not been granted");
+
+	return false;
+};
 
 export type Permissions = {
 	[Property in PermissionType]: PermissionStatus
@@ -83,79 +100,38 @@ export type Permissions = {
 export const getPermissions = async (): Promise<Permissions> => {
 	const ret: Permissions = Object.assign({}, defaultPermissionStatus)
 
-	ret[PermissionType.notification] = (await checkNotifications()).status
-	ret[PermissionType.proximity] = await checkProximity()
+	const { status }= await Notifications.getPermissionsAsync()
+	ret[PermissionType.notification] = status === 'granted' ? RESULTS.GRANTED : RESULTS.DENIED
 
-	await Promise.all(
-		Object.entries(permissionsByDevice).map(async ([key, perm]) => {
-			if (perm === undefined) {
-				return
-			}
+	ret[PermissionType.camera] =
+		(await Camera.getCameraPermissionsAsync()).status === 'granted'
+			? RESULTS.GRANTED
+			: RESULTS.DENIED
 
-			ret[key as PermissionType] = await check(perm)
-		}),
-	)
-
-	if (Platform.OS === 'web') {
-		ret[PermissionType.camera] =
-			(await Camera.requestCameraPermissionsAsync()).status === 'granted'
-				? RESULTS.GRANTED
-				: RESULTS.DENIED
-	}
+	ret[PermissionType.proximity] = await checkBluetoothPermission() ? RESULTS.GRANTED : RESULTS.DENIED
 
 	return Object.freeze(ret)
-}
-
-const requestProximity = async (): Promise<PermissionStatus> => {
-	if (Platform.OS === 'web') {
-		return RESULTS.DENIED
-	}
-
-	if (Platform.OS === 'ios') {
-		return await request(PERMISSIONS?.IOS?.BLUETOOTH_PERIPHERAL)
-	}
-
-	if (Platform.Version <= 30) {
-		// Android 11 or below
-		return await request(PERMISSIONS?.ANDROID?.ACCESS_FINE_LOCATION)
-	}
-
-	// Android 12 or above
-	const statuses = await requestMultiple([
-		PERMISSIONS?.ANDROID?.BLUETOOTH_SCAN,
-		PERMISSIONS?.ANDROID?.BLUETOOTH_ADVERTISE,
-		PERMISSIONS?.ANDROID?.BLUETOOTH_CONNECT,
-	])
-	if (
-		statuses[PERMISSIONS?.ANDROID?.BLUETOOTH_SCAN] === 'granted' &&
-		statuses[PERMISSIONS?.ANDROID?.BLUETOOTH_ADVERTISE] === 'granted' &&
-		statuses[PERMISSIONS?.ANDROID?.BLUETOOTH_SCAN] === 'granted'
-	) {
-		return RESULTS.GRANTED
-	}
-	return RESULTS.DENIED
 }
 
 export const acquirePermission = async (
 	permissionType: PermissionType,
 ): Promise<PermissionStatus> => {
-	if (permissionType === PermissionType.notification) {
-		return (await requestNotifications(['alert', 'sound'])).status
-	}
-	if (permissionType === PermissionType.camera) {
+	switch (permissionType) {
+	case PermissionType.notification:
+		const { status } = await Notifications.requestPermissionsAsync();
+		return status === 'granted' ? RESULTS.GRANTED : RESULTS.DENIED
+	case PermissionType.camera:
 		return (await Camera.requestCameraPermissionsAsync()).status === 'granted'
 			? RESULTS.GRANTED
 			: RESULTS.DENIED
-	}
-	if (permissionType === PermissionType.proximity) {
-		return await requestProximity()
-	}
-	const permission = permissionsByDevice[permissionType]
-	if (!permission) {
+	case PermissionType.proximity:
+		return (await requestBluetoothPermission())
+			? RESULTS.GRANTED
+			: RESULTS.DENIED
+	default:
 		console.warn(`unsupported permission ${permissionType} for device`)
 		return RESULTS.UNAVAILABLE
 	}
-	return await request(permission)
 }
 
 export const defaultPermissionStatus: Permissions = Object.freeze({

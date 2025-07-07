@@ -1,5 +1,1 @@
-<<<<<<< HEAD
-{"root":["./src/index.ts","./src/withandroidpermissions.ts","./src/withbridgingheader.ts","./src/withiosbundleidentifier.ts","./src/withiosentitlements.ts","./src/withiosplist.ts","./src/withiospush.ts","./src/withiosteamid.ts"],"version":"5.8.3"}
-=======
-{"root":["./src/index.ts","./src/withandroidpermissions.ts","./src/withbridgingheader.ts","./src/withiosbundleidentifier.ts","./src/withiosentitlements.ts","./src/withiosplist.ts","./src/withiospush.ts","./src/withiosteamid.ts"],"version":"5.8.3"}
->>>>>>> b6d255390 (chore: add bridge headers to the native ios app folder)
+{"root":["./src/index.ts","./src/withandroidmdnspermissions.ts","./src/withblepermissions.ts","./src/withbridgingheader.ts","./src/withiosbundleidentifier.ts","./src/withiosentitlements.ts","./src/withiosplist.ts","./src/withiospush.ts","./src/withiosteamid.ts"],"version":"5.8.3"}

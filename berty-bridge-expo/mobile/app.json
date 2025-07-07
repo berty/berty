@@ -34,6 +34,9 @@
       "output": "static",
       "favicon": "./assets/images/favicon.png"
     },
+    "notification": {
+      "iosDisplayInForeground": true
+    },
     "plugins": [
       "../app.plugin.js",
       "expo-router",
@@ -49,7 +52,9 @@
             "./src/assets/font/OpenSans-SemiBoldItalic.ttf"
           ]
         }
-      ]
+      ],
+      "expo-camera",
+      "expo-notifications"
     ],
     "experiments": {
       "typedRoutes": true

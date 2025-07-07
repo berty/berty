@@ -1,7 +1,8 @@
 import { ConfigPlugin } from "@expo/config-plugins";
 import { withPlugins } from "expo/config-plugins";
 
-import withAndroidPermissions from "./withAndroidPermissions";
+import withAndroidMdnsPermissions from "./withAndroidMdnsPermissions";
+import withBlePermissions from "./withBlePermissions";
 import withIosBundleIdentifier from "./withIosBundleIdentifier";
 import withIosEntitlements from "./withIosEntitlements";
 import withIosPlist from "./withIosPlist";
@@ -17,7 +18,8 @@ const withConfig: ConfigPlugin = (config) => {
 		withIosPush,
 		withIosEntitlements,
 		withBridgingHeader,
-		withAndroidPermissions,
+		withAndroidMdnsPermissions,
+		withBlePermissions,
 	]);
 };
 
