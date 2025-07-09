@@ -2,7 +2,7 @@ import { Layout } from '@ui-kitten/components'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
 import { Platform, ScrollView, StatusBar, View } from 'react-native'
-import DocumentPicker from 'react-native-document-picker'
+import * as DocumentPicker from 'expo-document-picker'
 import RNFS from 'react-native-fs'
 import * as Notifications from "expo-notifications";
 import Share from 'react-native-share'
@@ -28,15 +28,17 @@ import { ThemeColorName } from './components/ThemeColorName'
 
 const openThemeColorFile = async () => {
 	try {
-		return await DocumentPicker.pickSingle({
-			type: DocumentPicker.types.allFiles,
+		const res = await DocumentPicker.getDocumentAsync({
+			type: '*/*',
 		})
-	} catch (err: any) {
-		if (DocumentPicker.isCancel(err)) {
-			// ignore
-		} else {
-			console.warn(err)
+
+		if (res.canceled) {
+			return
 		}
+
+		return res.assets?.[0] || null
+	} catch (err: any) {
+			console.warn(err)
 	}
 }
 

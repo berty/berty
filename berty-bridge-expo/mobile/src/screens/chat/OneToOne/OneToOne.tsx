@@ -61,15 +61,6 @@ export const OneToOne: ScreenFC<'Chat.OneToOne'> = React.memo(
 		useFocusEffect(
 			React.useCallback(() => {
 				if (Platform.OS === 'android') {
-					AndroidKeyboardAdjust?.setAdjustResize()
-					return () => AndroidKeyboardAdjust?.setAdjustPan()
-				}
-			}, []),
-		)
-
-		useFocusEffect(
-			React.useCallback(() => {
-				if (Platform.OS === 'android') {
 					Keyboard.dismiss()
 					setTimeout(() => {
 						setKeyboardIsHidden(true)

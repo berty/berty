@@ -2,7 +2,6 @@ import { useHeaderHeight } from '@react-navigation/elements'
 import { useFocusEffect } from '@react-navigation/native'
 import React, { useState } from 'react'
 import { TouchableOpacity, View, Platform, Keyboard } from 'react-native'
-import AndroidKeyboardAdjust from 'react-native-android-keyboard-adjust'
 
 import beapi from '@berty/api'
 import { MultiMemberAvatar } from '@berty/components/avatars'
@@ -39,15 +38,6 @@ export const MultiMember: ScreenFC<'Chat.MultiMember'> = ({ route: { params }, n
 	const conv = useConversation(params.convId)
 
 	const [keyboardIsHidden, setKeyboardIsHidden] = useState(false)
-
-	useFocusEffect(
-		React.useCallback(() => {
-			if (Platform.OS === 'android') {
-				AndroidKeyboardAdjust?.setAdjustResize()
-				return () => AndroidKeyboardAdjust?.setAdjustPan()
-			}
-		}, []),
-	)
 
 	useFocusEffect(
 		React.useCallback(() => {
