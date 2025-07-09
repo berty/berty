@@ -1,7 +1,6 @@
 import { NavigationContainer } from "@react-navigation/native";
 import React from "react";
 import { Platform, View } from "react-native";
-import RNBootSplash from "react-native-bootsplash";
 
 import { ErrorScreen } from "@berty/components/error";
 import AppCommonProviders from "@berty/contexts/AppCommonProviders";
@@ -15,14 +14,6 @@ import { initI18N } from "@berty/i18n";
 import "intl-pluralrules";
 
 initI18N();
-
-const BootSplashInhibitor: React.FC = () => {
-	useMountEffect(() => {
-		RNBootSplash.hide({ fade: true });
-	});
-
-	return <></>;
-};
 
 interface BackgroundProps {
 	children: React.ReactNode;
@@ -57,7 +48,6 @@ const App: React.FC = () => {
 						>
 							<PermissionsProvider>
 								<NotificationProvider>
-									{Platform.OS !== "web" ? <BootSplashInhibitor /> : null}
 									<Navigation />
 								</NotificationProvider>
 							</PermissionsProvider>

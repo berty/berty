@@ -78,7 +78,7 @@ const PushNotificationBridge = () => {
 
 		return () => {
 			try {
-				Notifications.removeNotificationSubscription(responseListener);
+				responseListener.remove();
 			} catch (e) {
 				console.warn("Push notif remove listener failed: " + e);
 			}
@@ -143,7 +143,7 @@ const NotificationBridge = () => {
 		}
 
 		return () => {
-			Notifications.removeNotificationSubscription(responseListener);
+			responseListener.remove();
 			if (added) {
 				eventEmitter.removeListener("notification", inAppNotifListener);
 			}

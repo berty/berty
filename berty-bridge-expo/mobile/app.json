@@ -27,7 +27,8 @@
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#F8F9FA"
       },
-      "package": "tech.berty.android"
+      "package": "tech.berty.android",
+      "edgeToEdgeEnabled": true
     },
     "web": {
       "bundler": "metro",
@@ -54,7 +55,15 @@
         }
       ],
       "expo-camera",
-      "expo-notifications"
+      "expo-notifications",
+      "expo-web-browser",
+      [
+        "expo-splash-screen",
+        {
+          "backgroundColor": "#FFFFFF",
+          "image": "./assets/images/splash.png"
+        }
+      ]
     ],
     "experiments": {
       "typedRoutes": true
