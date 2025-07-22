@@ -238,6 +238,16 @@ public class BertyBridgeExpoModule: Module {
           }
           #endif
       }
+      
+      AsyncFunction("requestPushToken") { (promise: Promise) in
+          do {
+              let pushTokenRequester: PushTokenRequester = PushTokenRequester.shared
+              pushTokenRequester.request(promise)
+          }
+          catch let error as NSError {
+              promise.reject(error)
+          }
+      }
 
     // Enables the module to be used as a native view. Definition components that are accepted as part of the
     // view definition: Prop, Events.

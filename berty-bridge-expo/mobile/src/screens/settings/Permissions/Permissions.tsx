@@ -49,8 +49,14 @@ export const Permissions: ScreenFC<'Settings.Permissions'> = ({ route: { params 
 					await accept()
 					goBack()
 				}
+
+				await deny()
+				goBack()
 			} catch (err) {
 				console.warn('Camera handleRequestPermission error:', err)
+
+				await deny()
+				goBack()
 			}
 		}
 	}, [accept, dispatch, goBack, permissionType, status])

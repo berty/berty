@@ -23,7 +23,8 @@ const Card: React.FC<ViewProps> = ({ style, children, ...props }) => (
 	</View>
 )
 
-const SwiperCard: React.FC<{
+interface SwiperCardProps {
+	children: React.ReactNode
 	title: string
 	desc?: string
 	header?: string
@@ -37,7 +38,9 @@ const SwiperCard: React.FC<{
 		onPress: () => void
 	}
 	skip?: { text: string; onPress: () => void }
-}> = ({ children, desc, header, title, button, skip, secondButton }) => {
+}
+
+const SwiperCard = ({ children, desc, header, title, button, skip, secondButton }: SwiperCardProps) => {
 	const { text, padding, margin } = useStyles()
 	const colors = useThemeColor()
 

@@ -6,20 +6,19 @@
 //
 
 import UserNotifications
+import ExpoModulesCore
 
 @objc(PushTokenRequester)
 class PushTokenRequester: NSObject {
-  @objc static var shared: PushTokenRequester = PushTokenRequester()
+  static var shared: PushTokenRequester = PushTokenRequester()
   static let requestSema = DispatchSemaphore(value: 1)
-  static var resolve: RCTPromiseResolveBlock? = nil;
-  static var reject: RCTPromiseRejectBlock? = nil;
+  static var promise: Promise? = nil;
 
-  @objc func request(_ resolve: @escaping RCTPromiseResolveBlock, reject: @escaping RCTPromiseRejectBlock) {
+    func request(_ promise: Promise) {
     PushTokenRequester.requestSema.wait()
     defer { PushTokenRequester.requestSema.signal() }
 
-    PushTokenRequester.resolve = resolve
-    PushTokenRequester.reject = reject
+    PushTokenRequester.promise = promise
 
     UNUserNotificationCenter.current().getNotificationSettings { settings in
       switch settings.authorizationStatus {
@@ -30,31 +29,28 @@ class PushTokenRequester: NSObject {
 
       default:
         let error = NSError(domain: "push", code: 1, userInfo: [NSLocalizedDescriptionKey: "notification permission not granted"])
-        reject("token_request_failed", error.localizedDescription, error)
-        PushTokenRequester.resolve = nil
-        PushTokenRequester.reject = nil
+          promise.reject(error)
+        PushTokenRequester.promise = nil
       }
     }
   }
 
   @objc func onRequestSucceeded(_ deviceToken: NSData) {
-    if let resolve = PushTokenRequester.resolve {
+      if PushTokenRequester.promise != nil {
       if let bundleID = Bundle.main.bundleIdentifier {
         if let jsonData = try? JSONSerialization.data(withJSONObject: [
           "token": deviceToken.base64EncodedString(options: NSData.Base64EncodingOptions(rawValue: 0)),
           "bundleId": bundleID,
         ], options: []) {
-          resolve(String(data: jsonData, encoding: .ascii))
-          PushTokenRequester.resolve = nil
-          PushTokenRequester.reject = nil
+            PushTokenRequester.promise!.resolve(String(data: jsonData, encoding: .ascii))
+          PushTokenRequester.promise = nil
           return
         }
 
         let error = NSError(domain: "push", code: 1, userInfo: [NSLocalizedDescriptionKey: "can't serialize token request response"])
-        if let reject = PushTokenRequester.reject {
-          reject("token_request_failed", error.localizedDescription, error)
-          PushTokenRequester.resolve = nil
-          PushTokenRequester.reject = nil
+          if PushTokenRequester.promise != nil {
+              PushTokenRequester.promise!.reject(error)
+          PushTokenRequester.promise = nil
         } else {
           NSLog("PushTokenRequester error (onRequestSucceeded): %@", error.localizedDescription)
         }
@@ -65,10 +61,9 @@ class PushTokenRequester: NSObject {
   }
 
   @objc func onRequestFailed(_ requestError: NSError) {
-    if let reject = PushTokenRequester.reject {
-      reject("token_request_failed", requestError.localizedDescription, requestError)
-      PushTokenRequester.resolve = nil
-      PushTokenRequester.reject = nil
+    if PushTokenRequester.promise != nil {
+        PushTokenRequester.promise!.reject(requestError)
+      PushTokenRequester.promise = nil
     } else {
       NSLog("PushTokenRequester error (onRequestFailed): reject is nil")
     }

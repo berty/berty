@@ -24,7 +24,6 @@ import { GlobalPersistentOptionsKeys } from '@berty/utils/global-persistent-opti
 
 import { accountClient, storageGet } from '../accounts/accountClient'
 import { convertMAddr } from '../ipfs/convertMAddr'
-import { requestAndPersistPushToken } from '../notification/notif-push'
 
 const messengerEventStream = (
 	messengerClient: WelshMessengerServiceClient,
@@ -229,11 +228,6 @@ export const openClients = async (
 	}
 
 	const { messengerClient, protocolClient } = await createServicesClients(finalForceMock)
-
-	// request push notifications token
-	if (Platform.OS === 'ios' || Platform.OS === 'android') {
-		await requestAndPersistPushToken(messengerClient).catch(e => console.warn(e))
-	}
 
 	// call messenger client event stream
 	console.log('starting event stream')

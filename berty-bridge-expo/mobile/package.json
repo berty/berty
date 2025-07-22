@@ -34,6 +34,7 @@
     "expo-blur": "~14.1.5",
     "expo-camera": "~16.1.10",
     "expo-constants": "~17.1.6",
+    "expo-device": "^7.1.4",
     "expo-document-picker": "~13.1.6",
     "expo-font": "~13.3.1",
     "expo-haptics": "~14.1.4",
@@ -82,7 +83,8 @@
     "react-redux": "^9.2.0",
     "redux-persist": "^6.0.0",
     "sha3": "^2.1.4",
-    "tlds": "^1.259.0"
+    "tlds": "^1.259.0",
+    "expo-dev-client": "~5.2.4"
   },
   "devDependencies": {
     "@babel/core": "^7.25.2",

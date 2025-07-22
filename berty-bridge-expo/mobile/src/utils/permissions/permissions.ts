@@ -5,6 +5,7 @@ import {
 	RESULTS,
 } from 'react-native-permissions'
 import * as Notifications from 'expo-notifications';
+import * as Device from 'expo-device';
 
 export enum PermissionType {
 	proximity = 'proximity',
@@ -100,8 +101,11 @@ export type Permissions = {
 export const getPermissions = async (): Promise<Permissions> => {
 	const ret: Permissions = Object.assign({}, defaultPermissionStatus)
 
-	const { status }= await Notifications.getPermissionsAsync()
-	ret[PermissionType.notification] = status === 'granted' ? RESULTS.GRANTED : RESULTS.DENIED
+	if (Device.isDevice) {
+		const { status }= await Notifications.getPermissionsAsync()
+		ret[PermissionType.notification] = status === 'granted' ? RESULTS.GRANTED : RESULTS.DENIED
+				console.log('d4ryl00: get notification permissions: ', ret[PermissionType.notification])
+	}
 
 	ret[PermissionType.camera] =
 		(await Camera.getCameraPermissionsAsync()).status === 'granted'
@@ -118,8 +122,12 @@ export const acquirePermission = async (
 ): Promise<PermissionStatus> => {
 	switch (permissionType) {
 	case PermissionType.notification:
-		const { status } = await Notifications.requestPermissionsAsync();
-		return status === 'granted' ? RESULTS.GRANTED : RESULTS.DENIED
+		if (Device.isDevice) {
+			const { status } = await Notifications.requestPermissionsAsync();
+				console.log('d4ryl00: requesting notification permissions: ', status)
+			return status === 'granted' ? RESULTS.GRANTED : RESULTS.DENIED
+		}
+		return RESULTS.UNAVAILABLE
 	case PermissionType.camera:
 		return (await Camera.requestCameraPermissionsAsync()).status === 'granted'
 			? RESULTS.GRANTED

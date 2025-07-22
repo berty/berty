@@ -5,3 +5,4 @@ export { default as BertyBridgeExpoView } from './BertyBridgeExpoView';
 export * from  './BertyBridgeExpo.types';
 
 export * from './GoBridge'
+export * from './PushTokenRequester'
