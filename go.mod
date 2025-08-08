@@ -22,7 +22,7 @@ require (
 	github.com/eknkc/basex v1.0.1
 	github.com/fabiokung/shm v0.0.0-20150728212823-2852b0d79bae
 	github.com/fatih/color v1.15.0
-	github.com/gdamore/tcell v1.4.0
+	github.com/gdamore/tcell/v2 v2.8.1
 	github.com/gen2brain/beeep v0.0.0-20200526185328-e9c15c258e28
 	github.com/githubnemo/CompileDaemon v1.4.0
 	github.com/gofrs/uuid v4.3.1+incompatible
@@ -62,7 +62,7 @@ require (
 	github.com/pkg/errors v0.9.1
 	github.com/prometheus/client_golang v1.19.1
 	github.com/pseudomuto/protoc-gen-doc v1.5.1
-	github.com/rivo/tview v0.0.0-20200712113419-c65badfc3d92
+	github.com/rivo/tview v0.0.0-20250625164341-a4a78f1e05cb
 	github.com/shibukawa/configdir v0.0.0-20170330084843-e180dbdc8da0
 	github.com/sideshow/apns2 v0.23.0
 	github.com/skip2/go-qrcode v0.0.0-20200617195104-da1b6568686e
@@ -193,7 +193,7 @@ require (
 	github.com/fyne-io/glfw-js v0.0.0-20240101223322-6e1efdc71b7a // indirect
 	github.com/fyne-io/image v0.0.0-20220602074514-4956b0afb3d2 // indirect
 	github.com/gabriel-vasile/mimetype v1.4.3 // indirect
-	github.com/gdamore/encoding v1.0.0 // indirect
+	github.com/gdamore/encoding v1.0.1 // indirect
 	github.com/ghodss/yaml v1.0.0 // indirect
 	github.com/go-chi/chi/v5 v5.1.0 // indirect
 	github.com/go-gl/gl v0.0.0-20211210172815-726fda9656d6 // indirect
@@ -315,13 +315,13 @@ require (
 	github.com/libp2p/go-netroute v0.2.1 // indirect
 	github.com/libp2p/go-reuseport v0.4.0 // indirect
 	github.com/libp2p/go-yamux/v4 v4.0.1 // indirect
-	github.com/lucasb-eyer/go-colorful v1.0.3 // indirect
+	github.com/lucasb-eyer/go-colorful v1.2.0 // indirect
 	github.com/lyft/protoc-gen-star/v2 v2.0.4-0.20230330145011-496ad1ac90a4 // indirect
 	github.com/marten-seemann/tcp v0.0.0-20210406111302-dfbc87cc63fd // indirect
 	github.com/maruel/circular v0.0.0-20200815005550-36e533b830e9 // indirect
 	github.com/mattn/go-colorable v0.1.13 // indirect
 	github.com/mattn/go-isatty v0.0.20 // indirect
-	github.com/mattn/go-runewidth v0.0.8 // indirect
+	github.com/mattn/go-runewidth v0.0.16 // indirect
 	github.com/mgutz/ansi v0.0.0-20200706080929-d51e80ef957d // indirect
 	github.com/miekg/dns v1.1.59 // indirect
 	github.com/mikioh/tcpinfo v0.0.0-20190314235526-30a79bb1804b // indirect
@@ -391,7 +391,7 @@ require (
 	github.com/quic-go/webtransport-go v0.8.0 // indirect
 	github.com/radovskyb/watcher v1.0.7 // indirect
 	github.com/raulk/go-watchdog v1.3.0 // indirect
-	github.com/rivo/uniseg v0.1.0 // indirect
+	github.com/rivo/uniseg v0.4.7 // indirect
 	github.com/rogpeppe/go-internal v1.12.0 // indirect
 	github.com/rs/cors v1.11.0 // indirect
 	github.com/russross/blackfriday/v2 v2.1.0 // indirect
@@ -444,8 +444,8 @@ require (
 	golang.org/x/mod v0.20.0 // indirect
 	golang.org/x/oauth2 v0.20.0 // indirect
 	golang.org/x/sync v0.10.0 // indirect
-	golang.org/x/sys v0.28.0 // indirect
-	golang.org/x/term v0.27.0 // indirect
+	golang.org/x/sys v0.29.0 // indirect
+	golang.org/x/term v0.28.0 // indirect
 	golang.org/x/time v0.5.0 // indirect
 	gonum.org/v1/gonum v0.15.0 // indirect
 	google.golang.org/appengine/v2 v2.0.2 // indirect
