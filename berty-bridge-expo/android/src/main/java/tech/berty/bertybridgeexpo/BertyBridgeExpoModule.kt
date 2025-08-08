@@ -313,7 +313,7 @@ class BertyBridgeExpoModule : Module() {
 
         // PushToken
 
-        AsyncFunction("request") { promise: Promise ->
+        AsyncFunction("requestPushToken") { promise: Promise ->
             notificationService?.request(promise)
         }
     }
