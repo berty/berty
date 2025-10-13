@@ -6,7 +6,6 @@ import BertyBridgeExpo from "berty-bridge-expo";
 import * as Notifications from "expo-notifications";
 
 import beapi from "@berty/api";
-import { EventEmitterContext } from "@berty/contexts/eventEmitter.context";
 import { useNavigation } from "@berty/navigation";
 import { accountClient } from "@berty/utils/accounts/accountClient";
 import {
@@ -14,6 +13,7 @@ import {
 	useRestartAfterClosing,
 	useCloseBridgeAfterClosing,
 } from "@berty/hooks";
+import { deserializeFromBase64 } from '@berty/grpc-bridge/rpc/utils'
 
 // First, set the handler that will cause the notification
 // to show the alert
@@ -38,7 +38,7 @@ const PushNotificationBridge = () => {
 			Notifications.addNotificationResponseReceivedListener((response) => {
 				const data = response.notification.request.content.data;
 
-				switch (data.action) {
+				switch (data.type) {
 					case "message":
 						const convPK = data?.convPK as string;
 
@@ -69,10 +69,26 @@ const PushNotificationBridge = () => {
 						const action = data?.action as string;
 						if (action === "restartAfterClosing") {
 							restartAfterClosing();
-						} else if (action === "restartbridge") {
+						} else if (action === "restartBridge") {
 							restartBridge();
 						}
 						break;
+					default:
+							const typeName = data.type || beapi.messenger.StreamEvent.Notified.Type.Unknown
+
+							const payloadName = typeName.substring('Type'.length)
+							const pbobj = (beapi.messenger.StreamEvent.Notified as any)[payloadName]
+							if (!pbobj) {
+								console.warn('failed to find a protobuf object matching the notification type')
+								return
+					}
+					var payload: any
+						if (typeof data.payload === 'string') {
+							payload = deserializeFromBase64(data.payload)
+						}
+						payload =
+							data.payload === undefined ? {} : pbobj.decode(data.payload)
+				console.log("remi: notification interacted with", data)
 				}
 			});
 
@@ -97,11 +113,12 @@ const PushNotificationBridge = () => {
 		if (!push.pushData?.alreadyReceived) {
 			const convPK = push.pushData?.conversationPublicKey;
 			if (convPK) {
+				const conv = conversations[convPK]
 				Notifications.scheduleNotificationAsync({
 					content: {
 						title: push.push?.title,
 						body: push.push?.body,
-						data: { type: "message", convPK: convPK },
+						data: { type: "message", convType: conv?.type , convPK: convPK },
 					},
 					trigger: null,
 				});
@@ -114,44 +131,6 @@ const PushNotificationBridge = () => {
 	return null;
 };
 
-const NotificationBridge = () => {
-	const eventEmitter = useContext(EventEmitterContext);
-	var evt: any;
-
-	useEffect(() => {
-		const responseListener =
-			Notifications.addNotificationResponseReceivedListener((response) => {
-				evt.payload.onPress();
-			});
-		const inAppNotifListener = (evt: any) => {
-			Notifications.scheduleNotificationAsync({
-				content: {
-					title: evt.payload.title,
-					body: evt.payload.body,
-					data: evt,
-				},
-				trigger: null,
-			});
-		};
-
-		let added = false;
-		try {
-			eventEmitter.addListener("notification", inAppNotifListener);
-			added = true;
-		} catch (e) {
-			console.log("Error: Push notif add listener failed: " + e);
-		}
-
-		return () => {
-			responseListener.remove();
-			if (added) {
-				eventEmitter.removeListener("notification", inAppNotifListener);
-			}
-		};
-	}, [eventEmitter]);
-	return null;
-};
-
 interface NotificationProviderProps {
 	children: React.ReactNode;
 }
@@ -159,7 +138,6 @@ interface NotificationProviderProps {
 const NotificationProvider = ({ children }: NotificationProviderProps) =>
 	Platform.OS !== "web" ? (
 		<>
-			<NotificationBridge />
 			<PushNotificationBridge />
 			{children}
 		</>

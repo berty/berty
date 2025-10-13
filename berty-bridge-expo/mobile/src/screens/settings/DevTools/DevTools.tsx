@@ -1,4 +1,4 @@
-import { Player } from "@react-native-community/audio-toolkit";
+import { useAudioPlayer } from 'expo-audio';
 import { Layout } from "@ui-kitten/components";
 import i18next from "i18next";
 import React, { useCallback, useEffect, useRef, useState } from "react";
@@ -319,6 +319,7 @@ const DumpMembers: React.FC = () => {
 const PlaySound: React.FC = () => {
 	const playSound = usePlaySound();
 	const colors = useThemeColor();
+	const player = useAudioPlayer("Notif_Berty02.mp3");
 
 	return (
 		<>
@@ -328,7 +329,7 @@ const PlaySound: React.FC = () => {
 				iconSize={30}
 				iconColor={colors["alt-secondary-background-header"]}
 				onPress={() => {
-					new Player("Notif_Berty02.mp3", { mixWithOthers: true }).play();
+					player.play();
 				}}
 			/>
 			<ButtonSetting

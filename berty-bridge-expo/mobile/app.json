@@ -28,7 +28,8 @@
         "backgroundColor": "#F8F9FA"
       },
       "package": "tech.berty.android",
-      "edgeToEdgeEnabled": true
+      "edgeToEdgeEnabled": true,
+      "googleServicesFile": "./google-services.json"
     },
     "web": {
       "bundler": "metro",
@@ -63,7 +64,8 @@
           "backgroundColor": "#FFFFFF",
           "image": "./assets/images/splash.png"
         }
-      ]
+      ],
+      "expo-audio"
     ],
     "experiments": {
       "typedRoutes": true

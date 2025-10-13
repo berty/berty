@@ -20,6 +20,7 @@ export interface GoBridgeInterface {
 	closeBridge(): Promise<void>;
 	invokeBridgeMethod(method: string, b64message: string): Promise<string>;
 	connectService(serviceName: string, address: string): Promise<void>;
+	requestPushToken(): Promise<string>;
 }
 
 class GoBridge implements GoBridgeInterface {
@@ -49,6 +50,10 @@ class GoBridge implements GoBridgeInterface {
 
 	connectService(serviceName: string, address: string): Promise<void> {
 		return BertyBridgeExpoModule.connectService(serviceName, address);
+	}
+
+	requestPushToken(): Promise<string> {
+		return BertyBridgeExpoModule.requestPushToken();
 	}
 }
 

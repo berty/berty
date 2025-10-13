@@ -1,5 +1,4 @@
 import { grpc } from '@improbable-eng/grpc-web'
-import { EventEmitter } from 'events'
 import { Platform } from 'react-native'
 
 import beapi from '@berty/api'
@@ -7,7 +6,6 @@ import { GRPCError, createServiceClient } from '@berty/grpc-bridge'
 import { logger } from '@berty/grpc-bridge/middleware'
 import { bridge as rpcBridge, grpcweb as rpcWeb } from '@berty/grpc-bridge/rpc'
 import { rpcMock } from '@berty/grpc-bridge/rpc/rpc.mocked'
-import { deserializeFromBase64 } from '@berty/grpc-bridge/rpc/utils'
 import {
 	WelshMessengerServiceClient,
 	WelshProtocolServiceClient,
@@ -21,13 +19,13 @@ import { AppDispatch } from '@berty/redux/store'
 import { AsyncStorageKeys, NodeInfos, getData } from '@berty/utils/async-storage/async-storage'
 import { defaultGlobalPersistentOptions } from '@berty/utils/global-persistent-options/defaults'
 import { GlobalPersistentOptionsKeys } from '@berty/utils/global-persistent-options/types'
+import * as Notifications from 'expo-notifications';
 
 import { accountClient, storageGet } from '../accounts/accountClient'
 import { convertMAddr } from '../ipfs/convertMAddr'
 
 const messengerEventStream = (
 	messengerClient: WelshMessengerServiceClient,
-	eventEmitter: EventEmitter,
 	dispatch: AppDispatch,
 ) =>
 	new Promise<void>(async (resolve, reject) => {
@@ -61,31 +59,28 @@ const messengerEventStream = (
 
 						const action = streamEventToReduxAction(evt)
 						if (action?.type === 'messenger/Notified') {
-							const enumName =
-								beapi.messenger.StreamEvent.Notified.Type[
-									action.payload.type || beapi.messenger.StreamEvent.Notified.Type.Unknown
-								]
-							if (!enumName) {
-								console.warn('failed to get event type name')
-								return
-							}
-
-							const payloadName = enumName.substring('Type'.length)
-							const pbobj = (beapi.messenger.StreamEvent.Notified as any)[payloadName]
-							if (!pbobj) {
-								console.warn('failed to find a protobuf object matching the notification type')
-								return
-							}
-							if (typeof action.payload.payload === 'string') {
-								action.payload.payload = deserializeFromBase64(action.payload.payload)
-							}
-							action.payload.payload =
-								action.payload.payload === undefined ? {} : pbobj.decode(action.payload.payload)
-							eventEmitter.emit('notification', {
-								type: action.payload.type,
-								name: payloadName,
-								payload: action.payload,
-							})
+							// const typeName = action?.payload?.type || beapi.messenger.StreamEvent.Notified.Type.Unknown
+							//
+							// const payloadName = typeName.substring('Type'.length)
+							// const pbobj = (beapi.messenger.StreamEvent.Notified as any)[payloadName]
+							// if (!pbobj) {
+							// 	console.warn('failed to find a protobuf object matching the notification type')
+							// 	return
+							// }
+							// if (typeof action.payload.payload === 'string') {
+							// 	action.payload.payload = deserializeFromBase64(action.payload.payload)
+							// }
+							// action.payload.payload =
+							// 	action.payload.payload === undefined ? {} : pbobj.decode(action.payload.payload)
+							console.log('remi: notification received', action.payload)
+							Notifications.scheduleNotificationAsync({
+								content: {
+									title: action.payload.title,
+									body: action.payload.body,
+									data: {'type': action.payload.type, 'payload': action.payload.payload}
+								},
+								trigger: null,
+							});
 						}
 						if (action) {
 							// this event is the last message that say that all events are done for opening an account
@@ -210,7 +205,6 @@ const createServicesClients = async (forceMock: boolean) => {
 }
 
 export const openClients = async (
-	eventEmitter: EventEmitter,
 	dispatch: AppDispatch,
 	forceMock = false,
 ): Promise<{
@@ -231,7 +225,7 @@ export const openClients = async (
 
 	// call messenger client event stream
 	console.log('starting event stream')
-	await messengerEventStream(messengerClient, eventEmitter, dispatch)
+	await messengerEventStream(messengerClient, dispatch)
 
 	dispatch(setClients({ messengerClient, protocolClient }))
 

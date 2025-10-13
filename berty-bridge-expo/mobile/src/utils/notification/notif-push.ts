@@ -12,6 +12,7 @@ import { ServiceClientType } from '@berty/grpc-bridge/welsh-clients.gen'
 import { hasKnownPushServer } from '@berty/utils/accounts/accountUtils'
 import { checkPermission } from '@berty/utils/permissions/checkPermissions'
 import { getPermissions, PermissionType } from '@berty/utils/permissions/permissions'
+import { GoBridge } from 'berty-bridge-expo'
 
 import { numberifyLong } from '../convert/long'
 import { asyncAlert } from '../react-native/asyncAlert'
@@ -349,6 +350,15 @@ export const getSharedPushTokensForConversation = (
 export const requestAndPersistPushToken = async (
 	messengerClient: ServiceClientType<beapi.messenger.MessengerService> | null,
 ) => {
+	if (Platform.OS === 'android') {
+    await Notifications.setNotificationChannelAsync('bertyNotificationChannel', {
+      name: 'A channel is needed for the permissions prompt to appear',
+      importance: Notifications.AndroidImportance.MAX,
+      vibrationPattern: [0, 250, 250, 250],
+      lightColor: '#FF231F7C',
+    });
+  }
+
 	if (!Device.isDevice) {
 		throw new Error('need a physical device to request push token')
 	}
@@ -366,12 +376,8 @@ export const requestAndPersistPushToken = async (
 if (status !== 'granted') {
   throw new Error('Push notification permissions not granted');
 }
-		console.log('d4ryl00: before getDevicePushTokenAsync: ' + projectId)
-      const token = (
-        // await Notifications.getDevicePushTokenAsync()
-        await Notifications.getExpoPushTokenAsync({ projectId })
-      ).data;
-		console.log('d4ryl00: after getDevicePushTokenAsync: ' + token)
+		let responseJSON = await GoBridge.requestPushToken()
+		let response = JSON.parse(responseJSON)
 
 		await messengerClient?.pushSetDeviceToken({
 			receiver: beapi.push.PushServiceReceiver.create({
@@ -380,7 +386,7 @@ if (status !== 'granted') {
 						? beapi.push.PushServiceTokenType.PushTokenApplePushNotificationService
 						: beapi.push.PushServiceTokenType.PushTokenFirebaseCloudMessaging,
 				bundleId: projectId,
-				token: new Uint8Array(base64.toByteArray(token)),
+				token: new Uint8Array(base64.toByteArray(response.token)),
 			}),
 		})
 	} catch (e) {

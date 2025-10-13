@@ -13,9 +13,9 @@ import { useAppSelector } from './core.hooks'
 export const usePlaySound = () => {
 	const persistentOptions = useAppSelector(selectPersistentOptions)
 	return useCallback(
-		(sound: SoundKey) => {
+		async (sound: SoundKey) => {
 			if (persistentOptions[PersistentOptionsKeys.Notifications].enable) {
-				playSound(sound)
+				await playSound(sound)
 			}
 			return
 		},

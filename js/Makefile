@@ -490,7 +490,7 @@ ios/Frameworks/Bertypush.xcframework: $(bridge_src)
 
 ios/Berty.xcworkspace: ios/Berty.xcodeproj ios/Podfile ios/vendor/bundle node_modules
 	$(call check-program, bundle)
-	cd ios && bundle exec pod install --repo-update
+	cd ios && CURRENT_ARCH=arm64 bundle exec pod install --repo-update
 	touch $@
 
 ios/Berty.xcodeproj: $(xcodegen_yml) $(call rwildcard,ios/Berty/Source,*) $(call rwildcard,assets,*)
