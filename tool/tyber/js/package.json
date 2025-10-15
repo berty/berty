@@ -14,7 +14,7 @@
     "@eliav2/react-native-collapsible-view": "^1.3.2",
     "@eva-design/eva": "^2.0.0",
     "@ui-kitten/components": "^5.0.0",
-    "expo": "~39.0.2",
+    "expo": "~48.0.0",
     "expo-clipboard": "^1.0.1",
     "expo-splash-screen": "~0.6.2",
     "expo-updates": "~0.3.3",
