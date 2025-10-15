@@ -35,7 +35,7 @@
     "@ui-kitten/eva-icons": "^5.0.0",
     "buffer": "^6.0.3",
     "case": "^1.6.3",
-    "expo": "^44.0.6",
+    "expo": "^48.0.0",
     "expo-barcode-scanner": "~11.2.0",
     "expo-camera": "^12.1.2",
     "expo-file-system": "^13.1.4",
