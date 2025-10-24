@@ -4,7 +4,10 @@ import (
 	"fmt"
 
 	"google.golang.org/grpc/encoding"
+	"google.golang.org/protobuf/proto"
 )
+
+const LazySubtype = "lazy-codec"
 
 // LazyCodec is basically a no-op grpc.Codec use to pass LazyMessage through
 // grpc
@@ -20,7 +23,10 @@ func (lc *LazyCodec) Marshal(value interface{}) ([]byte, error) {
 		return lm.buf, nil
 	}
 
-	return nil, fmt.Errorf("lazy-codec marshal: message is not lazy")
+	if pm, ok := value.(proto.Message); ok {
+		return proto.Marshal(pm)
+	}
+	return nil, fmt.Errorf("lazy-codec marshal: unsupported %T", value)
 }
 
 func (*LazyCodec) Unmarshal(buf []byte, value interface{}) error {
@@ -29,8 +35,15 @@ func (*LazyCodec) Unmarshal(buf []byte, value interface{}) error {
 		return nil
 	}
 
-	return fmt.Errorf("lazy-codec unmarshal: message is not lazy")
+	if pm, ok := value.(proto.Message); ok {
+		return proto.Unmarshal(buf, pm)
+	}
+	return fmt.Errorf("lazy-codec unmarshal: unsupported %T", value)
 }
 
-func (lc *LazyCodec) String() string { return "lazy-codec" }
+func (lc *LazyCodec) String() string { return LazySubtype }
 func (lc *LazyCodec) Name() string   { return lc.String() }
+
+func init() {
+	encoding.RegisterCodec(NewLazyCodec())
+}
