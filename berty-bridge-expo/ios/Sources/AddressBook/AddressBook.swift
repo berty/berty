@@ -7,6 +7,7 @@
 
 import Foundation
 import Contacts
+import React
 
 struct AddressBookContact: Codable {
   var givenName: String

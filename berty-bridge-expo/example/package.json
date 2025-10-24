@@ -10,15 +10,15 @@
     "web": "expo start --web"
   },
   "dependencies": {
-    "expo": "~53.0.9",
+    "expo": "54",
     "protobufjs": "^6.11.4",
-    "react": "19.0.0",
-    "react-native": "0.79.2"
+    "react": "19.1.0",
+    "react-native": "0.81.5"
   },
   "devDependencies": {
     "@babel/core": "^7.25.2",
-    "@types/react": "~19.0.10",
-    "typescript": "~5.8.3"
+    "@types/react": "~19.1.10",
+    "typescript": "~5.9.2"
   },
   "private": true,
   "expo": {
