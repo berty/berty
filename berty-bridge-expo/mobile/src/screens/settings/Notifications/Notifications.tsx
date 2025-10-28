@@ -165,7 +165,7 @@ export const Notifications: ScreenFC<'Settings.Notifications'> = () => {
 						<MenuToggle
 							isToggleOn={pushEnabled}
 							onPress={async () =>
-								accountPushToggleState({
+								await accountPushToggleState({
 									account,
 									messengerClient: messengerClient,
 									protocolClient: protocolClient,

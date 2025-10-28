@@ -104,7 +104,6 @@ export const getPermissions = async (): Promise<Permissions> => {
 	if (Device.isDevice) {
 		const { status }= await Notifications.getPermissionsAsync()
 		ret[PermissionType.notification] = status === 'granted' ? RESULTS.GRANTED : RESULTS.DENIED
-				console.log('d4ryl00: get notification permissions: ', ret[PermissionType.notification])
 	}
 
 	ret[PermissionType.camera] =
@@ -124,7 +123,6 @@ export const acquirePermission = async (
 	case PermissionType.notification:
 		if (Device.isDevice) {
 			const { status } = await Notifications.requestPermissionsAsync();
-				console.log('d4ryl00: requesting notification permissions: ', status)
 			return status === 'granted' ? RESULTS.GRANTED : RESULTS.DENIED
 		}
 		return RESULTS.UNAVAILABLE

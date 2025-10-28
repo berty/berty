@@ -2,7 +2,6 @@ import base64 from 'base64-js'
 import * as Application from 'expo-application'
 import { Alert, Platform } from 'react-native'
 import { RESULTS } from 'react-native-permissions'
-import Constants from 'expo-constants';
 import * as Notifications from 'expo-notifications';
 import * as Device from 'expo-device';
 
@@ -367,8 +366,7 @@ export const requestAndPersistPushToken = async (
 		throw new Error('missing messenger client')
 	}
 	try {
-      const projectId =
-        Constants?.expoConfig?.extra?.eas?.projectId ?? Constants?.easConfig?.projectId;
+      const projectId = Application.applicationId
       if (!projectId) {
         throw new Error('Project ID not found');
       }
@@ -378,6 +376,8 @@ if (status !== 'granted') {
 }
 		let responseJSON = await GoBridge.requestPushToken()
 		let response = JSON.parse(responseJSON)
+
+		console.log('Push token received:', response.token, 'for project:', projectId)
 
 		await messengerClient?.pushSetDeviceToken({
 			receiver: beapi.push.PushServiceReceiver.create({

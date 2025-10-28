@@ -30,7 +30,7 @@ export const PermissionsProvider = ({ children }: PermissionsProviderProps) => {
 	const refreshPermissions = useCallback(async () => {
 		const permissions = await getPermissions();
 		setState(permissions);
-	}, []);
+	}, [getPermissions]);
 
 	const acquirePermissionCB = useCallback(
 		async (permissionType: PermissionType): Promise<PermissionStatus> => {
@@ -40,7 +40,7 @@ export const PermissionsProvider = ({ children }: PermissionsProviderProps) => {
 
 			return result;
 		},
-		[refreshPermissions],
+		[acquirePermission, refreshPermissions]
 	);
 
 	useEffect(() => {
