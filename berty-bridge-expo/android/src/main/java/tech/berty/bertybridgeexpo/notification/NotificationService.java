@@ -2,12 +2,10 @@ package tech.berty.bertybridgeexpo.notification;
 
 import android.app.Notification;
 import android.app.PendingIntent;
-import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.net.Uri;
 import android.os.Build;
-import android.util.Base64;
 
 import androidx.annotation.NonNull;
 import androidx.core.app.NotificationCompat;
@@ -18,41 +16,30 @@ import bertybridge.FormatedPush;
 import bertybridge.PushConfig;
 import bertybridge.PushStandalone;
 
-import expo.modules.kotlin.Promise;
-import expo.modules.kotlin.exception.CodedException;
 import tech.berty.bertybridgeexpo.BertyBridgeExpoModule;
 import tech.berty.bertybridgeexpo.gobridge.KeystoreDriver;
 import tech.berty.bertybridgeexpo.rootdir.RootDirModule;
 import tech.berty.bertybridgeexpo.gobridge.Logger;
 import tech.berty.bertybridgeexpo.LifecycleListener;
 
-import com.google.android.gms.tasks.OnCanceledListener;
-import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
-
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.HashMap;
 import java.util.Map;
 
 public class NotificationService extends FirebaseMessagingService {
     private static final String TAG = "NotificationService";
-    private final static String EVENT_ID = "onPushReceived";
-    private final BertyBridgeExpoModule bertyBridge;
     private final PushStandalone push;
 
-    public Task<String> getToken() {
+    public static Task<String> getToken() {
         return FirebaseMessaging.getInstance().getToken();
     }
 
-    public NotificationService(BertyBridgeExpoModule bertyBridge) {
+    public NotificationService() {
         super();
-
-        this.bertyBridge = bertyBridge;
 
         String tags;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
@@ -66,7 +53,6 @@ public class NotificationService extends FirebaseMessagingService {
         this.push = new PushStandalone(config);
         Logger.d(TAG, "NotificationService created");
     }
-
 
     @Override
     public void onNewToken(@NonNull String s) {
@@ -109,18 +95,6 @@ public class NotificationService extends FirebaseMessagingService {
         notificationHelper.getManager().notify((Long.valueOf(System.currentTimeMillis() % Integer.MAX_VALUE)).intValue(), builder.build());
     }
 
-    private void createReactNativeEvent(String push) {
-        Logger.d(TAG, "handle foreground push");
-
-        // build params
-        Map<String, String> params = new HashMap<>();
-
-        // @SYNC(gfanton): sync params event with ios
-        params.put("body", push);
-
-        bertyBridge.sendEvent(EVENT_ID, params);
-    }
-
     @Override
     public void onMessageReceived(@NonNull RemoteMessage remoteMessage) {
         super.onMessageReceived(remoteMessage);
@@ -135,7 +109,9 @@ public class NotificationService extends FirebaseMessagingService {
                 try {
                     if (LifecycleListener.Companion.isForeground()) {
                         // send an event to the front when app is in foreground
-                        this.createReactNativeEvent(data);
+                        Map<String, String> params = new HashMap<>();
+                        params.put("body", data);
+                        FcmBus.INSTANCE.emit(params);
                         return;
                     }
 
@@ -144,7 +120,8 @@ public class NotificationService extends FirebaseMessagingService {
                     Bridge bridge = BertyBridgeExpoModule.Companion.getBridgeMessenger();
                     if (bridge == null) {
                         // create a native push notification when app is in background
-                        String rootDir = new RootDirModule(bertyBridge.getReactContext()).getRootDir();
+                        String rootDir = new RootDirModule(getApplicationContext()).getRootDir();
+
                         format = this.push.decrypt(rootDir, data, keystore);
                     } else {
                         format = bridge.pushDecrypt(data);
@@ -157,37 +134,5 @@ public class NotificationService extends FirebaseMessagingService {
                 }
             }
         }
-    }
-
-    public void request(Promise promise) {
-        getToken()
-            .addOnCompleteListener(new OnCompleteListener() {
-                @Override
-                public void onComplete(@NonNull Task task) {
-                    if (task.isSuccessful()) {
-                        JSONObject json = new JSONObject();
-                        String bundleID = bertyBridge.getReactContext().getPackageName();
-                        String tokenB64 = Base64.encodeToString(((String) task.getResult()).getBytes(), Base64.NO_WRAP);
-
-                        try {
-                            json.put("bundleId", bundleID);
-                            json.put("token", tokenB64);
-                        } catch (JSONException e) {
-                            promise.reject(new CodedException(e));
-                            return;
-                        }
-
-                        promise.resolve(json.toString());
-                    } else {
-                        promise.reject(new CodedException(task.getException()));
-                    }
-                }
-            })
-            .addOnCanceledListener(new OnCanceledListener() {
-                @Override
-                public void onCanceled() {
-                    promise.reject(new CodedException("NotificationError", "token request canceled", null));
-                }
-            });
     }
 }
