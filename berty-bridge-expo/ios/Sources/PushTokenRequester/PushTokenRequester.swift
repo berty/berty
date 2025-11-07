@@ -35,7 +35,7 @@ class PushTokenRequester: NSObject {
     }
   }
 
-  @objc func onRequestSucceeded(_ deviceToken: NSData) {
+  @objc func onRequestSucceeded(_ deviceToken: Data) {
       if PushTokenRequester.promise != nil {
       if let bundleID = Bundle.main.bundleIdentifier {
         if let jsonData = try? JSONSerialization.data(withJSONObject: [
@@ -60,7 +60,7 @@ class PushTokenRequester: NSObject {
     }
   }
 
-  @objc func onRequestFailed(_ requestError: NSError) {
+  @objc func onRequestFailed(_ requestError: Error) {
     if PushTokenRequester.promise != nil {
         PushTokenRequester.promise!.reject(requestError)
       PushTokenRequester.promise = nil
