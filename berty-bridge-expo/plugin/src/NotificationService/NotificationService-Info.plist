@@ -28,6 +28,6 @@
 		<string>$(PRODUCT_MODULE_NAME).NotificationService</string>
 	</dict>
 	<key>appGroupID</key>
-	<string>$(APP_GROUP_ID)</string>
+	<string>group.tech.berty</string>
 </dict>
 </plist>
