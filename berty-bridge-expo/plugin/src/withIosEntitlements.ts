@@ -2,7 +2,12 @@ import { ConfigPlugin, withEntitlementsPlist } from "@expo/config-plugins";
 
 const withIosEntitlements: ConfigPlugin = (config) => {
 	return withEntitlementsPlist(config, (config) => {
-		config.modResults["aps-environment"] = "production";
+		if (config.ios?.bundleIdentifier === "tech.berty.ios") {
+			config.modResults["aps-environment"] = "production";
+		} else {
+			config.modResults["aps-environment"] = "development";
+		}
+
 		config.modResults["com.apple.developer.associated-domains"] = [
 			"applinks:berty.tech",
 		];

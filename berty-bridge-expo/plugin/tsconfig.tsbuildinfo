@@ -1,1 +1,1 @@
-{"root":["./src/index.ts","./src/withandroidmdnspermissions.ts","./src/withblepermissions.ts","./src/withbridgingheader.ts","./src/withiosbundleidentifier.ts","./src/withiosentitlements.ts","./src/withiosplist.ts","./src/withiospush.ts","./src/withiosteamid.ts"],"version":"5.8.3"}
+{"root":["./src/index.ts","./src/withandroidmdnspermissions.ts","./src/withandroidnotificationservice.ts","./src/withblepermissions.ts","./src/withbridgingheader.ts","./src/withiosentitlements.ts","./src/withiosplist.ts","./src/withiospush.ts","./src/withiosteamid.ts"],"version":"5.8.3"}
