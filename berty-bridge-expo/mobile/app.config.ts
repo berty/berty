@@ -5,11 +5,13 @@ import { version } from "./package.json";
 const APP_NAME = "Berty";
 const BUNDLE_IDENTIFIER = "tech.berty.ios";
 const PACKAGE_NAME = "tech.berty.android";
-const ICON = "./assets/images/berty_adaptative.png";
+const SCHEME = "berty";
+const ICON = "./assets/images/icon.png";
+const ADAPTIVE_ICON = "./assets/images/berty_adaptive.png";
 const EAS_PROJECT_ID = "01cd0667-80ee-4f67-8a43-0d1de5958bce";
 
 export default ({ config }: ConfigContext): ExpoConfig => {
-	const { name, bundleIdentifier, packageName, icon, scheme } =
+	const { name, bundleIdentifier, packageName, adaptiveIcon } =
 		getDynamicAppConfig(
 			config,
 			(process.env.APP_ENV as "development" | "preview" | "production") ||
@@ -25,8 +27,8 @@ export default ({ config }: ConfigContext): ExpoConfig => {
 		orientation: "portrait",
 		userInterfaceStyle: "automatic",
 		newArchEnabled: true,
-		icon: icon,
-		scheme: scheme,
+		icon: ICON,
+		scheme: SCHEME,
 		githubUrl: "https://github.com/berty/berty",
 		splash: {
 			image: "./assets/images/splash.png",
@@ -39,7 +41,7 @@ export default ({ config }: ConfigContext): ExpoConfig => {
 		},
 		android: {
 			adaptiveIcon: {
-				foregroundImage: icon,
+				foregroundImage: adaptiveIcon,
 				backgroundColor: "#ffffff",
 			},
 			package: packageName,
@@ -121,8 +123,7 @@ export const getDynamicAppConfig = (
 			name: APP_NAME,
 			bundleIdentifier: BUNDLE_IDENTIFIER,
 			packageName: PACKAGE_NAME,
-			icon: ICON,
-			scheme: "release",
+			adaptiveIcon: ADAPTIVE_ICON,
 		};
 	}
 
@@ -131,8 +132,7 @@ export const getDynamicAppConfig = (
 			name: `${APP_NAME} Staff`,
 			bundleIdentifier: `${BUNDLE_IDENTIFIER}.staff`,
 			packageName: `${PACKAGE_NAME}.staff`,
-			icon: "./assets/images/berty_staff_adaptative.png",
-			scheme: "staff",
+			adaptiveIcon: "./assets/images/berty_staff_adaptive.png",
 		};
 	}
 
@@ -140,7 +140,6 @@ export const getDynamicAppConfig = (
 		name: `${APP_NAME} Debug`,
 		bundleIdentifier: `${BUNDLE_IDENTIFIER}.debug`,
 		packageName: `${PACKAGE_NAME}.debug`,
-		icon: "./assets/images/berty_debug_adaptative.png",
-		scheme: "debug",
+		adaptiveIcon: "./assets/images/berty_debug_adaptive.png",
 	};
 };

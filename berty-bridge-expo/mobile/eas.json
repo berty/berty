@@ -6,10 +6,7 @@
   "build": {
     "development": {
       "developmentClient": true,
-      "distribution": "internal",
-      "env": {
-        "APP_ENV": "development"
-      }
+      "distribution": "internal"
     },
     "ios-simulator": {
       "extends": "development",
@@ -18,16 +15,10 @@
       }
     },
     "preview": {
-      "distribution": "internal",
-      "env": {
-        "APP_ENV": "preview"
-      }
+      "distribution": "internal"
     },
     "production": {
-      "autoIncrement": true,
-      "env": {
-        "APP_ENV": "production"
-      }
+      "autoIncrement": true
     }
   },
   "submit": {

@@ -10,7 +10,7 @@ on:
       - "!go/**.md"
       - "go.*"
       - "**.go"
-      - "js/**"
+      - "berty-bridge-expo/**"
       - ".github/workflows/android.yml"
   pull_request:
     paths:
@@ -18,8 +18,8 @@ on:
       - "!go/**.md"
       - "go.*"
       - "**.go"
-      - "js/**"
-      - "!js/packages/i18n/locale/*/*.json"
+      - "berty-bridge-expo/**"
+      - "!berty-bridge-expo/mobile/src/i18n/locale/*/*.json"
       - ".github/workflows/android.yml"
 
 jobs:
@@ -32,11 +32,6 @@ jobs:
         with:
           fetch-depth: 0
           persist-credentials: false
-
-      - name: Load variables from file
-        uses: antifree/json-to-variables@v1.0.1
-        with:
-          filename: .github/workflows/utils/variables.json
 
       - name: Setup asdf
         uses: asdf-vm/actions/setup@9cd779f40fe38688dd19505ccbc4eaaf018b44e7
@@ -72,55 +67,49 @@ jobs:
         uses: actions/cache@v4
         with:
           path: ~/go/pkg/mod
-          key: ${{ runner.os }}-go-${{ env.go_version }}-${{ env.json_cache-versions_go }}-${{ hashFiles('go/**/go.sum') }}
-          restore-keys: ${{ runner.os }}-go-${{ env.go_version }}-${{ env.json_cache-versions_go }}-
+          key: ${{ runner.os }}-go-${{ env.go_version }}-${{ hashFiles('go/**/go.sum') }}
+          restore-keys: ${{ runner.os }}-go-${{ env.go_version }}-
 
-      - name: Cache node modules
+      - name: Cache expo module node modules
         uses: actions/cache@v4
         with:
-          path: js/node_modules
-          key: ${{ runner.OS }}-node-${{ env.node_version }}-${{ env.json_cache-versions_node }}-${{ hashFiles('js/yarn.lock') }}
-          restore-keys: ${{ runner.OS }}-node-${{ env.node_version }}-${{ env.json_cache-versions_node }}-
+          path: berty-bridge-expo/node_modules
+          key: ${{ runner.OS }}-node-${{ env.node_version }}-berty-bridge-expo-${{ hashFiles('berty-bridge-expo/package-lock.json') }}
+          restore-keys: ${{ runner.OS }}-node-${{ env.node_version }}-berty-bridge-expo-
+
+      - name: Cache app node modules
+        uses: actions/cache@v4
+        with:
+          path: berty-bridge-expo/mobile/node_modules
+          key: ${{ runner.OS }}-node-${{ env.node_version }}-mobile-${{ hashFiles('berty-bridge-expo/mobile/package-lock.json') }}
+          restore-keys: ${{ runner.OS }}-node-${{ env.node_version }}-mobile-
 
       - name: Cache gobridge aar
         uses: n0izn0iz/mkache@5cedaeaf0b39a9220ae5a815cac8d2a924cee3ef
         if: github.ref != 'refs/heads/master' # this makes sure the VCS_REF is correct on master
         with:
           rule: android/libs/gobridge.aar
-          makefile: js/Makefile
+          makefile: berty-bridge-expo/Makefile
           key: android-gomobile-bridge-${{ matrix.golang }}
 
-      - name: Fetch node modules
-        working-directory: js
+      - name: Fetch expo module node modules
+        working-directory: berty-bridge-expo
+        run: make node_modules
+
+      - name: Fetch app node modules
+        working-directory: berty-bridge-expo/mobile
         run: make node_modules
 
       - name: Build gobridge aar
-        working-directory: js
+        working-directory: berty-bridge-expo
         run: make android.gomobile
 
-      - name: Build the APK
-        working-directory: js
-        env:
-          CI: "true"
+      - name: Build the AAB
+        working-directory: berty-bridge-expo/mobile
         run: |
-          make android.app_deps
-          (yarn jetify && cd android && ./gradlew -i app:bundleReleaseYolo)
-          ### TODO: move this part on Yolo and use release keystore ###
-          mkdir -p $HOME/.android
-          cp android/app/debug.keystore $HOME/.android
-          wget \
-            https://github.com/google/bundletool/releases/download/1.8.2/bundletool-all-1.8.2.jar \
-            -O /tmp/bundletool.jar
-          java -jar /tmp/bundletool.jar build-apks \
-            --bundle=android/app/build/outputs/bundle/releaseYolo/app-releaseYolo.aab \
-            --output=${{ github.workspace }}/app.apks \
-            --mode=universal
-          cd ${{ github.workspace }} && unzip app.apks
-          ################################################
+          npx eas-cli build -p android --non-interactive --local --output=${{ github.workspace }}
 
-      - name: Upload the APK
-        uses: actions/upload-artifact@v4
-        with:
-          path: ${{ github.workspace }}/universal.apk
-          name: berty-universal-${{github.sha}}.apk
-          if-no-files-found: error
+      - name: Upload the AAB
+        working-directory: berty-bridge-expo/mobile
+        run: |
+          npx eas-cli upload -p android --non-interactive --local --build-path=${{ github.workspace }}
