@@ -102,11 +102,7 @@ jobs:
 
       - name: Fetch app node modules
         working-directory: berty-bridge-expo/mobile
-        run: make node_modules
-
-      - name: Build gobridge aar
-        working-directory: berty-bridge-expo
-        run: make android.gomobile
+        run: npm install
 
       - name: Build the AAB
         working-directory: berty-bridge-expo/mobile
