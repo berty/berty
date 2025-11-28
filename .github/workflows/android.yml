@@ -42,14 +42,18 @@ jobs:
         run: |
           asdf plugin add golang
           asdf install golang
-          echo "go_version=$(asdf current golang | xargs | cut -d ' ' -f 6)" >> $GITHUB_ENV
+          echo "GO_VERSION=$(asdf current golang | xargs | cut -d ' ' -f 6)" >> $GITHUB_ENV
 
       - name: Setup node
         working-directory: js
         run: |
           asdf plugin add nodejs
           asdf install nodejs
-          echo "node_version=$(asdf current nodejs | xargs | cut -d ' ' -f 6)" >> $GITHUB_ENV
+          echo "NODE_VERSION=$(asdf current nodejs | xargs | cut -d ' ' -f 6)" >> $GITHUB_ENV
+
+      - name: Set nodejs as global exec
+        run: |
+          asdf set -u nodejs $NODE_VERSION
 
       - name: Setup yarn
         working-directory: js
@@ -67,28 +71,28 @@ jobs:
         uses: actions/cache@v4
         with:
           path: ~/go/pkg/mod
-          key: ${{ runner.os }}-go-${{ env.go_version }}-${{ hashFiles('go/**/go.sum') }}
-          restore-keys: ${{ runner.os }}-go-${{ env.go_version }}-
+          key: ${{ runner.os }}-go-$GO_VERSION-${{ hashFiles('go/**/go.sum') }}
+          restore-keys: ${{ runner.os }}-go-$GO_VERSION-
 
       - name: Cache expo module node modules
         uses: actions/cache@v4
         with:
           path: berty-bridge-expo/node_modules
-          key: ${{ runner.OS }}-node-${{ env.node_version }}-berty-bridge-expo-${{ hashFiles('berty-bridge-expo/package-lock.json') }}
-          restore-keys: ${{ runner.OS }}-node-${{ env.node_version }}-berty-bridge-expo-
+          key: ${{ runner.OS }}-node-$NODE_VERSION-berty-bridge-expo-${{ hashFiles('berty-bridge-expo/package-lock.json') }}
+          restore-keys: ${{ runner.OS }}-node-$NODE_VERSION-berty-bridge-expo-
 
       - name: Cache app node modules
         uses: actions/cache@v4
         with:
           path: berty-bridge-expo/mobile/node_modules
-          key: ${{ runner.OS }}-node-${{ env.node_version }}-mobile-${{ hashFiles('berty-bridge-expo/mobile/package-lock.json') }}
-          restore-keys: ${{ runner.OS }}-node-${{ env.node_version }}-mobile-
+          key: ${{ runner.OS }}-node-$NODE_VERSION-mobile-${{ hashFiles('berty-bridge-expo/mobile/package-lock.json') }}
+          restore-keys: ${{ runner.OS }}-node-$NODE_VERSION-mobile-
 
       - name: Cache gobridge aar
         uses: n0izn0iz/mkache@5cedaeaf0b39a9220ae5a815cac8d2a924cee3ef
         if: github.ref != 'refs/heads/master' # this makes sure the VCS_REF is correct on master
         with:
-          rule: android/libs/gobridge.aar
+          rule: android.gomobile
           makefile: berty-bridge-expo/Makefile
           key: android-gomobile-bridge-${{ matrix.golang }}
 
