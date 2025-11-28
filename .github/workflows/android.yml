@@ -67,6 +67,12 @@ jobs:
           asdf plugin add java
           asdf install java
 
+      - name: Setup Expo and EAS
+        uses: expo/expo-github-action@v8
+        with:
+          eas-version: latest
+          token: ${{ secrets.EXPO_TOKEN }}
+
       - name: Cache go modules
         uses: actions/cache@v4
         with:
@@ -107,9 +113,9 @@ jobs:
       - name: Build the AAB
         working-directory: berty-bridge-expo/mobile
         run: |
-          npx eas-cli build -p android --non-interactive --local --output=${{ github.workspace }}
+          eas build -p android --non-interactive --local --output=${{ github.workspace }}
 
       - name: Upload the AAB
         working-directory: berty-bridge-expo/mobile
         run: |
-          npx eas-cli upload -p android --non-interactive --local --build-path=${{ github.workspace }}
+          eas upload -p android --non-interactive --local --build-path=${{ github.workspace }}
