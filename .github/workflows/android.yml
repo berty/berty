@@ -113,10 +113,14 @@ jobs:
 
       - name: Build the AAB
         working-directory: berty-bridge-expo/mobile
+        env:
+          EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
         run: |
           eas build -p android --non-interactive --local --output=${{ github.workspace }}
 
       - name: Upload the AAB
         working-directory: berty-bridge-expo/mobile
+        env:
+          EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
         run: |
           eas upload -p android --non-interactive --local --build-path=${{ github.workspace }}
