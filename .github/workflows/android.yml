@@ -45,7 +45,7 @@ jobs:
           echo "GO_VERSION=$(asdf current golang | xargs | cut -d ' ' -f 6)" >> $GITHUB_ENV
 
       - name: Setup node
-        working-directory: js
+        working-directory: berty-bridge-expo
         run: |
           asdf plugin add nodejs
           asdf install nodejs
@@ -56,13 +56,13 @@ jobs:
           asdf set -u nodejs ${{ env.NODE_VERSION }}
 
       - name: Setup yarn
-        working-directory: js
+        working-directory: berty-bridge-expo
         run: |
           asdf plugin add yarn
           asdf install yarn
 
       - name: Setup java
-        working-directory: js
+        working-directory: berty-bridge-expo
         run: |
           asdf plugin add java
           asdf install java
