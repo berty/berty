@@ -63,6 +63,18 @@ export default ({ config }: ConfigContext): ExpoConfig => {
 								{
 									targetName: "NotificationService",
 									bundleIdentifier: `${bundleIdentifier}.NotificationService`,
+									entitlements: {
+										"com.apple.security.application-groups": [
+											"group.tech.berty",
+										],
+										"com.apple.developer.associated-domains": [
+											"applinks:berty.tech",
+										],
+										"keychain-access-groups": [
+											"$(AppIdentifierPrefix)tech.berty.ios",
+										],
+										"com.apple.developer.usernotifications.filtering": true,
+									},
 								},
 							],
 						},

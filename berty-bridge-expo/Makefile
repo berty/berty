@@ -8,6 +8,9 @@ GOMOBILE_ANDROID_TARGET ?= android/arm64,android/amd64
 make_dir := $(realpath $(dir $(abspath $(lastword $(MAKEFILE_LIST)))))
 bridge_src := $(call rwildcard,../go,*.go *.m *.h) ../go.sum
 gomobile_cache="$(make_dir)/.gomobile-cache"
+IOS_OUTPUT_BERTYPUSH_FRAMEWORK ?= $(make_dir)/plugin/src/NotificationService/Bertypush.xcframework
+IOS_OUTPUT_BERTYBRIDGE_FRAMEWORK ?= $(make_dir)/ios/Frameworks/Bertybridge.xcframework
+ANDROID_OUTPUT_LIBS ?= $(make_dir)/android/libs/gobridge.aar
 ext_ldflags = -ldflags="-X berty.tech/berty/v2/go/pkg/bertyversion.VcsRef=$(VCS_REF) -X berty.tech/berty/v2/go/pkg/bertyversion.Version=$(VERSION)"
 minimum_ios_ver = 12.0
 minimum_android_ver = 21
@@ -20,9 +23,9 @@ node_modules: package.json
 #### iOS
 
 .PHONY: ios.gomobile
-ios.gomobile: node_modules ios/Frameworks/Bertybridge.xcframework plugin/src/NotificationService/Bertypush.xcframework
+ios.gomobile: node_modules $(IOS_OUTPUT_BERTYBRIDGE_FRAMEWORK) $(IOS_OUTPUT_BERTYPUSH_FRAMEWORK)
 
-ios/Frameworks/Bertybridge.xcframework: $(bridge_src)
+$(IOS_OUTPUT_BERTYBRIDGE_FRAMEWORK): $(bridge_src)
 	cd .. && $(GO) mod download
 	cd .. && $(GO) install golang.org/x/mobile/cmd/gobind
 	cd .. && $(GO) run golang.org/x/mobile/cmd/gomobile init
@@ -44,7 +47,7 @@ ios/Frameworks/Bertybridge.xcframework: $(bridge_src)
 	touch $@
 	cd .. && $(GO) mod tidy
 
-plugin/src/NotificationService/Bertypush.xcframework: $(bridge_src)
+$(IOS_OUTPUT_BERTYPUSH_FRAMEWORK): $(bridge_src)
 	cd .. && $(GO) mod download
 	cd .. && $(GO) install golang.org/x/mobile/cmd/gobind
 	cd .. && $(GO) run golang.org/x/mobile/cmd/gomobile init
@@ -69,9 +72,9 @@ plugin/src/NotificationService/Bertypush.xcframework: $(bridge_src)
 #### Android
 
 .PHONY: android.gomobile
-android.gomobile: node_modules android/libs/gobridge.aar
+android.gomobile: node_modules $(ANDROID_OUTPUT_LIBS)
 
-android/libs/gobridge.aar: $(bridge_src)
+$(ANDROID_OUTPUT_LIBS): $(bridge_src)
 	cd .. && $(GO) mod download
 	cd .. && $(GO) run golang.org/x/mobile/cmd/gomobile init
 	mkdir -p $(gomobile_cache) android/libs
