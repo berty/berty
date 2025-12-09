@@ -3,14 +3,14 @@
   "main": "expo/AppEntry.js",
   "version": "1.0.0",
   "scripts": {
+    "prepare": "npm install --include=dev --prefix .. && npm run prepare --prefix ..",
     "start": "expo start",
     "reset-project": "node ./scripts/reset-project.js",
     "android": "expo run:android",
     "ios": "expo run:ios",
     "web": "expo start --web",
     "test": "jest --watchAll",
-    "lint": "expo lint",
-    "eas-build-pre-install": "npm install --include=dev --prefix .. && npm run build --prefix .."
+    "lint": "expo lint"
   },
   "jest": {
     "preset": "jest-expo"
