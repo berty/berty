@@ -1,6 +1,5 @@
-import { Layout } from '@ui-kitten/components'
 import React from 'react'
-import { StatusBar } from 'react-native'
+import { StatusBar, View } from 'react-native'
 
 import { WebViews } from '@berty/components/shared-components'
 import { useThemeColor } from '@berty/hooks'
@@ -12,9 +11,9 @@ export const Roadmap: ScreenFC<'Settings.Roadmap'> = () => {
 	const colors = useThemeColor()
 
 	return (
-		<Layout style={{ flex: 1, backgroundColor: colors['main-background'] }}>
+		<View style={{ backgroundColor: colors['main-background'], minHeight: '100%' }}>
 			<StatusBar barStyle='light-content' />
 			<WebViews url={RoadmapURL} />
-		</Layout>
+		</View>
 	)
 }

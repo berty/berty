@@ -73,7 +73,7 @@ const MultiMemberSettingsBody: React.FC<{
 	const { t } = useTranslation()
 
 	return (
-		<View style={[padding.medium]}>
+		<View style={[padding.medium, { minHeight: '100%' }]}>
 			<FloatingMenuItemWithPrimaryIcon
 				pack='custom'
 				iconName='user-plus'

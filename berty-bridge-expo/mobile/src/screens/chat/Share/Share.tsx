@@ -1,5 +1,4 @@
 import { useFocusEffect } from '@react-navigation/core'
-import { Layout } from '@ui-kitten/components'
 import { CameraView } from 'expo-camera'
 import React, { FC, ReactNode, useCallback, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
@@ -217,9 +216,9 @@ export const ShareModal: ScreenFC<'Chat.Share'> = () => {
 	}, [isScannerSelected, navigate])
 
 	return (
-		<Layout style={[flex.tiny, { backgroundColor: colors['main-background'] }]}>
+		<>
 			<StatusBar backgroundColor={colors['background-header']} barStyle='light-content' />
-			<ScrollView style={[margin.bottom.medium, { backgroundColor: colors['main-background'] }]}>
+			<ScrollView style={[{ backgroundColor: colors['main-background'] }]}>
 				<ShareContainer
 					element={isScannerSelected ? <ScanBody visible={isScannerVisible} /> : <ShareQr />}
 				>
@@ -252,7 +251,7 @@ export const ShareModal: ScreenFC<'Chat.Share'> = () => {
 					{__DEV__ && <DevLinkInput />}
 				</View>
 			</ScrollView>
-		</Layout>
+		</>
 	)
 }
 

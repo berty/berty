@@ -1,4 +1,3 @@
-import { Layout } from '@ui-kitten/components'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
 import { View, StatusBar } from 'react-native'
@@ -23,7 +22,7 @@ export const CreateGroupAddMembers: ScreenFC<'Chat.CreateGroupAddMembers'> = () 
 	const accountContacts = useAllContacts()
 
 	return (
-		<Layout style={[flex.tiny, { backgroundColor: '#FFFFFF' }]}>
+		<View style={[flex.tiny, { backgroundColor: '#FFFFFF', minHeight: '100%' }]}>
 			<StatusBar backgroundColor={colors['background-header']} barStyle='light-content' />
 			<View style={{ backgroundColor: colors['background-header'] }}>
 				<CreateGroupMemberList />
@@ -43,6 +42,6 @@ export const CreateGroupAddMembers: ScreenFC<'Chat.CreateGroupAddMembers'> = () 
 				icon='arrow-forward-outline'
 				action={() => navigation.navigate('Chat.CreateGroupFinalize')}
 			/>
-		</Layout>
+		</View>
 	)
 }

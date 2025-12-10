@@ -23,40 +23,39 @@ export const Accounts: ScreenFC<'Settings.Accounts'> = () => {
 		}, [])
 
 		return (
-			<View style={{ backgroundColor: colors['secondary-background'], flex: 1 }}>
-				<ScrollView
-					bounces={false}
-					contentContainerStyle={{ paddingBottom: 12 * scaleSize }}
-					showsVerticalScrollIndicator={false}
-				>
-					{Platform.OS !== 'web' && (
-						<ItemSection>
-							<MenuItem
-								onPress={async () => {
-									try {
-										await exportAccountToFile(selectedAccount)
-										Notifications.scheduleNotificationAsync({
-											content: {
-												title: t("settings.accounts.backup-notif-title"),
-												body: t("settings.accounts.backup-notif-desc"),
-											},
-											trigger: null,
-										});
-									} catch (e) {
-										console.warn('account backup failed:', e)
-									}
-								}}
-							>
-								{t('settings.accounts.backup-button')}
-							</MenuItem>
-						</ItemSection>
-					)}
+			<ScrollView
+				bounces={false}
+				style={{ backgroundColor: colors['secondary-background'] }}
+				contentContainerStyle={{ paddingBottom: 12 * scaleSize, backgroundColor: colors['secondary-background'] }}
+				showsVerticalScrollIndicator={false}
+			>
+				{Platform.OS !== 'web' && (
 					<ItemSection>
-						<MenuItem onPress={() => navigate('Settings.DeleteAccount')}>
-							{t('settings.accounts.delete-button')}
+						<MenuItem
+							onPress={async () => {
+								try {
+									await exportAccountToFile(selectedAccount)
+									Notifications.scheduleNotificationAsync({
+										content: {
+											title: t("settings.accounts.backup-notif-title"),
+											body: t("settings.accounts.backup-notif-desc"),
+										},
+										trigger: null,
+									});
+								} catch (e) {
+									console.warn('account backup failed:', e)
+								}
+							}}
+						>
+							{t('settings.accounts.backup-button')}
 						</MenuItem>
 					</ItemSection>
-				</ScrollView>
-			</View>
+				)}
+				<ItemSection>
+					<MenuItem onPress={() => navigate('Settings.DeleteAccount')}>
+						{t('settings.accounts.delete-button')}
+					</MenuItem>
+				</ItemSection>
+			</ScrollView>
 		)
 	}

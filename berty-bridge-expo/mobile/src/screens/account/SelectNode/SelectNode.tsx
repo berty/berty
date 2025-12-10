@@ -145,6 +145,7 @@ export const SelectNode: ScreenFC<'Account.SelectNode'> = ({ route }) => {
 						{t('settings.devtools.select-node.dont-ask')}
 					</MenuToggle>
 				</ItemSection>
+				<View style={{ flex: 1 }} />
 				<CreateGroupFooterWithIcon
 					testID={testIDs['select-node-continue']}
 					title={t('settings.devtools.select-node.button-continue')}

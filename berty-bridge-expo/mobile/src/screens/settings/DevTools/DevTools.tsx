@@ -1,5 +1,4 @@
 import { useAudioPlayer } from 'expo-audio';
-import { Layout } from "@ui-kitten/components";
 import i18next from "i18next";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -77,6 +76,7 @@ import { pbDateToNum } from "@berty/utils/convert/time";
 import { defaultGlobalPersistentOptions } from "@berty/utils/global-persistent-options/defaults";
 import { GlobalPersistentOptionsKeys } from "@berty/utils/global-persistent-options/types";
 import { showNeedRestartNotification } from "@berty/utils/notification/notif-in-app";
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 //
 // DevTools
@@ -788,14 +788,20 @@ export const DevTools: ScreenFC<"Settings.DevTools"> = () => {
 	const colors = useThemeColor();
 	const { padding } = useStyles();
 	useSyncNetworkConfigOnScreenRemoved();
+	// TODO: remove when fixed in react-native-screens
+	// https://github.com/software-mansion/react-native-screens/issues/2522
+	const bottomInset = useSafeAreaInsets().bottom;
+	const paddingBottom = Platform.OS === 'ios' ? bottomInset + 60 : 0;
 
 	return (
-		<Layout style={{ backgroundColor: colors["main-background"], flex: 1 }}>
+		<>
 			<StatusBar
 				backgroundColor={colors["alt-secondary-background-header"]}
 				barStyle="light-content"
 			/>
-			<ScrollView bounces={false}>
+			<ScrollView bounces={false}
+				style={{ backgroundColor: colors["secondary-background"] }}
+				contentContainerStyle={{ flexGrow: 1, paddingBottom }}>
 				<View
 					style={[
 						padding.medium,
@@ -806,6 +812,6 @@ export const DevTools: ScreenFC<"Settings.DevTools"> = () => {
 				</View>
 				<BodyDevTools />
 			</ScrollView>
-		</Layout>
+		</>
 	);
 };

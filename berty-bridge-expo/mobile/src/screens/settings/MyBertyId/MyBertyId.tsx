@@ -187,7 +187,7 @@ export const MyBertyId: ScreenFC<'Settings.MyBertyId'> = () => {
 	const colors = useThemeColor()
 
 	return (
-		<Layout style={{ backgroundColor: colors['background-header'], flex: 1 }}>
+		<Layout style={{ backgroundColor: colors['background-header'], flex: 1, minHeight: '100%' }}>
 			<StatusBar backgroundColor={colors['background-header']} barStyle='light-content' />
 			<MyBertyIdComponent />
 		</Layout>

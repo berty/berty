@@ -133,40 +133,39 @@ const NetworkBody: React.FC = () => {
 	const networkConfig = useSelector(selectEditedNetworkConfig)
 
 	return (
-		<View style={{ backgroundColor: colors['secondary-background'], flex: 1 }}>
-			<ScrollView
-				bounces={false}
-				contentContainerStyle={{ paddingBottom: 12 }}
-				showsVerticalScrollIndicator={false}
-			>
-				<Proximity />
-				<ItemSection>
-					<MenuToggle
-						isToggleOn={networkConfig?.dht === beapi.account.NetworkConfig.DHTFlag.DHTClient}
-						onPress={async () => {
-							dispatch(
-								setCurrentNetworkConfig({
-									...networkConfig,
-									dht:
-										networkConfig?.dht === beapi.account.NetworkConfig.DHTFlag.DHTClient
-											? beapi.account.NetworkConfig.DHTFlag.DHTDisabled
-											: beapi.account.NetworkConfig.DHTFlag.DHTClient,
-								}),
-							)
-						}}
-					>
-						{t('settings.network.dht-button')}
-					</MenuToggle>
-					<DividerItem />
-					<RendezvousAltDropdown />
-				</ItemSection>
-				<ItemSection>
-					<RelayAltDropdown />
-					<DividerItem />
-					<BootstrapAltDropdown />
-				</ItemSection>
-			</ScrollView>
-		</View>
+		<ScrollView
+			bounces={false}
+			style={{ backgroundColor: colors['secondary-background']}}
+			contentContainerStyle={{ paddingBottom: 12, backgroundColor: colors['secondary-background'] }}
+			showsVerticalScrollIndicator={false}
+		>
+			<Proximity />
+			<ItemSection>
+				<MenuToggle
+					isToggleOn={networkConfig?.dht === beapi.account.NetworkConfig.DHTFlag.DHTClient}
+					onPress={async () => {
+						dispatch(
+							setCurrentNetworkConfig({
+								...networkConfig,
+								dht:
+									networkConfig?.dht === beapi.account.NetworkConfig.DHTFlag.DHTClient
+										? beapi.account.NetworkConfig.DHTFlag.DHTDisabled
+										: beapi.account.NetworkConfig.DHTFlag.DHTClient,
+							}),
+						)
+					}}
+				>
+					{t('settings.network.dht-button')}
+				</MenuToggle>
+				<DividerItem />
+				<RendezvousAltDropdown />
+			</ItemSection>
+			<ItemSection>
+				<RelayAltDropdown />
+				<DividerItem />
+				<BootstrapAltDropdown />
+			</ItemSection>
+		</ScrollView>
 	)
 }
 

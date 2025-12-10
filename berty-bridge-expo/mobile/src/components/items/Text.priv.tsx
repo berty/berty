@@ -22,7 +22,6 @@ export const TextPriv = (props: TextPrivProps) => {
 
 const styles = StyleSheet.create({
 	container: {
-		width: '90%',
 		flexShrink: 1,
 	},
 })
