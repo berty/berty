@@ -10,7 +10,8 @@
     "ios": "expo run:ios",
     "web": "expo start --web",
     "test": "jest --watchAll",
-    "lint": "expo lint"
+    "lint": "expo lint",
+    "storybook-generate": "sb-rn-get-stories"
   },
   "jest": {
     "preset": "jest-expo"
@@ -85,7 +86,15 @@
     "react-redux": "^9.2.0",
     "redux-persist": "^6.0.0",
     "sha3": "^2.1.4",
-    "tlds": "^1.259.0"
+    "tlds": "^1.259.0",
+    "babel-loader": "^8.4.1",
+    "@react-native-community/datetimepicker": "^8.5.1",
+    "@react-native-community/slider": "^5.1.1",
+    "@gorhom/bottom-sheet": "^5.2.8",
+    "@storybook/addon-ondevice-controls": "^10.1.1",
+    "@storybook/addon-ondevice-actions": "^10.1.1",
+    "@storybook/react-native": "^10.1.1",
+    "storybook": "^10.1.8"
   },
   "devDependencies": {
     "@babel/core": "^7.25.2",

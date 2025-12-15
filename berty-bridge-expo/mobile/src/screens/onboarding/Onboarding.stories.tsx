@@ -1,35 +1,55 @@
-import { NavigationContainer } from '@react-navigation/native'
-import { createNativeStackNavigator } from '@react-navigation/native-stack'
-import { storiesOf } from '@storybook/react-native'
-import React from 'react'
+import { NavigationContainer } from "@react-navigation/native";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import React from "react";
 
-import { AppDecorator, NavigationDecorator } from '../../../.storybook/preview'
-import { CreatingAccount, OpeningAccount } from '../account'
-import { CreateAccount } from './CreateAccount/CreateAccount'
-import { DefaultMode } from './DefaultMode/DefaultMode'
+import type { Meta, StoryObj } from "@storybook/react";
 
-const Stack = createNativeStackNavigator()
+import {
+	AppDecorator,
+	NavigationDecorator,
+} from "../../../.rnstorybook/preview";
+import { CreatingAccount, OpeningAccount } from "../account";
+import { CreateAccount } from "./CreateAccount/CreateAccount";
+import { DefaultMode } from "./DefaultMode/DefaultMode";
 
-storiesOf('Onboarding', module)
-	.addDecorator(AppDecorator)
-	.addDecorator(NavigationDecorator)
-	.add('Create Account', (props: any) => <CreateAccount {...props} />)
-	.add('Default Mode', (props: any) => <DefaultMode {...props} />)
-	.add('Creating Account', (props: any) => <CreatingAccount {...props} />)
+const Stack = createNativeStackNavigator();
 
-storiesOf('Onboarding', module)
-	.addDecorator(AppDecorator)
-	.add('Onboarding', () => (
-		<NavigationContainer>
-			<Stack.Navigator>
-				<Stack.Screen
-					name='Account.Opening'
-					initialParams={{
-						selectedAccount: '123-account-id-123',
-						isNewAccount: true,
-					}}
-					component={OpeningAccount}
-				/>
-			</Stack.Navigator>
-		</NavigationContainer>
-	))
+const meta: Meta = {
+	title: "Onboarding",
+	decorators: [AppDecorator, NavigationDecorator],
+};
+
+export default meta;
+
+type Story = StoryObj;
+
+export const CreateAccountStory: Story = {
+	name: "Create Account",
+	render: (args) => <CreateAccount {...args} />,
+};
+
+export const DefaultModeStory: Story = {
+	name: "Default Mode",
+	render: (args) => <DefaultMode {...args} />,
+};
+
+export const CreatingAccountStory: Story = {
+	name: "Creating Account",
+	render: (args) => <CreatingAccount {...args} />,
+};
+
+export const Onboarding: Story = {
+	name: "Onboarding",
+	render: (args) => (
+		<Stack.Navigator>
+			<Stack.Screen
+				name="Account.Opening"
+				initialParams={{
+					selectedAccount: "123-account-id-123",
+					isNewAccount: true,
+				}}
+				component={OpeningAccount}
+			/>
+		</Stack.Navigator>
+	),
+};

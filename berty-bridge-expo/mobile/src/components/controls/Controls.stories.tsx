@@ -1,10 +1,10 @@
-import { storiesOf } from '@storybook/react-native'
+import type { Meta, StoryObj } from "@storybook/react";
 import React, { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Text, View } from 'react-native'
 
 import { AltToggle, StreamProgress, TabBar, Toggle } from '.'
-import { AppDecorator, ScroolViewDecorator, Spacer } from '../../../.storybook/preview'
+import { AppDecorator, ScroolViewDecorator, Spacer } from '../../../.rnstorybook/preview'
 
 const onPress = () => console.log('onPress')
 
@@ -67,10 +67,18 @@ const ProgressBars = () => {
 	)
 }
 
-storiesOf('Components', module)
-	.addDecorator(AppDecorator)
-	.addDecorator(ScroolViewDecorator)
-	.add('Controls', () => (
+const meta: Meta = {
+	title: "Components",
+	decorators: [AppDecorator, ScroolViewDecorator],
+};
+
+export default meta;
+
+type Story = StoryObj;
+
+export const Controls: Story = {
+	name: "Controls",
+	render: (args) => (
 		<>
 			<Text>Toggles:</Text>
 			<Spacer />
@@ -86,4 +94,5 @@ storiesOf('Components', module)
 
 			<Tabs />
 		</>
-	))
+	),
+}

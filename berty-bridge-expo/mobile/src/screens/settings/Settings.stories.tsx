@@ -5,7 +5,7 @@ import { Permission } from '@berty/components/permissions/Permission'
 import AppCommonProviders from '@berty/contexts/AppCommonProviders'
 import { PermissionType } from '@berty/utils/permissions/permissions'
 
-import { action } from '../../../.storybook/utils'
+import { action } from '../../../.rnstorybook/utils'
 
 // ts-unused-exports:disable-next-line
 export default {

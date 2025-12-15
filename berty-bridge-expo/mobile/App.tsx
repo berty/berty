@@ -1,6 +1,6 @@
 import { NavigationContainer } from "@react-navigation/native";
 import React from "react";
-import { Platform, View } from "react-native";
+import { View } from "react-native";
 
 import { ErrorScreen } from "@berty/components/error";
 import AppCommonProviders from "@berty/contexts/AppCommonProviders";
@@ -60,3 +60,5 @@ const App: React.FC = () => {
 };
 
 export default App;
+// export { default } from './.rnstorybook';
+
