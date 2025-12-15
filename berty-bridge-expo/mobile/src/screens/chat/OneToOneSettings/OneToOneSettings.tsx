@@ -91,11 +91,11 @@ export const OneToOneSettings: ScreenFC<'Chat.OneToOneSettings'> = ({
 		})
 	})
 
-	React.useEffect(() => {
-		if (!(conv && conv.type === beapi.messenger.Conversation.Type.ContactType && contact)) {
-			navigation.goBack()
-		}
-	}, [conv, contact, navigation])
+	// React.useEffect(() => {
+	// 	if (!(conv && conv.type === beapi.messenger.Conversation.Type.ContactType && contact)) {
+	// 		navigation.goBack()
+	// 	}
+	// }, [conv, contact, navigation])
 
 	const isAccepted = contact && contact.state === beapi.messenger.Contact.State.Accepted
 

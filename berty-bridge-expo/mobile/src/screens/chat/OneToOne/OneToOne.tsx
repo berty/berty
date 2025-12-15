@@ -79,7 +79,7 @@ export const OneToOne: ScreenFC<'Chat.OneToOne'> = React.memo(
 						style={[!contact ? opacity(0.5) : null]}
 						onPress={() => navigate('Chat.OneToOneSettings', { convId: params.convId })}
 					>
-						<ContactAvatar size={40} publicKey={conv?.contactPublicKey} />
+						<ContactAvatar size={36} publicKey={conv?.contactPublicKey} />
 					</TouchableOpacity>
 				),
 			})

@@ -33,7 +33,7 @@ export const GenericAvatar: React.FC<{
 	const colors = useThemeColor()
 
 	return (
-		<View style={{ zIndex: -1 }}>
+		<View>
 			<View
 				style={[
 					style,
