@@ -1,8 +1,8 @@
 import { useFocusEffect } from '@react-navigation/core'
 import { CameraView } from 'expo-camera'
-import React, { FC, ReactNode, useCallback, useEffect, useState } from 'react'
+import React, { FC, PropsWithChildren, ReactNode, use, useCallback, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { View, Vibration, StatusBar, ScrollView, TextInput, TouchableOpacity } from 'react-native'
+import { View, Vibration, StatusBar, ScrollView, TextInput, TouchableOpacity, Platform } from 'react-native'
 import QRCode from 'react-native-qrcode-svg'
 
 import logo from '@berty/assets/images/1_berty_picto.png'
@@ -19,7 +19,6 @@ import { ScreenFC, useNavigation } from '@berty/navigation'
 import { checkPermission } from '@berty/utils/permissions/checkPermissions'
 import { PermissionType } from '@berty/utils/permissions/permissions'
 import { shareBertyID } from '@berty/utils/react-native/share'
-import { SafeAreaView } from 'react-native-safe-area-context'
 
 const QrCode: FC<{ size: number }> = ({ size }) => {
 	const client = useMessengerClient()
@@ -146,7 +145,7 @@ const ShareQr: FC = () => {
 	)
 }
 
-const ShareContainer: FC<{ element: ReactNode }> = ({ element, children }) => {
+const ShareContainer: FC<PropsWithChildren<{ element: ReactNode }>> = ({ element, children }) => {
 	const colors = useThemeColor()
 	const { padding, border, margin } = useStyles()
 	const { windowWidth, windowHeight, isGteIpadSize, fontScale } = useAppDimensions()
@@ -155,6 +154,8 @@ const ShareContainer: FC<{ element: ReactNode }> = ({ element, children }) => {
 		? Math.min(windowHeight, windowWidth) * 0.5
 		: Math.min(windowHeight * 0.8, windowWidth * 0.8) - 1.25 * (26 * fontScale)
 
+	const paddingTop = Platform.OS === 'android' ? 40 : 0
+
 	return (
 		<View
 			style={[
@@ -162,6 +163,7 @@ const ShareContainer: FC<{ element: ReactNode }> = ({ element, children }) => {
 				padding.bottom.huge,
 				padding.top.medium,
 				{
+					paddingTop,
 					backgroundColor: colors['background-header'],
 				},
 			]}
@@ -217,7 +219,7 @@ export const ShareModal: ScreenFC<'Chat.Share'> = () => {
 	}, [isScannerSelected, navigate])
 
 	return (
-		<SafeAreaView>
+		<View style={{ flex: 1 }}>
 			<StatusBar backgroundColor={colors['background-header']} barStyle='light-content' />
 			<ScrollView style={[{ backgroundColor: colors['main-background'] }]}>
 				<ShareContainer
@@ -252,7 +254,7 @@ export const ShareModal: ScreenFC<'Chat.Share'> = () => {
 					{__DEV__ && <DevLinkInput />}
 				</View>
 			</ScrollView>
-		</SafeAreaView>
+		</View>
 	)
 }
 
