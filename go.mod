@@ -1,8 +1,6 @@
 module berty.tech/berty/v2
 
-go 1.22
-
-toolchain go1.22.5
+go 1.23.0
 
 require (
 	berty.tech/go-ipfs-repo-encrypted v1.3.1-0.20240722095251-c6b363b38785
@@ -442,7 +440,7 @@ require (
 	golang.org/x/exp v0.0.0-20240823005443-9b4947da3948 // indirect
 	golang.org/x/image v0.18.0 // indirect
 	golang.org/x/mod v0.20.0 // indirect
-	golang.org/x/oauth2 v0.20.0 // indirect
+	golang.org/x/oauth2 v0.27.0 // indirect
 	golang.org/x/sync v0.10.0 // indirect
 	golang.org/x/sys v0.29.0 // indirect
 	golang.org/x/term v0.28.0 // indirect
