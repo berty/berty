@@ -117,6 +117,8 @@ export default ({ config }: ConfigContext): ExpoConfig => {
 				},
 			],
 			"expo-audio",
+			"@react-native-community/datetimepicker",
+			"expo-asset",
 		],
 		experiments: {
 			typedRoutes: true,

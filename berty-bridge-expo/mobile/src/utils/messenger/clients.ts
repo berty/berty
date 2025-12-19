@@ -72,7 +72,6 @@ const messengerEventStream = (
 							// }
 							// action.payload.payload =
 							// 	action.payload.payload === undefined ? {} : pbobj.decode(action.payload.payload)
-							console.log('remi: notification received', action.payload)
 							Notifications.scheduleNotificationAsync({
 								content: {
 									title: action.payload.title,
