@@ -1,8 +1,6 @@
 module berty.tech/berty/v2
 
-go 1.22
-
-toolchain go1.22.5
+go 1.24
 
 require (
 	berty.tech/go-ipfs-repo-encrypted v1.3.1-0.20240722095251-c6b363b38785
@@ -67,18 +65,18 @@ require (
 	github.com/sideshow/apns2 v0.23.0
 	github.com/skip2/go-qrcode v0.0.0-20200617195104-da1b6568686e
 	github.com/srikrsna/protoc-gen-gotag v1.0.1
-	github.com/stretchr/testify v1.9.0
+	github.com/stretchr/testify v1.11.1
 	github.com/tailscale/depaware v0.0.0-20210622194025-720c4b409502
 	github.com/tj/assert v0.0.3
 	github.com/zcalusic/sysinfo v0.0.0-20200820110305-ef1bb2697bc2
 	go.uber.org/goleak v1.3.0
 	go.uber.org/multierr v1.11.0
 	go.uber.org/zap v1.27.0
-	golang.org/x/crypto v0.31.0
+	golang.org/x/crypto v0.41.0
 	golang.org/x/mobile v0.0.0-20231127183840-76ac6878050a
-	golang.org/x/net v0.33.0
-	golang.org/x/text v0.21.0
-	golang.org/x/tools v0.24.0
+	golang.org/x/net v0.43.0
+	golang.org/x/text v0.28.0
+	golang.org/x/tools v0.36.0
 	golang.org/x/xerrors v0.0.0-20231012003039-104605ab7028
 	google.golang.org/api v0.169.0
 	google.golang.org/grpc v1.65.0
@@ -186,7 +184,6 @@ require (
 	github.com/felixge/fgprof v0.9.4 // indirect
 	github.com/felixge/httpsnoop v1.0.4 // indirect
 	github.com/flynn/noise v1.1.0 // indirect
-	github.com/francoispqt/gojay v1.2.13 // indirect
 	github.com/fredbi/uri v1.1.0 // indirect
 	github.com/fsnotify/fsnotify v1.7.0 // indirect
 	github.com/fyne-io/gl-js v0.0.0-20220119005834-d2da28d9ccfe // indirect
@@ -203,7 +200,6 @@ require (
 	github.com/go-logfmt/logfmt v0.5.1 // indirect
 	github.com/go-logr/logr v1.4.2 // indirect
 	github.com/go-logr/stdr v1.2.2 // indirect
-	github.com/go-task/slim-sprig/v3 v3.0.0 // indirect
 	github.com/go-text/render v0.2.0 // indirect
 	github.com/go-text/typesetting v0.2.0 // indirect
 	github.com/go-toast/toast v0.0.0-20190211030409-01e6764cf0a4 // indirect
@@ -351,7 +347,7 @@ require (
 	github.com/mwitkow/go-proto-validators v0.0.0-20180403085117-0950a7990007 // indirect
 	github.com/nicksnyder/go-i18n/v2 v2.4.0 // indirect
 	github.com/nu7hatch/gouuid v0.0.0-20131221200532-179d4d0c4d8d // indirect
-	github.com/onsi/ginkgo/v2 v2.20.1 // indirect
+	github.com/onsi/gomega v1.34.1 // indirect
 	github.com/opencontainers/go-digest v1.0.0 // indirect
 	github.com/opencontainers/image-spec v1.1.0 // indirect
 	github.com/opencontainers/runtime-spec v1.2.0 // indirect
@@ -386,8 +382,8 @@ require (
 	github.com/prometheus/procfs v0.15.0 // indirect
 	github.com/prometheus/statsd_exporter v0.22.7 // indirect
 	github.com/pseudomuto/protokit v0.2.0 // indirect
-	github.com/quic-go/qpack v0.4.0 // indirect
-	github.com/quic-go/quic-go v0.46.0 // indirect
+	github.com/quic-go/qpack v0.6.0 // indirect
+	github.com/quic-go/quic-go v0.57.0 // indirect
 	github.com/quic-go/webtransport-go v0.8.0 // indirect
 	github.com/radovskyb/watcher v1.0.7 // indirect
 	github.com/raulk/go-watchdog v1.3.0 // indirect
@@ -437,16 +433,17 @@ require (
 	go.uber.org/atomic v1.11.0 // indirect
 	go.uber.org/dig v1.17.1 // indirect
 	go.uber.org/fx v1.21.1 // indirect
-	go.uber.org/mock v0.4.0 // indirect
+	go.uber.org/mock v0.5.2 // indirect
 	go4.org v0.0.0-20230225012048-214862532bf5 // indirect
 	golang.org/x/exp v0.0.0-20240823005443-9b4947da3948 // indirect
 	golang.org/x/image v0.18.0 // indirect
-	golang.org/x/mod v0.20.0 // indirect
+	golang.org/x/mod v0.27.0 // indirect
 	golang.org/x/oauth2 v0.20.0 // indirect
-	golang.org/x/sync v0.10.0 // indirect
-	golang.org/x/sys v0.29.0 // indirect
-	golang.org/x/term v0.28.0 // indirect
-	golang.org/x/time v0.5.0 // indirect
+	golang.org/x/sync v0.16.0 // indirect
+	golang.org/x/sys v0.35.0 // indirect
+	golang.org/x/term v0.34.0 // indirect
+	golang.org/x/time v0.12.0 // indirect
+	golang.org/x/tools/go/packages/packagestest v0.1.1-deprecated // indirect
 	gonum.org/v1/gonum v0.15.0 // indirect
 	google.golang.org/appengine/v2 v2.0.2 // indirect
 	google.golang.org/genproto v0.0.0-20240213162025-012b6fc9bca9 // indirect
