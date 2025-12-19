@@ -19,6 +19,7 @@ import { ScreenFC, useNavigation } from '@berty/navigation'
 import { checkPermission } from '@berty/utils/permissions/checkPermissions'
 import { PermissionType } from '@berty/utils/permissions/permissions'
 import { shareBertyID } from '@berty/utils/react-native/share'
+import { SafeAreaView } from 'react-native-safe-area-context'
 
 const QrCode: FC<{ size: number }> = ({ size }) => {
 	const client = useMessengerClient()
@@ -216,7 +217,7 @@ export const ShareModal: ScreenFC<'Chat.Share'> = () => {
 	}, [isScannerSelected, navigate])
 
 	return (
-		<>
+		<SafeAreaView>
 			<StatusBar backgroundColor={colors['background-header']} barStyle='light-content' />
 			<ScrollView style={[{ backgroundColor: colors['main-background'] }]}>
 				<ShareContainer
@@ -251,7 +252,7 @@ export const ShareModal: ScreenFC<'Chat.Share'> = () => {
 					{__DEV__ && <DevLinkInput />}
 				</View>
 			</ScrollView>
-		</>
+		</SafeAreaView>
 	)
 }
 
