@@ -6,7 +6,7 @@ import android.content.IntentFilter
 import android.content.res.Resources
 import android.net.ConnectivityManager
 import android.os.Build
-import android.provider.CalendarContract.Instances.EVENT_ID
+import android.util.Base64
 import android.util.Log
 import bertybridge.Bertybridge
 import bertybridge.Bridge
@@ -20,6 +20,8 @@ import expo.modules.kotlin.modules.ModuleDefinition
 import expo.modules.kotlin.records.Field
 import expo.modules.kotlin.records.Record
 import expo.modules.kotlin.types.Enumerable
+import org.json.JSONException
+import org.json.JSONObject
 import tech.berty.bertybridgeexpo.addressbook.AddressBook
 import tech.berty.bertybridgeexpo.gobridge.ConnectivityDriver
 import tech.berty.bertybridgeexpo.gobridge.GoBridgeAlreadyStartedError
@@ -34,6 +36,7 @@ import tech.berty.bertybridgeexpo.gobridge.Logger
 import tech.berty.bertybridgeexpo.gobridge.MDNSLockerDriver
 import tech.berty.bertybridgeexpo.gobridge.NetDriver
 import tech.berty.bertybridgeexpo.gobridge.bledriver.BleInterface
+import tech.berty.bertybridgeexpo.notification.FcmBus
 import tech.berty.bertybridgeexpo.notification.NotificationService
 import tech.berty.bertybridgeexpo.rootdir.RootDirModule
 import java.io.File
@@ -55,6 +58,7 @@ class logOpts : Record {
 
 class BertyBridgeExpoModule : Module() {
     private val TAG: String = "GoBridge"
+    val EVENT_ID: String = "onPushReceived"
 
     // protocol
     private var remoteBridge: RemoteBridge? = null
@@ -63,7 +67,6 @@ class BertyBridgeExpoModule : Module() {
     private var tempDir: File? = null
     private var keystoreDriver: KeystoreDriver? = null
     private var addressBook: AddressBook? = null
-    private var notificationService: NotificationService? = null
 
     // Each module class must implement the definition function. The definition consists of components
     // that describes the module's functionality and behavior.
@@ -93,7 +96,6 @@ class BertyBridgeExpoModule : Module() {
             rootDir = File(RootDirModule(reactContext).getRootDir())
             tempDir = File(reactContext.cacheDir.absolutePath + "/berty")
             addressBook = AddressBook(reactContext)
-            notificationService = NotificationService(this@BertyBridgeExpoModule)
         }
 
         OnDestroy {
@@ -110,6 +112,18 @@ class BertyBridgeExpoModule : Module() {
             bridgeMessenger = null
             remoteBridge = null
             serviceClient = null
+        }
+
+        OnStartObserving {
+            FcmBus.setListener(object : FcmBus.Listener {
+                override fun onMessage(data: Map<String, String>) {
+                    this@BertyBridgeExpoModule.sendEvent(EVENT_ID, data)
+                }
+            })
+        }
+
+        OnStopObserving {
+            FcmBus.setListener(null)
         }
 
         AsyncFunction("initBridge") { promise: Promise ->
@@ -313,8 +327,48 @@ class BertyBridgeExpoModule : Module() {
 
         // PushToken
 
-        AsyncFunction("request") { promise: Promise ->
-            notificationService?.request(promise)
+        AsyncFunction("requestPushToken") { promise: Promise ->
+            NotificationService.getToken()
+                .addOnCompleteListener { task ->
+                    if (task.isSuccessful) {
+                        try {
+                            val bundleID = getReactContext().packageName
+                            val token = task.result as String // Cast the result
+
+                            // Convert token to byte array and encode
+                            val tokenB64 = Base64.encodeToString(token.toByteArray(), Base64.NO_WRAP)
+
+                            // Use 'apply' for idiomatic object construction
+                            val json = JSONObject().apply {
+                                put("bundleId", bundleID)
+                                put("token", tokenB64)
+                            }
+
+                            promise.resolve(json.toString())
+
+                        } catch (e: JSONException) {
+                            // Handle JSON errors
+                            promise.reject(CodedException(e))
+                        } catch (e: Exception) {
+                            // Handle other errors (e.g., casting 'task.result')
+                            promise.reject(CodedException(e))
+                        }
+                    } else {
+                        // Task failed
+                        val exception = task.exception
+                        if (exception != null) {
+                            // Pass the non-null Exception
+                            promise.reject(CodedException(exception))
+                        } else {
+                            // Fallback if task failed but exception was null
+                            promise.reject(CodedException("UnknownError", "Token request failed with no exception", null))
+                        }
+                    }
+                }
+                .addOnCanceledListener {
+                    // Task was canceled
+                    promise.reject(CodedException("NotificationError", "token request canceled", null))
+                }
         }
     }
 

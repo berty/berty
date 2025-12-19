@@ -1,34 +1,33 @@
-import { IconRegistry } from '@ui-kitten/components'
-import { EvaIconsPack } from '@ui-kitten/eva-icons'
-import React from 'react'
-import { SafeAreaProvider } from 'react-native-safe-area-context'
-import { Provider as ReduxProvider } from 'react-redux'
+import { IconRegistry } from "@ui-kitten/components";
+import { EvaIconsPack } from "@ui-kitten/eva-icons";
+import React from "react";
+import { SafeAreaProvider } from "react-native-safe-area-context";
+import { Provider as ReduxProvider } from "react-redux";
 
-import { CustomIconsPack } from '@berty/assets/custom-icons'
-import { FeatherIconsPack } from '@berty/assets/feather-icons'
-import { useFonts } from '@berty/assets/fonts-loader'
-import { AppDimensionsProvider, StyleProvider } from '@berty/contexts/styles'
-import reduxStore from '@berty/redux/store'
+import { CustomIconsPack } from "@berty/assets/custom-icons";
+import { FeatherIconsPack } from "@berty/assets/feather-icons";
+import { AppDimensionsProvider, StyleProvider } from "@berty/contexts/styles";
+import reduxStore from "@berty/redux/store";
 
-const AppCommonProviders: React.FunctionComponent = ({ children }) => {
-	const { isFontLoaded } = useFonts()
+interface AppCommonProvidersProps {
+	children: React.ReactNode;
+}
 
-	if (!isFontLoaded) {
-		return null
-	}
-
+const AppCommonProviders = ({ children }: AppCommonProvidersProps) => {
 	return (
 		<SafeAreaProvider>
 			<AppDimensionsProvider>
 				<StyleProvider>
 					<ReduxProvider store={reduxStore}>
-						<IconRegistry icons={[EvaIconsPack, FeatherIconsPack, CustomIconsPack]} />
+						<IconRegistry
+							icons={[EvaIconsPack, FeatherIconsPack, CustomIconsPack]}
+						/>
 						{children}
 					</ReduxProvider>
 				</StyleProvider>
 			</AppDimensionsProvider>
 		</SafeAreaProvider>
-	)
-}
+	);
+};
 
-export default AppCommonProviders
+export default AppCommonProviders;

@@ -64,6 +64,8 @@ public class BertyBridgeExpoModule: Module {
     Constants([
         "debug": self.debug
     ])
+
+    Events("onPushReceived")
       
     AsyncFunction("initBridge") { (promise: Promise) in
         do {
@@ -235,6 +237,11 @@ public class BertyBridgeExpoModule: Module {
               self.logger.log(BertyLogger.LogLevel(rawValue: level.rawValue.uppercased()) ?? .INFO, message)
           }
           #endif
+      }
+      
+      AsyncFunction("requestPushToken") { (promise: Promise) in
+          let pushTokenRequester: PushTokenRequester = PushTokenRequester.shared
+          pushTokenRequester.request(promise)
       }
 
     // Enables the module to be used as a native view. Definition components that are accepted as part of the

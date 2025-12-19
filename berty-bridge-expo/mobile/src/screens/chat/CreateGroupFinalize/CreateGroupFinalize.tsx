@@ -198,33 +198,31 @@ export const CreateGroupFinalize: ScreenFC<'Chat.CreateGroupFinalize'> = () => {
 	}, [done, error, reset, reply, dispatch])
 
 	return (
-		<Layout style={[flex.tiny, { backgroundColor: '#FFFFFF' }]}>
-			<IOSOnlyKeyboardAvoidingView behavior='position'>
-				<ScrollView>
-					<View style={{ backgroundColor: colors['background-header'] }}>
-						<View>
-							<CreateGroupMemberList />
-							<CreateGroupHeader
-								title={t('main.home.create-group.add-members')}
-								onPress={goBack}
-								style={[padding.bottom.small]}
-								first
-							/>
-						</View>
-						<CreateGroupHeader title={t('main.home.create-group.group-info')}>
-							<GroupInfo groupName={groupName} setGroupName={setGroupName} />
-							<CreateGroupFooter
-								title={t('main.home.create-group.create-group')}
-								action={() => {
-									createGroup()
-									playSound('groupCreated')
-								}}
-								loading={loading}
-							/>
-						</CreateGroupHeader>
+		<IOSOnlyKeyboardAvoidingView behavior='position' >
+			<ScrollView style={{ backgroundColor: colors['main-background'] }}>
+				<View style={{ backgroundColor: colors['background-header'] }}>
+					<View>
+						<CreateGroupMemberList />
+						<CreateGroupHeader
+							title={t('main.home.create-group.add-members')}
+							onPress={goBack}
+							style={[padding.bottom.small]}
+							first
+						/>
 					</View>
-				</ScrollView>
-			</IOSOnlyKeyboardAvoidingView>
-		</Layout>
+					<CreateGroupHeader title={t('main.home.create-group.group-info')}>
+						<GroupInfo groupName={groupName} setGroupName={setGroupName} />
+						<CreateGroupFooter
+							title={t('main.home.create-group.create-group')}
+							action={() => {
+								createGroup()
+								playSound('groupCreated')
+							}}
+							loading={loading}
+						/>
+					</CreateGroupHeader>
+				</View>
+			</ScrollView>
+		</IOSOnlyKeyboardAvoidingView>
 	)
 }

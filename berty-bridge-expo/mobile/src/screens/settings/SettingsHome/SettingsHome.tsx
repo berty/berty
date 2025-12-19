@@ -2,7 +2,6 @@ import { Icon } from '@ui-kitten/components'
 import React, { useContext } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Platform, ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native'
-import { withInAppNotification } from 'react-native-in-app-notification'
 import { RESULTS } from 'react-native-permissions'
 import { useDispatch, useSelector } from 'react-redux'
 
@@ -106,7 +105,7 @@ const ProfileButton: React.FC<{ show: () => void }> = ({ show }) => {
 	)
 }
 
-export const SettingsHome: ScreenFC<'Settings.Home'> = withInAppNotification(() => {
+export const SettingsHome: ScreenFC<'Settings.Home'> = () => {
 	const { scaleSize } = useAppDimensions()
 	const colors = useThemeColor()
 	const { navigate } = useNavigation()
@@ -376,7 +375,7 @@ export const SettingsHome: ScreenFC<'Settings.Home'> = withInAppNotification(() 
 			</BottomModal>
 		</>
 	)
-})
+}
 
 const styles = StyleSheet.create({
 	qrCode: {

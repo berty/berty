@@ -4,7 +4,6 @@ import { useTranslation } from 'react-i18next'
 import { StreamProgress } from '@berty/components'
 import { LoaderDots } from '@berty/components/LoaderDots'
 import { StatusBarPrimary } from '@berty/components/StatusBarPrimary'
-import { EventEmitterContext } from '@berty/contexts/eventEmitter.context'
 import { useAppDispatch, useAppSelector } from '@berty/hooks'
 import { ScreenFC, useNavigation } from '@berty/navigation'
 import { selectStreamProgress } from '@berty/redux/reducers/ui.reducer'
@@ -21,7 +20,6 @@ export const OpeningAccount: ScreenFC<'Account.Opening'> = ({
 	const dispatch = useAppDispatch()
 	const navigation = useNavigation()
 	const { t } = useTranslation()
-	const eventEmitter = useContext(EventEmitterContext)
 
 	const streamProgress = useAppSelector(selectStreamProgress)
 
@@ -31,14 +29,14 @@ export const OpeningAccount: ScreenFC<'Account.Opening'> = ({
 			await openAccount(selectedAccount, dispatch)
 
 			// opening messenger and protocol clients
-			await openClients(eventEmitter, dispatch)
+			await openClients(dispatch)
 
 			// call thunk function prepareAccount
 			dispatch(prepareAccount({ navigation, t, selectedAccount, isNewAccount }))
 		}
 
 		f()
-	}, [dispatch, eventEmitter, isNewAccount, navigation, selectedAccount, t])
+	}, [dispatch, isNewAccount, navigation, selectedAccount, t])
 
 	return (
 		<>

@@ -17,7 +17,7 @@ minimum_android_ver = 21
 
 node_modules: package.json
 	$(call check-program, npm)
-	npm install $(if $(filter $(CI), true), --frozen-lockfile --network-timeout 1200000 --network-concurrency 1)
+	npm install
 	touch $@
 
 #### iOS

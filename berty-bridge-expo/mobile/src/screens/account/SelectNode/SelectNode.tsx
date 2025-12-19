@@ -32,7 +32,7 @@ export const SelectNode: ScreenFC<'Account.SelectNode'> = ({ route }) => {
 	const [messengerPort, setMessengerPort] = useState(NodeInfosDefault.messengerPort)
 	const [dontAsk, setDontAsk] = useState(false)
 	const [forceAsk, setForceAsk] = useState(false) // forceAsk is used to bypass `dontAsk` state if `action` failed
-	const debug = NativeModules.GoBridge?.getConstants().debug
+	const debug = __DEV__
 
 	const validate = useCallback(
 		async (externalNode, address, accountPort, messengerPort, dontAsk) => {
@@ -145,6 +145,7 @@ export const SelectNode: ScreenFC<'Account.SelectNode'> = ({ route }) => {
 						{t('settings.devtools.select-node.dont-ask')}
 					</MenuToggle>
 				</ItemSection>
+				<View style={{ flex: 1 }} />
 				<CreateGroupFooterWithIcon
 					testID={testIDs['select-node-continue']}
 					title={t('settings.devtools.select-node.button-continue')}

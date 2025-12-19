@@ -5,7 +5,7 @@ import { MenuItemProps } from '../interfaces'
 import { MenuItemPriv } from '../MenuItem.priv'
 import { TextPriv } from '../Text.priv'
 
-export const MenuItem: React.FC<MenuItemProps> = props => {
+export const MenuItem = (props: MenuItemProps) => {
 	return (
 		<MenuItemPriv onPress={props.onPress} testID={props.testID}>
 			<TextPriv>{props.children}</TextPriv>

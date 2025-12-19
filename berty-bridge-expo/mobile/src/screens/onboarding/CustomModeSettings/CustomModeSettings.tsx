@@ -2,7 +2,6 @@ import { Icon } from '@ui-kitten/components'
 import React, { createRef, RefObject } from 'react'
 import { useTranslation } from 'react-i18next'
 import {
-	SafeAreaView,
 	ScrollView,
 	StatusBar,
 	TouchableOpacity,
@@ -10,6 +9,7 @@ import {
 	Platform,
 	ActivityIndicator,
 } from 'react-native'
+import { SafeAreaView } from 'react-native-safe-area-context'
 import { RESULTS } from 'react-native-permissions'
 import { useDispatch } from 'react-redux'
 

@@ -5,6 +5,7 @@ import {
 } from "@expo/config-plugins";
 import * as fs from "fs";
 import * as path from "path";
+import { execSync } from "child_process";
 
 const TARGET_NAME = "NotificationService";
 const SOURCE_FILES = [
@@ -19,6 +20,52 @@ const FRAMEWORKS = ["Bertypush.xcframework"];
 
 let iosPath: string;
 
+// Ensure gomobile PushNotification framework is built
+const ensureGomobile = (projectRoot: string) => {
+	const moduleRoot = path.resolve(projectRoot, "..");
+	const sourceDir = path.join(
+		moduleRoot,
+		"plugin",
+		"src",
+		"NotificationService"
+	);
+
+	const missing = FRAMEWORKS.filter((name) => {
+		const frameworkPath = path.join(sourceDir, name);
+		const exists = fs.existsSync(frameworkPath);
+
+		if (!exists) {
+			console.log(`[withEnsureGomobile] Missing: ${frameworkPath}`);
+		}
+
+		return !exists;
+	});
+
+	if (missing.length > 0) {
+		console.log(
+			`[withEnsureGomobile] Missing frameworks (${missing.join(
+				", "
+			)}). Running "make ios.gomobile" in ${moduleRoot}...`
+		);
+
+		try {
+			execSync("make ios.gomobile", {
+				cwd: moduleRoot,
+				stdio: "inherit",
+			});
+		} catch (err) {
+			console.warn(
+				`[withEnsureGomobile] Failed to run "make ios.gomobile":`,
+				err
+			);
+		}
+	} else {
+		console.log(
+			"[withEnsureGomobile] All required frameworks are present, skipping make."
+		);
+	}
+};
+
 const withCopyFiles: ConfigPlugin = (config) => {
 	// support for monorepos where node_modules can be above the project directory.
 	const sourceDir = path.resolve(__dirname, "../src/NotificationService");
@@ -26,6 +73,8 @@ const withCopyFiles: ConfigPlugin = (config) => {
 	return withDangerousMod(config, [
 		"ios",
 		async (config) => {
+			ensureGomobile(config.modRequest.projectRoot);
+
 			iosPath = path.join(config.modRequest.projectRoot, "ios");
 
 			/* COPY OVER EXTENSION FILES */

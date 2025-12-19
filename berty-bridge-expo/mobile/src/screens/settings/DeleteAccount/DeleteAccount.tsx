@@ -23,7 +23,7 @@ export const DeleteAccount: ScreenFC<'Settings.DeleteAccount'> = () => {
 	const DELETE_STR = t('settings.delete-account.delete-button').toLowerCase()
 
 	return (
-		<Layout style={_styles.layout}>
+		<View style={{ backgroundColor: colors['secondary-background-header'], minHeight: '100%' }}>
 			<StatusBar backgroundColor={colors['secondary-background-header']} barStyle='light-content' />
 			<ErrorCard
 				title={t('settings.delete-account.title')}
@@ -58,7 +58,7 @@ export const DeleteAccount: ScreenFC<'Settings.DeleteAccount'> = () => {
 					/>
 				</View>
 			</ErrorCard>
-		</Layout>
+		</View>
 	)
 }
 

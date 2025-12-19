@@ -11,7 +11,7 @@ import (
 	"time"
 
 	"github.com/atotto/clipboard"
-	"github.com/gdamore/tcell"
+	"github.com/gdamore/tcell/v2"
 	"github.com/ipfs/go-cid"
 	"github.com/mdp/qrterminal/v3"
 	"google.golang.org/protobuf/proto"

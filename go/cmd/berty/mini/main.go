@@ -7,8 +7,8 @@ import (
 	"os"
 	"strings"
 
-	"github.com/gdamore/tcell"
-	"github.com/gdamore/tcell/terminfo"
+	"github.com/gdamore/tcell/v2"
+	"github.com/gdamore/tcell/v2/terminfo"
 	"github.com/rivo/tview"
 	"go.uber.org/zap"
 

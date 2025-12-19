@@ -1,4 +1,4 @@
-import { GoBridge } from '@berty/native-modules/GoBridge'
+import { GoBridge } from 'berty-bridge-expo'
 
 export const initBridge = async (
 	external: boolean,

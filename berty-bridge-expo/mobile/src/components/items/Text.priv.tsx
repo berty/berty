@@ -4,7 +4,11 @@ import { StyleSheet, View } from 'react-native'
 import { UnifiedText } from '@berty/components/shared-components/UnifiedText'
 import { useStyles } from '@berty/contexts/styles'
 
-export const TextPriv: React.FC<{}> = props => {
+interface TextPrivProps {
+	children: React.ReactNode
+	}
+
+export const TextPriv = (props: TextPrivProps) => {
 	const { margin } = useStyles()
 
 	return (
@@ -18,7 +22,6 @@ export const TextPriv: React.FC<{}> = props => {
 
 const styles = StyleSheet.create({
 	container: {
-		width: '90%',
 		flexShrink: 1,
 	},
 })

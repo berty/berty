@@ -22,6 +22,7 @@ declare class BertyBridgeExpoModule extends NativeModule<BertyBridgeExpoModuleEv
 	closeBridge(): Promise<void>;
 	invokeBridgeMethod(method: string, b64message: string): Promise<string>;
 	connectService(serviceName: string, address: string): Promise<void>;
+	requestPushToken(): Promise<string>;
 }
 
 // This call loads the native module object from the JSI.

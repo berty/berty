@@ -1,0 +1,64 @@
+import { NavigationContainer } from "@react-navigation/native";
+import React from "react";
+import { View } from "react-native";
+
+import { ErrorScreen } from "@berty/components/error";
+import AppCommonProviders from "@berty/contexts/AppCommonProviders";
+import NotificationProvider from "@berty/contexts/notification.context";
+import { PermissionsProvider } from "@berty/contexts/permissions.context";
+import { UIKittenProvider } from "@berty/contexts/uiKitten.context";
+import { useMountEffect, useThemeColor } from "@berty/hooks";
+import { isReadyRef, navigationRef } from "@berty/navigation";
+import { Navigation } from "@berty/navigation/stacks";
+import { initI18N } from "@berty/i18n";
+import "intl-pluralrules";
+
+initI18N();
+
+interface BackgroundProps {
+	children: React.ReactNode;
+}
+
+const Background = ({ children }: BackgroundProps) => {
+	const colors = useThemeColor();
+	return (
+		<View style={{ flex: 1, backgroundColor: colors["main-background"] }}>
+			{children}
+		</View>
+	);
+};
+
+const App: React.FC = () => {
+	useMountEffect(() => {
+		return () => {
+			isReadyRef.current = false;
+		};
+	});
+
+	return (
+		<AppCommonProviders>
+			<UIKittenProvider>
+				<Background>
+					<ErrorScreen>
+						<NavigationContainer
+							ref={navigationRef}
+							onReady={() => {
+								isReadyRef.current = true;
+							}}
+						>
+							<PermissionsProvider>
+								<NotificationProvider>
+									<Navigation />
+								</NotificationProvider>
+							</PermissionsProvider>
+						</NavigationContainer>
+					</ErrorScreen>
+				</Background>
+			</UIKittenProvider>
+		</AppCommonProviders>
+	);
+};
+
+export default App;
+// export { default } from './.rnstorybook';
+

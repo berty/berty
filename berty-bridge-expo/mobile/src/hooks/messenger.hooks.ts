@@ -66,12 +66,30 @@ export const useMember = (
 	)
 }
 
+const State = beapi.messenger.Contact.State;
+
 export const useIncomingContactRequests = () => {
+	console.log('remi: calling useIncomingContactRequests')
 	const contacts = useAllContacts()
 	return useMemo(
-		() => contacts.filter(c => c.state === beapi.messenger.Contact.State.IncomingRequest),
+		() => contacts.filter(c => toStateNumber(c.state) === State.IncomingRequest),
 		[contacts],
 	)
+}
+
+function toStateNumber(
+  s: unknown
+): beapi.messenger.Contact.State | undefined {
+  if (typeof s === "number") return s as beapi.messenger.Contact.State;
+
+  if (typeof s === "string") {
+    // Only accept valid enum keys
+    if (s in State) {
+      return State[s as keyof typeof State] as unknown as beapi.messenger.Contact.State;
+    }
+  }
+
+  return undefined;
 }
 
 const emptyList: never[] = []

@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import React
 
 enum RootDirError: Error {
     case path

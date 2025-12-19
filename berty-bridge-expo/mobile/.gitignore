@@ -40,3 +40,6 @@ app-example
 # native folders
 ios/
 android/
+
+*storybook.log
+storybook-static

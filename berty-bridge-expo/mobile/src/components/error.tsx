@@ -1,33 +1,33 @@
-import { Icon } from '@ui-kitten/components'
-import React from 'react'
-import { useTranslation } from 'react-i18next'
-import { View, TouchableOpacity, StatusBar, SafeAreaView } from 'react-native'
-import { setJSExceptionHandler } from 'react-native-exception-handler'
-import RNRestart from 'react-native-restart'
+import { Icon } from "@ui-kitten/components";
+import React from "react";
+import { useTranslation } from "react-i18next";
+import { View, TouchableOpacity, StatusBar, SafeAreaView } from "react-native";
+import { setJSExceptionHandler } from "react-native-exception-handler";
+import RNRestart from "react-native-restart";
 
-import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
-import { useStyles } from '@berty/contexts/styles'
-import { useAppSelector, useThemeColor } from '@berty/hooks'
-import { selectDebugMode } from '@berty/redux/reducers/ui.reducer'
+import { useAppDimensions } from "@berty/contexts/app-dimensions.context";
+import { useStyles } from "@berty/contexts/styles";
+import { useAppSelector, useThemeColor } from "@berty/hooks";
+import { selectDebugMode } from "@berty/redux/reducers/ui.reducer";
 
-import AppInspector from './debug/AppInspector'
-import { UnifiedText } from './shared-components/UnifiedText'
+import AppInspector from "./debug/AppInspector";
+import { UnifiedText } from "./shared-components/UnifiedText";
 
-const Label: React.FC<{ title: string; type: 'error' }> = ({ title, type }) => {
-	const { padding, border } = useStyles()
-	const colors = useThemeColor()
+const Label: React.FC<{ title: string; type: "error" }> = ({ title, type }) => {
+	const { padding, border } = useStyles();
+	const colors = useThemeColor();
 
 	let generatedColors = {
-		background: colors['main-background'],
-		text: colors['main-text'],
-	}
+		background: colors["main-background"],
+		text: colors["main-text"],
+	};
 	switch (type) {
-		case 'error':
+		case "error":
 			generatedColors = {
-				background: colors['input-background'],
-				text: colors['warning-asset'],
-			}
-			break
+				background: colors["input-background"],
+				text: colors["warning-asset"],
+			};
+			break;
 	}
 	return (
 		<View
@@ -38,30 +38,36 @@ const Label: React.FC<{ title: string; type: 'error' }> = ({ title, type }) => {
 				{ backgroundColor: generatedColors.background },
 			]}
 		>
-			<UnifiedText style={[{ color: generatedColors.text, textTransform: 'uppercase' }]}>
+			<UnifiedText
+				style={[{ color: generatedColors.text, textTransform: "uppercase" }]}
+			>
 				{title}
 			</UnifiedText>
 		</View>
-	)
-}
+	);
+};
 
 const Body: React.FC<{ children: React.ReactElement[] }> = ({ children }) => {
-	const { border, padding } = useStyles()
-	const colors = useThemeColor()
+	const { border, padding } = useStyles();
+	const colors = useThemeColor();
 
 	return (
 		<View
-			style={[border.radius.large, padding.large, { backgroundColor: colors['main-background'] }]}
+			style={[
+				border.radius.large,
+				padding.large,
+				{ backgroundColor: colors["main-background"] },
+			]}
 		>
 			{children}
 		</View>
-	)
-}
+	);
+};
 
 const RestartButton: React.FC = () => {
-	const { border, margin, padding, text } = useStyles()
-	const colors = useThemeColor()
-	const { t } = useTranslation()
+	const { border, margin, padding, text } = useStyles();
+	const colors = useThemeColor();
+	const { t } = useTranslation();
 
 	return (
 		<TouchableOpacity
@@ -73,71 +79,74 @@ const RestartButton: React.FC = () => {
 				border.radius.small,
 				padding.medium,
 				{
-					backgroundColor: colors['positive-asset'],
-					alignItems: 'center',
-					width: '100%',
+					backgroundColor: colors["positive-asset"],
+					alignItems: "center",
+					width: "100%",
 				},
 			]}
 		>
 			<UnifiedText
-				style={[text.bold, { color: colors['background-header'], textTransform: 'uppercase' }]}
+				style={[
+					text.bold,
+					{ color: colors["background-header"], textTransform: "uppercase" },
+				]}
 			>
-				{t('error.restart-app')}
+				{t("error.restart-app")}
 			</UnifiedText>
 		</TouchableOpacity>
-	)
-}
+	);
+};
 
 const ErrorDetails: React.FC<{ error: Error }> = ({ error }) => {
-	const [collapsed, setCollapsed] = React.useState(true)
-	const { margin } = useStyles()
-	const { scaleSize } = useAppDimensions()
-	const colors = useThemeColor()
+	const [collapsed, setCollapsed] = React.useState(true);
+	const { margin } = useStyles();
+	const { scaleSize } = useAppDimensions();
+	const colors = useThemeColor();
 	const handlePress = React.useCallback(() => {
-		setCollapsed(!collapsed)
-	}, [collapsed])
+		setCollapsed(!collapsed);
+	}, [collapsed]);
 	return (
 		<View style={margin.top.big}>
-			<TouchableOpacity style={{ flexDirection: 'row' }} onPress={handlePress}>
+			<TouchableOpacity style={{ flexDirection: "row" }} onPress={handlePress}>
 				<Icon
-					name={collapsed ? 'arrow-forward-outline' : 'arrow-downward-outline'}
+					name={collapsed ? "arrow-forward-outline" : "arrow-downward-outline"}
 					width={25 * scaleSize}
 					height={25 * scaleSize}
-					fill={colors['background-header']}
+					fill={colors["background-header"]}
 				/>
 				<UnifiedText>Details</UnifiedText>
 			</TouchableOpacity>
 			{collapsed || <UnifiedText>{error.message}</UnifiedText>}
 		</View>
-	)
-}
+	);
+};
 
 const ErrorScreenContainer: React.FC<{
-	labelTitle: string
-	children: React.ReactElement[]
-	error: Error
+	labelTitle: string;
+	children: React.ReactElement[];
+	error: Error;
 }> = ({ labelTitle, children, error }) => {
-	const { padding } = useStyles()
-	const colors = useThemeColor()
+	const { padding } = useStyles();
+	const colors = useThemeColor();
 
 	return (
 		<SafeAreaView
 			style={[
 				{
-					backgroundColor: colors['background-header'],
+					backgroundColor: colors["background-header"],
 					flex: 1,
-					alignItems: 'center',
-					justifyContent: 'center',
+					alignItems: "center",
+					justifyContent: "center",
 				},
 			]}
 		>
-			<StatusBar barStyle='light-content' />
-			<View style={[padding.large, { width: '100%' }]}>
+			<StatusBar barStyle="light-content" />
+			<View style={[padding.large, { width: "100%" }]}>
 				<Body>
-					<View style={{ alignSelf: 'flex-end' }}>
-						<Label title={labelTitle} type='error' />
+					<View style={{ alignSelf: "flex-end" }}>
+						<Label title={labelTitle} type="error" />
 					</View>
-					<View style={[padding.horizontal.large, { alignItems: 'center' }]}>
+					<View style={[padding.horizontal.large, { alignItems: "center" }]}>
 						{children}
 						<ErrorDetails error={error} />
 						<RestartButton />
@@ -145,74 +154,91 @@ const ErrorScreenContainer: React.FC<{
 				</Body>
 			</View>
 		</SafeAreaView>
-	)
-}
+	);
+};
 
-type ErrorScreenProps = {
-	error: Error
-}
+type ErrorProps = {
+	error: Error;
+};
 
-const WTFScreen: React.FC<ErrorScreenProps> = ({ error }) => {
-	const { margin, text } = useStyles()
-	const colors = useThemeColor()
-	const { t } = useTranslation()
+const WTFScreen: React.FC<ErrorProps> = ({ error }) => {
+	const { margin, text } = useStyles();
+	const colors = useThemeColor();
+	const { t } = useTranslation();
 	return (
-		<ErrorScreenContainer error={error} labelTitle={t('error.labels.bug')}>
+		<ErrorScreenContainer error={error} labelTitle={t("error.labels.bug")}>
 			<View
 				style={[
 					margin.top.big,
 					{
-						flexDirection: 'row',
-						alignItems: 'center',
-						justifyContent: 'center',
+						flexDirection: "row",
+						alignItems: "center",
+						justifyContent: "center",
 						marginLeft: -65,
 					},
 				]}
 			>
 				<Icon
-					name='question-mark-circle'
-					fill={colors['background-header']}
+					name="question-mark-circle"
+					fill={colors["background-header"]}
 					height={45}
 					width={45}
 					style={{
 						marginRight: 20,
 					}}
 				/>
-				<UnifiedText style={[text.bold, { color: colors['background-header'], fontSize: 30 }]}>
+				<UnifiedText
+					style={[
+						text.bold,
+						{ color: colors["background-header"], fontSize: 30 },
+					]}
+				>
 					WTF?!
 				</UnifiedText>
 			</View>
 			<UnifiedText
 				style={[
 					text.bold,
-					{ color: colors['secondary-text'], textAlign: 'center' },
+					{ color: colors["secondary-text"], textAlign: "center" },
 					margin.top.big,
 					margin.bottom.small,
 				]}
 			>
-				{t('error.wtf-screen.title')}
+				{t("error.wtf-screen.title")}
 			</UnifiedText>
-			<UnifiedText style={{ color: colors['secondary-text'], textAlign: 'center', lineHeight: 24 }}>
-				{t('error.wtf-screen.desc')}
+			<UnifiedText
+				style={{
+					color: colors["secondary-text"],
+					textAlign: "center",
+					lineHeight: 24,
+				}}
+			>
+				{t("error.wtf-screen.desc")}
 			</UnifiedText>
-			<UnifiedText style={{ color: colors['secondary-text'], textAlign: 'center', lineHeight: 24 }}>
-				{t('error.wtf-screen.desc-report')}
+			<UnifiedText
+				style={{
+					color: colors["secondary-text"],
+					textAlign: "center",
+					lineHeight: 24,
+				}}
+			>
+				{t("error.wtf-screen.desc-report")}
 			</UnifiedText>
 		</ErrorScreenContainer>
-	)
-}
+	);
+};
 
-const SorryScreen: React.FC<ErrorScreenProps> = ({ error }) => {
-	const { margin, text } = useStyles()
-	const colors = useThemeColor()
-	const { t } = useTranslation()
+const SorryScreen: React.FC<ErrorProps> = ({ error }) => {
+	const { margin, text } = useStyles();
+	const colors = useThemeColor();
+	const { t } = useTranslation();
 
 	return (
-		<ErrorScreenContainer error={error} labelTitle={t('error.labels.crash')}>
+		<ErrorScreenContainer error={error} labelTitle={t("error.labels.crash")}>
 			<Icon
-				name='wrong-man'
-				fill={colors['background-header']}
-				pack='custom'
+				name="wrong-man"
+				fill={colors["background-header"]}
+				pack="custom"
 				height={100}
 				width={100}
 				style={[margin.top.large]}
@@ -222,76 +248,84 @@ const SorryScreen: React.FC<ErrorScreenProps> = ({ error }) => {
 					style={[
 						text.bold,
 						{
-							color: colors['secondary-text'],
-							textAlign: 'center',
+							color: colors["secondary-text"],
+							textAlign: "center",
 						},
 						margin.top.big,
 						margin.bottom.small,
 					]}
 				>
-					{t('error.sorry-screen.title')}
+					{t("error.sorry-screen.title")}
 				</UnifiedText>
 				<UnifiedText
-					style={{ color: colors['secondary-text'], textAlign: 'center', lineHeight: 24 }}
+					style={{
+						color: colors["secondary-text"],
+						textAlign: "center",
+						lineHeight: 24,
+					}}
 				>
-					{t('error.sorry-screen.desc')}
+					{t("error.sorry-screen.desc")}
 				</UnifiedText>
 				<UnifiedText
 					style={[
 						margin.top.large,
 						text.italic,
 						{
-							color: colors['secondary-text'],
-							textAlign: 'center',
+							color: colors["secondary-text"],
+							textAlign: "center",
 							lineHeight: 24,
 						},
 					]}
 				>
-					{t('error.sorry-screen.desc-em')}
+					{t("error.sorry-screen.desc-em")}
 				</UnifiedText>
 				<UnifiedText
 					style={[
 						text.bold,
 						{
-							color: colors['secondary-text'],
-							textAlign: 'center',
+							color: colors["secondary-text"],
+							textAlign: "center",
 							lineHeight: 24,
 						},
 					]}
 				>
-					{t('error.sorry-screen.desc-report')}
+					{t("error.sorry-screen.desc-report")}
 				</UnifiedText>
 			</View>
 		</ErrorScreenContainer>
-	)
+	);
+};
+
+interface ErrorScreenProps {
+	children: React.ReactNode;
 }
 
-export const ErrorScreen: React.FC = ({ children }) => {
-	const components = [WTFScreen, SorryScreen]
+export const ErrorScreen = ({ children }: ErrorScreenProps) => {
+	const components = [WTFScreen, SorryScreen];
 
-	const [error, setError] = React.useState<Error | null>(null)
+	const [error, setError] = React.useState<Error | null>(null);
 
-	const debugMode = useAppSelector(selectDebugMode)
+	const debugMode = useAppSelector(selectDebugMode);
 
 	const errorHandler = (err: Error) => {
-		setError(err)
-	}
+		setError(err);
+	};
 
 	React.useEffect(() => {
-		setJSExceptionHandler(errorHandler)
-	}, [])
+		setJSExceptionHandler(errorHandler);
+	}, []);
 
 	React.useEffect(() => {
-		console.log('Error crash js', error)
-	}, [error])
+		console.log("Error crash js", error);
+	}, [error]);
 
 	if (debugMode) {
-		return <AppInspector error={error} />
+		return <AppInspector error={error} />;
 	}
 
 	if (error !== null) {
-		const Component = components[Math.floor(Math.random() * components.length)]
-		return <Component error={error} />
+		const Component = components[Math.floor(Math.random() * components.length)];
+		return <Component error={error} />;
 	}
-	return <>{children}</>
-}
+	return <>{children}</>;
+};

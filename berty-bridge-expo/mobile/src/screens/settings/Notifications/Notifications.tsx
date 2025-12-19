@@ -154,82 +154,81 @@ export const Notifications: ScreenFC<'Settings.Notifications'> = () => {
 	)
 
 	return (
-		<View style={{ backgroundColor: colors['secondary-background'], flex: 1 }}>
-			<ScrollView
-				bounces={false}
-				contentContainerStyle={{ paddingBottom: 12 * scaleSize }}
-				showsVerticalScrollIndicator={false}
-			>
-				<ItemSection>
-					{pushAvailable && (
+		<ScrollView
+			bounces={false}
+			style={{ backgroundColor: colors['secondary-background'], minHeight: '100%' }}
+			contentContainerStyle={{ paddingBottom: 12 * scaleSize }}
+			showsVerticalScrollIndicator={false}
+		>
+			<ItemSection>
+				{pushAvailable && (
+					<MenuToggle
+						isToggleOn={pushEnabled}
+						onPress={async () =>
+							await accountPushToggleState({
+								account,
+								messengerClient: messengerClient,
+								protocolClient: protocolClient,
+								navigate,
+								t,
+							})
+						}
+					>
+						{t('chat.push-notifications.receive-push')}
+					</MenuToggle>
+				)}
+				{pushEnabled && (
+					<>
+						<DividerItem />
 						<MenuToggle
-							isToggleOn={pushEnabled}
-							onPress={async () =>
-								accountPushToggleState({
-									account,
-									messengerClient: messengerClient,
-									protocolClient: protocolClient,
-									navigate,
-									t,
+							isToggleOn={account.hidePushPreviews}
+							onPress={async () => {
+								await messengerClient?.accountPushConfigure({
+									hidePushPreviews: !account.hidePushPreviews,
+									showPushPreviews: account.hidePushPreviews,
 								})
-							}
+							}}
 						>
-							{t('chat.push-notifications.receive-push')}
+							{t('chat.push-notifications.hide-previews')}
 						</MenuToggle>
-					)}
-					{pushEnabled && (
-						<>
-							<DividerItem />
+						<DividerItem />
+						{pushAvailable && (
 							<MenuToggle
-								isToggleOn={account.hidePushPreviews}
+								isToggleOn={account.autoSharePushTokenFlag}
 								onPress={async () => {
-									await messengerClient?.accountPushConfigure({
-										hidePushPreviews: !account.hidePushPreviews,
-										showPushPreviews: account.hidePushPreviews,
-									})
+									if (account.autoSharePushTokenFlag) {
+										await messengerClient?.pushSetAutoShare({ enabled: false })
+									} else {
+										await askAndSharePushTokenOnAllConversations(t, messengerClient!)
+									}
 								}}
 							>
-								{t('chat.push-notifications.hide-previews')}
+								{t('chat.push-notifications.auto-enable')}
 							</MenuToggle>
-							<DividerItem />
-							{pushAvailable && (
-								<MenuToggle
-									isToggleOn={account.autoSharePushTokenFlag}
-									onPress={async () => {
-										if (account.autoSharePushTokenFlag) {
-											await messengerClient?.pushSetAutoShare({ enabled: false })
-										} else {
-											await askAndSharePushTokenOnAllConversations(t, messengerClient!)
-										}
-									}}
-								>
-									{t('chat.push-notifications.auto-enable')}
-								</MenuToggle>
-							)}
-						</>
-					)}
-				</ItemSection>
-				<ItemSection>
-					<MenuToggle
-						isToggleOn={!account.hideInAppNotifications}
-						onPress={async () => {
-							await messengerClient?.accountPushConfigure({
-								hideInAppNotifications: !account.hideInAppNotifications,
-								showInAppNotifications: account.hideInAppNotifications,
-							})
-						}}
-					>
-						{t('chat.push-notifications.show-in-app')}
-					</MenuToggle>
-				</ItemSection>
-				{mutedConversations.length > 0 && (
-					<ItemSection>
-						{mutedConversations.map(c => (
-							<MutedConversationButton key={c.publicKey} conversation={c} />
-						))}
-					</ItemSection>
+						)}
+					</>
 				)}
-			</ScrollView>
-		</View>
+			</ItemSection>
+			<ItemSection>
+				<MenuToggle
+					isToggleOn={!account.hideInAppNotifications}
+					onPress={async () => {
+						await messengerClient?.accountPushConfigure({
+							hideInAppNotifications: !account.hideInAppNotifications,
+							showInAppNotifications: account.hideInAppNotifications,
+						})
+					}}
+				>
+					{t('chat.push-notifications.show-in-app')}
+				</MenuToggle>
+			</ItemSection>
+			{mutedConversations.length > 0 && (
+				<ItemSection>
+					{mutedConversations.map(c => (
+						<MutedConversationButton key={c.publicKey} conversation={c} />
+					))}
+				</ItemSection>
+			)}
+		</ScrollView>
 	)
 }

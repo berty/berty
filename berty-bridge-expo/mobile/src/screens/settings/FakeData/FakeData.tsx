@@ -66,10 +66,10 @@ export const FakeData: ScreenFC<'Settings.FakeData'> = () => {
 	const colors = useThemeColor()
 
 	return (
-		<Layout style={{ flex: 1, backgroundColor: colors['main-background'] }}>
-			<ScrollView bounces={false}>
-				<BodyFakeData />
-			</ScrollView>
-		</Layout>
+		<ScrollView bounces={false} 
+			style={{ backgroundColor: colors['main-background'] }}
+			contentContainerStyle={{ backgroundColor: colors['main-background'] }}>
+			<BodyFakeData />
+		</ScrollView>
 	)
 }

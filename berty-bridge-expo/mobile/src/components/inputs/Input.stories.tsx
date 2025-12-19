@@ -1,6 +1,6 @@
-import { storiesOf } from '@storybook/react-native'
-import React, { useState } from 'react'
-import { Text } from 'react-native'
+import type { Meta, StoryObj } from "@storybook/react";
+import React, { useState } from "react";
+import { Text } from "react-native";
 
 import {
 	MediumInput,
@@ -9,11 +9,15 @@ import {
 	LargeInput,
 	SmallInput,
 	SmallClearableInput,
-} from '.'
-import { AppDecorator, ScroolViewDecorator, Spacer } from '../../../.storybook/preview'
+} from ".";
+import {
+	AppDecorator,
+	ScroolViewDecorator,
+	Spacer,
+} from "../../../.rnstorybook/preview";
 
 const MediumInputs = () => {
-	const [searchText, setSearchText] = useState('')
+	const [searchText, setSearchText] = useState("");
 	return (
 		<>
 			<Text>Medium Input:</Text>
@@ -21,15 +25,15 @@ const MediumInputs = () => {
 			<MediumInput
 				value={searchText}
 				onChangeText={setSearchText}
-				placeholder={'placeholder'}
-				iconName='search-outline'
+				placeholder={"placeholder"}
+				iconName="search-outline"
 			/>
 			<Spacer />
 		</>
-	)
-}
+	);
+};
 const MediumClearableInputs = () => {
-	const [searchText, setSearchText] = useState('')
+	const [searchText, setSearchText] = useState("");
 	return (
 		<>
 			<Text>Medium Clearable Input:</Text>
@@ -37,15 +41,15 @@ const MediumClearableInputs = () => {
 			<MediumClearableInput
 				value={searchText}
 				onChangeText={setSearchText}
-				placeholder={'placeholder'}
-				iconName='search-outline'
+				placeholder={"placeholder"}
+				iconName="search-outline"
 			/>
 			<Spacer />
 		</>
-	)
-}
+	);
+};
 const LargeInputWithIcons = () => {
-	const [searchText, setSearchText] = useState('')
+	const [searchText, setSearchText] = useState("");
 	return (
 		<>
 			<Text>Large Input With Icon:</Text>
@@ -53,37 +57,45 @@ const LargeInputWithIcons = () => {
 			<LargeInputWithIcon
 				value={searchText}
 				onChangeText={setSearchText}
-				placeholder={'placeholder'}
-				iconName='search-outline'
+				placeholder={"placeholder"}
+				iconName="search-outline"
 			/>
 			<Spacer />
 		</>
-	)
-}
+	);
+};
 const LargeInputs = () => {
-	const [searchText, setSearchText] = useState('')
+	const [searchText, setSearchText] = useState("");
 	return (
 		<>
 			<Text>Large Inputs:</Text>
 			<Spacer />
-			<LargeInput value={searchText} onChangeText={setSearchText} placeholder={'placeholder'} />
+			<LargeInput
+				value={searchText}
+				onChangeText={setSearchText}
+				placeholder={"placeholder"}
+			/>
 			<Spacer />
 		</>
-	)
-}
+	);
+};
 const SmallInputs = () => {
-	const [searchText, setSearchText] = useState('')
+	const [searchText, setSearchText] = useState("");
 	return (
 		<>
 			<Text>Small Inputs:</Text>
 			<Spacer />
-			<SmallInput value={searchText} onChangeText={setSearchText} placeholder={'placeholder'} />
+			<SmallInput
+				value={searchText}
+				onChangeText={setSearchText}
+				placeholder={"placeholder"}
+			/>
 			<Spacer />
 		</>
-	)
-}
+	);
+};
 const SmallClearableInputs = () => {
-	const [searchText, setSearchText] = useState('')
+	const [searchText, setSearchText] = useState("");
 	return (
 		<>
 			<Text>Small Clearable Inputs:</Text>
@@ -91,18 +103,26 @@ const SmallClearableInputs = () => {
 			<SmallClearableInput
 				value={searchText}
 				onChangeText={setSearchText}
-				placeholder={'placeholder'}
-				iconName='search-outline'
+				placeholder={"placeholder"}
+				iconName="search-outline"
 			/>
 			<Spacer />
 		</>
-	)
-}
+	);
+};
 
-storiesOf('Components', module)
-	.addDecorator(AppDecorator)
-	.addDecorator(ScroolViewDecorator)
-	.add('Inputs', () => (
+const meta: Meta = {
+	title: "Components",
+	decorators: [AppDecorator, ScroolViewDecorator],
+};
+
+export default meta;
+
+type Story = StoryObj;
+
+export const Inputs: Story = {
+	name: "Inputs",
+	render: (args) => (
 		<>
 			<MediumInputs />
 			<Spacer />
@@ -122,4 +142,5 @@ storiesOf('Components', module)
 			<SmallClearableInputs />
 			<Spacer />
 		</>
-	))
+	),
+};

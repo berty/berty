@@ -11,8 +11,7 @@ export const parseInteraction = (
 		if (typeof (i as any).toJSON === 'function') {
 			i = (i as any).toJSON()
 		}
-		const typeName =
-			beapi.messenger.AppMessage.Type[i.type || beapi.messenger.AppMessage.Type.Undefined]
+		const typeName = i.type || beapi.messenger.AppMessage.Type.Undefined
 
 		if (!typeName) {
 			console.warn('failed to get AppMessage type name', i.type)

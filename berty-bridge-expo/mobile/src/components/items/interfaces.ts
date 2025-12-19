@@ -2,6 +2,7 @@ export interface MenuItemProps {
 	onPress?: () => void
 	testID?: string
 	noRightArrow?: boolean
+	children?: React.ReactNode
 }
 
 export interface MenuItemWithIconProps extends MenuItemProps {

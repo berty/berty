@@ -63,7 +63,7 @@ export const checkPermission = async (options: {
 }) => {
 	const { permissionType, navigate, accept, deny } = options
 
-	return getPermissionStatusAndSwitch(permissionType, accept, deny, navigate)
+	return await getPermissionStatusAndSwitch(permissionType, accept, deny, navigate)
 }
 
 export const checkProximityPermission = async (options: {

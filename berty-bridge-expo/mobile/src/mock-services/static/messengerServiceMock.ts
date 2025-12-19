@@ -1,6 +1,5 @@
 import faker from '@faker-js/faker'
 import { Buffer } from 'buffer'
-import EventEmitter from 'events'
 import cloneDeep from 'lodash/cloneDeep'
 import range from 'lodash/range'
 import Long from 'long'
@@ -9,10 +8,11 @@ import beapi from '@berty/api'
 
 import { IMessengerServiceMock } from '../mockedServicesInterfaces.gen'
 import { getGoldenData } from './goldenData'
+import { SimpleEventEmitter } from '../../utils/simpleEventEmitter'
 
 export class MessengerServiceMock implements Partial<IMessengerServiceMock> {
 	account = cloneDeep(getGoldenData().account)
-	eventEmitter = new EventEmitter()
+	eventEmitter = new SimpleEventEmitter()
 
 	EventStream = (
 		request: beapi.messenger.EventStream.IRequest,

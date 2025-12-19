@@ -1,10 +1,8 @@
 import { useFocusEffect } from '@react-navigation/core'
-import { Layout } from '@ui-kitten/components'
-import { BarCodeScanner } from 'expo-barcode-scanner'
-import { Camera } from 'expo-camera'
-import React, { FC, ReactNode, useCallback, useEffect, useState } from 'react'
+import { CameraView } from 'expo-camera'
+import React, { FC, PropsWithChildren, ReactNode, use, useCallback, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { View, Vibration, StatusBar, ScrollView, TextInput, TouchableOpacity } from 'react-native'
+import { View, Vibration, StatusBar, ScrollView, TextInput, TouchableOpacity, Platform } from 'react-native'
 import QRCode from 'react-native-qrcode-svg'
 
 import logo from '@berty/assets/images/1_berty_picto.png'
@@ -51,7 +49,6 @@ const QrCode: FC<{ size: number }> = ({ size }) => {
 			value={link}
 			logo={logo}
 			color={colors['background-header']}
-			mode='circle'
 			backgroundColor={colors['main-background']}
 		/>
 	) : (
@@ -88,16 +85,16 @@ const ScanBody: FC<{ visible: boolean }> = ({ visible = true }) => {
 			]}
 		>
 			{visible && (
-				<Camera
-					onBarCodeScanned={({ data, type }) => {
-						if (type === BarCodeScanner.Constants.BarCodeType.qr) {
+				<CameraView
+					onBarcodeScanned={({ data, type }) => {
+						if (type === 'qr') {
 							// I would like to use binary mode in QR but this scanner seems to not support it, extended tests were done
 							navigation.navigate('Chat.ManageDeepLink', { type: 'qr', value: data })
 							Vibration.vibrate(1000)
 						}
 					}}
-					barCodeScannerSettings={{
-						barCodeTypes: [BarCodeScanner.Constants.BarCodeType.qr],
+					barcodeScannerSettings={{
+						barcodeTypes: ['qr'],
 					}}
 					style={{
 						height: '100%',
@@ -148,7 +145,7 @@ const ShareQr: FC = () => {
 	)
 }
 
-const ShareContainer: FC<{ element: ReactNode }> = ({ element, children }) => {
+const ShareContainer: FC<PropsWithChildren<{ element: ReactNode }>> = ({ element, children }) => {
 	const colors = useThemeColor()
 	const { padding, border, margin } = useStyles()
 	const { windowWidth, windowHeight, isGteIpadSize, fontScale } = useAppDimensions()
@@ -157,6 +154,8 @@ const ShareContainer: FC<{ element: ReactNode }> = ({ element, children }) => {
 		? Math.min(windowHeight, windowWidth) * 0.5
 		: Math.min(windowHeight * 0.8, windowWidth * 0.8) - 1.25 * (26 * fontScale)
 
+	const paddingTop = Platform.OS === 'android' ? 40 : 0
+
 	return (
 		<View
 			style={[
@@ -164,6 +163,7 @@ const ShareContainer: FC<{ element: ReactNode }> = ({ element, children }) => {
 				padding.bottom.huge,
 				padding.top.medium,
 				{
+					paddingTop,
 					backgroundColor: colors['background-header'],
 				},
 			]}
@@ -219,9 +219,9 @@ export const ShareModal: ScreenFC<'Chat.Share'> = () => {
 	}, [isScannerSelected, navigate])
 
 	return (
-		<Layout style={[flex.tiny, { backgroundColor: colors['main-background'] }]}>
+		<View style={{ flex: 1 }}>
 			<StatusBar backgroundColor={colors['background-header']} barStyle='light-content' />
-			<ScrollView style={[margin.bottom.medium, { backgroundColor: colors['main-background'] }]}>
+			<ScrollView style={[{ backgroundColor: colors['main-background'] }]}>
 				<ShareContainer
 					element={isScannerSelected ? <ScanBody visible={isScannerVisible} /> : <ShareQr />}
 				>
@@ -254,7 +254,7 @@ export const ShareModal: ScreenFC<'Chat.Share'> = () => {
 					{__DEV__ && <DevLinkInput />}
 				</View>
 			</ScrollView>
-		</Layout>
+		</View>
 	)
 }
 

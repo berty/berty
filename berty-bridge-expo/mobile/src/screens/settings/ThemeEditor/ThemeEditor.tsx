@@ -2,9 +2,9 @@ import { Layout } from '@ui-kitten/components'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
 import { Platform, ScrollView, StatusBar, View } from 'react-native'
-import DocumentPicker from 'react-native-document-picker'
+import * as DocumentPicker from 'expo-document-picker'
 import RNFS from 'react-native-fs'
-import { withInAppNotification } from 'react-native-in-app-notification'
+import * as Notifications from "expo-notifications";
 import Share from 'react-native-share'
 import { useDispatch, useSelector } from 'react-redux'
 
@@ -28,15 +28,17 @@ import { ThemeColorName } from './components/ThemeColorName'
 
 const openThemeColorFile = async () => {
 	try {
-		return await DocumentPicker.pickSingle({
-			type: DocumentPicker.types.allFiles,
+		const res = await DocumentPicker.getDocumentAsync({
+			type: '*/*',
 		})
-	} catch (err: any) {
-		if (DocumentPicker.isCancel(err)) {
-			// ignore
-		} else {
-			console.warn(err)
+
+		if (res.canceled) {
+			return
 		}
+
+		return res.assets?.[0] || null
+	} catch (err: any) {
+			console.warn(err)
 	}
 }
 
@@ -63,7 +65,7 @@ const exportColorThemeToFile = async (themeColor: any, fileName: string): Promis
 		: await shareColorTheme(fileName)
 }
 
-const BodyFileThemeEditor: React.FC<{}> = withInAppNotification(({ showNotification }: any) => {
+const BodyFileThemeEditor: React.FC = () => {
 	const colors = useThemeColor()
 	const { t } = useTranslation()
 	const selectedTheme = useSelector(selectThemeSelected)
@@ -83,11 +85,13 @@ const BodyFileThemeEditor: React.FC<{}> = withInAppNotification(({ showNotificat
 						const themeName = document.name.split('.')[0]
 						dispatch(importTheme({ themeName, colors: themeColors }))
 					} catch (err) {
-						showNotification({
-							title: t('settings.theme-editor.bad-format-title'),
-							message: t('settings.theme-editor.bad-format-desc'),
-							additionalProps: { type: 'message' },
-						})
+						Notifications.scheduleNotificationAsync({
+							content: {
+								title: t('settings.theme-editor.bad-format-title'),
+								body: t('settings.theme-editor.bad-format-desc'),
+							},
+							trigger: null,
+						});
 					}
 				}}
 			>
@@ -98,11 +102,13 @@ const BodyFileThemeEditor: React.FC<{}> = withInAppNotification(({ showNotificat
 				onPress={async () => {
 					await exportColorThemeToFile(JSON.stringify(colors), selectedTheme)
 					if (Platform.OS === 'android') {
-						showNotification({
-							title: t('settings.theme-editor.notification-file-saved.title'),
-							message: t('settings.theme-editor.notification-file-saved.desc'),
-							additionalProps: { type: 'message' },
-						})
+						Notifications.scheduleNotificationAsync({
+							content: {
+								title: t('settings.theme-editor.notification-file-saved.title'),
+								body: t('settings.theme-editor.notification-file-saved.desc'),
+							},
+							trigger: null,
+						});
 					}
 				}}
 			>
@@ -126,7 +132,7 @@ const BodyFileThemeEditor: React.FC<{}> = withInAppNotification(({ showNotificat
 			</FloatingMenuItemWithIcon>
 		</View>
 	)
-})
+}
 
 const BodyThemeEditor: React.FC<{ openModal: () => void }> = ({ openModal }) => {
 	const { padding, margin } = useStyles()

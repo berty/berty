@@ -505,7 +505,7 @@
 	"permission": {
 		"notification": {
 			"title": "Push Notifications",
-			"desc": "Berty app need your permission to send you local or push notifications. This will allow you to be inform when you receive a message."
+			"desc": "Berty app needs your permission to send you local or push notifications. This will allow you to be inform when you receive a message."
 		},
 		"proximity": {
 			"title": "Bluetooth Messaging",

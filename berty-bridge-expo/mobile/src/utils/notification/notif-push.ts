@@ -2,14 +2,16 @@ import base64 from 'base64-js'
 import * as Application from 'expo-application'
 import { Alert, Platform } from 'react-native'
 import { RESULTS } from 'react-native-permissions'
+import * as Notifications from 'expo-notifications';
+import * as Device from 'expo-device';
 
 import beapi from '@berty/api'
 import { GRPCError } from '@berty/grpc-bridge'
 import { ServiceClientType } from '@berty/grpc-bridge/welsh-clients.gen'
-import { PushTokenRequester } from '@berty/native-modules/PushTokenRequester'
 import { hasKnownPushServer } from '@berty/utils/accounts/accountUtils'
 import { checkPermission } from '@berty/utils/permissions/checkPermissions'
 import { getPermissions, PermissionType } from '@berty/utils/permissions/permissions'
+import { GoBridge } from 'berty-bridge-expo'
 
 import { numberifyLong } from '../convert/long'
 import { asyncAlert } from '../react-native/asyncAlert'
@@ -136,7 +138,7 @@ const enablePushPermission = async (
 	// Persist push token if needed
 	try {
 		// When we don't have network connection the requestAndPersistPushToken function hang so we manually set a timeout
-		const timeout = new Promise(resolve => setTimeout(() => resolve('timeout'), 7000))
+		const timeout = new Promise(resolve => setTimeout(() => resolve('timeout'), 21000))
 		const result = await Promise.race([timeout, requestAndPersistPushToken(messengerClient)])
 		if (result === 'timeout') {
 			console.warn('Fail on request and persist push token: timeout')
@@ -309,7 +311,7 @@ export const getSharedPushTokensForConversation = (
 		return new Promise<beapi.messenger.IPushMemberToken[]>(resolve => {
 			resolve([])
 		})
-	}
+	} 
 
 	return new Promise<beapi.messenger.IPushMemberToken[]>(resolve => {
 		let tokens = [] as beapi.messenger.IPushMemberToken[]
@@ -347,12 +349,35 @@ export const getSharedPushTokensForConversation = (
 export const requestAndPersistPushToken = async (
 	messengerClient: ServiceClientType<beapi.messenger.MessengerService> | null,
 ) => {
+	if (Platform.OS === 'android') {
+    await Notifications.setNotificationChannelAsync('bertyNotificationChannel', {
+      name: 'A channel is needed for the permissions prompt to appear',
+      importance: Notifications.AndroidImportance.MAX,
+      vibrationPattern: [0, 250, 250, 250],
+      lightColor: '#FF231F7C',
+    });
+  }
+
+	if (!Device.isDevice) {
+		throw new Error('need a physical device to request push token')
+	}
+
 	if (!messengerClient) {
 		throw new Error('missing messenger client')
 	}
 	try {
-		let responseJSON = await PushTokenRequester.request()
+      const projectId = Application.applicationId
+      if (!projectId) {
+        throw new Error('Project ID not found');
+      }
+		const { status } = await Notifications.requestPermissionsAsync();
+if (status !== 'granted') {
+  throw new Error('Push notification permissions not granted');
+}
+		let responseJSON = await GoBridge.requestPushToken()
 		let response = JSON.parse(responseJSON)
+
+		console.log('Push token received:', response.token, 'for project:', projectId)
 
 		await messengerClient?.pushSetDeviceToken({
 			receiver: beapi.push.PushServiceReceiver.create({
@@ -360,7 +385,7 @@ export const requestAndPersistPushToken = async (
 					Platform.OS === 'ios'
 						? beapi.push.PushServiceTokenType.PushTokenApplePushNotificationService
 						: beapi.push.PushServiceTokenType.PushTokenFirebaseCloudMessaging,
-				bundleId: response.bundleId,
+				bundleId: projectId,
 				token: new Uint8Array(base64.toByteArray(response.token)),
 			}),
 		})

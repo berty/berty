@@ -1,6 +1,6 @@
 import { Buffer } from 'buffer'
 import { Platform } from 'react-native'
-import DocumentPicker from 'react-native-document-picker'
+import * as DocumentPicker from 'expo-document-picker'
 import RNFS from 'react-native-fs'
 import Share from 'react-native-share'
 
@@ -13,17 +13,22 @@ import { createAndSaveFile, getPath } from '../react-native/file-system'
 
 export const importAccountFromDocumentPicker = async () => {
 	try {
-		const res = await DocumentPicker.pickSingle({
+		const res = await DocumentPicker.getDocumentAsync({
 			type: Platform.OS === 'android' ? ['application/x-tar'] : ['public.tar-archive'],
+			copyToCacheDirectory: false,
 		})
-		const replaced = Platform.OS === 'android' ? await getPath(res.uri) : res.uri
+
+		if (res.canceled) {
+		return
+	}
+		// `res.assets` is an array, even for a single file
+		const uri = res.assets?.[0]?.uri
+		if (!uri) throw new Error('No URI found in result')
+
+		const replaced = Platform.OS === 'android' ? await getPath(uri) : uri
 		return replaced.replace(/^file:\/\//, '')
 	} catch (err: any) {
-		if (DocumentPicker.isCancel(err)) {
-			// ignore
-		} else {
-			console.error(err)
-		}
+			console.warn(err)
 	}
 }
 

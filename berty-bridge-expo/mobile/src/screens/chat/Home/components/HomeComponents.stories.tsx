@@ -1,9 +1,9 @@
-import { storiesOf } from '@storybook/react-native'
+import type { Meta, StoryObj } from "@storybook/react";
 import React from 'react'
 
 import { useIncomingContactRequests } from '@berty/hooks'
 
-import { AppDecorator, NavigationDecorator } from '../../../../../.storybook/preview'
+import { AppDecorator, NavigationDecorator } from '../../../../../.rnstorybook/preview'
 import { IncomingRequests } from './Requests'
 
 const IncomingStory = () => {
@@ -12,7 +12,17 @@ const IncomingStory = () => {
 	return <IncomingRequests items={items} />
 }
 
-storiesOf('Home Components', module)
-	.addDecorator(AppDecorator)
-	.addDecorator(NavigationDecorator)
-	.add('Incoming Request', () => <IncomingStory />)
+
+const meta: Meta = {
+	title: "Home Components",
+	decorators: [AppDecorator],
+};
+
+export default meta;
+
+type Story = StoryObj;
+
+export const IncomingRequest: Story = {
+	name: "Incoming Request",
+	render: () => <IncomingStory />,
+};

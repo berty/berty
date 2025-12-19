@@ -41,7 +41,7 @@ export const Permission: React.FC<PermissionProps> = props => {
 		permissionType === PermissionType.notification ? t('permission.skip') : t('permission.cancel')
 
 	return (
-		<View style={[flex.tiny, { backgroundColor: colors['background-header'] }]}>
+		<View style={[flex.tiny, { backgroundColor: colors['background-header'], minHeight: '100%' }]}>
 			<StatusBar backgroundColor={colors['background-header']} barStyle='light-content' />
 			<View style={[styles.lottieContainer]}>
 				<LottieView source={animations[permissionType]} autoPlay style={[styles.lottie]} />
@@ -108,6 +108,8 @@ const styles = StyleSheet.create({
 	lottieContainer: { flex: 1, alignItems: 'center', justifyContent: 'center' },
 	lottie: {
 		marginVertical: 10,
+		minHeight: '100%',
+		minWidth: '100%',
 	},
 	card: {
 		paddingTop: 24,

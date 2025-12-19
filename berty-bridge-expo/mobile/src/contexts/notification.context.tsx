@@ -1,125 +1,148 @@
-import { CommonActions } from '@react-navigation/native'
-import React, { useContext } from 'react'
-import { EmitterSubscription, NativeEventEmitter, NativeModules, Platform } from 'react-native'
-import { InAppNotificationProvider, withInAppNotification } from 'react-native-in-app-notification'
+import { CommonActions } from "@react-navigation/native";
+import React, { useContext, useEffect } from "react";
+import { Platform } from "react-native";
+import { useEventListener } from "expo";
+import BertyBridgeExpo from "berty-bridge-expo";
+import * as Notifications from "expo-notifications";
 
-import beapi from '@berty/api'
-import NotificationBody from '@berty/components/NotificationBody'
-import { EventEmitterContext } from '@berty/contexts/eventEmitter.context'
-import { useConversationsDict } from '@berty/hooks'
-import { useNavigation } from '@berty/navigation'
-import { accountClient } from '@berty/utils/accounts/accountClient'
+import beapi from "@berty/api";
+import { useNavigation } from "@berty/navigation";
+import { accountClient } from "@berty/utils/accounts/accountClient";
+import {
+	useConversationsDict,
+	useRestartAfterClosing,
+	useCloseBridgeAfterClosing,
+} from "@berty/hooks";
+import { deserializeFromBase64 } from '@berty/grpc-bridge/rpc/utils'
 
-const PushNotificationBridge: React.FC = withInAppNotification(({ showNotification }: any) => {
-	const conversations = useConversationsDict()
-	const { navigate, dispatch } = useNavigation()
+// First, set the handler that will cause the notification
+// to show the alert
+Notifications.setNotificationHandler({
+	handleNotification: async () => ({
+		shouldShowBanner: true,
+		shouldShowList: true,
+		shouldPlaySound: false,
+		shouldSetBadge: false,
+	}),
+});
 
-	React.useEffect(() => {
-		const pushNotifListener = async (data: any) => {
-			const push = await accountClient.pushReceive({
-				payload: data,
-				tokenType:
-					Platform.OS === 'ios'
-						? beapi.push.PushServiceTokenType.PushTokenApplePushNotificationService
-						: beapi.push.PushServiceTokenType.PushTokenFirebaseCloudMessaging,
-			})
-			if (!push.pushData?.alreadyReceived) {
-				const convPK = push.pushData?.conversationPublicKey
-				if (convPK) {
-					const conv = conversations[convPK]
-					showNotification({
-						title: push.push?.title,
-						message: push.push?.body,
-						onPress: () => {
-							dispatch(
-								CommonActions.reset({
-									routes: [
-										{ name: 'Chat.Home' },
-										{
-											name:
-												conv?.type === beapi.messenger.Conversation.Type.MultiMemberType
-													? 'Chat.MultiMember'
-													: 'Chat.OneToOne',
-											params: {
-												convId: convPK,
-											},
+const PushNotificationBridge = () => {
+	const conversations = useConversationsDict();
+	const { navigate, dispatch } = useNavigation();
+	const restartAfterClosing = useRestartAfterClosing();
+	const restartBridge = useCloseBridgeAfterClosing();
+
+	useEffect(() => {
+		// listener when user interacts with a notification
+		const responseListener =
+			Notifications.addNotificationResponseReceivedListener((response) => {
+				const data = response.notification.request.content.data;
+
+				switch (data.type) {
+					case "message":
+						const convPK = data?.convPK as string;
+
+						if (!convPK) {
+							console.warn("No conversation public key in notification data");
+							return;
+						}
+
+						const conv = conversations[convPK];
+						dispatch(
+							CommonActions.reset({
+								routes: [
+									{ name: "Chat.Home" },
+									{
+										name:
+											conv?.type ===
+											beapi.messenger.Conversation.Type.MultiMemberType
+												? "Chat.MultiMember"
+												: "Chat.OneToOne",
+										params: {
+											convId: convPK,
 										},
-									],
-								}),
-							)
-						},
-						additionalProps: { type: 'message' },
-					})
+									},
+								],
+							}),
+						);
+					case "action":
+						const action = data?.action as string;
+						if (action === "restartAfterClosing") {
+							restartAfterClosing();
+						} else if (action === "restartBridge") {
+							restartBridge();
+						}
+						break;
+					default:
+							const typeName = data.type || beapi.messenger.StreamEvent.Notified.Type.Unknown
+
+							const payloadName = typeName.substring('Type'.length)
+							const pbobj = (beapi.messenger.StreamEvent.Notified as any)[payloadName]
+							if (!pbobj) {
+								console.warn('failed to find a protobuf object matching the notification type')
+								return
+					}
+					var payload: any
+						if (typeof data.payload === 'string') {
+							payload = deserializeFromBase64(data.payload)
+						}
+						payload =
+							data.payload === undefined ? {} : pbobj.decode(data.payload)
+				console.log("remi: notification interacted with", data)
 				}
-			}
-		}
-		let eventListener: EmitterSubscription | undefined
-		if (NativeModules.EventEmitter) {
-			try {
-				eventListener = new NativeEventEmitter(NativeModules.EventEmitter).addListener(
-					'onPushReceived',
-					pushNotifListener,
-				)
-			} catch (e) {
-				console.warn('Push notif add listener failed: ' + e)
-			}
-		}
-		return () => {
-			try {
-				eventListener?.remove() // Unsubscribe from native event emitter
-			} catch (e) {
-				console.warn('Push notif remove listener failed: ' + e)
-			}
-		}
-	}, [conversations, dispatch, navigate, showNotification])
-	return null
-})
-
-const NotificationBridge: React.FC = withInAppNotification(({ showNotification }: any) => {
-	const eventEmitter = useContext(EventEmitterContext)
-
-	React.useEffect(() => {
-		const inAppNotifListener = (evt: any) => {
-			showNotification({
-				title: evt.payload.title,
-				message: evt.payload.body,
-				onPress: evt.payload.onPress,
-				additionalProps: evt,
-			})
-		}
-
-		let added = false
-		try {
-			eventEmitter.addListener('notification', inAppNotifListener)
-			added = true
-		} catch (e) {
-			console.log('Error: Push notif add listener failed: ' + e)
-		}
+			});
 
 		return () => {
-			if (added) {
-				eventEmitter.removeListener('notification', inAppNotifListener)
+			try {
+				responseListener.remove();
+			} catch (e) {
+				console.warn("Push notif remove listener failed: " + e);
+			}
+		};
+	}, [conversations, dispatch, navigate]);
+
+	const pushNotifListener = async (data: any) => {
+		const push = await accountClient.pushReceive({
+			payload: data,
+			tokenType:
+				Platform.OS === "ios"
+					? beapi.push.PushServiceTokenType
+							.PushTokenApplePushNotificationService
+					: beapi.push.PushServiceTokenType.PushTokenFirebaseCloudMessaging,
+		});
+		if (!push.pushData?.alreadyReceived) {
+			const convPK = push.pushData?.conversationPublicKey;
+			if (convPK) {
+				const conv = conversations[convPK]
+				Notifications.scheduleNotificationAsync({
+					content: {
+						title: push.push?.title,
+						body: push.push?.body,
+						data: { type: "message", convType: conv?.type , convPK: convPK },
+					},
+					trigger: null,
+				});
 			}
 		}
-	}, [showNotification, eventEmitter])
-	return null
-})
+	};
 
-const NotificationProvider: React.FC = ({ children }) =>
-	Platform.OS !== 'web' ? (
-		<InAppNotificationProvider
-			notificationBodyComponent={NotificationBody}
-			backgroundColour='transparent'
-			closeInterval={5000}
-		>
-			<>
-				<NotificationBridge />
-				<PushNotificationBridge />
-				{children}
-			</>
-		</InAppNotificationProvider>
+	useEventListener(BertyBridgeExpo, "onPushReceived", pushNotifListener);
+
+	return null;
+};
+
+interface NotificationProviderProps {
+	children: React.ReactNode;
+}
+
+const NotificationProvider = ({ children }: NotificationProviderProps) =>
+	Platform.OS !== "web" ? (
+		<>
+			<PushNotificationBridge />
+			{children}
+		</>
 	) : (
 		<>{children}</>
-	)
+	);
 
-export default NotificationProvider
+export default NotificationProvider;

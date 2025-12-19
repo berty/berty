@@ -1,7 +1,7 @@
-import { EventEmitter } from 'events'
 import * as pb from 'protobufjs'
 
 import { RequestStreamMock, ResponseStreamMock, UnaryMock } from '@berty/mock-services/types'
+import { SimpleEventEmitter } from '../../utils/simpleEventEmitter'
 
 import { EOF } from '../error'
 
@@ -72,7 +72,7 @@ const stream =
 
 			const requestStream = methodImplem as RequestStreamMock<any, any>
 
-			const eventEmitter = new EventEmitter()
+			const eventEmitter = new SimpleEventEmitter()
 
 			const onRequest = (listener: (request: any) => void) => {
 				eventEmitter.on('msg', listener)
