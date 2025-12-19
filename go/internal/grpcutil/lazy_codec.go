@@ -44,6 +44,7 @@ func (*LazyCodec) Unmarshal(buf []byte, value interface{}) error {
 func (lc *LazyCodec) String() string { return LazySubtype }
 func (lc *LazyCodec) Name() string   { return lc.String() }
 
+//nolint:gochecknoinits
 func init() {
 	encoding.RegisterCodec(NewLazyCodec())
 }
