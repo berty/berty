@@ -95,7 +95,7 @@
     "react-redux": "^9.2.0",
     "redux-persist": "^6.0.0",
     "sha3": "^2.1.4",
-    "storybook": "^10.1.8",
+    "storybook": "^10.1.10",
     "tlds": "^1.259.0"
   },
   "devDependencies": {
