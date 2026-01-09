@@ -130,4 +130,4 @@ jobs:
       - name: Build APK (PR)
         if: github.event_name == 'pull_request'
         working-directory: berty-bridge-expo/mobile
-        run: npx expo run:android --variant release --no-install
+        run: cd android && ./gradlew assembleRelease
