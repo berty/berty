@@ -5,7 +5,8 @@ GO_TAGS ?= -tags "fts5 sqlite sqlite_unlock_notify"
 GOMOBILE_IOS_TARGET ?= ios
 GOMOBILE_ANDROID_TARGET ?= android/arm64,android/amd64
 
-make_dir := $(realpath $(dir $(abspath $(lastword $(MAKEFILE_LIST)))))
+make_dir := $(patsubst %/,%,$(dir $(lastword $(MAKEFILE_LIST))))
+make_dir := $(or $(make_dir),.)
 bridge_src := $(call rwildcard,../go,*.go *.m *.h) ../go.sum
 gomobile_cache="$(make_dir)/.gomobile-cache"
 IOS_OUTPUT_BERTYPUSH_FRAMEWORK ?= $(make_dir)/plugin/src/NotificationService/Bertypush.xcframework
