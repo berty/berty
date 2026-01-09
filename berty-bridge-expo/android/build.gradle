@@ -2,11 +2,21 @@ apply plugin: 'com.android.library'
 
 group = 'tech.berty.bertybridgeexpo'
 version = '0.1.0'
+def goBridgeAar = file('libs/gobridge.aar')
 
 // Define the custom task to run the make build command
 task makeBuild(type: Exec) {
     workingDir '..'
     commandLine 'make', 'android.gomobile'
+    onlyIf {
+        def forceGomobile = project.hasProperty('forceGomobile') && project.property('forceGomobile').toString().toBoolean()
+        def skipGomobile = project.hasProperty('skipGomobile') && project.property('skipGomobile').toString().toBoolean()
+        if (skipGomobile) {
+            logger.lifecycle("Skipping makeBuild because -PskipGomobile=true")
+            return false
+        }
+        forceGomobile || !goBridgeAar.exists()
+    }
 }
 
 // Make the build depend on the makeBuild task

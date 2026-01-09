@@ -89,12 +89,13 @@ jobs:
           restore-keys: ${{ runner.OS }}-node-${{ env.NODE_VERSION }}-mobile-
 
       - name: Cache gobridge aar
+        id: cache-gobridge-aar
         uses: n0izn0iz/mkache@5cedaeaf0b39a9220ae5a815cac8d2a924cee3ef
         if: github.ref != 'refs/heads/master' # this makes sure the VCS_REF is correct on master
         with:
           rule: android/libs/gobridge.aar
           makefile: berty-bridge-expo/Makefile
-          key: android-gomobile-bridge-${{ matrix.golang }}
+          key: android-gomobile-bridge-${{ env.GO_VERSION }}
 
       - name: Fetch expo module node modules
         working-directory: berty-bridge-expo
@@ -106,15 +107,39 @@ jobs:
 
       - name: Setup Expo and EAS
         uses: expo/expo-github-action@v8
+        if: github.ref == 'refs/heads/master'
         with:
           eas-version: latest
           token: ${{ secrets.EXPO_TOKEN }}
           packager: npm
 
       - name: Build the AAB
+        if: github.ref == 'refs/heads/master'
         working-directory: berty-bridge-expo/mobile
         run: eas build -p android --non-interactive --local --output=${{ github.workspace }}
 
       - name: Upload the AAB
+        if: github.ref == 'refs/heads/master'
         working-directory: berty-bridge-expo/mobile
         run: eas upload -p android --non-interactive --local --build-path=${{ github.workspace }}
+
+      - name: Prebuild Android (PR)
+        if: github.event_name == 'pull_request'
+        working-directory: berty-bridge-expo/mobile
+        run: npx expo prebuild --platform android --no-install
+
+      - name: Android compile check (PR)
+        if: github.event_name == 'pull_request'
+        working-directory: berty-bridge-expo/mobile/android
+        env:
+          NODE_ENV: production
+          ORG_GRADLE_PROJECT_reactNativeArchitectures: arm64-v8a
+          GRADLE_OPTS: -Xmx3g -Dfile.encoding=UTF-8
+          SKIP_GOMOBILE: ${{ steps.cache-gobridge-aar.outputs.cache-hit == 'true' }}
+        run: |
+          ./gradlew \
+            :app:compileDebugKotlin \
+            :app:compileDebugJavaWithJavac \
+            :app:processDebugResources \
+            --no-daemon --stacktrace --max-workers=2 \
+            -PskipGomobile=${SKIP_GOMOBILE}
