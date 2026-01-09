@@ -92,7 +92,7 @@ jobs:
         uses: n0izn0iz/mkache@5cedaeaf0b39a9220ae5a815cac8d2a924cee3ef
         if: github.ref != 'refs/heads/master' # this makes sure the VCS_REF is correct on master
         with:
-          rule: android.gomobile
+          rule: android/libs/gobridge.aar
           makefile: berty-bridge-expo/Makefile
           key: android-gomobile-bridge-${{ matrix.golang }}
 
