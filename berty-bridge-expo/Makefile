@@ -39,14 +39,14 @@ $(IOS_OUTPUT_BERTYBRIDGE_FRAMEWORK): $(bridge_src)
 		CGO_CPPFLAGS=-DHAVE_GETHOSTUUID=0 \
 		$(GO) run golang.org/x/mobile/cmd/gomobile bind \
 			-v $(ext_ldflags) \
-			-o $@ \
+			-o $(abspath $@) \
 			$(GO_TAGS) -tags 'nowatchdog' \
 			-cache $(gomobile_cache_abs)/bertybridge \
 			-target $(GOMOBILE_IOS_TARGET) \
 			-iosversion $(minimum_ios_ver) \
 			./go/framework/bertybridge
 
-	touch $@
+	touch $(abspath $@)
 	cd .. && $(GO) mod tidy
 
 $(IOS_OUTPUT_BERTYPUSH_FRAMEWORK): $(bridge_src)
@@ -60,7 +60,7 @@ $(IOS_OUTPUT_BERTYPUSH_FRAMEWORK): $(bridge_src)
 		PATH="$(PATH):`go env GOPATH`/bin" \
 		CGO_CPPFLAGS=-DHAVE_GETHOSTUUID=0 \
 		$(GO) run golang.org/x/mobile/cmd/gomobile bind \
-			-o $@ \
+			-o $(abspath $@) \
 			-v $(ext_ldflags) \
 			$(GO_TAGS) -tags 'nowatchdog,noproximitytransport' \
 			-cache $(gomobile_cache_abs)/bertypush \
@@ -68,7 +68,7 @@ $(IOS_OUTPUT_BERTYPUSH_FRAMEWORK): $(bridge_src)
 			-iosversion $(minimum_ios_ver) \
 			./go/framework/bertypush
 
-	touch $@
+	touch $(abspath $@)
 	cd .. && $(GO) mod tidy
 
 #### Android
@@ -81,14 +81,14 @@ $(ANDROID_OUTPUT_LIBS): $(bridge_src)
 	cd .. && $(GO) run golang.org/x/mobile/cmd/gomobile init
 	mkdir -p $(gomobile_cache_abs) android/libs
 	cd .. && GO111MODULE=on $(GO) run golang.org/x/mobile/cmd/gomobile bind \
-		-o $@ \
+		-o $(abspath $@) \
 		-v $(ext_ldflags) \
 		$(GO_TAGS) \
 		-cache $(gomobile_cache_abs)/android_bertybridge \
 		-target $(GOMOBILE_ANDROID_TARGET) \
 		-androidapi $(minimum_android_ver) \
 		./go/framework/bertybridge
-	touch $@
+	touch $(abspath $@)
 	cd .. && $(GO) mod tidy
 
 .PHONY: clean
