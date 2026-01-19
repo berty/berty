@@ -1,15 +1,10 @@
-# berty-bridge-expo
+# berty-bridge-expo example
 
 This is the bertybridge Expo module.
 
-## Building the Expo module example app
+## Building the Expo module and example app
 
-Open a terminal in this folder and run:
-
-```
-cd .. # cd to the parent folder
-make ios.gomobile # or make android.gomobile
-```
+Open a terminal in the parent folder and follow its [README](../README.md) to build the bertybridge Expo module.
 
 For development, you can also run in new terminals:
 
@@ -20,7 +15,7 @@ npm run build plugin
 
 ### CLI build
 
-In this folder run:
+Open a terminal in this folder and run:
 
 ```
 npm install
