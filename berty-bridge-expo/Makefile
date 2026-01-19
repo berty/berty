@@ -5,9 +5,11 @@ GO_TAGS ?= -tags "fts5 sqlite sqlite_unlock_notify"
 GOMOBILE_IOS_TARGET ?= ios
 GOMOBILE_ANDROID_TARGET ?= android/arm64,android/amd64
 
-make_dir := $(realpath $(dir $(abspath $(lastword $(MAKEFILE_LIST)))))
+make_dir := $(patsubst %/,%,$(dir $(lastword $(MAKEFILE_LIST))))
+make_dir := $(or $(make_dir),.)
 bridge_src := $(call rwildcard,../go,*.go *.m *.h) ../go.sum
 gomobile_cache="$(make_dir)/.gomobile-cache"
+gomobile_cache_abs := $(abspath $(gomobile_cache))
 IOS_OUTPUT_BERTYPUSH_FRAMEWORK ?= $(make_dir)/plugin/src/NotificationService/Bertypush.xcframework
 IOS_OUTPUT_BERTYBRIDGE_FRAMEWORK ?= $(make_dir)/ios/Frameworks/Bertybridge.xcframework
 ANDROID_OUTPUT_LIBS ?= $(make_dir)/android/libs/gobridge.aar
@@ -29,7 +31,7 @@ $(IOS_OUTPUT_BERTYBRIDGE_FRAMEWORK): $(bridge_src)
 	cd .. && $(GO) mod download
 	cd .. && $(GO) install golang.org/x/mobile/cmd/gobind
 	cd .. && $(GO) run golang.org/x/mobile/cmd/gomobile init
-	mkdir -p $(gomobile_cache) ios/Frameworks
+	mkdir -p $(gomobile_cache_abs) ios/Frameworks
 
 # use `nowatchdog` tags, see https://github.com/libp2p/go-libp2p-connmgr/issues/98
 	cd .. && \
@@ -37,36 +39,36 @@ $(IOS_OUTPUT_BERTYBRIDGE_FRAMEWORK): $(bridge_src)
 		CGO_CPPFLAGS=-DHAVE_GETHOSTUUID=0 \
 		$(GO) run golang.org/x/mobile/cmd/gomobile bind \
 			-v $(ext_ldflags) \
-			-o $@ \
+			-o $(abspath $@) \
 			$(GO_TAGS) -tags 'nowatchdog' \
-			-cache $(gomobile_cache)/bertybridge \
+			-cache $(gomobile_cache_abs)/bertybridge \
 			-target $(GOMOBILE_IOS_TARGET) \
 			-iosversion $(minimum_ios_ver) \
 			./go/framework/bertybridge
 
-	touch $@
+	touch $(abspath $@)
 	cd .. && $(GO) mod tidy
 
 $(IOS_OUTPUT_BERTYPUSH_FRAMEWORK): $(bridge_src)
 	cd .. && $(GO) mod download
 	cd .. && $(GO) install golang.org/x/mobile/cmd/gobind
 	cd .. && $(GO) run golang.org/x/mobile/cmd/gomobile init
-	mkdir -p $(gomobile_cache) plugin/src/NotificationService
+	mkdir -p $(gomobile_cache_abs) plugin/src/NotificationService
 
 # use `nowatchdog` tags, see https://github.com/libp2p/go-libp2p-connmgr/issues/98
 	cd .. && \
 		PATH="$(PATH):`go env GOPATH`/bin" \
 		CGO_CPPFLAGS=-DHAVE_GETHOSTUUID=0 \
 		$(GO) run golang.org/x/mobile/cmd/gomobile bind \
-			-o $@ \
+			-o $(abspath $@) \
 			-v $(ext_ldflags) \
 			$(GO_TAGS) -tags 'nowatchdog,noproximitytransport' \
-			-cache $(gomobile_cache)/bertypush \
+			-cache $(gomobile_cache_abs)/bertypush \
 			-target $(GOMOBILE_IOS_TARGET) \
 			-iosversion $(minimum_ios_ver) \
 			./go/framework/bertypush
 
-	touch $@
+	touch $(abspath $@)
 	cd .. && $(GO) mod tidy
 
 #### Android
@@ -77,16 +79,16 @@ android.gomobile: node_modules $(ANDROID_OUTPUT_LIBS)
 $(ANDROID_OUTPUT_LIBS): $(bridge_src)
 	cd .. && $(GO) mod download
 	cd .. && $(GO) run golang.org/x/mobile/cmd/gomobile init
-	mkdir -p $(gomobile_cache) android/libs
+	mkdir -p $(gomobile_cache_abs) android/libs
 	cd .. && GO111MODULE=on $(GO) run golang.org/x/mobile/cmd/gomobile bind \
-		-o $@ \
+		-o $(abspath $@) \
 		-v $(ext_ldflags) \
 		$(GO_TAGS) \
-		-cache $(gomobile_cache)/android_bertybridge \
+		-cache $(gomobile_cache_abs)/android_bertybridge \
 		-target $(GOMOBILE_ANDROID_TARGET) \
 		-androidapi $(minimum_android_ver) \
 		./go/framework/bertybridge
-	touch $@
+	touch $(abspath $@)
 	cd .. && $(GO) mod tidy
 
 .PHONY: clean

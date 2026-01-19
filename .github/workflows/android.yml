@@ -106,15 +106,30 @@ jobs:
 
       - name: Setup Expo and EAS
         uses: expo/expo-github-action@v8
+        if: github.ref == 'refs/heads/master'
         with:
           eas-version: latest
           token: ${{ secrets.EXPO_TOKEN }}
           packager: npm
 
       - name: Build the AAB
+        if: github.ref == 'refs/heads/master'
         working-directory: berty-bridge-expo/mobile
         run: eas build -p android --non-interactive --local --output=${{ github.workspace }}
 
       - name: Upload the AAB
+        if: github.ref == 'refs/heads/master'
         working-directory: berty-bridge-expo/mobile
         run: eas upload -p android --non-interactive --local --build-path=${{ github.workspace }}
+
+      - name: Prebuild Android (PR)
+        if: github.event_name == 'pull_request'
+        working-directory: berty-bridge-expo/mobile
+        run: npx expo prebuild --platform android --no-install
+
+      - name: Build APK (PR)
+        if: github.event_name == 'pull_request'
+        working-directory: berty-bridge-expo/mobile/android
+        env:
+          NODE_ENV: production
+        run: ./gradlew assembleRelease -x :berty-bridge-expo:bundleReleaseAar
