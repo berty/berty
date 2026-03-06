@@ -16,6 +16,7 @@ ANDROID_OUTPUT_LIBS ?= $(make_dir)/android/libs/gobridge.aar
 ext_ldflags = -ldflags="-X berty.tech/berty/v2/go/pkg/bertyversion.VcsRef=$(VCS_REF) -X berty.tech/berty/v2/go/pkg/bertyversion.Version=$(VERSION)"
 minimum_ios_ver = 12.0
 minimum_android_ver = 21
+go_modcacherw_flags = GOFLAGS="$(strip $(GOFLAGS) -modcacherw)"
 
 node_modules: package.json
 	$(call check-program, npm)
@@ -37,6 +38,7 @@ $(IOS_OUTPUT_BERTYBRIDGE_FRAMEWORK): $(bridge_src)
 	cd .. && \
 		PATH="$(PATH):`go env GOPATH`/bin" \
 		CGO_CPPFLAGS=-DHAVE_GETHOSTUUID=0 \
+		$(go_modcacherw_flags) \
 		$(GO) run golang.org/x/mobile/cmd/gomobile bind \
 			-v $(ext_ldflags) \
 			-o $(abspath $@) \
@@ -59,6 +61,7 @@ $(IOS_OUTPUT_BERTYPUSH_FRAMEWORK): $(bridge_src)
 	cd .. && \
 		PATH="$(PATH):`go env GOPATH`/bin" \
 		CGO_CPPFLAGS=-DHAVE_GETHOSTUUID=0 \
+		$(go_modcacherw_flags) \
 		$(GO) run golang.org/x/mobile/cmd/gomobile bind \
 			-o $(abspath $@) \
 			-v $(ext_ldflags) \
@@ -80,7 +83,7 @@ $(ANDROID_OUTPUT_LIBS): $(bridge_src)
 	cd .. && $(GO) mod download
 	cd .. && $(GO) run golang.org/x/mobile/cmd/gomobile init
 	mkdir -p $(gomobile_cache_abs) android/libs
-	cd .. && GO111MODULE=on $(GO) run golang.org/x/mobile/cmd/gomobile bind \
+	cd .. && GO111MODULE=on $(go_modcacherw_flags) $(GO) run golang.org/x/mobile/cmd/gomobile bind \
 		-o $(abspath $@) \
 		-v $(ext_ldflags) \
 		$(GO_TAGS) \
