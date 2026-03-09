@@ -54,7 +54,7 @@ require (
 	github.com/multiformats/go-multibase v0.2.0
 	github.com/multiformats/go-multicodec v0.9.0
 	github.com/mutecomm/go-sqlcipher/v4 v4.4.2
-	github.com/nyaruka/phonenumbers v1.0.75
+	github.com/nyaruka/phonenumbers v1.2.2
 	github.com/oklog/run v1.1.0
 	github.com/peterbourgon/ff/v3 v3.0.0
 	github.com/phayes/freeport v0.0.0-20180830031419-95f893ade6f2
