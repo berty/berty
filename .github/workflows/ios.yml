@@ -21,6 +21,10 @@ on:
       - "berty-bridge-expo/**"
       - "!berty-bridge-expo/mobile/src/i18n/locale/*/*.json"
       - ".github/workflows/ios.yml"
+      
+concurrency:
+   group: ${{ github.workflow }}-${{ github.ref }}
+   cancel-in-progress: true
 
 jobs:
   build:
