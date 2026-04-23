@@ -40,7 +40,7 @@
     "jest-expo": "~39.0.0",
     "lorem-ipsum": "^2.0.3",
     "typescript": "~3.9.5",
-    "uuid": "^8.3.2"
+    "uuid": "^14.0.0"
   },
   "jest": {
     "preset": "react-native"
