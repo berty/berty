@@ -88,7 +88,6 @@ const PushNotificationBridge = () => {
 						}
 						payload =
 							data.payload === undefined ? {} : pbobj.decode(data.payload)
-				console.log("remi: notification interacted with", data)
 				}
 			});
 

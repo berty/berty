@@ -69,7 +69,6 @@ export const useMember = (
 const State = beapi.messenger.Contact.State;
 
 export const useIncomingContactRequests = () => {
-	console.log('remi: calling useIncomingContactRequests')
 	const contacts = useAllContacts()
 	return useMemo(
 		() => contacts.filter(c => toStateNumber(c.state) === State.IncomingRequest),
