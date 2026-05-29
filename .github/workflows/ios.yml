@@ -34,6 +34,9 @@ jobs:
           name: ${{ inputs.app-json-artifact }}
           path: berty-bridge-expo/mobile
 
+      - name: Select Xcode 26
+        run: sudo xcode-select -s /Applications/Xcode_26.app/Contents/Developer
+
       - name: Setup asdf
         uses: asdf-vm/actions/setup@9cd779f40fe38688dd19505ccbc4eaaf018b44e7
         with:
@@ -124,6 +127,8 @@ jobs:
       - name: Build the IPA
         if: inputs.app-json-artifact != ''
         working-directory: berty-bridge-expo/mobile
+        env:
+          APP_ENV: production
         run: eas build -p ios --profile production --non-interactive --local --output=${{ github.workspace }}/berty-ios.ipa
 
       - name: Upload the IPA

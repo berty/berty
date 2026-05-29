@@ -117,6 +117,8 @@ jobs:
       - name: Build the AAB
         if: inputs.app-json-artifact != ''
         working-directory: berty-bridge-expo/mobile
+        env:
+          APP_ENV: production
         run: eas build -p android --profile production --non-interactive --local --output=${{ github.workspace }}/app-release.aab
 
       - name: Upload the AAB
