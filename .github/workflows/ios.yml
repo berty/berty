@@ -1,6 +1,11 @@
 name: iOS
 on:
-  workflow_dispatch: {}
+  workflow_call:
+    inputs:
+      app-json-artifact:
+        type: string
+        required: false
+        default: ''
   pull_request:
     paths:
       - "go/**"
@@ -21,6 +26,13 @@ jobs:
         with:
           fetch-depth: 0
           persist-credentials: false
+
+      - name: Download patched app.json
+        if: inputs.app-json-artifact != ''
+        uses: actions/download-artifact@v4
+        with:
+          name: ${{ inputs.app-json-artifact }}
+          path: berty-bridge-expo/mobile
 
       - name: Setup asdf
         uses: asdf-vm/actions/setup@9cd779f40fe38688dd19505ccbc4eaaf018b44e7
@@ -103,14 +115,14 @@ jobs:
 
       - name: Setup Expo and EAS
         uses: expo/expo-github-action@v8
-        if: github.event_name == 'workflow_dispatch'
+        if: github.event_name == 'workflow_call'
         with:
           eas-version: latest
           token: ${{ secrets.EXPO_TOKEN }}
           packager: npm
 
       - name: Build the IPA
-        if: github.event_name == 'workflow_dispatch'
+        if: github.event_name == 'workflow_call'
         working-directory: berty-bridge-expo/mobile
         run: eas build -p ios --profile production --non-interactive --local --output=${{ github.workspace }}/berty-ios.ipa
 

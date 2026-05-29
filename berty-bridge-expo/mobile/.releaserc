@@ -4,10 +4,6 @@
     "semantic-release-expo",
     "@semantic-release/commit-analyzer",
     "@semantic-release/release-notes-generator",
-    ["@semantic-release/git", {
-      "assets": ["app.json"],
-      "message": "chore(release): ${nextRelease.version} [skip ci]"
-    }],
     "@semantic-release/github"
   ]
 }

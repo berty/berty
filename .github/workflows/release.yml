@@ -24,6 +24,8 @@ jobs:
     outputs:
       new-release-published: ${{ steps.semantic.outputs.new_release_published }}
       release-version: ${{ steps.semantic.outputs.new_release_version }}
+      android-changed: ${{ steps.changes.outputs.android }}
+      ios-changed: ${{ steps.changes.outputs.ios }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -52,7 +54,6 @@ jobs:
           working_directory: ./berty-bridge-expo/mobile
           extra_plugins: |
             semantic-release-expo
-            @semantic-release/git
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
@@ -79,17 +80,30 @@ jobs:
               - ".github/workflows/ios.yml"
               - ".github/workflows/release.yml"
 
-      - name: Trigger Android build
-        if: steps.semantic.outputs.new_release_published == 'true' && steps.changes.outputs.android == 'true'
-        run: gh workflow run android.yml --ref master
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Upload patched app.json
+        if: steps.semantic.outputs.new_release_published == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: app-json
+          path: berty-bridge-expo/mobile/app.json
 
-      - name: Trigger iOS build
-        if: steps.semantic.outputs.new_release_published == 'true' && steps.changes.outputs.ios == 'true'
-        run: gh workflow run ios.yml --ref master
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  build-android:
+    name: Build for Android
+    needs: semantic-release
+    if: needs.semantic-release.outputs.new-release-published == 'true' && needs.semantic-release.outputs.android-changed == 'true'
+    uses: ./.github/workflows/android.yml
+    with:
+      app-json-artifact: app-json
+    secrets: inherit
+
+  build-ios:
+    name: Build for iOS
+    needs: semantic-release
+    if: needs.semantic-release.outputs.new-release-published == 'true' && needs.semantic-release.outputs.ios-changed == 'true'
+    uses: ./.github/workflows/ios.yml
+    with:
+      app-json-artifact: app-json
+    secrets: inherit
 
   release-on-stores:
     name: Release on stores
