@@ -1,12 +1,15 @@
 {
   "cli": {
     "version": ">= 16.17.0",
-    "appVersionSource": "remote"
+    "appVersionSource": "local"
   },
   "build": {
     "development": {
       "developmentClient": true,
-      "distribution": "internal"
+      "distribution": "internal",
+      "env": {
+        "APP_ENV": "development"
+      }
     },
     "ios-simulator": {
       "extends": "development",
@@ -15,10 +18,15 @@
       }
     },
     "preview": {
-      "distribution": "internal"
+      "distribution": "internal",
+      "env": {
+        "APP_ENV": "preview"
+      }
     },
     "production": {
-      "autoIncrement": true
+      "env": {
+        "APP_ENV": "production"
+      }
     }
   },
   "submit": {
