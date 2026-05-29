@@ -129,7 +129,7 @@ jobs:
       - name: Upload the IPA
         if: inputs.app-json-artifact != ''
         working-directory: berty-bridge-expo/mobile
-        run: eas upload -p ios --profile production --non-interactive --local --build-path=${{ github.workspace }}/berty-ios.ipa
+        run: eas upload -p ios --non-interactive --build-path=${{ github.workspace }}/berty-ios.ipa
 
       - name: Prebuild iOS (PR)
         if: github.event_name == 'pull_request'

@@ -122,7 +122,7 @@ jobs:
       - name: Upload the AAB
         if: inputs.app-json-artifact != ''
         working-directory: berty-bridge-expo/mobile
-        run: eas upload -p android --profile production --non-interactive --local --build-path=${{ github.workspace }}/app-release.aab
+        run: eas upload -p android --non-interactive --build-path=${{ github.workspace }}/app-release.aab
 
       - name: Prebuild Android (PR)
         if: github.event_name == 'pull_request'

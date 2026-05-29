@@ -1,6 +1,7 @@
 {
   "expo": {
     "version": "1.0.0",
+    "sdkVersion": "54.0.0",
     "ios": {
       "buildNumber": "1"
     },
