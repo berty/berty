@@ -108,19 +108,19 @@ jobs:
 
       - name: Setup Expo and EAS
         uses: expo/expo-github-action@v8
-        if: github.event_name == 'workflow_call'
+        if: inputs.app-json-artifact != ''
         with:
           eas-version: latest
           token: ${{ secrets.EXPO_TOKEN }}
           packager: npm
 
       - name: Build the AAB
-        if: github.event_name == 'workflow_call'
+        if: inputs.app-json-artifact != ''
         working-directory: berty-bridge-expo/mobile
         run: eas build -p android --profile production --non-interactive --local --output=${{ github.workspace }}/app-release.aab
 
       - name: Upload the AAB
-        if: github.event_name == 'workflow_call'
+        if: inputs.app-json-artifact != ''
         working-directory: berty-bridge-expo/mobile
         run: eas upload -p android --profile production --non-interactive --local --build-path=${{ github.workspace }}/app-release.aab
 
