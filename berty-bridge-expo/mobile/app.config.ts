@@ -1,5 +1,4 @@
 import { ExpoConfig, ConfigContext } from "expo/config";
-import { version } from "./package.json";
 
 // App production config
 const APP_NAME = "Berty";
@@ -21,7 +20,6 @@ export default ({ config }: ConfigContext): ExpoConfig => {
 	return {
 		...config,
 		name: name,
-		version, // Automatically bump your project version with `npm version patch`, `npm version minor` or `npm version major`.
 		slug: "berty",
 		platforms: ["ios", "android"],
 		orientation: "portrait",
@@ -38,6 +36,7 @@ export default ({ config }: ConfigContext): ExpoConfig => {
 		ios: {
 			supportsTablet: true,
 			bundleIdentifier: bundleIdentifier,
+			buildNumber: config.ios?.buildNumber,
 			config: {
 				usesNonExemptEncryption: false,
 			},
@@ -48,6 +47,7 @@ export default ({ config }: ConfigContext): ExpoConfig => {
 				backgroundColor: "#ffffff",
 			},
 			package: packageName,
+			versionCode: config.android?.versionCode,
 			googleServicesFile: "./google-services.json",
 		},
 		updates: {

@@ -22,35 +22,74 @@ jobs:
     name: Semantic release
     runs-on: ubuntu-latest
     outputs:
-      new-release-published: ${{ steps.semantic-echo.outputs.new-release-published }}
-      release-version: ${{ steps.semantic-echo.outputs.release-version }}
+      new-release-published: ${{ steps.semantic.outputs.new_release_published }}
+      release-version: ${{ steps.semantic.outputs.new_release_version }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-
-      - name: Unshallow
-        run: git fetch --prune --unshallow
-
-      - name: Run Semantic Release
-        id: semantic
-        uses: docker://ghcr.io/codfish/semantic-release-action:v1
         with:
-          branches: |
-            ['master']
-          plugins: |
-            [
-              '@semantic-release/commit-analyzer',
-              '@semantic-release/release-notes-generator',
-              '@semantic-release/github'
-            ]
+          fetch-depth: 0
+
+      - name: Setup asdf
+        uses: asdf-vm/actions/setup@9cd779f40fe38688dd19505ccbc4eaaf018b44e7
+        with:
+          asdf_version: 0.16.7
+
+      - name: Setup node
+        working-directory: berty-bridge-expo
+        run: |
+          asdf plugin add nodejs
+          asdf install nodejs
+          echo "NODE_VERSION=$(asdf current nodejs | xargs | cut -d ' ' -f 6)" >> $GITHUB_ENV
+
+      - name: Set nodejs as global exec
+        run: asdf set -u nodejs ${{ env.NODE_VERSION }}
+
+      - name: Semantic Release
+        uses: cycjimmy/semantic-release-action@v4
+        id: semantic
+        with:
+          working_directory: ./berty-bridge-expo/mobile
+          extra_plugins: |
+            semantic-release-expo
+            @semantic-release/git
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Export Semantic Release
-        id: semantic-echo
-        run: |
-          echo "::set-output name=new-release-published::${{steps.semantic.outputs.new-release-published}}"
-          echo "::set-output name=release-version::${{steps.semantic.outputs.release-version}}"
+      - name: Check changed paths
+        if: steps.semantic.outputs.new_release_published == 'true'
+        uses: dorny/paths-filter@v3
+        id: changes
+        with:
+          filters: |
+            android:
+              - "go/**"
+              - "!go/**.md"
+              - "go.*"
+              - "**.go"
+              - "berty-bridge-expo/**"
+              - ".github/workflows/android.yml"
+              - ".github/workflows/release.yml"
+            ios:
+              - "go/**"
+              - "!go/**.md"
+              - "go.*"
+              - "**.go"
+              - "berty-bridge-expo/**"
+              - ".github/workflows/ios.yml"
+              - ".github/workflows/release.yml"
+
+      - name: Trigger Android build
+        if: steps.semantic.outputs.new_release_published == 'true' && steps.changes.outputs.android == 'true'
+        run: gh workflow run android.yml --ref master
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Trigger iOS build
+        if: steps.semantic.outputs.new_release_published == 'true' && steps.changes.outputs.ios == 'true'
+        run: gh workflow run ios.yml --ref master
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   release-on-stores:
     name: Release on stores

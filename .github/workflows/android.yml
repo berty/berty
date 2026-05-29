@@ -1,17 +1,6 @@
 name: Android
 on:
-  push:
-    tags:
-      - v*
-    branches:
-      - master
-    paths:
-      - "go/**"
-      - "!go/**.md"
-      - "go.*"
-      - "**.go"
-      - "berty-bridge-expo/**"
-      - ".github/workflows/android.yml"
+  workflow_dispatch: {}
   pull_request:
     paths:
       - "go/**"
@@ -91,7 +80,7 @@ jobs:
       - name: Cache gobridge aar
         id: cache-gobridge-aar
         uses: n0izn0iz/mkache@5cedaeaf0b39a9220ae5a815cac8d2a924cee3ef
-        if: github.ref != 'refs/heads/master' # this makes sure the VCS_REF is correct on master
+        if: github.event_name == 'pull_request'
         with:
           rule: android/libs/gobridge.aar
           makefile: berty-bridge-expo/Makefile
@@ -107,21 +96,21 @@ jobs:
 
       - name: Setup Expo and EAS
         uses: expo/expo-github-action@v8
-        if: github.ref == 'refs/heads/master'
+        if: github.event_name == 'workflow_dispatch'
         with:
           eas-version: latest
           token: ${{ secrets.EXPO_TOKEN }}
           packager: npm
 
       - name: Build the AAB
-        if: github.ref == 'refs/heads/master'
+        if: github.event_name == 'workflow_dispatch'
         working-directory: berty-bridge-expo/mobile
-        run: eas build -p android --non-interactive --local --output=${{ github.workspace }}/app-release.aab
+        run: eas build -p android --profile production --non-interactive --local --output=${{ github.workspace }}/app-release.aab
 
       - name: Upload the AAB
-        if: github.ref == 'refs/heads/master'
+        if: github.event_name == 'workflow_dispatch'
         working-directory: berty-bridge-expo/mobile
-        run: eas upload -p android --non-interactive --local --build-path=${{ github.workspace }}/app-release.aab
+        run: eas upload -p android --profile production --non-interactive --local --build-path=${{ github.workspace }}/app-release.aab
 
       - name: Prebuild Android (PR)
         if: github.event_name == 'pull_request'

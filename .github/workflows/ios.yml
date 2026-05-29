@@ -1,17 +1,6 @@
 name: iOS
 on:
-  push:
-    tags:
-      - v*
-    branches:
-      - master
-    paths:
-      - "go/**"
-      - "!go/**.md"
-      - "go.*"
-      - "**.go"
-      - "berty-bridge-expo/**"
-      - ".github/workflows/ios.yml"
+  workflow_dispatch: {}
   pull_request:
     paths:
       - "go/**"
@@ -85,7 +74,7 @@ jobs:
       - name: Cache bertybridge framework
         id: cache-bertybridge-framework
         uses: n0izn0iz/mkache@5cedaeaf0b39a9220ae5a815cac8d2a924cee3ef
-        if: github.ref != 'refs/heads/master' # this makes sure the VCS_REF is correct on master
+        if: github.event_name == 'pull_request'
         env:
           GOMOBILE_IOS_TARGET: iossimulator
         with:
@@ -96,7 +85,7 @@ jobs:
       - name: Cache bertypush framework
         id: cache-bertypush-framework
         uses: n0izn0iz/mkache@5cedaeaf0b39a9220ae5a815cac8d2a924cee3ef
-        if: github.ref != 'refs/heads/master' # this makes sure the VCS_REF is correct on master
+        if: github.event_name == 'pull_request'
         env:
           GOMOBILE_IOS_TARGET: iossimulator
         with:
@@ -114,16 +103,16 @@ jobs:
 
       - name: Setup Expo and EAS
         uses: expo/expo-github-action@v8
-        if: github.ref == 'refs/heads/master'
+        if: github.event_name == 'workflow_dispatch'
         with:
           eas-version: latest
           token: ${{ secrets.EXPO_TOKEN }}
           packager: npm
 
       - name: Build the IPA
-        if: github.ref == 'refs/heads/master'
+        if: github.event_name == 'workflow_dispatch'
         working-directory: berty-bridge-expo/mobile
-        run: eas build -p ios --non-interactive --local --output=${{ github.workspace }}/berty-ios.ipa
+        run: eas build -p ios --profile production --non-interactive --local --output=${{ github.workspace }}/berty-ios.ipa
 
       - name: Prebuild iOS (PR)
         if: github.event_name == 'pull_request'
