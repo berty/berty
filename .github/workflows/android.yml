@@ -116,12 +116,12 @@ jobs:
       - name: Build the AAB
         if: github.ref == 'refs/heads/master'
         working-directory: berty-bridge-expo/mobile
-        run: eas build -p android --non-interactive --local --output=${{ github.workspace }}
+        run: eas build -p android --non-interactive --local --output=${{ github.workspace }}/app-release.aab
 
       - name: Upload the AAB
         if: github.ref == 'refs/heads/master'
         working-directory: berty-bridge-expo/mobile
-        run: eas upload -p android --non-interactive --local --build-path=${{ github.workspace }}
+        run: eas upload -p android --non-interactive --local --build-path=${{ github.workspace }}/app-release.aab
 
       - name: Prebuild Android (PR)
         if: github.event_name == 'pull_request'

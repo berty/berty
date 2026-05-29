@@ -50,6 +50,7 @@ $(IOS_OUTPUT_BERTYBRIDGE_FRAMEWORK): $(bridge_src)
 
 	touch $(abspath $@)
 	cd .. && $(GO) mod tidy
+	chmod -R u+w $(gomobile_cache_abs) 2>/dev/null || true
 
 $(IOS_OUTPUT_BERTYPUSH_FRAMEWORK): $(bridge_src)
 	cd .. && $(GO) mod download
@@ -73,6 +74,7 @@ $(IOS_OUTPUT_BERTYPUSH_FRAMEWORK): $(bridge_src)
 
 	touch $(abspath $@)
 	cd .. && $(GO) mod tidy
+	chmod -R u+w $(gomobile_cache_abs) 2>/dev/null || true
 
 #### Android
 
