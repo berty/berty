@@ -1,7 +1,7 @@
 FROM    moul/protoc-gen-gotemplate:latest AS pgg
 
 # build image
-FROM    golang:1.23.2-bookworm AS builder
+FROM    golang:1.26.4-bookworm AS builder
 # install deps
 RUN     set -ex; \
             apt-get update; \
@@ -22,7 +22,7 @@ RUN     go install -mod=readonly \
             golang.org/x/tools/cmd/goimports
 
 # runtime
-FROM    golang:1.23.2-bookworm
+FROM    golang:1.26.4-bookworm
 RUN     set -ex; \
             apt-get update; \
             apt-get install -y --no-install-recommends \

@@ -20,8 +20,8 @@ import (
 	"berty.tech/berty/v2/go/pkg/errcode"
 	"berty.tech/berty/v2/go/pkg/messengertypes"
 	"berty.tech/berty/v2/go/pkg/pushtypes"
-	"berty.tech/weshnet/v2"
 	"berty.tech/weshnet/v2/pkg/logutil"
+	weshnet_outofstoremessage "berty.tech/weshnet/v2/pkg/outofstoremessage"
 )
 
 func PushDecryptStandalone(logger *zap.Logger, rootDir string, inputB64 string, ks accountutils.NativeKeystore) (*pushtypes.DecryptedPush, error) {
@@ -232,7 +232,7 @@ func PushDecrypt(ctx context.Context, rootDir string, input []byte, opts *PushDe
 			wrappedDB := messengerdb.NewDBWrapper(db, opts.Logger)
 			dbFetcher := dbfetcher.NewDBFetcher(account.PublicKey, wrappedDB)
 
-			weshClient, err := weshnet.NewOutOfStoreMessageServiceClient(weshnet.WithRootDatastore(rootDS), weshnet.WithLogger(opts.Logger))
+			weshClient, err := weshnet_outofstoremessage.NewOutOfStoreMessageServiceClient(weshnet_outofstoremessage.WithRootDatastore(rootDS), weshnet_outofstoremessage.WithLogger(opts.Logger))
 			if err != nil {
 				return nil, errcode.ErrCode_ErrInternal.Wrap(fmt.Errorf("unable to initialize weshnet client: %w", err))
 			}

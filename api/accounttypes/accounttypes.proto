@@ -5,7 +5,7 @@ package berty.account.v1;
 import "pushtypes/bertypushtypes.proto";
 import "protocoltypes.proto";
 
-option go_package = "berty.tech/berty/go/pkg/accounttypes";
+option go_package = "berty.tech/berty/v2/go/pkg/accounttypes";
 
 service AccountService {
   /// Account

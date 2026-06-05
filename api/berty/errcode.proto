@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package berty.errcode;
 
-option go_package = "berty.tech/berty/go/pkg/errcode";
+option go_package = "berty.tech/berty/v2/go/pkg/errcode";
 
 enum ErrCode {
   //----------------

@@ -13,7 +13,7 @@ CI ?= false
 BUILD_DATE ?= `date +%s`
 VCS_REF ?= `git rev-parse --short HEAD`
 VERSION ?= `go run github.com/mdomke/git-semver/v5`
-LDFLAGS ?= -ldflags="-X berty.tech/berty/v2/go/pkg/bertyversion.VcsRef=$(VCS_REF) -X berty.tech/berty/v2/go/pkg/bertyversion.Version=$(VERSION)"
+LDFLAGS ?= -ldflags="-checklinkname=0 -X berty.tech/berty/v2/go/pkg/bertyversion.VcsRef=$(VCS_REF) -X berty.tech/berty/v2/go/pkg/bertyversion.Version=$(VERSION)"
 
 # @FIXME(gfanton): on macOS Monterey (12.0.x) we currently need to set the
 # environment variable `MallocNanoZone` to 0 to avoid a SIGABRT or SIGSEGV
@@ -183,7 +183,7 @@ $(gen_sum): $(gen_src)
 		--workdir="/go/src/berty.tech/berty/go" \
 		--entrypoint="sh" \
 		--rm \
-		bertytech/buf:5 \
+		bertytech/buf:6 \
 		-xec 'make generate_local'; \
 	  $(MAKE) tidy \
 	)
@@ -195,8 +195,6 @@ generate_local:
 	$(call check-program, shasum buf protoc protoc-gen-go protoc-gen-go-grpc protoc-gen-grpc-gateway protoc-gen-gotag)
 	cd ..; buf generate api; cd go
 	cd ..; buf generate --template buf.gen.tag.yaml api; cd go
-	sed -i s@berty.tech/berty/go@berty.tech/berty/v2/go@ ./pkg/*/*.pb.go
-	sed -i s@berty.tech/berty/go@berty.tech/berty/v2/go@ ./pkg/*/*.pb.gw.go
 	$(MAKE) go.fmt
 	shasum $(gen_src) | sort -k 2 > $(gen_sum).tmp
 	mv $(gen_sum).tmp $(gen_sum)

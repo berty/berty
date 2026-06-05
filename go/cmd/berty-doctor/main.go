@@ -68,7 +68,7 @@ func main() {
 	wg.Add(1)
 	go func() {
 		defer wg.Done()
-		goVersionOutput := u.SafeExec(exec.Command("go", "version"))
+		goVersionOutput := u.SafeExec(exec.CommandContext(ctx, "go", "version"))
 		if strings.HasPrefix(goVersionOutput, "go version go1.") {
 			versionString := strings.Split(goVersionOutput, " ")[2][2:]
 			version, err := semver.NewVersion(versionString)

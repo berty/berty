@@ -55,6 +55,7 @@ func Main(ctx context.Context, opts *Opts) error {
 	if err != nil {
 		return err
 	}
+	defer store.close()
 
 	mc := msgrContext{
 		ctx:            ctx,

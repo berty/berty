@@ -1,5 +1,5 @@
 IMAGE ?=	bertytech/protoc
-VERSION ?=	32
+VERSION ?=	34
 
 build:
 	cd ../../ && docker build --platform linux/amd64 -f ./tool/docker-protoc/Dockerfile -t $(IMAGE):$(VERSION) -t $(IMAGE):latest .

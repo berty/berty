@@ -12,12 +12,14 @@ type Quote struct {
 	Text   string
 }
 
+const authorBruceSchneier = "Bruce Schneier"
+
 var quotes = []Quote{
 	{"Albert Camus", "A free press can be good or bad, but, most certainly, without freedom a press will never be anything but bad."},
-	{"Bruce Schneier", "Cryptography products may be declared illegal, but the information will never be."},
-	{"Bruce Schneier", "If you think technology can solve your security problems, then you don't understand the problems and you don't understand the technology."},
-	{"Bruce Schneier", "It is insufficient to protect ourselves with laws; we need to protect ourselves with mathematics. Encryption is too important to be left solely to governments."},
-	{"Bruce Schneier", "Liberty requires security without intrusion, security plus privacy."},
+	{authorBruceSchneier, "Cryptography products may be declared illegal, but the information will never be."},
+	{authorBruceSchneier, "If you think technology can solve your security problems, then you don't understand the problems and you don't understand the technology."},
+	{authorBruceSchneier, "It is insufficient to protect ourselves with laws; we need to protect ourselves with mathematics. Encryption is too important to be left solely to governments."},
+	{authorBruceSchneier, "Liberty requires security without intrusion, security plus privacy."},
 	{"Cəlil Məmmədquluzadə", "Freedom and Liberty is like air, when you don't receive it, you suffer."},
 	{"David Brin", "When it comes to privacy and accountability, people always demand the former for themselves and the latter for everyone else."},
 	{"Earl Warren", "The fantastic advances in the field of electronic communication constitute a greater danger to the privacy of the individual."},

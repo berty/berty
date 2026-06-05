@@ -81,9 +81,12 @@ func upgradeToPersistentConfig(cfg *ipfs_cfg.Config) (*ipfs_cfg.Config, error) {
 		ResolveCacheSize: 128,
 	}
 
-	cfgCopy.Reprovider = ipfs_cfg.Reprovider{
-		Interval: ipfs_cfg.NewOptionalDuration(time.Hour * 12),
+	cfgCopy.Provide = ipfs_cfg.Provide{
 		Strategy: ipfs_cfg.NewOptionalString("all"),
+		DHT: ipfs_cfg.ProvideDHT{
+			Interval:     ipfs_cfg.NewOptionalDuration(time.Hour * 12),
+			SweepEnabled: ipfs_cfg.False,
+		},
 	}
 
 	cfgCopy.Datastore = ipfs_cfg.Datastore{

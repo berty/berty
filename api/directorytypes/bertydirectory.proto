@@ -5,7 +5,7 @@ package berty.directory.v1;
 import "protocoltypes.proto";
 import "tagger/tagger.proto";
 
-option go_package = "berty.tech/berty/go/pkg/directorytypes";
+option go_package = "berty.tech/berty/v2/go/pkg/directorytypes";
 
 // DirectoryService
 service DirectoryService {

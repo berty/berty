@@ -65,20 +65,25 @@ func verifyRunningLeakDetection(t *testing.T) {
 		goleak.IgnoreTopFunction("github.com/quic-go/quic-go.(*packetHandlerMap).runCloseQueue"),                          // managed by ipfs
 		goleak.IgnoreTopFunction("github.com/quic-go/quic-go.(*Transport).runSendQueue"),
 		goleak.IgnoreTopFunction("github.com/ipfs/boxo/bootstrap.startSavePeersAsTemporaryBootstrapProc.func2"),
+		goleak.IgnoreTopFunction("github.com/ipfs/boxo/bootstrap.startSavePeersAsTemporaryBootstrapProc.func1"), // boxo v0.39 (kubo v0.41), background, managed by ipfs
 		goleak.IgnoreTopFunction("github.com/ipfs/boxo/bootstrap.peersConnect.func1"),
-		goleak.IgnoreTopFunction("net/http.(*persistConn).writeLoop"),                                                        // managed by ipfs
-		goleak.IgnoreTopFunction("github.com/libp2p/go-libp2p/p2p/transport/quic.(*reuse).gc"),                               // quic-go should be manager by libp2p
-		goleak.IgnoreTopFunction("github.com/libp2p/go-libp2p/p2p/host/basic.(*BasicHost).background"),                       // sometimes happening on CI, need more investigation
-		goleak.IgnoreTopFunction("github.com/libp2p/go-libp2p/p2p/host/basic.(*BasicHost).dialPeer"),                         // sometimes happening on CI, need more investigation
-		goleak.IgnoreTopFunction("github.com/libp2p/go-libp2p/p2p/host/relay.(*AutoRelay).background"),                       // sometimes happening on CI, need more investigation
-		goleak.IgnoreTopFunction("github.com/libp2p/go-libp2p/p2p/host/relay.(*AutoRelay).findRelays"),                       // sometimes happening on CI, need more investigation
-		goleak.IgnoreTopFunction("github.com/libp2p/go-libp2p/p2p/protocol/identify.(*IDService).loop"),                      // sometimes happening on CI, need more investigation
-		goleak.IgnoreTopFunction("github.com/libp2p/go-libp2p/p2p/protocol/identify.(*IDService).loop.func1"),                // sometimes happening on CI, need more investigation
-		goleak.IgnoreTopFunction("github.com/libp2p/go-libp2p/p2p/protocol/identify.(*ObservedAddrManager).worker"),          // sometimes happening on CI, need more investigation
-		goleak.IgnoreTopFunction("github.com/libp2p/go-libp2p/p2p/protocol/identify.(*peerHandler).loop"),                    // sometimes happening on CI, need more investigation
-		goleak.IgnoreTopFunction("github.com/libp2p/go-libp2p/p2p/discovery/mdns_legacy.(*mdnsService).startResolver.func1"), // the closing routine has big timeout, should be managed by ipfs
-		goleak.IgnoreTopFunction("github.com/libp2p/go-libp2p/p2p/discovery/mdns.(*mdnsService).startResolver.func1"),        // the closing routine has big timeout, should be managed by ipfs
-		goleak.IgnoreTopFunction("github.com/libp2p/go-libp2p-kad-dht/providers.(*ProviderManager).GetProviders"),            // the closing routine has big timeout, should be managed by ipfs
+		goleak.IgnoreTopFunction("github.com/ipfs/boxo/bootstrap.Bootstrap.func1"),                                               // boxo v0.39 (kubo v0.41), background, managed by ipfs
+		goleak.IgnoreTopFunction("github.com/ipfs/boxo/routing/providerquerymanager.(*ProviderQueryManager).run"),                // boxo v0.39 (kubo v0.41), background, managed by ipfs
+		goleak.IgnoreTopFunction("github.com/ipfs/boxo/routing/providerquerymanager.(*ProviderQueryManager).findProviderWorker"), // boxo v0.39 (kubo v0.41), background, managed by ipfs
+		goleak.IgnoreTopFunction("github.com/gammazero/chanqueue.(*ChanQueue[...]).bufferData"),                                  // used by boxo providerquerymanager, managed by ipfs
+		goleak.IgnoreTopFunction("net/http.(*persistConn).writeLoop"),                                                            // managed by ipfs
+		goleak.IgnoreTopFunction("github.com/libp2p/go-libp2p/p2p/transport/quic.(*reuse).gc"),                                   // quic-go should be manager by libp2p
+		goleak.IgnoreTopFunction("github.com/libp2p/go-libp2p/p2p/host/basic.(*BasicHost).background"),                           // sometimes happening on CI, need more investigation
+		goleak.IgnoreTopFunction("github.com/libp2p/go-libp2p/p2p/host/basic.(*BasicHost).dialPeer"),                             // sometimes happening on CI, need more investigation
+		goleak.IgnoreTopFunction("github.com/libp2p/go-libp2p/p2p/host/relay.(*AutoRelay).background"),                           // sometimes happening on CI, need more investigation
+		goleak.IgnoreTopFunction("github.com/libp2p/go-libp2p/p2p/host/relay.(*AutoRelay).findRelays"),                           // sometimes happening on CI, need more investigation
+		goleak.IgnoreTopFunction("github.com/libp2p/go-libp2p/p2p/protocol/identify.(*IDService).loop"),                          // sometimes happening on CI, need more investigation
+		goleak.IgnoreTopFunction("github.com/libp2p/go-libp2p/p2p/protocol/identify.(*IDService).loop.func1"),                    // sometimes happening on CI, need more investigation
+		goleak.IgnoreTopFunction("github.com/libp2p/go-libp2p/p2p/protocol/identify.(*ObservedAddrManager).worker"),              // sometimes happening on CI, need more investigation
+		goleak.IgnoreTopFunction("github.com/libp2p/go-libp2p/p2p/protocol/identify.(*peerHandler).loop"),                        // sometimes happening on CI, need more investigation
+		goleak.IgnoreTopFunction("github.com/libp2p/go-libp2p/p2p/discovery/mdns_legacy.(*mdnsService).startResolver.func1"),     // the closing routine has big timeout, should be managed by ipfs
+		goleak.IgnoreTopFunction("github.com/libp2p/go-libp2p/p2p/discovery/mdns.(*mdnsService).startResolver.func1"),            // the closing routine has big timeout, should be managed by ipfs
+		goleak.IgnoreTopFunction("github.com/libp2p/go-libp2p-kad-dht/providers.(*ProviderManager).GetProviders"),                // the closing routine has big timeout, should be managed by ipfs
 		goleak.IgnoreTopFunction("github.com/libp2p/go-libp2p-kad-dht/dual.(*DHT).FindProvidersAsync.func1"),
 		goleak.IgnoreTopFunction("github.com/libp2p/go-libp2p-kad-dht/dual.(*DHT).FindProvidersAsync.func2"),
 		goleak.IgnoreTopFunction("github.com/libp2p/zeroconf/v2.(*client).mainloop"),            // the closing routine has big timeout, should be managed by ipfs

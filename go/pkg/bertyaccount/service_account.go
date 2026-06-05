@@ -1042,7 +1042,7 @@ func (s *service) NetworkConfigGet(ctx context.Context, request *accounttypes.Ne
 		DefaultConfig:      defaultConfig,
 		CurrentConfig:      currentConfig,
 		CustomConfigExists: isCustomConfig,
-		DefaultBootstrap:   ipfs_cfg.DefaultBootstrapAddresses,
+		DefaultBootstrap:   []string{ipfs_cfg.AutoPlaceholder},
 		DefaultRendezvous:  config.GetDefaultRDVPMaddr(),
 		DefaultStaticRelay: config.Config.P2P.StaticRelays,
 	}, nil

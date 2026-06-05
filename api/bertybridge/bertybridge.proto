@@ -4,7 +4,7 @@ package berty.bridge.v1;
 
 import "berty/errcode.proto";
 
-option go_package = "berty.tech/berty/go/pkg/bertybridge";
+option go_package = "berty.tech/berty/v2/go/pkg/bertybridge";
 
 // BridgeService used to create advanced grpc transport
 // /!\ UNARY SUPPORT ONLY /!\

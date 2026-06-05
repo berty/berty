@@ -114,7 +114,7 @@ func tokenServerCommand() *ffcli.Command {
 
 			sk := ed25519.NewKeyFromSeed(skBytes)
 
-			l, err := net.Listen("tcp", listenerFlag)
+			l, err := (&net.ListenConfig{}).Listen(ctx, "tcp", listenerFlag)
 			if err != nil {
 				return err
 			}

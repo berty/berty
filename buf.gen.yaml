@@ -2,12 +2,12 @@ version: v1
 plugins:
   - name: go
     out: ./
-    opt: module=berty.tech/berty
+    opt: module=berty.tech/berty/v2
   - plugin: go-grpc
     out: ./
-    opt: module=berty.tech/berty
+    opt: module=berty.tech/berty/v2
   - plugin: grpc-gateway
     out: ./
     opt:
-      - module=berty.tech/berty
+      - module=berty.tech/berty/v2
       - generate_unbound_methods=true

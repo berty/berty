@@ -66,9 +66,8 @@ func newMsgrStore(ctx context.Context, client messengertypes.MessengerServiceCli
 	esCtx, esCancel := context.WithCancel(ctx)
 	store := msgrStore{
 		cancelEventStream: esCancel,
-
-		logger:     logger,
-		handlersMu: &sync.RWMutex{},
+		logger:            logger,
+		handlersMu:        &sync.RWMutex{},
 
 		accountHandlers: make(map[*accountUpdateHandler]struct{}),
 
@@ -88,6 +87,7 @@ func newMsgrStore(ctx context.Context, client messengertypes.MessengerServiceCli
 	}
 	es, err := client.EventStream(esCtx, &messengertypes.EventStream_Request{})
 	if err != nil {
+		esCancel()
 		return nil, err
 	}
 	go func() {
@@ -105,6 +105,11 @@ func newMsgrStore(ctx context.Context, client messengertypes.MessengerServiceCli
 		}
 	}()
 	return &store, nil
+}
+
+// close stops the event stream and the goroutine consuming it.
+func (store *msgrStore) close() {
+	store.cancelEventStream()
 }
 
 // SUBSCRIBE

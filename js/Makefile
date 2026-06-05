@@ -28,7 +28,7 @@ E2E_GET_IOS_APP ?= $(shell ls -ladt1 "$(HOME)/Library/Developer/Xcode/DerivedDat
 rwildcard = $(foreach d,$(wildcard $1*),$(call rwildcard,$d/,$2) $(filter $(subst *,%,$2),$d))
 check-program = $(foreach exec,$(1),$(if $(shell PATH="$(PATH)" which $(exec)),,$(error "Missing deps: no '$(exec)' in PATH")))
 kill-program-using-port = $(foreach port,$(1),$(eval pid ?= $(shell lsof -t -i :$(port))) $(if $(pid),$(shell kill $(pid)),))
-ext_ldflags = -ldflags="-X berty.tech/berty/v2/go/pkg/bertyversion.VcsRef=$(VCS_REF) -X berty.tech/berty/v2/go/pkg/bertyversion.Version=$(VERSION)"
+ext_ldflags = -ldflags="-checklinkname=0 -X berty.tech/berty/v2/go/pkg/bertyversion.VcsRef=$(VCS_REF) -X berty.tech/berty/v2/go/pkg/bertyversion.Version=$(VERSION)"
 bridge_src := $(call rwildcard,../go,*.go *.m *.h) ../go.sum
 xcodegen_yml := $(wildcard $(PWD)/ios/*.yaml)
 required_java_ver = 18

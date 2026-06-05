@@ -315,7 +315,7 @@ func (m *Manager) getLocalIPFS() (ipfsutil.ExtendedCoreAPI, *ipfs_core.IpfsNode,
 		m.workers.Add(func() error {
 			var err error
 
-			l, err := net.Listen("tcp", addr)
+			l, err := (&net.ListenConfig{}).Listen(m.getContext(), "tcp", addr)
 			if err != nil {
 				return errcode.ErrCode_ErrIPFSInit.Wrap(err)
 			}
@@ -425,7 +425,7 @@ func (m *Manager) setupIPFSRepo(ctx context.Context) (*ipfs_mobile.RepoMobile, e
 		return nil, errcode.ErrCode_ErrIPFSSetupRepo.Wrap(err)
 	}
 
-	return ipfs_mobile.NewRepoMobile(dbPath, repo), nil
+	return ipfs_mobile.NewRepoMobile(appDir, repo), nil
 }
 
 func (m *Manager) resetRepoIdentityIfExpired(ctx context.Context, repo ipfs_repo.Repo, dbPath string, storageKey []byte, ipfsDatastoreSalt []byte) (ipfs_repo.Repo, error) {
@@ -818,7 +818,7 @@ func (m *Manager) getBootstrapAddrs() []string {
 	for _, addr := range strings.Split(m.Node.Protocol.Bootstrap, ",") {
 		switch addr {
 		case KeywordDefault:
-			bootstrapAddrs = append(bootstrapAddrs, ipfs_cfg.DefaultBootstrapAddresses...)
+			bootstrapAddrs = append(bootstrapAddrs, ipfs_cfg.AutoPlaceholder)
 		case KeywordNone, "":
 			continue
 		default:

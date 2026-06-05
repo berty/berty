@@ -6,7 +6,7 @@
 # major version of Go which is allowed by kubo.
 # There is no contraindication for updating it.
 #-----
-golang 1.23.2
+golang 1.26.4
 
 #-----
 # This is the most recent LTS version available to date.
@@ -33,7 +33,7 @@ yarn 1.22.19
 # This is simply the most recent golangci-lint version available to date.
 #
 #-----
-golangci-lint 2.0.2
+golangci-lint 2.12.2
 
 #-----
 # This is simply the most recent jq version available to date.
@@ -57,4 +57,4 @@ yq 4.30.8
 # This is simply the most recent buf version available to date.
 # There is no contraindication for updating it.
 #-----
-buf 1.39.0
+buf 1.70.0

@@ -48,7 +48,7 @@ func (svc *service) debug(ctx context.Context, req *messengertypes.Interact_Requ
 	}
 }
 
-func (svc *service) monitorCmd(_ context.Context, _ *messengertypes.Interact_Request, args []string) error {
+func (svc *service) monitorCmd(ctx context.Context, _ *messengertypes.Interact_Request, args []string) error {
 	isEnable := svc.dd.pprofEnable
 
 	if len(args) == 0 {
@@ -71,7 +71,7 @@ func (svc *service) monitorCmd(_ context.Context, _ *messengertypes.Interact_Req
 			listn = fmt.Sprintf("0.0.0.0:%d", port)
 		}
 
-		l, err := net.Listen("tcp", listn) // nolint:gosec
+		l, err := (&net.ListenConfig{}).Listen(ctx, "tcp", listn) // nolint:gosec
 		if err != nil {
 			return errcode.ErrCode_ErrInternal.Wrap(fmt.Errorf("unable to listen: %w", err))
 		}
@@ -109,7 +109,7 @@ func (svc *service) monitorCmd(_ context.Context, _ *messengertypes.Interact_Req
 	return nil
 }
 
-func (svc *service) sendCmd(_ context.Context, req *messengertypes.Interact_Request, args []string) error {
+func (svc *service) sendCmd(ctx context.Context, req *messengertypes.Interact_Request, args []string) error {
 	if len(args) == 0 {
 		return errcode.ErrCode_ErrInvalidInput.Wrap(fmt.Errorf("send require a number as argument"))
 	}
@@ -133,7 +133,9 @@ func (svc *service) sendCmd(_ context.Context, req *messengertypes.Interact_Requ
 	svc.logger.Debug("sending debug message", zap.String("msg", msg), zap.Uint64("session", sess), zap.Uint64("n", nmsgs))
 
 	go func() {
-		ctx, cancel := context.WithCancel(context.Background()) // ignore top context
+		// detach from the request context so the goroutine keeps running
+		// after the command returns, while preserving context values
+		ctx, cancel := context.WithCancel(context.WithoutCancel(ctx))
 		defer cancel()
 
 		var m messengertypes.AppMessage_UserMessage

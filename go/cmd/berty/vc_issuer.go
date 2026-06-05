@@ -78,7 +78,7 @@ func vcIssuerCommand() *ffcli.Command {
 			issuerPrivateKey := &[32]byte{}
 			copy(issuerPrivateKey[:], skBytes)
 
-			l, err := net.Listen("tcp", listenerFlag)
+			l, err := (&net.ListenConfig{}).Listen(ctx, "tcp", listenerFlag)
 			if err != nil {
 				return err
 			}

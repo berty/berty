@@ -66,7 +66,6 @@ func relayServerCommand() *ffcli.Command {
 		fs.IntVar(&relayRsrc.MaxReservations, "relay-max-reservations", defaultRelayRsrc.MaxReservations, "the maximum number of active relay slots")
 		fs.IntVar(&relayRsrc.MaxReservationsPerASN, "relay-max-reservations-per-asn", defaultRelayRsrc.MaxReservationsPerASN, "the maximum number of reservations origination from the same ASN")
 		fs.IntVar(&relayRsrc.MaxReservationsPerIP, "relay-max-reservations-per-ip", defaultRelayRsrc.MaxReservationsPerIP, "the maximum number of reservations originating from the same IP")
-		fs.IntVar(&relayRsrc.MaxReservationsPerPeer, "relay-max-reservations-per-peer", defaultRelayRsrc.MaxReservationsPerPeer, "the maximum number of reservations originating from the same peer")
 		fs.DurationVar(&relayRsrc.ReservationTTL, "relay-reservation-ttl", defaultRelayRsrc.ReservationTTL, "ReservationTTL is the duration of a new (or refreshed reservation).")
 		fs.Int64Var(&relayRsrc.Limit.Data, "relay-limit-data", defaultRelayRsrc.Limit.Data, "Data is the limit of data relayed (on each direction) before resetting the connection. Defaults to 128KB")
 		fs.DurationVar(&relayRsrc.Limit.Duration, "relay-limit-duration", defaultRelayRsrc.Limit.Duration, "the time limit before resetting a relayed connection")
@@ -250,7 +249,7 @@ func relayServerCommand() *ffcli.Command {
 			logger.Info("host_peer", logfields...)
 
 			if prometheusListener != "" {
-				ml, err := net.Listen("tcp", prometheusListener)
+				ml, err := (&net.ListenConfig{}).Listen(ctx, "tcp", prometheusListener)
 				if err != nil {
 					return errcode.ErrCode_TODO.Wrap(err)
 				}
@@ -313,8 +312,7 @@ func RelayDefaultResources() relay.Resources {
 		MaxCircuits:     16,
 		BufferSize:      2048,
 
-		MaxReservationsPerPeer: 4,
-		MaxReservationsPerIP:   8,
-		MaxReservationsPerASN:  32,
+		MaxReservationsPerIP:  8,
+		MaxReservationsPerASN: 32,
 	}
 }

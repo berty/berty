@@ -222,7 +222,7 @@ func main() {
 			_ = libp2p_rp.NewRendezvousService(host, db, syncDrivers...)
 
 			if serveMetricsListeners != "" {
-				ml, err := net.Listen("tcp", serveMetricsListeners)
+				ml, err := (&net.ListenConfig{}).Listen(ctx, "tcp", serveMetricsListeners)
 				if err != nil {
 					return errcode.ErrCode_TODO.Wrap(err)
 				}
