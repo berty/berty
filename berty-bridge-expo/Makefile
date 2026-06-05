@@ -13,7 +13,7 @@ gomobile_cache_abs := $(abspath $(gomobile_cache))
 IOS_OUTPUT_BERTYPUSH_FRAMEWORK ?= $(make_dir)/plugin/src/NotificationService/Bertypush.xcframework
 IOS_OUTPUT_BERTYBRIDGE_FRAMEWORK ?= $(make_dir)/ios/Frameworks/Bertybridge.xcframework
 ANDROID_OUTPUT_LIBS ?= $(make_dir)/android/libs/gobridge.aar
-ext_ldflags = -ldflags="-X berty.tech/berty/v2/go/pkg/bertyversion.VcsRef=$(VCS_REF) -X berty.tech/berty/v2/go/pkg/bertyversion.Version=$(VERSION)"
+ext_ldflags = -ldflags="-checklinkname=0 -X berty.tech/berty/v2/go/pkg/bertyversion.VcsRef=$(VCS_REF) -X berty.tech/berty/v2/go/pkg/bertyversion.Version=$(VERSION)"
 minimum_ios_ver = 12.0
 minimum_android_ver = 21
 go_modcacherw_flags = GOFLAGS="$(strip $(GOFLAGS) -modcacherw)"
@@ -50,7 +50,7 @@ $(IOS_OUTPUT_BERTYBRIDGE_FRAMEWORK): $(bridge_src)
 
 	touch $(abspath $@)
 	cd .. && $(GO) mod tidy
-	chmod -R u+w $(gomobile_cache_abs) 2>/dev/null || true
+	chmod -R u+wx $(gomobile_cache_abs) 2>/dev/null || true
 
 $(IOS_OUTPUT_BERTYPUSH_FRAMEWORK): $(bridge_src)
 	cd .. && $(GO) mod download
@@ -74,7 +74,7 @@ $(IOS_OUTPUT_BERTYPUSH_FRAMEWORK): $(bridge_src)
 
 	touch $(abspath $@)
 	cd .. && $(GO) mod tidy
-	chmod -R u+w $(gomobile_cache_abs) 2>/dev/null || true
+	chmod -R u+wx $(gomobile_cache_abs) 2>/dev/null || true
 
 #### Android
 
@@ -95,18 +95,31 @@ $(ANDROID_OUTPUT_LIBS): $(bridge_src)
 		./go/framework/bertybridge
 	touch $(abspath $@)
 	cd .. && $(GO) mod tidy
+	chmod -R u+wx $(gomobile_cache_abs) 2>/dev/null || true
 
 .PHONY: clean
 clean:
 	rm -fr node_modules
 
-	rm -fr $(gomobile_cache)
+	if [ -d $(gomobile_cache) ]; then \
+		if find $(gomobile_cache) -type d ! -perm -0300 -print -quit | grep -q .; then \
+			chmod -R u+wx $(gomobile_cache); \
+		fi; \
+		rm -rf $(gomobile_cache); \
+	fi
+	rm -fr $(IOS_OUTPUT_BERTYBRIDGE_FRAMEWORK)
+	rm -fr $(IOS_OUTPUT_BERTYPUSH_FRAMEWORK)
+	rm -f $(ANDROID_OUTPUT_LIBS)
 	rm -fr ios/Frameworks
 	rm -fr android/libs
 
 	rm -fr example/android
 	rm -fr example/ios
 	rm -fr example/node_modules
+
+	rm -fr mobile/android
+	rm -fr mobile/ios
+	rm -fr mobile/node_modules
 
 .PHONY: help
 help:
