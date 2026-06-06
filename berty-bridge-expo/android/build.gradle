@@ -4,24 +4,24 @@ group = 'tech.berty.bertybridgeexpo'
 version = '0.1.0'
 def goBridgeAar = file('libs/gobridge.aar')
 
-// Define the custom task to run the make build command
-task makeBuild(type: Exec) {
-    workingDir '..'
-    commandLine 'make', 'android.gomobile'
-    onlyIf {
-        def forceGomobile = project.hasProperty('forceGomobile') && project.property('forceGomobile').toString().toBoolean()
-        def skipGomobile = project.hasProperty('skipGomobile') && project.property('skipGomobile').toString().toBoolean()
-        if (skipGomobile) {
-            logger.lifecycle("Skipping makeBuild because -PskipGomobile=true")
-            return false
-        }
-        forceGomobile || !goBridgeAar.exists()
+def forceGomobile = project.hasProperty('forceGomobile') && project.property('forceGomobile').toString().toBoolean()
+def skipGomobile = project.hasProperty('skipGomobile') && project.property('skipGomobile').toString().toBoolean()
+
+if (skipGomobile) {
+    logger.lifecycle("bertybridgeexpo: skipping Go bridge build (-PskipGomobile=true)")
+} else if (forceGomobile || !goBridgeAar.exists()) {
+    logger.lifecycle("bertybridgeexpo: building Go bridge (make android.gomobile), this can take several minutes on first build...")
+    exec {
+        workingDir '..'
+        commandLine 'make', 'android.gomobile'
     }
 }
 
-// Make the build depend on the makeBuild task
-tasks.named('preBuild').configure {
-    dependsOn(makeBuild)
+// Fail fast with a clear message instead of silently shipping an APK that is
+// missing the bertybridge classes.
+if (!skipGomobile && !goBridgeAar.exists()) {
+    throw new GradleException("bertybridgeexpo: ${goBridgeAar} was not produced by 'make android.gomobile'. " +
+        "Run it manually from berty-bridge-expo/ and retry, or pass -PskipGomobile=true if you provide the aar another way.")
 }
 
 def expoModulesCorePlugin = new File(project(":expo-modules-core").projectDir.absolutePath, "ExpoModulesCorePlugin.gradle")
