@@ -1,7 +1,5 @@
-import { useHeaderHeight } from '@react-navigation/elements'
-import { useFocusEffect } from '@react-navigation/native'
-import React, { useState } from 'react'
-import { TouchableOpacity, View, Platform, Keyboard } from 'react-native'
+import React from 'react'
+import { TouchableOpacity, View } from 'react-native'
 
 import beapi from '@berty/api'
 import { MultiMemberAvatar } from '@berty/components/avatars'
@@ -9,6 +7,7 @@ import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
 import { useStyles } from '@berty/contexts/styles'
 import {
 	useConversation,
+	useDismissNotificationsEffect,
 	useNotificationsInhibitor,
 	useReadEffect,
 	useThemeColor,
@@ -35,20 +34,8 @@ export const MultiMember: ScreenFC<'Chat.MultiMember'> = ({ route: { params }, n
 	const { scaleSize } = useAppDimensions()
 	const colors = useThemeColor()
 	useReadEffect(params.convId, 1000)
+	useDismissNotificationsEffect(params.convId)
 	const conv = useConversation(params.convId)
-
-	const [keyboardIsHidden, setKeyboardIsHidden] = useState(false)
-
-	useFocusEffect(
-		React.useCallback(() => {
-			if (Platform.OS === 'android') {
-				Keyboard.dismiss()
-				setTimeout(() => {
-					setKeyboardIsHidden(true)
-				}, 50)
-			}
-		}, []),
-	)
 
 	React.useLayoutEffect(() => {
 		navigation.setOptions({
@@ -66,25 +53,17 @@ export const MultiMember: ScreenFC<'Chat.MultiMember'> = ({ route: { params }, n
 		})
 	})
 
-	const headerHeight = useHeaderHeight()
-
-	if ((Platform.OS === 'android' && !keyboardIsHidden) || !params.convId || !params.convId.length) {
+	if (!params.convId || !params.convId.length) {
 		return null
 	}
 	return (
 		<IOSOnlyKeyboardAvoidingView
-			behavior='padding'
-			keyboardVerticalOffset={headerHeight}
 			style={[{ flex: 1, backgroundColor: colors['main-background'] }]}
 		>
 			<View style={[flex.tiny, { backgroundColor: colors['main-background'] }]}>
-				{Platform.OS === 'ios' ? (
-					<View style={[flex.tiny]}>
-						<MultiMemberContent conv={conv} convId={params.convId} />
-					</View>
-				) : (
+				<View style={[flex.tiny]}>
 					<MultiMemberContent conv={conv} convId={params.convId} />
-				)}
+				</View>
 			</View>
 		</IOSOnlyKeyboardAvoidingView>
 	)

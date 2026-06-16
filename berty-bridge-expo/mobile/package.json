@@ -78,6 +78,7 @@
     "react-native-fs": "^2.20.0",
     "react-native-gesture-handler": "~2.28.0",
     "react-native-hyperlink": "^0.0.22",
+    "react-native-keyboard-controller": "1.18.5",
     "react-native-permissions": "^5.4.0",
     "react-native-progress": "^5.0.1",
     "react-native-qrcode-svg": "^6.3.15",

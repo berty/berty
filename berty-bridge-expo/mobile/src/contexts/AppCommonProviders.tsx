@@ -1,6 +1,7 @@
 import { IconRegistry } from "@ui-kitten/components";
 import { EvaIconsPack } from "@ui-kitten/eva-icons";
 import React from "react";
+import { KeyboardProvider } from "react-native-keyboard-controller";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { Provider as ReduxProvider } from "react-redux";
 
@@ -15,18 +16,20 @@ interface AppCommonProvidersProps {
 
 const AppCommonProviders = ({ children }: AppCommonProvidersProps) => {
 	return (
-		<SafeAreaProvider>
-			<AppDimensionsProvider>
-				<StyleProvider>
-					<ReduxProvider store={reduxStore}>
-						<IconRegistry
-							icons={[EvaIconsPack, FeatherIconsPack, CustomIconsPack]}
-						/>
-						{children}
-					</ReduxProvider>
-				</StyleProvider>
-			</AppDimensionsProvider>
-		</SafeAreaProvider>
+		<KeyboardProvider preserveEdgeToEdge>
+			<SafeAreaProvider>
+				<AppDimensionsProvider>
+					<StyleProvider>
+						<ReduxProvider store={reduxStore}>
+							<IconRegistry
+								icons={[EvaIconsPack, FeatherIconsPack, CustomIconsPack]}
+							/>
+							{children}
+						</ReduxProvider>
+					</StyleProvider>
+				</AppDimensionsProvider>
+			</SafeAreaProvider>
+		</KeyboardProvider>
 	);
 };
 

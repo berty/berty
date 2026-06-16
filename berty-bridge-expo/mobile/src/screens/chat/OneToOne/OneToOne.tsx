@@ -1,9 +1,6 @@
-import { useHeaderHeight } from '@react-navigation/elements'
-import { useFocusEffect } from '@react-navigation/native'
 import React, { useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Keyboard, TouchableOpacity, View, Platform } from 'react-native'
-import AndroidKeyboardAdjust from 'react-native-android-keyboard-adjust'
+import { TouchableOpacity, View } from 'react-native'
 
 import beapi from '@berty/api'
 import { ContactAvatar } from '@berty/components/avatars'
@@ -14,6 +11,7 @@ import { useStyles } from '@berty/contexts/styles'
 import {
 	useContact,
 	useConversation,
+	useDismissNotificationsEffect,
 	useNotificationsInhibitor,
 	useReadEffect,
 	useThemeColor,
@@ -42,6 +40,7 @@ export const OneToOne: ScreenFC<'Chat.OneToOne'> = React.memo(
 		const { opacity, flex } = useStyles()
 		const colors = useThemeColor()
 		useReadEffect(params?.convId, 1000)
+		useDismissNotificationsEffect(params?.convId)
 		const { t } = useTranslation()
 		const conv = useConversation(params?.convId)
 		const contact = useContact(conv?.contactPublicKey)
@@ -55,19 +54,6 @@ export const OneToOne: ScreenFC<'Chat.OneToOne'> = React.memo(
 
 		const [stickyDate, setStickyDate] = useState(conv?.lastUpdate || null)
 		const [showStickyDate, setShowStickyDate] = useState(false)
-		const [keyboardIsHidden, setKeyboardIsHidden] = useState(false)
-		const headerHeight = useHeaderHeight()
-
-		useFocusEffect(
-			React.useCallback(() => {
-				if (Platform.OS === 'android') {
-					Keyboard.dismiss()
-					setTimeout(() => {
-						setKeyboardIsHidden(true)
-					}, 50)
-				}
-			}, []),
-		)
 
 		React.useLayoutEffect(() => {
 			navigation.setOptions({
@@ -85,18 +71,12 @@ export const OneToOne: ScreenFC<'Chat.OneToOne'> = React.memo(
 			})
 		})
 
-		if (
-			(Platform.OS === 'android' && !keyboardIsHidden) ||
-			!params.convId ||
-			!params.convId.length
-		) {
+		if (!params.convId || !params.convId.length) {
 			return null
 		}
 
 		return (
 			<IOSOnlyKeyboardAvoidingView
-				behavior='padding'
-				keyboardVerticalOffset={headerHeight}
 				style={[{ flex: 1, backgroundColor: colors['main-background'] }]}
 			>
 				<View style={[flex.tiny, { backgroundColor: colors['main-background'] }]}>

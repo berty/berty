@@ -1,4 +1,3 @@
-import { useHeaderHeight } from '@react-navigation/elements'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
 import { ScrollView, View, Platform } from 'react-native'
@@ -170,15 +169,10 @@ const NetworkBody: React.FC = () => {
 }
 
 export const Network: ScreenFC<'Settings.Network'> = () => {
-	const headerHeight = useHeaderHeight()
 	useSyncNetworkConfigOnScreenRemoved()
 
 	return (
-		<IOSOnlyKeyboardAvoidingView
-			behavior='padding'
-			keyboardVerticalOffset={headerHeight}
-			style={[{ flex: 1 }]}
-		>
+		<IOSOnlyKeyboardAvoidingView style={[{ flex: 1 }]}>
 			<NetworkBody />
 		</IOSOnlyKeyboardAvoidingView>
 	)

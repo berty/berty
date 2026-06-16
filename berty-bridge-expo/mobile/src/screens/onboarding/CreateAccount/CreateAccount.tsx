@@ -1,10 +1,8 @@
-import { useHeaderHeight } from '@react-navigation/elements'
 import LottieView from 'lottie-react-native'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
 import { Vibration } from 'react-native'
 import { StatusBar, View } from 'react-native'
-import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
 import OnboardingWrapper from '@berty/components/onboarding/OnboardingWrapper'
 import { UnifiedText } from '@berty/components/shared-components/UnifiedText'
@@ -21,8 +19,6 @@ const CreateAccountBody = () => {
 	const colors = useThemeColor()
 	const [defaultName, setDefaultName] = React.useState('')
 	const { t } = useTranslation()
-	const headerHeight = useHeaderHeight()
-	const insets = useSafeAreaInsets()
 
 	useMountEffect(() => {
 		accountClient
@@ -49,11 +45,7 @@ const CreateAccountBody = () => {
 				/>
 			</View>
 
-			<IOSOnlyKeyboardAvoidingView
-				style={{ flex: 1, justifyContent: 'flex-end' }}
-				behavior='padding'
-				keyboardVerticalOffset={headerHeight + insets.top}
-			>
+			<IOSOnlyKeyboardAvoidingView style={{ flex: 1, justifyContent: 'flex-end' }}>
 				{!!defaultName && <CreateAccountBox defaultName={defaultName} />}
 			</IOSOnlyKeyboardAvoidingView>
 			<View
