@@ -63,13 +63,17 @@ public class NotificationService extends FirebaseMessagingService {
         Logger.d(TAG, "createPushNotification called");
         NotificationHelper notificationHelper = new NotificationHelper(getBaseContext());
 
-        // Create deepLink on click interaction
-        Intent intent = new Intent();
-        intent.setAction(Intent.ACTION_VIEW);
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        // Explicitly launch the main activity so the tap opens the app even when the deep link is empty.
+        Intent intent = getPackageManager().getLaunchIntentForPackage(getPackageName());
+        if (intent == null) {
+            intent = new Intent(Intent.ACTION_VIEW);
+        }
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
 
+        // Carry the deep link so the JS layer can route to the right conversation.
         String deeplink = fpush.getDeepLink();
         if (!deeplink.equals("")) {
+            intent.setAction(Intent.ACTION_VIEW);
             intent.setData(Uri.parse(deeplink));
         }
 
