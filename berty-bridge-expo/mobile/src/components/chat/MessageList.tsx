@@ -146,7 +146,6 @@ export const MessageList: React.FC<{
 				? InfosMultiMember
 				: NoopComponent
 
-		const initialScrollIndex = undefined
 		const flashListRef = React.useRef<FlashList<ParsedInteraction> | null>(null)
 
 		const handleScrollToCid = useCallback(
@@ -160,7 +159,8 @@ export const MessageList: React.FC<{
 
 		const renderItem = useCallback(
 			({ item, index }) => (
-				<>
+				// Flipped back upright; see styles.invertedList.
+				<View style={styles.invertedCell}>
 					{index > 0 && <DateSeparator current={item} next={messages[index - 1]} />}
 					<Message
 						inte={item}
@@ -171,7 +171,7 @@ export const MessageList: React.FC<{
 						nextMessage={index > 0 ? messages[index - 1] : undefined}
 						scrollToCid={handleScrollToCid}
 					/>
-				</>
+				</View>
 			),
 			[id, conversation?.type, members, messages, handleScrollToCid],
 		)
@@ -255,23 +255,25 @@ export const MessageList: React.FC<{
 						<MemberBar convId={id} />
 					</View>
 				) : null}
+				{/* Flipped to emulate inversion; cells flip back (styles.invertedList). */}
+				<View style={[flex.tiny, styles.invertedList]}>
 				<FlashList
 					overScrollMode='never'
-					initialScrollIndex={initialScrollIndex}
 					style={style}
 					contentContainerStyle={contentContainerStyle}
 					ref={flashListRef}
 					keyboardDismissMode='on-drag'
 					data={messages}
-					inverted
+					// Follow new messages (data index 0) without needing a touch.
+					maintainVisibleContentPosition={{ autoscrollToTopThreshold: 100 }}
 					onEndReached={!isLoadingMore ? fetchMoreCB : null}
 					onEndReachedThreshold={3}
 					keyExtractor={keyExtractor}
 					refreshing={fetchingFrom !== null}
 					ListFooterComponent={listFooterComponent}
+					ListFooterComponentStyle={styles.invertedCell}
 					renderItem={renderItem}
 					onViewableItemsChanged={__DEV__ ? undefined : updateStickyDateCB}
-					estimatedItemSize={50}
 					onScrollEndDrag={(event: NativeSyntheticEvent<NativeScrollEvent>) => {
 						if (isGroup) {
 							if (event.nativeEvent.velocity?.y === 0) {
@@ -284,6 +286,7 @@ export const MessageList: React.FC<{
 					onScrollBeginDrag={handleScrollBeginDrag}
 					onMomentumScrollEnd={isGroup ? handleScrollEndDrag : undefined}
 				/>
+				</View>
 			</View>
 		)
 	},
@@ -311,5 +314,12 @@ const styles = StyleSheet.create({
 	},
 	container: {
 		flex: 1,
+	},
+	// Emulates FlashList v2's removed `inverted` prop: flip the list, flip cells back.
+	invertedList: {
+		transform: [{ scaleY: -1 }],
+	},
+	invertedCell: {
+		transform: [{ scaleY: -1 }],
 	},
 })
