@@ -47,10 +47,9 @@ export const Permissions: ScreenFC<'Settings.Permissions'> = ({ route: { params 
 				// check status
 				if (status === RESULTS.GRANTED) {
 					await accept()
-					goBack()
+				} else {
+					await deny()
 				}
-
-				await deny()
 				goBack()
 			} catch (err) {
 				console.warn('Camera handleRequestPermission error:', err)
