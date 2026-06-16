@@ -7,7 +7,7 @@ public class PeerManager {
     private final Logger mLogger;
 
     private final HashMap<String, Peer> mPeers = new HashMap<>();
-    
+
     public PeerManager(Logger logger) {
         mLogger = logger;
     }

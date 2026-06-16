@@ -5,135 +5,297 @@
 //  Created by u on 01/02/2023.
 //
 
-import SystemConfiguration
-import CoreBluetooth
-import CoreTelephony
 import Foundation
-import Bertybridge
+import UIKit
 import Network
+import SystemConfiguration
+import CoreTelephony
+import CoreBluetooth
+import Bertybridge
 
-class ConnectivityDriver: NSObject, BertybridgeIConnectivityDriverProtocol, CBCentralManagerDelegate {
-    let logger: BertyLogger = BertyLogger("tech.berty.ConnectivityDriver")
-    let queue = DispatchQueue.global(qos: .background)
-    let pathMonitor = NWPathMonitor()
-    var centralManager: CBCentralManager!
+// Bridges iOS network and Bluetooth state to Go's netmanager.
+//
+// Network reachability comes from NWPathMonitor, with an SCNetworkReachability
+// fallback for iOS < 12. Bluetooth state is observed through the CBCentralManager
+// owned by BertyBLEDriver when one is available, so we avoid spinning up a second
+// central manager (and its extra power alert). If the BLE driver has not created a
+// manager yet, we fall back to our own and keep a strong reference so it is not
+// deallocated.
+//
+// The connectivity constants (state/net/cellular) are exported by the Bertybridge
+// framework from Go's netmanager/connectivity.go — never redefine them locally.
+class ConnectivityDriver: NSObject, BertybridgeIConnectivityDriverProtocol {
+    let logger = BertyLogger("tech.berty.connectivity")
 
-    var state: BertybridgeConnectivityInfo
-    var handlers: [BertybridgeIConnectivityHandlerProtocol] = []
+    private var pathMonitor: NWPathMonitor?
+    private let monitorQueue = DispatchQueue(label: "tech.berty.connectivity.monitor")
+
+    // Prefer the BLE driver's shared manager; only create (and strongly retain) our
+    // own when the BLE driver has not initialized one yet.
+    private weak var sharedCentralManager: CBCentralManager?
+    private var ownedCentralManager: CBCentralManager?
+
+    private let networkInfo = CTTelephonyNetworkInfo()
+
+    private var isMonitoring = false
+    private var currentPath: NWPath?
+    private var bluetoothState: CBManagerState = .unknown
+
+    // Thread-safe handler storage. Go callbacks run on a dedicated serial queue
+    // (not DispatchQueue.global(), which causes stack-alignment issues in the Go
+    // runtime) when the app is backgrounded.
+    private let handlerQueue = DispatchQueue(label: "tech.berty.connectivity.handlers", attributes: .concurrent)
+    private let goCallbackQueue = DispatchQueue(label: "tech.berty.connectivity.go-callbacks")
+    private var handlers: [BertybridgeIConnectivityHandlerProtocol] = []
 
     override init() {
-        self.logger.debug("Init")
-      
-        self.state = BertybridgeConnectivityInfo()!
-
         super.init()
-      
-        self.centralManager = CBCentralManager(delegate: self, queue: nil)
-
-        self.pathMonitor.pathUpdateHandler = { [weak self] path in
-            self!.logger.debug("Network state changed")
-          
-            self!.updateNetworkState(path)
-
-            for handler in self!.handlers {
-                handler.handleConnectivityUpdate(self!.state)
-            }
-        }
-        self.pathMonitor.start(queue: self.queue)
+        self.startMonitoring()
     }
 
-    func updateNetworkState(_ info: NWPath) {
-        self.state.setState(info.status == .satisfied ? BertybridgeConnectivityStateOn : BertybridgeConnectivityStateOff)
-        self.state.setMetering(BertybridgeConnectivityStateUnknown)
-        self.state.setNetType(BertybridgeConnectivityNetUnknown)
-        self.state.setCellularType(BertybridgeConnectivityCellularUnknown)
+    // MARK: - Monitoring lifecycle
 
-        if info.status != .satisfied {
-            return
+    func startMonitoring() {
+        guard !self.isMonitoring else { return }
+        self.isMonitoring = true
+
+        if #available(iOS 12.0, *) {
+            self.setupPathMonitor()
         }
+        self.setupBluetoothMonitoring()
 
-        if #available(iOS 13.0, *) {
-            self.state.setMetering(info.isConstrained ? BertybridgeConnectivityStateOn : BertybridgeConnectivityStateOff)
-        }
-
-        if let interface = self.pathMonitor.currentPath.availableInterfaces.first {
-            switch interface.type {
-                case .wifi:
-                    self.state.setNetType(BertybridgeConnectivityNetWifi)
-                case .cellular:
-                    self.state.setNetType(BertybridgeConnectivityNetCellular)
-                    self.state.setCellularType(ConnectivityDriver.getCellularType())
-                case .wiredEthernet:
-                    self.state.setNetType(BertybridgeConnectivityNetEthernet)
-                default:
-                    self.state.setNetType(BertybridgeConnectivityNetUnknown)
-            }
-        }
-    }
-  
-    static func getCellularType() -> Int {
-        let networkInfo = CTTelephonyNetworkInfo()
-
-        guard let carrierType = networkInfo.serviceCurrentRadioAccessTechnology?.first?.value else {
-            return BertybridgeConnectivityCellularNone
-        }
-
-        switch carrierType {
-            case CTRadioAccessTechnologyGPRS,
-                 CTRadioAccessTechnologyEdge,
-                 CTRadioAccessTechnologyCDMA1x:
-                return BertybridgeConnectivityCellular2G
-            case CTRadioAccessTechnologyWCDMA,
-                 CTRadioAccessTechnologyHSDPA,
-                 CTRadioAccessTechnologyHSUPA,
-                 CTRadioAccessTechnologyCDMAEVDORev0,
-                 CTRadioAccessTechnologyCDMAEVDORevA,
-                 CTRadioAccessTechnologyCDMAEVDORevB,
-                 CTRadioAccessTechnologyeHRPD:
-                return BertybridgeConnectivityCellular3G
-            case CTRadioAccessTechnologyLTE:
-                return BertybridgeConnectivityCellular4G
-            default:
-                if #available(iOS 14.1, *) {
-                    if carrierType == CTRadioAccessTechnologyNRNSA
-                    || carrierType == CTRadioAccessTechnologyNR {
-                        return BertybridgeConnectivityCellular5G
-                    }
-                }
-
-                return BertybridgeConnectivityCellularUnknown
-        }
+        self.logger.info("Started connectivity monitoring")
     }
 
-    func centralManagerDidUpdateState(_ central: CBCentralManager) {
-        self.logger.debug("Bluetooth state changed")
+    func stopMonitoring() {
+        guard self.isMonitoring else { return }
+        self.isMonitoring = false
 
-        switch central.state {
-            case .poweredOn:
-                self.state.setBluetooth(BertybridgeConnectivityStateOn)
-            case .poweredOff,
-                 .unsupported,
-                 .unauthorized,
-                 .resetting:
-                self.state.setBluetooth(BertybridgeConnectivityStateOff)
-            case .unknown:
-                self.state.setBluetooth(BertybridgeConnectivityStateUnknown)
-            @unknown default:
-                self.state.setBluetooth(BertybridgeConnectivityStateUnknown)
+        if #available(iOS 12.0, *) {
+            self.pathMonitor?.cancel()
+            self.pathMonitor = nil
         }
+        self.sharedCentralManager = nil
+        self.ownedCentralManager = nil
 
-        for handler in self.handlers {
-            handler.handleConnectivityUpdate(self.state)
-        }
+        self.logger.info("Stopped connectivity monitoring")
     }
+
+    // MARK: - BertybridgeIConnectivityDriverProtocol
 
     public func getCurrentState() -> BertybridgeConnectivityInfo? {
-        return self.state
+        return self.buildCurrentState()
     }
 
     public func register(_ handler: BertybridgeIConnectivityHandlerProtocol?) {
-        if (handler != nil) {
-            self.handlers.append(handler!)
+        guard let handler = handler else { return }
+
+        self.handlerQueue.async(flags: .barrier) { [weak self] in
+            self?.handlers.append(handler)
         }
+
+        // Notify the new handler of the current state immediately.
+        handler.handleConnectivityUpdate(self.buildCurrentState())
+    }
+
+    // MARK: - State
+
+    private func buildCurrentState() -> BertybridgeConnectivityInfo {
+        let info = BertybridgeConnectivityInfo()!
+
+        if #available(iOS 12.0, *), let path = self.currentPath {
+            info.setState(path.status == .satisfied ? BertybridgeConnectivityStateOn : BertybridgeConnectivityStateOff)
+
+            if #available(iOS 13.0, *) {
+                info.setMetering(path.isConstrained ? BertybridgeConnectivityStateOn : BertybridgeConnectivityStateOff)
+            } else {
+                info.setMetering(BertybridgeConnectivityStateUnknown)
+            }
+
+            if path.usesInterfaceType(.wifi) {
+                info.setNetType(BertybridgeConnectivityNetWifi)
+            } else if path.usesInterfaceType(.cellular) {
+                info.setNetType(BertybridgeConnectivityNetCellular)
+                info.setCellularType(self.getCellularGeneration())
+            } else if path.usesInterfaceType(.wiredEthernet) {
+                info.setNetType(BertybridgeConnectivityNetEthernet)
+            } else {
+                info.setNetType(BertybridgeConnectivityNetUnknown)
+            }
+        } else {
+            // Fallback for iOS < 12
+            info.setState(self.isConnectedLegacy() ? BertybridgeConnectivityStateOn : BertybridgeConnectivityStateOff)
+            info.setMetering(BertybridgeConnectivityStateUnknown)
+            info.setNetType(self.getNetworkTypeLegacy())
+            info.setCellularType(BertybridgeConnectivityCellularUnknown)
+        }
+
+        // Read Bluetooth state directly from the live manager for the freshest value:
+        // when observing the shared manager we do not receive delegate callbacks.
+        let state = self.ownedCentralManager?.state ?? self.sharedCentralManager?.state ?? self.bluetoothState
+        switch state {
+        case .poweredOn:
+            info.setBluetooth(BertybridgeConnectivityStateOn)
+        case .poweredOff:
+            info.setBluetooth(BertybridgeConnectivityStateOff)
+        default:
+            info.setBluetooth(BertybridgeConnectivityStateUnknown)
+        }
+
+        return info
+    }
+
+    private func notifyHandlers() {
+        // Read applicationState on the main thread before entering handlerQueue, to
+        // avoid a sync hop to main from within the queue (deadlock risk).
+        DispatchQueue.main.async { [weak self] in
+            guard let self = self else { return }
+            let isBackground = UIApplication.shared.applicationState == .background
+
+            self.handlerQueue.async { [weak self] in
+                guard let self = self else { return }
+                let state = self.buildCurrentState()
+                let handlers = self.handlers
+
+                if isBackground {
+                    // Background: hand off to Go on the dedicated serial queue.
+                    self.goCallbackQueue.async {
+                        handlers.forEach { $0.handleConnectivityUpdate(state) }
+                    }
+                } else {
+                    DispatchQueue.main.async {
+                        handlers.forEach { $0.handleConnectivityUpdate(state) }
+                    }
+                }
+            }
+        }
+    }
+
+    // MARK: - Network monitoring
+
+    @available(iOS 12.0, *)
+    private func setupPathMonitor() {
+        let monitor = NWPathMonitor()
+        monitor.pathUpdateHandler = { [weak self] path in
+            self?.handlePathUpdate(path)
+        }
+        monitor.start(queue: self.monitorQueue)
+        self.pathMonitor = monitor
+    }
+
+    @available(iOS 12.0, *)
+    private func handlePathUpdate(_ path: NWPath) {
+        self.logger.info("Network path updated: status=\(path.status), wifi=\(path.usesInterfaceType(.wifi)), cellular=\(path.usesInterfaceType(.cellular))")
+        self.currentPath = path
+        self.notifyHandlers()
+    }
+
+    // MARK: - Bluetooth monitoring
+
+    private func setupBluetoothMonitoring() {
+        guard self.sharedCentralManager == nil, self.ownedCentralManager == nil else { return }
+
+        if let shared = BertyBLEDriver.shared.getCentralManager() {
+            // Observe the BLE driver's manager; it owns the delegate.
+            self.sharedCentralManager = shared
+            self.bluetoothState = shared.state
+            self.logger.info("Using shared CBCentralManager from BertyBLEDriver (state: \(shared.state.rawValue))")
+        } else {
+            // The BLE driver has not created a manager yet: create our own, keep a
+            // strong reference so it is not deallocated, and suppress the system
+            // power alert since we only observe state.
+            self.ownedCentralManager = CBCentralManager(delegate: self, queue: nil, options: [CBCentralManagerOptionShowPowerAlertKey: false])
+            self.logger.info("Created own CBCentralManager (BLE driver not initialized)")
+        }
+    }
+
+    // MARK: - Cellular
+
+    private func getCellularGeneration() -> Int {
+        let technology: String?
+        if #available(iOS 12.0, *) {
+            technology = self.networkInfo.serviceCurrentRadioAccessTechnology?.values.first
+        } else {
+            technology = self.networkInfo.currentRadioAccessTechnology
+        }
+        guard let technology = technology else {
+            return BertybridgeConnectivityCellularNone
+        }
+        return self.mapRadioAccessTechnology(technology)
+    }
+
+    private func mapRadioAccessTechnology(_ technology: String) -> Int {
+        switch technology {
+        case CTRadioAccessTechnologyGPRS,
+             CTRadioAccessTechnologyEdge,
+             CTRadioAccessTechnologyCDMA1x:
+            return BertybridgeConnectivityCellular2G
+
+        case CTRadioAccessTechnologyWCDMA,
+             CTRadioAccessTechnologyHSDPA,
+             CTRadioAccessTechnologyHSUPA,
+             CTRadioAccessTechnologyCDMAEVDORev0,
+             CTRadioAccessTechnologyCDMAEVDORevA,
+             CTRadioAccessTechnologyCDMAEVDORevB,
+             CTRadioAccessTechnologyeHRPD:
+            return BertybridgeConnectivityCellular3G
+
+        case CTRadioAccessTechnologyLTE:
+            return BertybridgeConnectivityCellular4G
+
+        default:
+            if #available(iOS 14.1, *),
+               technology == CTRadioAccessTechnologyNRNSA || technology == CTRadioAccessTechnologyNR {
+                return BertybridgeConnectivityCellular5G
+            }
+            return BertybridgeConnectivityCellularUnknown
+        }
+    }
+
+    // MARK: - Legacy support (iOS < 12)
+
+    private func isConnectedLegacy() -> Bool {
+        guard let flags = self.legacyReachabilityFlags() else { return false }
+        return flags.contains(.reachable) && !flags.contains(.connectionRequired)
+    }
+
+    private func getNetworkTypeLegacy() -> Int {
+        guard let flags = self.legacyReachabilityFlags() else {
+            return BertybridgeConnectivityNetUnknown
+        }
+        if flags.contains(.isWWAN) {
+            return BertybridgeConnectivityNetCellular
+        } else if flags.contains(.reachable) {
+            return BertybridgeConnectivityNetWifi
+        }
+        return BertybridgeConnectivityNetUnknown
+    }
+
+    private func legacyReachabilityFlags() -> SCNetworkReachabilityFlags? {
+        var zeroAddress = sockaddr_in()
+        zeroAddress.sin_len = UInt8(MemoryLayout<sockaddr_in>.size)
+        zeroAddress.sin_family = sa_family_t(AF_INET)
+
+        let reachability = withUnsafePointer(to: &zeroAddress) {
+            $0.withMemoryRebound(to: sockaddr.self, capacity: 1) { zeroSockAddress in
+                SCNetworkReachabilityCreateWithAddress(nil, zeroSockAddress)
+            }
+        }
+        guard let reachability = reachability else { return nil }
+
+        var flags = SCNetworkReachabilityFlags()
+        guard SCNetworkReachabilityGetFlags(reachability, &flags) else { return nil }
+        return flags
+    }
+}
+
+// MARK: - CBCentralManagerDelegate
+
+extension ConnectivityDriver: CBCentralManagerDelegate {
+    func centralManagerDidUpdateState(_ central: CBCentralManager) {
+        // Only fires for a manager we own; the shared manager's delegate is BertyBLEDriver.
+        self.logger.info("Bluetooth state changed: \(central.state.rawValue)")
+        self.bluetoothState = central.state
+        self.notifyHandlers()
     }
 }
