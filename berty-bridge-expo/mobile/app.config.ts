@@ -54,6 +54,11 @@ export default ({ config }: ConfigContext): ExpoConfig => {
 			versionCode: config.android?.versionCode,
 			googleServicesFile: "./google-services.json",
 		},
+		androidNavigationBar: {
+			// White (iOS-like) bar under edge-to-edge: no contrast scrim, dark icons.
+			barStyle: "dark-content",
+			enforceContrast: false,
+		},
 		updates: {
 			url: `https://u.expo.dev/${EAS_PROJECT_ID}`,
 		},
