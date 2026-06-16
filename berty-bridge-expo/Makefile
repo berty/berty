@@ -7,13 +7,13 @@ GOMOBILE_ANDROID_TARGET ?= android/arm64,android/amd64
 
 make_dir := $(patsubst %/,%,$(dir $(lastword $(MAKEFILE_LIST))))
 make_dir := $(or $(make_dir),.)
-bridge_src := $(call rwildcard,../go,*.go *.m *.h) ../go.sum
+bridge_src := $(make_dir)/Makefile $(call rwildcard,../go,*.go *.m *.h) ../go.sum
 gomobile_cache="$(make_dir)/.gomobile-cache"
 gomobile_cache_abs := $(abspath $(gomobile_cache))
 IOS_OUTPUT_BERTYPUSH_FRAMEWORK ?= $(make_dir)/plugin/src/NotificationService/Bertypush.xcframework
 IOS_OUTPUT_BERTYBRIDGE_FRAMEWORK ?= $(make_dir)/ios/Frameworks/Bertybridge.xcframework
 ANDROID_OUTPUT_LIBS ?= $(make_dir)/android/libs/gobridge.aar
-ext_ldflags = -ldflags="-checklinkname=0 -X berty.tech/berty/v2/go/pkg/bertyversion.VcsRef=$(VCS_REF) -X berty.tech/berty/v2/go/pkg/bertyversion.Version=$(VERSION)"
+ext_ldflags = -ldflags="-checklinkname=0 -X berty.tech/berty/v2/go/pkg/bertyversion.VcsRef=$$VCS_REF -X berty.tech/berty/v2/go/pkg/bertyversion.Version=$$VERSION"
 minimum_ios_ver = 12.0
 minimum_android_ver = 21
 go_modcacherw_flags = GOFLAGS="$(strip $(GOFLAGS) -modcacherw)"
@@ -22,6 +22,9 @@ node_modules: package.json
 	$(call check-program, npm)
 	npm install
 	touch $@
+
+# Resolve the version inside the build recipes (run from the repo root) and embed it via ext_ldflags.
+gomobile_version = VERSION="$$($(GO) run -mod=readonly github.com/mdomke/git-semver/v5)" && VCS_REF="$$(git rev-parse --short HEAD)"
 
 #### iOS
 
@@ -36,6 +39,7 @@ $(IOS_OUTPUT_BERTYBRIDGE_FRAMEWORK): $(bridge_src)
 
 # use `nowatchdog` tags, see https://github.com/libp2p/go-libp2p-connmgr/issues/98
 	cd .. && \
+		$(gomobile_version) && \
 		PATH="$(PATH):`go env GOPATH`/bin" \
 		CGO_CPPFLAGS=-DHAVE_GETHOSTUUID=0 \
 		$(go_modcacherw_flags) \
@@ -60,6 +64,7 @@ $(IOS_OUTPUT_BERTYPUSH_FRAMEWORK): $(bridge_src)
 
 # use `nowatchdog` tags, see https://github.com/libp2p/go-libp2p-connmgr/issues/98
 	cd .. && \
+		$(gomobile_version) && \
 		PATH="$(PATH):`go env GOPATH`/bin" \
 		CGO_CPPFLAGS=-DHAVE_GETHOSTUUID=0 \
 		$(go_modcacherw_flags) \
@@ -85,7 +90,9 @@ $(ANDROID_OUTPUT_LIBS): $(bridge_src)
 	cd .. && $(GO) mod download
 	cd .. && $(GO) run golang.org/x/mobile/cmd/gomobile init
 	mkdir -p $(gomobile_cache_abs) android/libs
-	cd .. && GO111MODULE=on $(go_modcacherw_flags) $(GO) run golang.org/x/mobile/cmd/gomobile bind \
+	cd .. && \
+		$(gomobile_version) && \
+		GO111MODULE=on $(go_modcacherw_flags) $(GO) run golang.org/x/mobile/cmd/gomobile bind \
 		-o $(abspath $@) \
 		-v $(ext_ldflags) \
 		$(GO_TAGS) \

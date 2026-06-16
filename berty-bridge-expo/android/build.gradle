@@ -9,11 +9,15 @@ def skipGomobile = project.hasProperty('skipGomobile') && project.property('skip
 
 if (skipGomobile) {
     logger.lifecycle("bertybridgeexpo: skipping Go bridge build (-PskipGomobile=true)")
-} else if (forceGomobile || !goBridgeAar.exists()) {
+} else {
     logger.lifecycle("bertybridgeexpo: building Go bridge (make android.gomobile), this can take several minutes on first build...")
     exec {
         workingDir '..'
-        commandLine 'make', 'android.gomobile'
+        if (forceGomobile) {
+            commandLine 'make', '-B', 'android.gomobile'
+        } else {
+            commandLine 'make', 'android.gomobile'
+        }
     }
 }
 
