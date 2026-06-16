@@ -34,6 +34,32 @@ export const ManageDeepLinkContent = (props: ManageDeepLinkContentProps) => {
 		parseDeepLink()
 	}, [messengerClient, props.link])
 
+	// Navigate from an effect, not render, to avoid "update a component while rendering".
+	useEffect(() => {
+		if (reply?.link?.kind !== beapi.messenger.BertyLink.Kind.MessageV1Kind) {
+			return
+		}
+		const conv = conversations[reply?.link?.bertyMessageRef?.groupPk as string]
+		if (conv?.publicKey) {
+			dispatch(
+				CommonActions.reset({
+					routes: [
+						{ name: 'Chat.Home' },
+						{
+							name:
+								conv?.type === beapi.messenger.Conversation.Type.MultiMemberType
+									? 'Chat.MultiMember'
+									: 'Chat.OneToOne',
+							params: {
+								convId: conv?.publicKey,
+							},
+						},
+					],
+				}),
+			)
+		}
+	}, [reply, conversations, dispatch])
+
 	if (reply === null) {
 		return <ActivityIndicator size='large' />
 	}
@@ -66,25 +92,8 @@ export const ManageDeepLinkContent = (props: ManageDeepLinkContentProps) => {
 		)
 	}
 	if (reply?.link?.kind === beapi.messenger.BertyLink.Kind.MessageV1Kind) {
-		const conv = conversations[reply?.link?.bertyMessageRef?.groupPk as string]
-		if (conv?.publicKey) {
-			dispatch(
-				CommonActions.reset({
-					routes: [
-						{ name: 'Chat.Home' },
-						{
-							name:
-								conv?.type === beapi.messenger.Conversation.Type.MultiMemberType
-									? 'Chat.MultiMember'
-									: 'Chat.OneToOne',
-							params: {
-								convId: conv?.publicKey,
-							},
-						},
-					],
-				}),
-			)
-		}
+		// Navigation is handled by the effect above; show a spinner meanwhile.
+		return <ActivityIndicator size='large' />
 	}
 	return null
 }
