@@ -1,6 +1,13 @@
 import { Layout, Icon } from '@ui-kitten/components'
 import React from 'react'
-import { View, ScrollView, ActivityIndicator, TouchableOpacity } from 'react-native'
+import {
+	View,
+	ScrollView,
+	ActivityIndicator,
+	TouchableOpacity,
+	StyleSheet,
+	Platform,
+} from 'react-native'
 
 import beapi from '@berty/api'
 import { UnifiedText } from '@berty/components/shared-components/UnifiedText'
@@ -53,7 +60,10 @@ export const SystemInfo: ScreenFC<'Settings.SystemInfo'> = ({ navigation }) => {
 
 	return (
 		<Layout style={{ flex: 1, backgroundColor: colors['main-background'] }}>
-			<ScrollView bounces={false} contentContainerStyle={padding.bottom.scale(90)}>
+			<ScrollView
+				bounces={false}
+				contentContainerStyle={[padding.horizontal.medium, padding.bottom.scale(90)]}
+			>
 				{done ? (
 					error ? (
 						<View style={{ alignItems: 'center', justifyContent: 'center', marginTop: 100 }}>
@@ -62,7 +72,7 @@ export const SystemInfo: ScreenFC<'Settings.SystemInfo'> = ({ navigation }) => {
 							</UnifiedText>
 						</View>
 					) : (
-						<UnifiedText selectable={true} style={{ height: '95%' }}>
+						<UnifiedText selectable={true} style={styles.infoText}>
 							{JSON.stringify(systemInfo, null, 2)}
 							{'\n'}
 							{JSON.stringify(networkConfig, null, 2)}
@@ -77,3 +87,11 @@ export const SystemInfo: ScreenFC<'Settings.SystemInfo'> = ({ navigation }) => {
 		</Layout>
 	)
 }
+
+const styles = StyleSheet.create({
+	infoText: {
+		fontFamily: Platform.OS === 'ios' ? 'Courier' : 'monospace',
+		fontSize: 13,
+		lineHeight: 18,
+	},
+})

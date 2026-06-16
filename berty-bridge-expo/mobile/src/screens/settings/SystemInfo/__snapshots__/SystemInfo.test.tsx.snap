@@ -37,9 +37,14 @@ exports[`Settings.SystemInfo renders correctly 1`] = `
       <RCTScrollView
         bounces={false}
         contentContainerStyle={
-          Object {
-            "paddingBottom": 90,
-          }
+          Array [
+            Object {
+              "paddingHorizontal": 16,
+            },
+            Object {
+              "paddingBottom": 90,
+            },
+          ]
         }
       >
         <View>
