@@ -2,7 +2,10 @@ import { IconRegistry } from "@ui-kitten/components";
 import { EvaIconsPack } from "@ui-kitten/eva-icons";
 import React from "react";
 import { KeyboardProvider } from "react-native-keyboard-controller";
-import { SafeAreaProvider } from "react-native-safe-area-context";
+import {
+	SafeAreaProvider,
+	initialWindowMetrics,
+} from "react-native-safe-area-context";
 import { Provider as ReduxProvider } from "react-redux";
 
 import { CustomIconsPack } from "@berty/assets/custom-icons";
@@ -17,7 +20,8 @@ interface AppCommonProvidersProps {
 const AppCommonProviders = ({ children }: AppCommonProvidersProps) => {
 	return (
 		<KeyboardProvider preserveEdgeToEdge>
-			<SafeAreaProvider>
+			{/* Seed insets from native metrics so safe-area values are correct on the first frame (no jump). */}
+			<SafeAreaProvider initialMetrics={initialWindowMetrics}>
 				<AppDimensionsProvider>
 					<StyleProvider>
 						<ReduxProvider store={reduxStore}>
