@@ -1,7 +1,7 @@
 import { FlashList } from '@shopify/flash-list'
 import Long from 'long'
 import moment from 'moment'
-import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import React, { useCallback, useMemo, useRef, useState } from 'react'
 import {
 	ActivityIndicator,
 	ActivityIndicatorProps,
@@ -110,15 +110,20 @@ const fetchMore = async ({
 
 	setFetchingFrom(refCid || '')
 
-	return client
-		?.conversationLoad({
+	try {
+		await client?.conversationLoad({
 			options: {
 				amount: 50,
 				conversationPk: convPk,
 				refCid: refCid,
 			},
 		})
-		.catch(() => setFetchedFirst(true))
+	} catch {
+		setFetchedFirst(true)
+	} finally {
+		// Always clear the in-flight marker so the spinner stops once the load settles.
+		setFetchingFrom(null)
+	}
 }
 
 export const MessageList: React.FC<{
@@ -234,14 +239,6 @@ export const MessageList: React.FC<{
 			() => ({ paddingBottom: 35, backgroundColor: colors['main-background'] }),
 			[colors],
 		)
-
-		useEffect(() => {
-			return () => {
-				if (fetchingFrom !== oldestMessage?.cid) {
-					setFetchingFrom(null)
-				}
-			}
-		}, [fetchingFrom, oldestMessage?.cid])
 
 		return (
 			<View style={styles.container}>
