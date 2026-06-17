@@ -1,0 +1,4 @@
+# Captured log bundles produced by get-mobile-logs.sh
+berty-logs-*/
+berty-logs-*.zip
+berty-logs-*.tar.gz

@@ -13,5 +13,6 @@
 * infra-testing-tool : simulation tool for large-scale use of berty
 * integration-compose : docker compose for integration test (used by integration CI workflow)
 * metrics-compose : docker compose for metric monitoring using Grafana
+* mobile-logs : script to collect debug logs (JS + Go core + on-device files) from the mobile app on Android & iOS
 * publish-npm-package : script used to publish berty api package on npm (used in release CI workflow)
 * tyber : log analysis and debugging tool for berty
