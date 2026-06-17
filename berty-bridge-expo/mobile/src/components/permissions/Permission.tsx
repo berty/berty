@@ -3,6 +3,7 @@ import React from 'react'
 import { useTranslation } from 'react-i18next'
 import { Platform, StatusBar, StyleSheet, View } from 'react-native'
 import { PermissionStatus, RESULTS } from 'react-native-permissions'
+import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
 import audioLottie from '@berty/assets/lottie/audio-lottie.json'
 import cameraLottie from '@berty/assets/lottie/camera-lottie.json'
@@ -36,6 +37,7 @@ export const Permission: React.FC<PermissionProps> = props => {
 	const colors = useThemeColor()
 	const { border, margin, flex } = useStyles()
 	const { t } = useTranslation()
+	const insets = useSafeAreaInsets()
 
 	const altText =
 		permissionType === PermissionType.notification ? t('permission.skip') : t('permission.cancel')
@@ -50,7 +52,8 @@ export const Permission: React.FC<PermissionProps> = props => {
 				style={[
 					border.radius.top.large,
 					styles.card,
-					{ backgroundColor: colors['main-background'] },
+					// Bottom inset so the secondary button clears the home indicator.
+					{ backgroundColor: colors['main-background'], paddingBottom: insets.bottom + 30 },
 				]}
 			>
 				<UnifiedText style={[styles.title, { color: colors['background-header'] }]}>
