@@ -42,7 +42,8 @@ export const StreamProgressPriv: React.FC<StreamProgressProps> = props => {
 				<UnifiedText style={[text.align.center, styles.waiting]}>{extraLabel}</UnifiedText>
 				<UnifiedText style={[text.align.center]}>{stream?.msg.doing || 'Doing'}</UnifiedText>
 				<UnifiedText style={[text.align.center]}>
-					{stream?.msg.completed || '0'} / {stream?.msg.total || '6'}
+					{/* completed/total are protobuf Long objects; stringify them to render as text. */}
+					{stream?.msg.completed?.toString() || '0'} / {stream?.msg.total?.toString() || '6'}
 				</UnifiedText>
 				{Platform.OS === 'web' ? (
 					<ActivityIndicator size='large' />
