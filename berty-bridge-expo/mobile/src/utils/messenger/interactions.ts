@@ -11,7 +11,18 @@ export const parseInteraction = (
 		if (typeof (i as any).toJSON === 'function') {
 			i = (i as any).toJSON()
 		}
-		const typeName = i.type || beapi.messenger.AppMessage.Type.Undefined
+		const rawType = i.type || beapi.messenger.AppMessage.Type.Undefined
+
+		if (!rawType) {
+			console.warn('failed to get AppMessage type name', i.type)
+			return { ...i, type: beapi.messenger.AppMessage.Type.Undefined, payload: undefined }
+		}
+
+		// `type` may be a numeric enum (optimistic interactions) or its string key; normalize to string.
+		const typeName =
+			typeof rawType === 'number'
+				? ((beapi.messenger.AppMessage.Type as any)[rawType] as string)
+				: rawType
 
 		if (!typeName) {
 			console.warn('failed to get AppMessage type name', i.type)
