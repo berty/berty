@@ -15,6 +15,7 @@ import {
 
 import beapi from '@berty/api'
 import { useStyles } from '@berty/contexts/styles'
+import { GRPCError } from '@berty/grpc-bridge'
 import { WelshMessengerServiceClient } from '@berty/grpc-bridge/welsh-clients.gen'
 import {
 	useConversationInteractions,
@@ -118,8 +119,14 @@ const fetchMore = async ({
 				refCid: refCid,
 			},
 		})
-	} catch {
-		setFetchedFirst(true)
+	} catch (err) {
+		// ErrNotFound means we reached the start of the conversation; any other error
+		// is a real failure, so keep paging enabled and surface it for retry.
+		if ((err as GRPCError).Code === beapi.errcode.ErrCode.ErrNotFound) {
+			setFetchedFirst(true)
+		} else {
+			console.warn('failed to load older interactions:', err)
+		}
 	} finally {
 		// Always clear the in-flight marker so the spinner stops once the load settles.
 		setFetchingFrom(null)
