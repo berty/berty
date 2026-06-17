@@ -676,7 +676,8 @@ export const Navigation: React.FC = React.memo(() => {
 				component={Components.Settings.Permissions}
 				options={{
 					headerShown: false,
-					presentation: 'formSheet',
+					// fullScreenModal uses the fixed native height; a formSheet sizes to JS layout and jumps.
+					presentation: 'fullScreenModal',
 				}}
 			/>
 			<NavigationStack.Screen
