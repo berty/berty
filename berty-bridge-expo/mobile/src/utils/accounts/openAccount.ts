@@ -27,6 +27,9 @@ const openAccountWithProgress = async (
 				cliArgs.push('--log.file=')
 				cliArgs.push('--log.filters=')
 				cliArgs.push('--log.ring-size=0')
+			} else {
+				// Align the file logs with the configured verbosity (they default to debug+ otherwise).
+				cliArgs.push('--log.file-filters=' + logFilters)
 			}
 
 			const selectNode: NodeInfos | null = await getData(AsyncStorageKeys.SelectNode)
