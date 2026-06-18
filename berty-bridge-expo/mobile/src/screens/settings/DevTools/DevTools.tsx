@@ -797,6 +797,8 @@ export const DevTools: ScreenFC<"Settings.DevTools"> = () => {
 		<>
 			<StatusBar style="light" />
 			<ScrollView bounces={false}
+				// Required on Android so the nested dropdown ScrollViews don't swallow the page scroll; no-op on iOS.
+				nestedScrollEnabled
 				style={{ backgroundColor: colors["secondary-background"] }}
 				contentContainerStyle={{ flexGrow: 1, paddingBottom }}>
 				<View
