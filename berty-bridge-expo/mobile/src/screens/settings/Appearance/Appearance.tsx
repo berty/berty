@@ -7,6 +7,7 @@ import { MenuItem, ItemSection } from '@berty/components'
 import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
 import { useThemeColor } from '@berty/hooks'
 import { ScreenFC, useNavigation } from '@berty/navigation'
+import { useTopInset } from '@berty/utils/react-native/useTopInset'
 // import { selectThemeIsDark, toggleDarkTheme } from '@berty/redux/reducers/theme.reducer'
 
 export const Appearance: ScreenFC<'Settings.Appearance'> = () => {
@@ -16,9 +17,10 @@ export const Appearance: ScreenFC<'Settings.Appearance'> = () => {
 	// const dispatch = useDispatch()
 	const { navigate } = useNavigation()
 	const { t } = useTranslation()
+	const topInset = useTopInset()
 
 	return (
-		<View style={{ backgroundColor: colors['secondary-background'], flex: 1 }}>
+		<View style={{ backgroundColor: colors['secondary-background'], flex: 1, paddingTop: topInset }}>
 			<ScrollView
 				bounces={false}
 				contentContainerStyle={{ paddingBottom: 12 * scaleSize }}

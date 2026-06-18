@@ -790,8 +790,10 @@ export const DevTools: ScreenFC<"Settings.DevTools"> = () => {
 	useSyncNetworkConfigOnScreenRemoved();
 	// TODO: remove when fixed in react-native-screens
 	// https://github.com/software-mansion/react-native-screens/issues/2522
-	const bottomInset = useSafeAreaInsets().bottom;
-	const paddingBottom = Platform.OS === 'ios' ? bottomInset + 60 : 0;
+	const insets = useSafeAreaInsets();
+	const paddingBottom = Platform.OS === 'ios' ? insets.bottom + 60 : 0;
+	// Android presents this formSheet under the status bar with no header.
+	const paddingTop = Platform.OS === 'android' ? insets.top : 0;
 
 	return (
 		<>
@@ -800,7 +802,7 @@ export const DevTools: ScreenFC<"Settings.DevTools"> = () => {
 				// Required on Android so the nested dropdown ScrollViews don't swallow the page scroll; no-op on iOS.
 				nestedScrollEnabled
 				style={{ backgroundColor: colors["secondary-background"] }}
-				contentContainerStyle={{ flexGrow: 1, paddingBottom }}>
+				contentContainerStyle={{ flexGrow: 1, paddingTop, paddingBottom }}>
 				<View
 					style={[
 						padding.medium,

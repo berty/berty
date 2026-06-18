@@ -15,6 +15,7 @@ import { useStyles } from '@berty/contexts/styles'
 import { useAccount, useStylesBertyId, useThemeColor } from '@berty/hooks'
 import { ScreenFC } from '@berty/navigation'
 import { shareBertyID } from '@berty/utils/react-native/share'
+import { useTopInset } from '@berty/utils/react-native/useTopInset'
 
 //
 // Settings My Berty ID Vue
@@ -186,9 +187,10 @@ const MyBertyIdComponent: React.FC = () => {
 
 export const MyBertyId: ScreenFC<'Settings.MyBertyId'> = () => {
 	const colors = useThemeColor()
+	const topInset = useTopInset()
 
 	return (
-		<Layout style={{ backgroundColor: colors['background-header'], flex: 1, minHeight: '100%' }}>
+		<Layout style={{ backgroundColor: colors['background-header'], flex: 1, minHeight: '100%', paddingTop: topInset }}>
 			<StatusBar style='light' />
 			<MyBertyIdComponent />
 		</Layout>

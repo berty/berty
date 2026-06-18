@@ -25,6 +25,7 @@ import {
 	pushFilteringAvailable,
 	pushAvailable,
 } from '@berty/utils/notification/notif-push'
+import { useTopInset } from '@berty/utils/react-native/useTopInset'
 
 const oneSecond = 1000
 const oneMinute = oneSecond * 60
@@ -121,6 +122,7 @@ export const Notifications: ScreenFC<'Settings.Notifications'> = () => {
 
 	const { scaleSize } = useAppDimensions()
 	const colors = useThemeColor()
+	const topInset = useTopInset()
 	const account = useAccount()
 	const hasPushToken = useMemo(() => hasKnownPushServer(account), [account])
 	const accountUnmuted = useMemo(
@@ -157,7 +159,7 @@ export const Notifications: ScreenFC<'Settings.Notifications'> = () => {
 		<ScrollView
 			bounces={false}
 			style={{ backgroundColor: colors['secondary-background'], minHeight: '100%' }}
-			contentContainerStyle={{ paddingBottom: 12 * scaleSize }}
+			contentContainerStyle={{ paddingTop: topInset, paddingBottom: 12 * scaleSize }}
 			showsVerticalScrollIndicator={false}
 		>
 			<ItemSection>

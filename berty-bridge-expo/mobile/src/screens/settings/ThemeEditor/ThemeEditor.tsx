@@ -24,6 +24,7 @@ import {
 	setTheme,
 } from '@berty/redux/reducers/theme.reducer'
 import { createAndSaveFile, getPath } from '@berty/utils/react-native/file-system'
+import { useTopInset } from '@berty/utils/react-native/useTopInset'
 
 import { ThemeColorName } from './components/ThemeColorName'
 
@@ -168,9 +169,10 @@ const BodyThemeEditor: React.FC<{ openModal: () => void }> = ({ openModal }) => 
 export const ThemeEditor: ScreenFC<'Settings.ThemeEditor'> = () => {
 	const [isModal, setIsModal] = React.useState<boolean>(false)
 	const colors = useThemeColor()
+	const topInset = useTopInset()
 
 	return (
-		<Layout style={{ backgroundColor: colors['main-background'], flex: 1 }}>
+		<Layout style={{ backgroundColor: colors['main-background'], flex: 1, paddingTop: topInset }}>
 			<StatusBar style='light' />
 			<ScrollView bounces={false}>
 				<BodyThemeEditor openModal={() => setIsModal(true)} />

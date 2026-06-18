@@ -13,6 +13,7 @@ import {
 	// useGenerateFakeMessages,
 } from '@berty/hooks'
 import { ScreenFC } from '@berty/navigation'
+import { useTopInset } from '@berty/utils/react-native/useTopInset'
 
 const BodyFakeData = () => {
 	const { t } = useTranslation()
@@ -64,11 +65,12 @@ const BodyFakeData = () => {
 
 export const FakeData: ScreenFC<'Settings.FakeData'> = () => {
 	const colors = useThemeColor()
+	const topInset = useTopInset()
 
 	return (
-		<ScrollView bounces={false} 
+		<ScrollView bounces={false}
 			style={{ backgroundColor: colors['main-background'] }}
-			contentContainerStyle={{ backgroundColor: colors['main-background'] }}>
+			contentContainerStyle={{ paddingTop: topInset, backgroundColor: colors['main-background'] }}>
 			<BodyFakeData />
 		</ScrollView>
 	)

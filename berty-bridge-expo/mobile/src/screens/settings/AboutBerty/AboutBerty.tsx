@@ -6,18 +6,20 @@ import { DividerItem, MenuItemWithIcon, ItemSection } from '@berty/components'
 import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
 import { useThemeColor } from '@berty/hooks'
 import { ScreenFC, useNavigation } from '@berty/navigation'
+import { useTopInset } from '@berty/utils/react-native/useTopInset'
 
 export const AboutBerty: ScreenFC<'Settings.AboutBerty'> = () => {
 	const { scaleSize } = useAppDimensions()
 	const colors = useThemeColor()
 	const { navigate } = useNavigation()
 	const { t } = useTranslation()
+	const topInset = useTopInset()
 
 	return (
 		<ScrollView
 			bounces={false}
 			style={{ backgroundColor: colors['secondary-background'] }}
-			contentContainerStyle={{ paddingBottom: 12 * scaleSize }}
+			contentContainerStyle={{ paddingTop: topInset, paddingBottom: 12 * scaleSize }}
 			showsVerticalScrollIndicator={false}
 		>
 			<ItemSection>

@@ -6,6 +6,7 @@ import { WebView } from 'react-native-webview'
 import { useStyles } from '@berty/contexts/styles'
 import { useThemeColor } from '@berty/hooks'
 import { ScreenFC } from '@berty/navigation'
+import { useTopInset } from '@berty/utils/react-native/useTopInset'
 
 //
 // IpfsWebUI
@@ -26,9 +27,10 @@ const BodyIpfsWebUI: React.FC<{}> = () => {
 
 export const IpfsWebUI: ScreenFC<'Settings.IpfsWebUI'> = () => {
 	const colors = useThemeColor()
+	const topInset = useTopInset()
 
 	return (
-		<Layout style={{ flex: 1, backgroundColor: colors['main-background'] }}>
+		<Layout style={{ flex: 1, backgroundColor: colors['main-background'], paddingTop: topInset }}>
 			<ScrollView bounces={false}>
 				<BodyIpfsWebUI />
 			</ScrollView>

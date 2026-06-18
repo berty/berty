@@ -9,15 +9,17 @@ import { useThemeColor } from '@berty/hooks'
 import { ScreenFC } from '@berty/navigation'
 import { selectSelectedAccount } from '@berty/redux/reducers/ui.reducer'
 import { exportAccountToFile } from '@berty/utils/accounts/accountBackup'
+import { useTopInset } from '@berty/utils/react-native/useTopInset'
 
 export const ContactAndConversations: ScreenFC<'Settings.ContactAndConversations'> = () => {
 	const { scaleSize } = useAppDimensions()
 	const colors = useThemeColor()
 	const { t } = useTranslation()
 	const selectedAccount = useSelector(selectSelectedAccount)
+	const topInset = useTopInset()
 
 	return (
-		<View style={{ backgroundColor: colors['secondary-background'], flex: 1 }}>
+		<View style={{ backgroundColor: colors['secondary-background'], flex: 1, paddingTop: topInset }}>
 			<ScrollView
 				bounces={false}
 				contentContainerStyle={{ paddingBottom: 12 * scaleSize }}

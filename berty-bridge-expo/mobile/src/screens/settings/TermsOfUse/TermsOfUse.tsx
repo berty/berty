@@ -6,6 +6,7 @@ import { UnifiedText } from '@berty/components/shared-components/UnifiedText'
 import { useStyles } from '@berty/contexts/styles'
 import { useThemeColor } from '@berty/hooks'
 import { ScreenFC } from '@berty/navigation'
+import { useTopInset } from '@berty/utils/react-native/useTopInset'
 
 //
 // TermsOfUse
@@ -75,9 +76,10 @@ const BodyTermsOfUse: React.FC<{}> = () => {
 
 export const TermsOfUse: ScreenFC<'Settings.TermsOfUse'> = () => {
 	const colors = useThemeColor()
+	const topInset = useTopInset()
 
 	return (
-		<Layout style={{ backgroundColor: colors['main-background'], flex: 1 }}>
+		<Layout style={{ backgroundColor: colors['main-background'], flex: 1, paddingTop: topInset }}>
 			<ScrollView bounces={false}>
 				<BodyTermsOfUse />
 			</ScrollView>

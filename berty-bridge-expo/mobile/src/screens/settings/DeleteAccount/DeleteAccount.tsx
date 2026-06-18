@@ -10,6 +10,7 @@ import { UnifiedText } from '@berty/components/shared-components/UnifiedText'
 import { useStyles } from '@berty/contexts/styles'
 import { useThemeColor, useDeletingAccountAfterClosing } from '@berty/hooks'
 import { ScreenFC } from '@berty/navigation'
+import { useTopInset } from '@berty/utils/react-native/useTopInset'
 
 export const DeleteAccount: ScreenFC<'Settings.DeleteAccount'> = () => {
 	const { padding, margin } = useStyles()
@@ -19,12 +20,13 @@ export const DeleteAccount: ScreenFC<'Settings.DeleteAccount'> = () => {
 	const { t } = useTranslation()
 	const deletingAccountAfterClosing = useDeletingAccountAfterClosing()
 	const navigation = useReactNavigation()
+	const topInset = useTopInset()
 
 	// this is the translated string (of "delete"), that we have to compare with the input
 	const DELETE_STR = t('settings.delete-account.delete-button').toLowerCase()
 
 	return (
-		<View style={{ backgroundColor: colors['secondary-background-header'], minHeight: '100%' }}>
+		<View style={{ backgroundColor: colors['secondary-background-header'], minHeight: '100%', paddingTop: topInset }}>
 			<StatusBar style='light' />
 			<ErrorCard
 				title={t('settings.delete-account.title')}

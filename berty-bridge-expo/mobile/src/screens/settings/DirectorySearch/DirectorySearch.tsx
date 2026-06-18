@@ -14,6 +14,7 @@ import { useMessengerClient, useThemeColor } from '@berty/hooks'
 import { ScreenFC } from '@berty/navigation'
 import { IdentityType } from '@berty/utils/linkedidentities/types'
 import { acquirePermission, PermissionType } from '@berty/utils/permissions/permissions'
+import { useTopInset } from '@berty/utils/react-native/useTopInset'
 import * as testIDs from '@berty/utils/testing/testIDs.json'
 
 type AddressBookContact = {
@@ -158,9 +159,10 @@ export const DirectorySearch: ScreenFC<'Settings.DirectorySearch'> = ({
 				),
 		[searchResults.results, userMappedContacts],
 	)
+	const topInset = useTopInset()
 
 	return (
-		<View style={{ backgroundColor: colors['secondary-background'], flex: 1 }}>
+		<View style={{ backgroundColor: colors['secondary-background'], flex: 1, paddingTop: topInset }}>
 			<ScrollView
 				bounces={false}
 				contentContainerStyle={{ paddingBottom: 12 * scaleSize }}

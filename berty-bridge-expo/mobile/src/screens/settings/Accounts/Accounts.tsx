@@ -9,6 +9,7 @@ import { useThemeColor } from '@berty/hooks'
 import { ScreenFC, useNavigation } from '@berty/navigation'
 import { selectSelectedAccount } from '@berty/redux/reducers/ui.reducer'
 import { exportAccountToFile, refreshAccountList } from '@berty/utils/accounts'
+import { useTopInset } from '@berty/utils/react-native/useTopInset'
 import * as Notifications from "expo-notifications";
 
 export const Accounts: ScreenFC<'Settings.Accounts'> = () => {
@@ -16,6 +17,7 @@ export const Accounts: ScreenFC<'Settings.Accounts'> = () => {
 		const colors = useThemeColor()
 		const { navigate } = useNavigation()
 		const { t } = useTranslation()
+		const topInset = useTopInset()
 		const selectedAccount = useSelector(selectSelectedAccount)
 
 		React.useEffect(() => {
@@ -26,7 +28,11 @@ export const Accounts: ScreenFC<'Settings.Accounts'> = () => {
 			<ScrollView
 				bounces={false}
 				style={{ backgroundColor: colors['secondary-background'] }}
-				contentContainerStyle={{ paddingBottom: 12 * scaleSize, backgroundColor: colors['secondary-background'] }}
+				contentContainerStyle={{
+					paddingTop: topInset,
+					paddingBottom: 12 * scaleSize,
+					backgroundColor: colors['secondary-background'],
+				}}
 				showsVerticalScrollIndicator={false}
 			>
 				{Platform.OS !== 'web' && (

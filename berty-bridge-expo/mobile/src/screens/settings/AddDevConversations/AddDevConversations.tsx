@@ -11,6 +11,7 @@ import { globals } from '@berty/config'
 import { useStyles } from '@berty/contexts/styles'
 import { useThemeColor } from '@berty/hooks'
 import { ScreenFC, useNavigation } from '@berty/navigation'
+import { useTopInset } from '@berty/utils/react-native/useTopInset'
 
 type ValueOf<T> = T[keyof T]
 
@@ -80,9 +81,10 @@ const BodyAddContactList = () => {
 
 export const AddDevConversations: ScreenFC<'Settings.AddDevConversations'> = () => {
 	const colors = useThemeColor()
+	const topInset = useTopInset()
 
 	return (
-		<Layout style={{ flex: 1, backgroundColor: colors['main-background'] }}>
+		<Layout style={{ flex: 1, backgroundColor: colors['main-background'], paddingTop: topInset }}>
 			<ScrollView bounces={false}>
 				<BodyAddContactList />
 			</ScrollView>

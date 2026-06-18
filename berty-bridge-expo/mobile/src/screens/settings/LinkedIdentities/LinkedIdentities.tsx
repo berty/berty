@@ -18,6 +18,7 @@ import { ServiceClientType } from '@berty/grpc-bridge/welsh-clients.gen'
 import { useAccount, useMessengerClient, useProtocolClient, useThemeColor } from '@berty/hooks'
 import { ScreenFC } from '@berty/navigation'
 import { IdentityType } from '@berty/utils/linkedidentities/types'
+import { useTopInset } from '@berty/utils/react-native/useTopInset'
 
 const acquireProof = async ({
 	account,
@@ -82,9 +83,10 @@ export const LinkedIdentities: ScreenFC<'Settings.LinkedIdentities'> = () => {
 			capabilities: [IdentityType.PHONE],
 		},
 	])
+	const topInset = useTopInset()
 
 	return (
-		<View style={{ backgroundColor: colors['secondary-background'], flex: 1 }}>
+		<View style={{ backgroundColor: colors['secondary-background'], flex: 1, paddingTop: topInset }}>
 			<ScrollView
 				bounces={false}
 				contentContainerStyle={{ paddingBottom: 12 * scaleSize }}

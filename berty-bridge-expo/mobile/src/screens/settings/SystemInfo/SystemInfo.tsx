@@ -17,6 +17,7 @@ import { useStyles } from '@berty/contexts/styles'
 import { bertyMethodsHooks, useMountEffect, useThemeColor } from '@berty/hooks'
 import { ScreenFC } from '@berty/navigation'
 import { accountClient } from '@berty/utils/accounts/accountClient'
+import { useTopInset } from '@berty/utils/react-native/useTopInset'
 
 // Render protobuf Long fields as their decimal value instead of {low, high, unsigned}.
 const longReplacer = (_key: string, value: unknown) =>
@@ -30,6 +31,7 @@ export const SystemInfo: ScreenFC<'Settings.SystemInfo'> = ({ navigation }) => {
 	const [networkConfig, setNetworkConfig] = React.useState<beapi.account.INetworkConfig | null>(
 		null,
 	)
+	const topInset = useTopInset()
 
 	useMountEffect(() => {
 		const getNetworkConfig = async () => {
@@ -64,7 +66,7 @@ export const SystemInfo: ScreenFC<'Settings.SystemInfo'> = ({ navigation }) => {
 	})
 
 	return (
-		<Layout style={{ flex: 1, backgroundColor: colors['main-background'] }}>
+		<Layout style={{ flex: 1, backgroundColor: colors['main-background'], paddingTop: topInset }}>
 			<ScrollView
 				bounces={false}
 				contentContainerStyle={[padding.horizontal.medium, padding.bottom.scale(90)]}
