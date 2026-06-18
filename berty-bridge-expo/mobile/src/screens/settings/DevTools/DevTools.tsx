@@ -52,7 +52,7 @@ import {
 	useSyncNetworkConfigOnScreenRemoved,
 } from "@berty/hooks";
 import { languages } from "@berty/i18n/locale/languages";
-import { GoBridge } from "@berty/native-modules/GoBridge";
+import { GoBridge } from "berty-bridge-expo";
 import { ScreenFC, useNavigation } from "@berty/navigation";
 import {
 	selectEditedNetworkConfig,

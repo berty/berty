@@ -3,7 +3,7 @@ import { useCallback } from 'react'
 import { Alert } from 'react-native'
 
 import beapi from '@berty/api'
-import { GoBridge } from '@berty/native-modules/GoBridge'
+import { GoBridge } from 'berty-bridge-expo'
 import { useNavigation } from '@berty/navigation'
 import { ScreensParams } from '@berty/navigation/types'
 import { selectSelectedAccount } from '@berty/redux/reducers/ui.reducer'

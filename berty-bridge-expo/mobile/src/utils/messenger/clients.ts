@@ -14,7 +14,7 @@ import {
 } from '@berty/grpc-bridge/welsh-clients.gen'
 import { MessengerServiceMock } from '@berty/mock-services/static/messengerServiceMock'
 import { ProtocolServiceMock } from '@berty/mock-services/static/protocolServiceMock'
-import { GoBridge } from '@berty/native-modules/GoBridge'
+import { GoBridge } from 'berty-bridge-expo'
 import { streamEventToAction as streamEventToReduxAction } from '@berty/redux/messengerActions'
 import { setClients, setStreamError, setClearClients } from '@berty/redux/reducers/ui.reducer'
 import { AppDispatch } from '@berty/redux/store'
