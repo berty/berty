@@ -1,6 +1,7 @@
 import React, { useEffect, useCallback, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { NativeModules, Platform, View } from 'react-native'
+import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
 import { CreateGroupFooterWithIcon, MenuToggle, ItemSection } from '@berty/components'
 import { LoaderDots } from '@berty/components/LoaderDots'
@@ -33,6 +34,7 @@ export const SelectNode: ScreenFC<'Account.SelectNode'> = ({ route }) => {
 	const [dontAsk, setDontAsk] = useState(false)
 	const [forceAsk, setForceAsk] = useState(false) // forceAsk is used to bypass `dontAsk` state if `action` failed
 	const debug = __DEV__
+	const insets = useSafeAreaInsets()
 
 	const validate = useCallback(
 		async (externalNode, address, accountPort, messengerPort, dontAsk) => {
@@ -95,7 +97,8 @@ export const SelectNode: ScreenFC<'Account.SelectNode'> = ({ route }) => {
 		)
 	} else {
 		return (
-			<>
+			// Full-screen (card) on both platforms, so apply the top inset ourselves.
+			<View style={{ flex: 1, paddingTop: insets.top }}>
 				<View style={[row.item.justify, column.justify, padding.medium]}>
 					<UnifiedText style={[margin.left.medium, row.item.justify, text.size.big]}>
 						{t('settings.devtools.select-node.title')}
@@ -154,7 +157,7 @@ export const SelectNode: ScreenFC<'Account.SelectNode'> = ({ route }) => {
 						await validate(externalNode, address, accountPort, messengerPort, dontAsk)
 					}}
 				/>
-			</>
+			</View>
 		)
 	}
 }

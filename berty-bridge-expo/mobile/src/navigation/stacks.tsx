@@ -192,7 +192,8 @@ export const Navigation: React.FC = React.memo(() => {
 				component={Components.Account.SelectNode}
 				options={{
 					headerShown: false,
-					presentation: 'formSheet',
+					// Full-screen card on both: a root formSheet renders empty on Android and jumps on iOS.
+					presentation: 'card',
 				}}
 			/>
 			<NavigationStack.Screen
