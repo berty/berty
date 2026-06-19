@@ -9,13 +9,36 @@
 import UserNotifications
 import Foundation
 import BackgroundTasks
+import UIKit
 
 class LifeCycle: NSObject {
     static let shared: LifeCycle = LifeCycle()
     let logger: BertyLogger = BertyLogger("tech.berty.lifecycle")
 
+    // Serial off-main queue for the blocking Bridge.HandleState calls (ordered, off the watchdog'd main thread).
+    private let stateQueue = DispatchQueue(label: "tech.berty.lifecycle.state")
+
     @objc static func getSharedInstance() -> LifeCycle {
         return LifeCycle.shared
+    }
+
+    // Run a blocking lifecycle call off-main under a background-task assertion (iOS grants ~30s instead of ~5s).
+    private func runOffMain(name: String, _ work: @escaping () -> Void) {
+        var bgTaskID: UIBackgroundTaskIdentifier = .invalid
+        bgTaskID = UIApplication.shared.beginBackgroundTask(withName: name) {
+            if bgTaskID != .invalid {
+                UIApplication.shared.endBackgroundTask(bgTaskID)
+                bgTaskID = .invalid
+            }
+        }
+
+        self.stateQueue.async {
+            work()
+            if bgTaskID != .invalid {
+                UIApplication.shared.endBackgroundTask(bgTaskID)
+                bgTaskID = .invalid
+            }
+        }
     }
 
     @available(iOS 13.0, *)
@@ -99,22 +122,27 @@ class LifeCycle: NSObject {
             }
         }
 
-        let success = bgtask.execute()
-        if success {
-            completionHandler(.newData)
-        } else {
-            completionHandler(.failed)
+        // `execute()` blocks until the Go task finishes; keep it off-main to avoid the watchdog.
+        DispatchQueue.global(qos: .background).async {
+            let success = bgtask.execute()
+            DispatchQueue.main.async {
+                completionHandler(success ? .newData : .failed)
+            }
         }
     }
 
     @objc
     func updateState(state: UIApplication.State) {
-        LifeCycleDriver.shared.updateState(state: state)
+        self.runOffMain(name: "tech.berty.lifecycle.state") {
+            LifeCycleDriver.shared.updateState(state: state)
+        }
     }
 
     @objc
     func willTerminate() {
         self.logger.info("will terminate")
-        LifeCycleDriver.shared.willTerminate()
+        self.runOffMain(name: "tech.berty.lifecycle.terminate") {
+            LifeCycleDriver.shared.willTerminate()
+        }
     }
 }
