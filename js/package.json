@@ -86,7 +86,7 @@
     "v8-android-jit": "9.88.0"
   },
   "devDependencies": {
-    "@babel/core": "^7.21.0",
+    "@babel/core": "^7.29.6",
     "@babel/node": "^7.20.7",
     "@babel/preset-typescript": "^7.21.0",
     "@babel/runtime": "^7.21.0",
