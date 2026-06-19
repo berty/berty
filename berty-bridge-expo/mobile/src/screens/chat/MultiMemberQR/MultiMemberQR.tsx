@@ -1,7 +1,8 @@
 import Clipboard from '@react-native-clipboard/clipboard'
 import { Icon, Layout } from '@ui-kitten/components'
 import React from 'react'
-import { Share, TouchableOpacity, View, StatusBar, Platform } from 'react-native'
+import { StatusBar } from 'expo-status-bar'
+import { Share, TouchableOpacity, View, Platform } from 'react-native'
 import QRCode from 'react-native-qrcode-svg'
 
 import beapi from '@berty/api'
@@ -167,7 +168,7 @@ export const MultiMemberQR: ScreenFC<'Chat.MultiMemberQR'> = ({
 	}
 	return (
 		<Layout style={[{ backgroundColor: 'transparent', flex: 1 }]}>
-			<StatusBar backgroundColor={colors['background-header']} barStyle='light-content' />
+			<StatusBar style='light' />
 			<MultiMemberComponent conv={conv} />
 		</Layout>
 	)

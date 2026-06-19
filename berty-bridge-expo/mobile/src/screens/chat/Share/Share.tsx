@@ -2,7 +2,8 @@ import { useFocusEffect } from '@react-navigation/core'
 import { CameraView } from 'expo-camera'
 import React, { FC, PropsWithChildren, ReactNode, use, useCallback, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { View, Vibration, StatusBar, ScrollView, TextInput, TouchableOpacity, Platform } from 'react-native'
+import { StatusBar } from 'expo-status-bar'
+import { View, Vibration, ScrollView, TextInput, TouchableOpacity, Platform } from 'react-native'
 import QRCode from 'react-native-qrcode-svg'
 
 import logo from '@berty/assets/images/1_berty_picto.png'
@@ -220,7 +221,7 @@ export const ShareModal: ScreenFC<'Chat.Share'> = () => {
 
 	return (
 		<View style={{ flex: 1 }}>
-			<StatusBar backgroundColor={colors['background-header']} barStyle='light-content' />
+			<StatusBar style='light' />
 			<ScrollView style={[{ backgroundColor: colors['main-background'] }]}>
 				<ShareContainer
 					element={isScannerSelected ? <ScanBody visible={isScannerVisible} /> : <ShareQr />}

@@ -6,10 +6,10 @@ import {
 	Alert,
 	Platform,
 	ScrollView,
-	StatusBar,
 	Vibration,
 	View,
 } from "react-native";
+import { StatusBar } from "expo-status-bar";
 import { useSelector } from "react-redux";
 
 import beapi from "@berty/api";
@@ -795,10 +795,7 @@ export const DevTools: ScreenFC<"Settings.DevTools"> = () => {
 
 	return (
 		<>
-			<StatusBar
-				backgroundColor={colors["alt-secondary-background-header"]}
-				barStyle="light-content"
-			/>
+			<StatusBar style="light" />
 			<ScrollView bounces={false}
 				style={{ backgroundColor: colors["secondary-background"] }}
 				contentContainerStyle={{ flexGrow: 1, paddingBottom }}>

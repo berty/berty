@@ -1,7 +1,8 @@
 import { Layout, Icon } from '@ui-kitten/components'
 import React, { useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { View, TouchableOpacity, StatusBar } from 'react-native'
+import { StatusBar } from 'expo-status-bar'
+import { View, TouchableOpacity } from 'react-native'
 import QRCode from 'react-native-qrcode-svg'
 
 import logo from '@berty/assets/images/1_berty_picto.png'
@@ -188,7 +189,7 @@ export const MyBertyId: ScreenFC<'Settings.MyBertyId'> = () => {
 
 	return (
 		<Layout style={{ backgroundColor: colors['background-header'], flex: 1, minHeight: '100%' }}>
-			<StatusBar backgroundColor={colors['background-header']} barStyle='light-content' />
+			<StatusBar style='light' />
 			<MyBertyIdComponent />
 		</Layout>
 	)

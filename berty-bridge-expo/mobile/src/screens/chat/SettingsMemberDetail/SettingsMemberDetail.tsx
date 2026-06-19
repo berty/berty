@@ -1,7 +1,8 @@
 import { Layout } from '@ui-kitten/components'
 import React, { ComponentProps } from 'react'
 import { useTranslation } from 'react-i18next'
-import { View, ScrollView, StatusBar } from 'react-native'
+import { StatusBar } from 'expo-status-bar'
+import { View, ScrollView } from 'react-native'
 
 import { MemberAvatar } from '@berty/components/avatars'
 import UserDevicesList from '@berty/components/chat/DeviceList'
@@ -73,7 +74,7 @@ export const SettingsMemberDetail: ScreenFC<'Chat.SettingsMemberDetail'> = ({
 
 	return (
 		<Layout style={{ flex: 1, backgroundColor: colors['main-background'] }}>
-			<StatusBar backgroundColor={colors['background-header']} barStyle='light-content' />
+			<StatusBar style='light' />
 			<ScrollView bounces={false}>
 				<View style={[padding.medium, { backgroundColor: colors['background-header'] }]}>
 					<SettingsMemberDetailHeader convId={convId} memberPk={memberPk} />

@@ -2,7 +2,8 @@ import { Icon, Layout } from '@ui-kitten/components'
 import Long from 'long'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
-import { StatusBar, View } from 'react-native'
+import { StatusBar } from 'expo-status-bar'
+import { View } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 
 import beapi from '@berty/api'
@@ -88,7 +89,7 @@ export const MultiMemberSettingsAddMembers: ScreenFC<'Chat.MultiMemberSettingsAd
 
 	return (
 		<Layout style={[flex.tiny, { backgroundColor: '#FFFFFF' }]}>
-			<StatusBar backgroundColor={colors['background-header']} barStyle='light-content' />
+			<StatusBar style='light' />
 			<SafeAreaView style={{ backgroundColor: colors['background-header'] }}>
 				<CreateGroupMemberList />
 			</SafeAreaView>

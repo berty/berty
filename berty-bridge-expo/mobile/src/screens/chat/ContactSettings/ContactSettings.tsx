@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { View, ScrollView, ActivityIndicator, StatusBar } from 'react-native'
+import { StatusBar } from 'expo-status-bar'
+import { View, ScrollView, ActivityIndicator } from 'react-native'
 
 import beapi from '@berty/api'
 import { TabBar } from '@berty/components'
@@ -114,7 +115,7 @@ export const ContactSettings: ScreenFC<'Chat.ContactSettings'> = ({
 	return (
 		<>
 			<View style={{ flex: 1 }}>
-				<StatusBar backgroundColor={colors['background-header']} barStyle='light-content' />
+				<StatusBar style='light' />
 				<ScrollView
 					style={{ backgroundColor: colors['main-background'], flex: 1 }}
 					bounces={false}

@@ -1,6 +1,7 @@
 import { Icon } from '@ui-kitten/components'
 import React from 'react'
-import { ScrollView, View, StatusBar, TouchableOpacity, Platform } from 'react-native'
+import { StatusBar } from 'expo-status-bar'
+import { ScrollView, View, TouchableOpacity, Platform } from 'react-native'
 
 import beapi from '@berty/api'
 import { ContactAvatar } from '@berty/components/avatars'
@@ -102,7 +103,7 @@ export const OneToOneSettings: ScreenFC<'Chat.OneToOneSettings'> = ({
 	return (
 		<>
 			<View style={{ flex: 1 }}>
-				<StatusBar backgroundColor={colors['background-header']} barStyle='light-content' />
+				<StatusBar style='light' />
 				<ScrollView
 					style={{ backgroundColor: colors['main-background'] }}
 					bounces={false}

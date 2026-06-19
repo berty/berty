@@ -1,7 +1,8 @@
 import { Layout } from '@ui-kitten/components'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
-import { Platform, ScrollView, StatusBar, View } from 'react-native'
+import { StatusBar } from 'expo-status-bar'
+import { Platform, ScrollView, View } from 'react-native'
 import * as DocumentPicker from 'expo-document-picker'
 import RNFS from 'react-native-fs'
 import * as Notifications from "expo-notifications";
@@ -170,10 +171,7 @@ export const ThemeEditor: ScreenFC<'Settings.ThemeEditor'> = () => {
 
 	return (
 		<Layout style={{ backgroundColor: colors['main-background'], flex: 1 }}>
-			<StatusBar
-				backgroundColor={colors['alt-secondary-background-header']}
-				barStyle='light-content'
-			/>
+			<StatusBar style='light' />
 			<ScrollView bounces={false}>
 				<BodyThemeEditor openModal={() => setIsModal(true)} />
 			</ScrollView>

@@ -1,7 +1,7 @@
 import { mapping, light } from "@eva-design/eva";
 import { ApplicationProvider } from "@ui-kitten/components";
+import { StatusBar } from "expo-status-bar";
 import React from "react";
-import { StatusBar } from "react-native";
 
 interface UIKittenProviderProps {
 	children: React.ReactNode;
@@ -21,7 +21,7 @@ export const UIKittenProvider = ({ children }: UIKittenProviderProps) => (
 			}
 			theme={light}
 		>
-			<StatusBar barStyle="dark-content" />
+			<StatusBar style="dark" />
 			{children}
 		</ApplicationProvider>
 	</>

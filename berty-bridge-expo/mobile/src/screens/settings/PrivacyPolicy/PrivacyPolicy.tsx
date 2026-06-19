@@ -1,5 +1,6 @@
 import React from 'react'
-import { StatusBar, View } from 'react-native'
+import { StatusBar } from 'expo-status-bar'
+import { View } from 'react-native'
 
 import { WebViews } from '@berty/components/shared-components'
 import { useThemeColor } from '@berty/hooks'
@@ -12,7 +13,7 @@ export const PrivacyPolicy: ScreenFC<'Settings.PrivacyPolicy'> = () => {
 
 	return (
 		<View style={{ backgroundColor: colors['main-background'], minHeight: '100%' }}>
-			<StatusBar barStyle='dark-content' />
+			<StatusBar style='dark' />
 			<WebViews url={PrivacyPolicyURL} />
 		</View>
 	)

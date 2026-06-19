@@ -2,7 +2,8 @@ import * as Network from 'expo-network'
 import pickBy from 'lodash/pickBy'
 import React, { useEffect, useMemo, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { ScrollView, View, StatusBar } from 'react-native'
+import { StatusBar } from 'expo-status-bar'
+import { ScrollView, View } from 'react-native'
 import { useSelector } from 'react-redux'
 import { SafeAreaView } from 'react-native-safe-area-context'
 
@@ -203,12 +204,7 @@ export const Home: ScreenFC<'Chat.Home'> = ({ navigation: { navigate } }) => {
 
 	return (
 		<SafeAreaView style={[styleBackground, { flex: 1 }]}>
-			<StatusBar
-				backgroundColor={
-					requests.length && !isOnTop ? colors['background-header'] : colors['main-background']
-				}
-				barStyle={requests.length && !isOnTop ? 'light-content' : 'dark-content'}
-			/>
+			<StatusBar style={requests.length && !isOnTop ? 'light' : 'dark'} />
 			<ScrollView
 				ref={scrollRef}
 				stickyHeaderIndices={!searchText?.length && !hasResults ? [1] : [0]}
