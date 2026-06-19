@@ -140,8 +140,8 @@ The Berty Messenger, or simply Berty, is a messaging application written in [Rea
   - [./go/cmd/**rdvp**](go/cmd/rdvp): A Rendez-Vous Point server.
   - [./go/cmd/**welcomebot**](go/cmd/welcomebot): An onboarding bot used during the early phase.
   - [./go/cmd/**testbot**](go/cmd/testbot): A bot used by integration tests and developers.
-- [./js](js): Where all the Javascript/Typescript code lies:
-  - The **Berty Messenger** application, written in React Native.
+- [./berty-bridge-expo](berty-bridge-expo): The Expo-based mobile app (Javascript/Typescript) and its native bridge — the current home of the **Berty Messenger** application.
+- [./js](js): **Deprecated**, superseded by [./berty-bridge-expo](berty-bridge-expo) and to be removed soon. The original React Native **Berty Messenger** application.
 - [./docs](docs): Mostly auto-generated documentation.
 
 ## Contributing

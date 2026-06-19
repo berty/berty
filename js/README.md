@@ -1,5 +1,8 @@
 # Berty Messenger
 
+> [!WARNING]
+> **Deprecated.** This folder is superseded by [`berty-bridge-expo`](../berty-bridge-expo) and will be removed soon. Use [`berty-bridge-expo/mobile`](../berty-bridge-expo/mobile) for the mobile app instead. The instructions below are kept only for reference until removal.
+
 ## Introduction
 
 This folder contains most of the Typescript and Javascript code needed for the Berty Messenger mobile app. The code is **organized into packages** in [./packages](./packages). Only some of them are freestanding.
