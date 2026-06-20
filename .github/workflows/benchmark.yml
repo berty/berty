@@ -130,23 +130,26 @@ jobs:
         run: |
           mkdir -p pprof_html/head/{cpu,mem}/{top,flamegraph,peek,source}
 
+          # wait for the pprof web UI to come up before scraping it; the
+          # server can take more than a couple of seconds to start, so retry on
+          # connection refused instead of relying on a fixed sleep.
+          curl_opts="--retry-connrefused --retry 30 --retry-delay 1 --fail --silent --show-error"
+
           go tool pprof -http 0.0.0.0:9402 -no_browser ./cpu_head.prof < /dev/null & # https://github.com/google/pprof/issues/401#issuecomment-739576424
-          sleep 2
-          curl http://localhost:9402/ui/ > pprof_html/head/cpu/index.html
-          curl http://localhost:9402/ui/top > pprof_html/head/cpu/top/index.html
-          curl http://localhost:9402/ui/flamegraph > pprof_html/head/cpu/flamegraph/index.html
-          curl http://localhost:9402/ui/peek > pprof_html/head/cpu/peek/index.html
-          curl http://localhost:9402/ui/source > pprof_html/head/cpu/source/index.html
+          curl $curl_opts http://localhost:9402/ui/ > pprof_html/head/cpu/index.html
+          curl $curl_opts http://localhost:9402/ui/top > pprof_html/head/cpu/top/index.html
+          curl $curl_opts http://localhost:9402/ui/flamegraph > pprof_html/head/cpu/flamegraph/index.html
+          curl $curl_opts http://localhost:9402/ui/peek > pprof_html/head/cpu/peek/index.html
+          curl $curl_opts http://localhost:9402/ui/source > pprof_html/head/cpu/source/index.html
           pkill pprof
           sleep 2
 
           go tool pprof -http 0.0.0.0:9402 -no_browser ./mem_head.prof < /dev/null &
-          sleep 2
-          curl http://localhost:9402/ui/ > pprof_html/head/mem/index.html
-          curl http://localhost:9402/ui/top > pprof_html/head/mem/top/index.html
-          curl http://localhost:9402/ui/flamegraph > pprof_html/head/mem/flamegraph/index.html
-          curl http://localhost:9402/ui/peek > pprof_html/head/mem/peek/index.html
-          curl http://localhost:9402/ui/source > pprof_html/head/mem/source/index.html
+          curl $curl_opts http://localhost:9402/ui/ > pprof_html/head/mem/index.html
+          curl $curl_opts http://localhost:9402/ui/top > pprof_html/head/mem/top/index.html
+          curl $curl_opts http://localhost:9402/ui/flamegraph > pprof_html/head/mem/flamegraph/index.html
+          curl $curl_opts http://localhost:9402/ui/peek > pprof_html/head/mem/peek/index.html
+          curl $curl_opts http://localhost:9402/ui/source > pprof_html/head/mem/source/index.html
           pkill pprof
           sleep 2
 
@@ -183,15 +186,18 @@ jobs:
         run: |
           mkdir -p pprof_html/base_comp/{cpu,mem}
 
+          # wait for the pprof web UI to come up before scraping it; the
+          # server can take more than a couple of seconds to start, so retry on
+          # connection refused instead of relying on a fixed sleep.
+          curl_opts="--retry-connrefused --retry 30 --retry-delay 1 --fail --silent --show-error"
+
           go tool pprof -http 0.0.0.0:9402 --diff_base=./cpu_base.prof -no_browser ./cpu_head.prof < /dev/null &
-          sleep 2
-          curl http://localhost:9402/ui/ > pprof_html/base_comp/cpu/index.html
+          curl $curl_opts http://localhost:9402/ui/ > pprof_html/base_comp/cpu/index.html
           pkill pprof
           sleep 2
 
           go tool pprof -http 0.0.0.0:9402 --diff_base=./mem_base.prof -no_browser ./mem_head.prof < /dev/null &
-          sleep 2
-          curl http://localhost:9402/ui/ > pprof_html/base_comp/mem/index.html
+          curl $curl_opts http://localhost:9402/ui/ > pprof_html/base_comp/mem/index.html
           pkill pprof
           sleep 2
 
