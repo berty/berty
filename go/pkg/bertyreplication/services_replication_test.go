@@ -368,6 +368,10 @@ func TestReplicationService_ReplicateGroupStats_ReplicateGlobalStats(t *testing.
 }
 
 func TestReplicationService_Flow(t *testing.T) {
+	// Flappy: depends on a go-libp2p-pubsub connect/disconnect race that mocknet
+	// amplifies (see the catch-up loops below). Runs in the retried flappy lane,
+	// not the blocking stable lane.
+	testutil.FilterStability(t, testutil.Flappy)
 	testutil.FilterSpeed(t, testutil.Slow)
 
 	logger, cleanup := testutil.Logger(t)
@@ -499,7 +503,7 @@ func TestReplicationService_Flow(t *testing.T) {
 
 	t.Logf(" --- Sending %d async messages ---", messageAmount)
 	{
-		ctx, cancel := context.WithTimeout(ctx, time.Second*2)
+		ctx, cancel := context.WithTimeout(ctx, time.Second*10)
 		defer cancel()
 
 		m1 := g1a.MetadataStore()
@@ -515,20 +519,77 @@ func TestReplicationService_Flow(t *testing.T) {
 	}
 	// sending async message done
 
+	t.Log(" --- Wait for the replication service to receive the async messages ---")
+	{
+		// Make sure the replication service itself has replicated every async
+		// message before peer 2 reconnects. Peer 2 only exchanges heads once,
+		// when it (re)connects, so if it connects before the replication
+		// service holds the entries it never receives them and the test flakes
+		// out with "missing 50 elements". OpenGroupReplication returns the
+		// store the service is already using for this group.
+		replMeta, _, err := replPeer.Service.(interface {
+			OrbitDB() bertyreplication.BertyOrbitDB
+		}).OrbitDB().OpenGroupReplication(ctx, groupReplicable, nil)
+		require.NoError(t, err)
+
+		// The service got the 50 entries only via best-effort gossip from the
+		// now-idle peer 1, so a dropped publish can leave it short; bouncing
+		// peer 1 forces a head exchange that DAG-fills the log. The loop retries
+		// because a single reconnect can lose a peer's pubsub subscription to a
+		// go-libp2p-pubsub connect/disconnect race (the reconnect's new-peer
+		// event is deduped against the not-yet-removed stale entry, so the
+		// subscription is never re-propagated). mocknet doesn't auto-redial, so
+		// re-driving the reconnect is the only recovery — a real network's
+		// discovery/backoff redial does it for free. Not a product-level retry.
+		p1 := mn.Host(api1.MockNode().Identity)
+		replID := replPeer.CoreAPI.MockNode().Identity
+		repladdrs := replPeer.CoreAPI.MockNode().Peerstore.PeerInfo(replID)
+
+		var lastErr error
+		for attempt := 0; attempt < 5; attempt++ {
+			attemptCtx, cancel := context.WithTimeout(ctx, time.Second*6)
+
+			p1.Network().ClosePeer(replID)
+			if lastErr = p1.Connect(attemptCtx, repladdrs); lastErr == nil {
+				lastErr = WaitForEntries(attemptCtx, replMeta, entries...)
+			}
+
+			cancel()
+			if lastErr == nil {
+				break
+			}
+		}
+		require.NoError(t, lastErr)
+	}
+	// replication service is up to date
+
 	t.Log(" --- peer 2 connect to replication service and wait for async messages ---")
 	{
-		ctx, cancel := context.WithTimeout(ctx, time.Second*5)
-		defer cancel()
-
-		// reconnect peer 2 to peer 1
 		m2 := g2a.MetadataStore()
 		p2 := mn.Host(api2.MockNode().Identity)
-		repladdrs := replPeer.CoreAPI.MockNode().Peerstore.PeerInfo(replPeer.CoreAPI.MockNode().Identity)
-		err = p2.Connect(ctx, repladdrs)
-		require.NoError(t, err)
+		replID := replPeer.CoreAPI.MockNode().Identity
+		repladdrs := replPeer.CoreAPI.MockNode().Peerstore.PeerInfo(replID)
 
-		err := WaitForEntries(ctx, m2, entries...)
-		require.NoError(t, err)
+		// Peer 2 was offline and catches up from the service via the head
+		// exchange. Same race as the peer 1 bounce above: a single reconnect can
+		// lose peer 2's pubsub subscription, and mocknet doesn't auto-redial, so
+		// the loop re-drives the reconnect until the subscription registers. Not
+		// a product-level retry.
+		var lastErr error
+		for attempt := 0; attempt < 5; attempt++ {
+			attemptCtx, cancel := context.WithTimeout(ctx, time.Second*6)
+
+			p2.Network().ClosePeer(replID)
+			if lastErr = p2.Connect(attemptCtx, repladdrs); lastErr == nil {
+				lastErr = WaitForEntries(attemptCtx, m2, entries...)
+			}
+
+			cancel()
+			if lastErr == nil {
+				break
+			}
+		}
+		require.NoError(t, lastErr)
 	}
 	// peer 2 test done
 }

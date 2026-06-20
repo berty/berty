@@ -23,6 +23,7 @@ import (
 	"berty.tech/berty/v2/go/pkg/bertyauth"
 	"berty.tech/berty/v2/go/pkg/errcode"
 	orbitdb "berty.tech/go-orbit-db"
+	"berty.tech/go-orbit-db/pubsub/pubsubraw"
 	"berty.tech/weshnet/v2"
 	"berty.tech/weshnet/v2/pkg/ipfsutil"
 	"berty.tech/weshnet/v2/pkg/protocoltypes"
@@ -71,6 +72,9 @@ func TestHelperNewReplicationService(ctx context.Context, t *testing.T, logger *
 		Datastore:       ds,
 	})
 
+	// Use the event-based pubsubraw like production, not the 1s-polling pubsubcoreapi fallback.
+	pubSub := pubsubraw.NewPubSub(api.PubSub(), api.MockNode().PeerHost.ID(), logger, nil)
+
 	odb, err := weshnet.NewWeshOrbitDB(ctx, api.API(), &weshnet.NewOrbitDBOptions{
 		// GroupMetadataStoreType: initutil.DefaultBertyGroupMetadataStoreType,
 		// GroupMessageStoreType:  initutil.DefaultBertyGroupMessageStoreType,
@@ -78,6 +82,7 @@ func TestHelperNewReplicationService(ctx context.Context, t *testing.T, logger *
 		NewOrbitDBOptions: orbitdb.NewOrbitDBOptions{
 			Logger: logger,
 			Cache:  weshnet.NewOrbitDatastoreCache(ds),
+			PubSub: pubSub,
 		},
 	})
 	require.NoError(t, err)

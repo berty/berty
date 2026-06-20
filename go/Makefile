@@ -112,6 +112,9 @@ go.unittest: pb.generate
 go.flappy-tests: pb.generate
 	TEST_STABILITY=flappy go run moul.io/testman test -v -test.v -timeout=600s -retry=10 -run ^TestFlappy    ./pkg/bertymessenger
 	TEST_STABILITY=flappy go run moul.io/testman test -v -test.v -timeout=600s -retry=10 -run ^TestFlappy    ./pkg/bertybot
+	# bertyreplication's reconnect test is flaky on mocknet via an upstream go-libp2p-pubsub race; run it here with retries.
+	# (testman has no -tags flag, so the sqlite build tags go through GOFLAGS; TEST_SPEED=any because the test is Slow.)
+	TEST_STABILITY=flappy TEST_SPEED=any GOFLAGS="-tags=fts5,sqlite,sqlite_unlock_notify" go run moul.io/testman test -v -test.v -timeout=600s -retry=10 -run '^TestReplicationService_Flow$$' ./pkg/bertyreplication
 	# FIXME: run on other packages too
 .PHONY: go.flappy-tests
 
