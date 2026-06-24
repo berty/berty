@@ -12,7 +12,7 @@ on:
           - macos-latest
           - windows-latest
       mod:
-        description: "Install Go/Node modules"
+        description: "Install Go modules"
         required: true
         default: true
         type: boolean
@@ -45,21 +45,6 @@ jobs:
           asdf install golang
           echo "go_version=$(asdf current golang | xargs | cut -d ' ' -f 6)" >> $GITHUB_ENV
 
-      - name: Setup node
-        if: runner.os != 'Windows'
-        working-directory: js
-        run: |
-          asdf plugin add nodejs
-          asdf install nodejs
-          echo "node_version=$(asdf current nodejs | xargs | cut -d ' ' -f 6)" >> $GITHUB_ENV
-
-      - name: Setup yarn
-        if: runner.os != 'Windows'
-        working-directory: js
-        run: |
-          asdf plugin add yarn
-          asdf install yarn
-
       - name: Cache go modules
         if: github.event.inputs.mod == 'true' && runner.os != 'Windows'
         uses: actions/cache@v4
@@ -68,23 +53,10 @@ jobs:
           key: ${{ runner.os }}-go-${{ env.go_version }}-${{ env.json_cache-versions_go }}-${{ hashFiles('go/**/go.sum') }}
           restore-keys: ${{ runner.os }}-go-${{ env.go_version }}-${{ env.json_cache-versions_go }}-
 
-      - name: Cache node modules
-        if: github.event.inputs.mod == 'true' && runner.os != 'Windows'
-        uses: actions/cache@v4
-        with:
-          path: js/node_modules
-          key: ${{ runner.OS }}-node-${{ env.node_version }}-${{ env.json_cache-versions_node }}-${{ hashFiles('js/yarn.lock') }}
-          restore-keys: ${{ runner.OS }}-node-${{ env.node_version }}-${{ env.json_cache-versions_node }}-
-
       - name: Fetch go modules
         if: github.event.inputs.mod == 'true' && runner.os != 'Windows'
         working-directory: go
         run: go mod tidy
-
-      - name: Fetch node modules
-        if: github.event.inputs.mod == 'true' && runner.os != 'Windows'
-        working-directory: js
-        run: make node_modules
 
       - name: Install emacs
         shell: bash

@@ -15,8 +15,6 @@ on:
       - "!go/**.md"
       - "go.*"
       - "**.go"
-      - "js/**"
-      - "!js/packages/i18n/locale/*/*.json"
       - ".github/workflows/integration.yml"
   pull_request:
     paths:
@@ -24,8 +22,6 @@ on:
       - "!go/**.md"
       - "go.*"
       - "**.go"
-      - "js/**"
-      - "!js/packages/i18n/locale/*/*.json"
       - ".github/workflows/integration.yml"
 
 # FIXME:
