@@ -90,7 +90,7 @@ func TestReplicationService_GroupSubscribe(t *testing.T) {
 	require.Error(t, err)
 }
 
-func TestReplicationService_GroupRegister(t *testing.T) {
+func TestFlappyReplicationService_GroupRegister(t *testing.T) {
 	testutil.FilterStability(t, testutil.Flappy)
 
 	ds := dssync.MutexWrap(datastore.NewMapDatastore())
@@ -134,8 +134,13 @@ func TestReplicationService_GroupRegister(t *testing.T) {
 	require.NoError(t, err)
 	cancel()
 
-	// Test reopening the replication manager, the previously registered group should be present
-	repl, _ = bertyreplication.TestHelperNewReplicationService(ctx, t, nil, mn, msrv, ds, db)
+	// Test reopening the replication manager, the previously registered group should be present.
+	// Use a fresh context: the original one was cancelled above to tear down the first instance,
+	// and reusing it would fail the group resubscription on open.
+	ctx2, cancel2 := context.WithCancel(context.Background())
+	defer cancel2()
+
+	repl, _ = bertyreplication.TestHelperNewReplicationService(ctx2, t, nil, mn, msrv, ds, db)
 
 	ok := repl.OrbitDB().IsGroupLoaded(g.GroupIDAsString())
 	require.True(t, ok)
@@ -367,7 +372,7 @@ func TestReplicationService_ReplicateGroupStats_ReplicateGlobalStats(t *testing.
 	require.Equal(t, int64(1), res.Group.MetadataEntriesCount)
 }
 
-func TestReplicationService_Flow(t *testing.T) {
+func TestFlappyReplicationService_Flow(t *testing.T) {
 	// Flappy: depends on a go-libp2p-pubsub connect/disconnect race that mocknet
 	// amplifies (see the catch-up loops below). Runs in the retried flappy lane,
 	// not the blocking stable lane.
