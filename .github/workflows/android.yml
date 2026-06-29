@@ -27,6 +27,18 @@ jobs:
           fetch-depth: 0
           persist-credentials: false
 
+      - name: Free disk space
+        if: inputs.app-json-artifact != ''
+        run: |
+          echo "Disk space before cleanup:"
+          df -h /
+          # Remove large preinstalled toolchains unused by the Android build.
+          # Keep /usr/local/lib/android (SDK/NDK) — the build needs it.
+          sudo rm -rf /usr/share/dotnet /opt/ghc /usr/local/.ghcup /usr/local/share/boost /usr/share/swift
+          sudo docker image prune --all --force || true
+          echo "Disk space after cleanup:"
+          df -h /
+
       - name: Download patched app.json
         if: inputs.app-json-artifact != ''
         uses: actions/download-artifact@v4
