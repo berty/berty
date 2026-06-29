@@ -509,6 +509,16 @@ func (a *TestingAccount) GetAllConversations() map[string]*messengertypes.Conver
 	return newMap
 }
 
+func (a *TestingAccount) GetAllInteractions() map[string]*messengertypes.Interaction {
+	a.processMutex.Lock()
+	defer a.processMutex.Unlock()
+	newMap := make(map[string]*messengertypes.Interaction)
+	for k, v := range a.interactions {
+		newMap[k] = v
+	}
+	return newMap
+}
+
 func (a *TestingAccount) TryNextEvent(t testing.TB, timeout time.Duration) *messengertypes.StreamEvent {
 	t.Helper()
 	a.openStream(t)

@@ -1506,7 +1506,7 @@ func TestSendBlob(t *testing.T) {
 
 	inte := (*messengertypes.Interaction)(nil)
 
-	for _, i := range friend.interactions {
+	for _, i := range friend.GetAllInteractions() {
 		if i.GetType() == messengertypes.AppMessage_TypeUserMessage {
 			inte = i
 			break
@@ -1543,7 +1543,7 @@ func TestSendMedia(t *testing.T) {
 
 	inte := (*messengertypes.Interaction)(nil)
 
-	for _, i := range friend.interactions {
+	for _, i := range friend.GetAllInteractions() {
 		if i.GetType() == messengertypes.AppMessage_TypeUserMessage {
 			inte = i
 			break
