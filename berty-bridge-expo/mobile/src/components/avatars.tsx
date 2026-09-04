@@ -144,14 +144,16 @@ const NameAvatar: React.FC<{
 			]}
 		>
 			<UnifiedText
+				// adjustsFontSizeToFit needs numberOfLines on iOS, otherwise the glyph
+				// can be clipped. The surrounding View centres it; an explicit padding
+				// here used to push the letter off centre.
+				numberOfLines={1}
 				adjustsFontSizeToFit
 				style={{
 					textAlign: 'center',
 					color: colors['reverted-main-text'],
 					fontSize: size * 0.5,
 					includeFontPadding: false,
-					// totally arbitrary, because by default the text is not centered, even if i follow some guides, don't know why
-					paddingBottom: size / 20,
 				}}
 			>
 				{char}
