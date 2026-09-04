@@ -23,10 +23,12 @@ export const TogglePriv: React.FC<TogglePrivProps> = ({
 	styleColors,
 	testID,
 }) => {
-	const circleLeftPositionAnimation = React.useRef(
-		new Animated.Value(checked ? CIRCLE_RIGHT_POSITION : 0),
-	).current
-	const checkIconOpacityAnimation = React.useRef(new Animated.Value(checked ? 1 : 0)).current
+	// Lazy useState rather than useRef().current: both create the value once, but
+	// reading a ref during render is not allowed.
+	const [circleLeftPositionAnimation] = React.useState(
+		() => new Animated.Value(checked ? CIRCLE_RIGHT_POSITION : 0),
+	)
+	const [checkIconOpacityAnimation] = React.useState(() => new Animated.Value(checked ? 1 : 0))
 
 	useEffect(() => {
 		Animated.parallel([

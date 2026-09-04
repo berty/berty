@@ -37,7 +37,9 @@ export const MemberBar: React.FC<MemberBarProps> = props => {
 	const [memberList, setMemberList] = useState<MemberBarItem[] | undefined>(undefined)
 	const [isOneConnected, setIsOneConnected] = useState<boolean>(false)
 
-	const handleMemberList = useCallback(async () => {
+	// Returns the computed values so the effect can set state from the promise
+	// callback rather than straight out of its body.
+	const computeMemberList = useCallback(async () => {
 		const list: MemberBarItem[] = []
 
 		if (!messengerClient) {
@@ -69,10 +71,9 @@ export const MemberBar: React.FC<MemberBarProps> = props => {
 			}
 		}
 
-		setIsOneConnected(connected)
-
-		setMemberList(
-			list.sort((a, b) => {
+		return {
+			connected,
+			list: list.sort((a, b) => {
 				if (
 					b?.networkStatus?.connectionStatus ===
 						beapi.protocol.GroupDeviceStatus.Type.TypePeerConnected &&
@@ -83,13 +84,25 @@ export const MemberBar: React.FC<MemberBarProps> = props => {
 				}
 				return -1
 			}),
-		)
+		}
 	}, [dispatch, messengerClient, props.convId, members])
 
 	useEffect(() => {
-		handleMemberList()
+		let canceled = false
+		computeMemberList()
+			.then(result => {
+				if (canceled || !result) {
+					return
+				}
+				setIsOneConnected(result.connected)
+				setMemberList(result.list)
+			})
+			.catch(err => console.warn('failed to build the member list', err))
+		return () => {
+			canceled = true
+		}
 		// we put peers/members/groups dependencies to update the connectionStatus of peers
-	}, [handleMemberList, groups, peers, members])
+	}, [computeMemberList, groups, peers, members])
 
 	return (
 		<TouchableOpacity

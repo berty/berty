@@ -51,12 +51,12 @@ const MessageInvitationReceived: React.FC<{ message: InteractionGroupInvitation 
 	// Parse deep link
 	React.useEffect(() => {
 		if (client && !convPk && link && !conv) {
-			setError(false)
 			client
 				.parseDeepLink({
 					link,
 				})
 				.then(reply => {
+					setError(false)
 					setPdlInfo({
 						displayName: reply.link?.bertyGroup?.displayName || '',
 						convPk: base64ToURLBase64(

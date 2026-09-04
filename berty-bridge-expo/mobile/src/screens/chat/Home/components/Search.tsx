@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react'
+import React, { useEffect, useMemo, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Keyboard, SectionList, StyleProp, TextStyle, TouchableHighlight, View } from 'react-native'
 import { EdgeInsets } from 'react-native-safe-area-context'
@@ -179,7 +179,7 @@ const SearchResultItem: React.FC<SearchItemProps> = ({ data, kind, searchText = 
 
 	const date = pbDateToNum(inte?.sentDate)
 
-	const MessageDisplay = () => {
+	const renderMessageDisplay = () => {
 		let content
 		switch (kind) {
 			case SearchResultKind.Contact:
@@ -227,7 +227,7 @@ const SearchResultItem: React.FC<SearchItemProps> = ({ data, kind, searchText = 
 		)
 	}
 
-	const TimeStamp = () => {
+	const renderTimeStamp = () => {
 		return (
 			<UnifiedText style={[padding.left.small, text.size.small, text.color.grey]}>
 				{timeFormat.fmtTimestamp1(date)}
@@ -236,12 +236,14 @@ const SearchResultItem: React.FC<SearchItemProps> = ({ data, kind, searchText = 
 	}
 
 	const keyboardStatus = useKeyboardStatus()
-	const [isPressed, setIsPressed] = useState<boolean>(false)
+	// Only gates the effect below, never rendered, so a ref avoids a state
+	// update inside the effect.
+	const isPressed = useRef(false)
 
 	// this effect is usefull to hide keyboard before navigate to a conversation (else we have UI issue)
 	useEffect(() => {
-		if (isPressed && keyboardStatus === KeyboardStatus.KEYBOARD_HIDDEN) {
-			setIsPressed(false)
+		if (isPressed.current && keyboardStatus === KeyboardStatus.KEYBOARD_HIDDEN) {
+			isPressed.current = false
 			if (!conv) {
 				if (data.state === beapi.messenger.Contact.State.IncomingRequest) {
 					navigate('Chat.ContactRequest', { contactId: data.publicKey })
@@ -259,14 +261,14 @@ const SearchResultItem: React.FC<SearchItemProps> = ({ data, kind, searchText = 
 				},
 			})
 		}
-	}, [conv, convPk, data.publicKey, data.state, inte, isPressed, keyboardStatus, kind, navigate])
+	}, [conv, convPk, data.publicKey, data.state, inte, keyboardStatus, kind, navigate])
 
 	return (
 		<TouchableHighlight
 			underlayColor={!conv ? 'transparent' : color.light.grey}
 			onPress={() => {
 				Keyboard.dismiss()
-				setIsPressed(true)
+				isPressed.current = true
 			}}
 		>
 			<View style={[row.center, padding.medium, border.bottom.tiny, border.color.light.grey]}>
@@ -285,12 +287,12 @@ const SearchResultItem: React.FC<SearchItemProps> = ({ data, kind, searchText = 
 								/>
 							)}
 						</UnifiedText>
-						<MessageDisplay />
+						{renderMessageDisplay()}
 					</View>
 				</View>
 
 				<View style={[{ marginLeft: 'auto' }, row.item.center]}>
-					{date > 0 && kind === SearchResultKind.Interaction ? <TimeStamp /> : null}
+					{date > 0 && kind === SearchResultKind.Interaction ? renderTimeStamp() : null}
 				</View>
 			</View>
 		</TouchableHighlight>

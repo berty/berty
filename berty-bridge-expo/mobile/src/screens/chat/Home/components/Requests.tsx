@@ -98,7 +98,8 @@ const ContactRequest: React.FC<beapi.messenger.IContact> = ({
 	const { border, padding, row, absolute, text } = useStyles()
 	const { scaleSize } = useAppDimensions()
 	const colors = useThemeColor()
-	const createdDate = pbDateToNum(createdDateStr) || Date.now()
+	const [mountedAt] = React.useState(() => Date.now())
+	const createdDate = pbDateToNum(createdDateStr) || mountedAt
 	return (
 		<TouchableOpacity
 			style={contactReqContainer}

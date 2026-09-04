@@ -116,35 +116,36 @@ export const Home: ScreenFC<'Chat.Home'> = () => {
 		[contacts, searchCheck, searching],
 	)
 
-	const searchInteractions = useRef<beapi.messenger.IInteraction[]>([])
+	const [searchResults, setSearchResults] = useState<{
+		query: string
+		items: beapi.messenger.IInteraction[]
+	}>({ query: '', items: [] })
+	const searchInteractions = searchResults.query === searchText ? searchResults.items : []
 	const [earliestResult, setEarliestResult] = useState('')
 
 	const dispatch = useAppDispatch()
 	const [noNetwork, setNoNetwork] = useState<boolean>(false)
 	const noNetworkPopupSuggested = useAppSelector(selectNoNetworkPopupSuggested)
-	const handleNetworkChange = React.useCallback(async () => {
+	// effect handle network change, no network popup
+	useEffect(() => {
+		let canceled = false
 		if (noNetworkPopupSuggested) {
 			return
 		}
-		try {
-			const data = await Network.getNetworkStateAsync()
-
-			if (!data.isConnected || !data.isInternetReachable) {
-				setNoNetwork(true)
-			}
-		} catch (err) {
-			console.error(err)
+		Network.getNetworkStateAsync()
+			.then(data => {
+				if (!canceled && (!data.isConnected || !data.isInternetReachable)) {
+					setNoNetwork(true)
+				}
+			})
+			.catch(err => console.error(err))
+		return () => {
+			canceled = true
 		}
-	}, [noNetworkPopupSuggested])
-
-	// effect handle network change, no network popup
-	useEffect(() => {
-		handleNetworkChange()
-	}, [handleNetworkChange, noNetwork, noNetworkPopupSuggested])
+	}, [noNetwork, noNetworkPopupSuggested])
 
 	useEffect(() => {
 		let canceled = false
-		searchInteractions.current = []
 
 		if (searchText.trim() === '') {
 			return
@@ -176,7 +177,10 @@ export const Home: ScreenFC<'Chat.Home'> = () => {
 						return
 					}
 
-					searchInteractions.current = searchInteractions.current.concat(results!.results)
+					setSearchResults(prev => ({
+						query: searchText,
+						items: prev.query === searchText ? prev.items.concat(results!.results) : results!.results,
+					}))
 					setEarliestResult(results!.results[results!.results.length - 1].cid!)
 					earliestResult = results!.results[results!.results.length - 1].cid!
 					// TODO: remove this loop, add loading on scroll
@@ -190,9 +194,9 @@ export const Home: ScreenFC<'Chat.Home'> = () => {
 		return () => {
 			canceled = true
 		}
-	}, [messengerClient, searchInteractions, searchText])
+	}, [messengerClient, searchText])
 
-	const hasResults = [searchConversations, searchContacts, searchInteractions.current].some(
+	const hasResults = [searchConversations, searchContacts, searchInteractions].some(
 		c => Object.keys(c).length > 0,
 	)
 	const styleBackground = useMemo(
@@ -274,7 +278,7 @@ export const Home: ScreenFC<'Chat.Home'> = () => {
 							insets={null}
 							conversations={searchConversations}
 							contacts={searchContacts}
-							interactions={searchInteractions.current}
+							interactions={searchInteractions}
 							value={searchText}
 							hasResults={hasResults}
 							earliestInteractionCID={earliestResult}

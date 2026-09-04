@@ -115,10 +115,18 @@ const PushNotificationBridge = () => {
 	}, []);
 
 	// Navigate to the pending conversation once the messenger is ready.
+	// The handled key is tracked in a ref rather than cleared through state, which
+	// would be a setState inside this effect. Responses are already deduped by
+	// notification id above, so one navigation per pending key is enough.
+	const navigatedConvPK = useRef<string | null>(null);
 	useEffect(() => {
 		if (!pendingConvPK || !messengerClient) {
 			return;
 		}
+		if (navigatedConvPK.current === pendingConvPK) {
+			return;
+		}
+		navigatedConvPK.current = pendingConvPK;
 		const conv = conversations[pendingConvPK];
 		resetRoutes([
 			{ name: "Chat.Home" },
@@ -132,7 +140,6 @@ const PushNotificationBridge = () => {
 				},
 			},
 		]);
-		setPendingConvPK(null);
 	}, [pendingConvPK, messengerClient, conversations]);
 
 	const pushNotifListener = async (data: any) => {

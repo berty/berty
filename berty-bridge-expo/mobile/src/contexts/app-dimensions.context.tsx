@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState } from "react";
+import React, { createContext, useContext, useMemo } from "react";
 import { PixelRatio, useWindowDimensions } from "react-native";
 
 import {
@@ -39,13 +39,14 @@ interface AppDimensionsProviderProps {
 
 export const AppDimensionsProvider = ({ children }: AppDimensionsProviderProps) => {
 	const { height: windowHeight, width: windowWidth } = useWindowDimensions();
-	const [scaleHeight, setScaleHeight] = useState(initialScaleHeight);
-	const [scaleSize, setScaleSize] = useState(initialScaleSize);
-	const [fontScale, setFontScale] = useState(initialFontScale);
 	const isGteIpadSize =
 		Math.min(initialHeight, initialWidth) >= iPadShortEdge &&
 		Math.max(initialHeight, initialWidth) >= iPadLongEdge;
-	React.useEffect(() => {
+
+	// Derived straight from the window size rather than mirrored into state by an
+	// effect, so the first render already has the real values instead of the
+	// initial* placeholders.
+	const { scaleHeight, scaleSize, fontScale } = useMemo(() => {
 		const isLandscape = windowHeight < windowWidth;
 		const _scaleHeight =
 			windowHeight /
@@ -56,10 +57,11 @@ export const AppDimensionsProvider = ({ children }: AppDimensionsProviderProps) 
 		const _scaleSize =
 			windowWidth /
 			Math.max(isLandscape ? iPhone11LongEdge : iPhone11ShortEdge, windowWidth);
-		const _fontScale = PixelRatio.getFontScale() * _scaleSize;
-		setScaleHeight(_scaleHeight);
-		setScaleSize(_scaleSize);
-		setFontScale(_fontScale);
+		return {
+			scaleHeight: _scaleHeight,
+			scaleSize: _scaleSize,
+			fontScale: PixelRatio.getFontScale() * _scaleSize,
+		};
 	}, [windowHeight, windowWidth]);
 
 	return (

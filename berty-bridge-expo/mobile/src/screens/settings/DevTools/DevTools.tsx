@@ -265,13 +265,14 @@ const SendToAllContacts: React.FC = () => {
 			conv.type === beapi.messenger.Conversation.Type.ContactType &&
 			!(conv as any)?.fake,
 	);
-	const body = `${t("settings.devtools.send-to-all-button.test")}${new Date(
-		Date.now(),
-	).toLocaleString()}`;
-	const buf = beapi.messenger.AppMessage.UserMessage.encode({ body }).finish();
 	const handleSendToAll = React.useCallback(async () => {
 		setDisabled(true);
 		setName(t("settings.devtools.send-to-all-button.sending"));
+		// Timestamped when the button is pressed, not while rendering.
+		const body = `${t("settings.devtools.send-to-all-button.test")}${new Date(
+			Date.now(),
+		).toLocaleString()}`;
+		const buf = beapi.messenger.AppMessage.UserMessage.encode({ body }).finish();
 		for (const conv of filteredConvs) {
 			try {
 				await client?.interact({
@@ -291,7 +292,7 @@ const SendToAllContacts: React.FC = () => {
 			() => setName(t("settings.devtools.send-to-all-button.title")),
 			1000,
 		);
-	}, [buf, filteredConvs, client, t]);
+	}, [filteredConvs, client, t]);
 	return (
 		<ButtonSetting
 			name={name}
@@ -349,8 +350,7 @@ const BodyDevTools = () => {
 	const { navigate } = useNavigation();
 	const navigation = useNavigation();
 	const { t } = useTranslation();
-	const tyberHosts = useRef<{ [key: string]: string[] }>({});
-	const [, setRerender] = useState(0);
+	const [tyberHosts, setTyberHosts] = useState<{ [key: string]: string[] }>({});
 	const colors = useThemeColor();
 	const dispatch = useAppDispatch();
 	const persistentOptions = useSelector(selectPersistentOptions);
@@ -360,17 +360,10 @@ const BodyDevTools = () => {
 	const [forceMock, setForceMock] = useState<boolean>(false);
 	const networkConfig = useSelector(selectEditedNetworkConfig);
 
-	const addTyberHost = useCallback(
-		(host: string, addresses: string[]) => {
-			if (tyberHosts.current[host]) {
-				return;
-			}
-
-			tyberHosts.current[host] = addresses;
-			setRerender(Date.now());
-		},
-		[tyberHosts, setRerender],
-	);
+	const addTyberHost = useCallback((host: string, addresses: string[]) => {
+		// Keep the first address list seen for a host, as before.
+		setTyberHosts((prev) => (prev[host] ? prev : { ...prev, [host]: addresses }));
+	}, []);
 	const items: any = Object.entries(languages).map(([key, attrs]) => ({
 		label: attrs.localName,
 		value: key,
@@ -666,7 +659,7 @@ const BodyDevTools = () => {
 						showNeedRestartNotification("restartAfterClosing", t);
 					}}
 				/>
-				{Object.entries(tyberHosts.current).map(([hostname, ipAddresses]) => (
+				{Object.entries(tyberHosts).map(([hostname, ipAddresses]) => (
 					<ButtonSetting
 						key={hostname}
 						name={t("settings.devtools.tyber-attach", { host: hostname })}

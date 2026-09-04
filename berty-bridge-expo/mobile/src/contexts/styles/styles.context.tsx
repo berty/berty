@@ -1,5 +1,5 @@
 import { useWindowDimensions } from "react-native";
-import React, { createContext, useContext, useState } from 'react'
+import React, { createContext, useContext, useMemo } from 'react'
 import { PixelRatio } from 'react-native'
 
 import {
@@ -26,21 +26,20 @@ interface StyleProviderProps {
 
 export const StyleProvider = ({ children }: StyleProviderProps) => {
 	const { height: windowHeight, width: windowWidth } = useWindowDimensions()
-	const [stylesState, setStylesState] = useState(defaultStyles)
-	React.useEffect(() => {
+
+	// Derived from the window size rather than mirrored into state by an effect,
+	// so the first render already uses the real scale instead of defaultStyles.
+	const stylesState = useMemo(() => {
 		const isLandscape = windowHeight < windowWidth
 		const _scaleHeight =
 			windowHeight / Math.max(isLandscape ? iPhone11ShortEdge : iPhone11LongEdge, windowHeight)
 		const _scaleSize =
 			windowWidth / Math.max(isLandscape ? iPhone11LongEdge : iPhone11ShortEdge, windowWidth)
-		const _fontScale = PixelRatio.getFontScale() * _scaleSize
-		setStylesState(
-			mapScaledDeclarationWithDims(defaultStylesDeclaration, {
-				fontScale: _fontScale,
-				scaleSize: _scaleSize,
-				scaleHeight: _scaleHeight,
-			}),
-		)
+		return mapScaledDeclarationWithDims(defaultStylesDeclaration, {
+			fontScale: PixelRatio.getFontScale() * _scaleSize,
+			scaleSize: _scaleSize,
+			scaleHeight: _scaleHeight,
+		})
 	}, [windowHeight, windowWidth])
 
 	return (

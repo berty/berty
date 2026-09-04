@@ -12,7 +12,13 @@ import { ButtonSettingV2 } from '@berty/components/shared-components'
 import { UnifiedText } from '@berty/components/shared-components/UnifiedText'
 import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
 import PermissionsContext from '@berty/contexts/permissions.context'
-import { useAccount, useMessengerClient, useOneToOneContact, useThemeColor } from '@berty/hooks'
+import {
+	useAccount,
+	useMessengerClient,
+	useNow,
+	useOneToOneContact,
+	useThemeColor,
+} from '@berty/hooks'
 import { useAllConversations } from '@berty/hooks'
 import { ScreenFC, useNavigation } from '@berty/navigation'
 import { selectProtocolClient } from '@berty/redux/reducers/ui.reducer'
@@ -54,6 +60,7 @@ const MutedConversationButton = ({
 }) => {
 	const { t } = useTranslation()
 	const messengerClient = useMessengerClient()
+	const now = useNow()
 
 	const colors = useThemeColor()
 	const { scaleSize } = useAppDimensions()
@@ -96,7 +103,7 @@ const MutedConversationButton = ({
 				}
 			}}
 			oppositeNode={
-				pushTokenShared && numberifyLong(conversation.mutedUntil) - Date.now() < oneYear ? (
+				pushTokenShared && numberifyLong(conversation.mutedUntil) - now < oneYear ? (
 					<UnifiedText style={{ color: colors['warning-asset'] }}>
 						{timeoutDisplay(t, numberifyLong(conversation.mutedUntil))}
 					</UnifiedText>
@@ -125,9 +132,10 @@ export const Notifications: ScreenFC<'Settings.Notifications'> = () => {
 	const topInset = useTopInset()
 	const account = useAccount()
 	const hasPushToken = useMemo(() => hasKnownPushServer(account), [account])
+	const now = useNow()
 	const accountUnmuted = useMemo(
-		() => numberifyLong(account.mutedUntil) < Date.now(),
-		[account.mutedUntil],
+		() => numberifyLong(account.mutedUntil) < now,
+		[account.mutedUntil, now],
 	)
 	const pushPermissionGranted = useMemo(
 		() =>
@@ -149,10 +157,10 @@ export const Notifications: ScreenFC<'Settings.Notifications'> = () => {
 							Array.isArray(c?.pushLocalDeviceSharedTokens) &&
 							c?.pushLocalDeviceSharedTokens.length > 0
 
-						return c && (!pushTokenShared || numberifyLong(c.mutedUntil) > Date.now())
+						return c && (!pushTokenShared || numberifyLong(c.mutedUntil) > now)
 				  })
 				: [],
-		[pushEnabled, conversations],
+		[pushEnabled, conversations, now],
 	)
 
 	return (

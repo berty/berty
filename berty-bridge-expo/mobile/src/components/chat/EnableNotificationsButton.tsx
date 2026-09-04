@@ -6,7 +6,7 @@ import { useSelector } from 'react-redux'
 import { FloatingMenuItemWithPrimaryIcon, FloatingMenuToggle } from '@berty/components'
 import PermissionsContext from '@berty/contexts/permissions.context'
 import { useStyles } from '@berty/contexts/styles'
-import { useAccount, useConversation, useMessengerClient } from '@berty/hooks'
+import { useAccount, useConversation, useMessengerClient, useNow } from '@berty/hooks'
 import { useNavigation } from '@berty/navigation'
 import { selectProtocolClient } from '@berty/redux/reducers/ui.reducer'
 import { numberifyLong } from '@berty/utils/convert/long'
@@ -34,9 +34,10 @@ const EnableNotificationsButton: React.FC<{
 			conv?.pushLocalDeviceSharedTokens.length > 0,
 		[conv],
 	)
+	const now = useNow()
 	const conversationNotMuted = useMemo(
-		() => numberifyLong(conv?.mutedUntil) < Date.now(),
-		[conv?.mutedUntil],
+		() => numberifyLong(conv?.mutedUntil) < now,
+		[conv?.mutedUntil, now],
 	)
 	const pushPermissionGranted = useMemo(
 		() =>
@@ -44,8 +45,8 @@ const EnableNotificationsButton: React.FC<{
 		[permissions.notification],
 	)
 	const accountMuted = useMemo(
-		() => numberifyLong(account.mutedUntil) > Date.now(),
-		[account.mutedUntil],
+		() => numberifyLong(account.mutedUntil) > now,
+		[account.mutedUntil, now],
 	)
 
 	console.log('results:', permissions.notification, pushTokenShared, conversationNotMuted)

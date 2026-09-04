@@ -402,7 +402,7 @@ const AccountsInspector: React.FC<{
 }
 
 const AppInspector: React.FC<{ error: Error | null }> = ({ error }) => {
-	const [lastUpdate, setLastUpdate] = useState(Date.now())
+	const [lastUpdate, setLastUpdate] = useState(() => Date.now())
 	const { t } = useTranslation()
 	const { text } = useStyles()
 	const dispatch = useAppDispatch()

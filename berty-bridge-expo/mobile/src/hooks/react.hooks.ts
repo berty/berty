@@ -36,3 +36,22 @@ export const useKeyboardStatus = (): KeyboardStatus => {
 
 	return keyboardStatus
 }
+
+/**
+ * Current epoch milliseconds, held in state.
+ *
+ * Calling `Date.now()` while rendering is impure, so deadline checks
+ * ("is this conversation still muted?") read from here instead. Keeping it in
+ * state also means the UI updates by itself once a deadline passes, which the
+ * render-time calls never did.
+ */
+export const useNow = (intervalMs: number = 30_000): number => {
+	const [now, setNow] = useState(() => Date.now())
+
+	useEffect(() => {
+		const id = setInterval(() => setNow(Date.now()), intervalMs)
+		return () => clearInterval(id)
+	}, [intervalMs])
+
+	return now
+}

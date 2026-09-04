@@ -300,8 +300,14 @@ interface ErrorScreenProps {
 	children: React.ReactNode;
 }
 
+// Picked once per mount: Math.random() during render is impure, and re-rolling
+// it on every render could swap the screen out from under the user.
+const errorScreens = [WTFScreen, SorryScreen];
+
 export const ErrorScreen = ({ children }: ErrorScreenProps) => {
-	const components = [WTFScreen, SorryScreen];
+	const [ErrorComponent] = React.useState(
+		() => errorScreens[Math.floor(Math.random() * errorScreens.length)],
+	);
 
 	const [error, setError] = React.useState<Error | null>(null);
 
@@ -324,8 +330,7 @@ export const ErrorScreen = ({ children }: ErrorScreenProps) => {
 	}
 
 	if (error !== null) {
-		const Component = components[Math.floor(Math.random() * components.length)];
-		return <Component error={error} />;
+		return <ErrorComponent error={error} />;
 	}
 	return <>{children}</>;
 };

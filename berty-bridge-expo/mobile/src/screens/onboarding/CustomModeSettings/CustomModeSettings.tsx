@@ -1,5 +1,5 @@
 import { Icon } from '@ui-kitten/components'
-import React, { createRef, RefObject } from 'react'
+import React, { RefObject, useMemo, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 import {
 	ScrollView,
@@ -212,6 +212,7 @@ const Proximity: React.FC = () => {
 }
 
 const Routing: React.FC<{ accordionRefs: AccordionRefs }> = ({ accordionRefs }) => {
+	const { rdvp: rdvpRef } = accordionRefs
 	const { t } = useTranslation()
 	const dispatch = useAppDispatch()
 	const currentNetworkConfig = useAppSelector(selectEditedNetworkConfig)
@@ -237,12 +238,13 @@ const Routing: React.FC<{ accordionRefs: AccordionRefs }> = ({ accordionRefs }) 
 				{t('onboarding.custom-mode.settings.routing.dht-button')}
 			</FloatingMenuToggleAlt>
 
-			<RendezvousDropdown ref={accordionRefs.rdvp} />
+			<RendezvousDropdown ref={rdvpRef} />
 		</View>
 	)
 }
 
 const CustomConfig: React.FC<{ accordionRefs: AccordionRefs }> = ({ accordionRefs }) => {
+	const { relay: relayRef, bootstrap: bootstrapRef } = accordionRefs
 	const { margin, padding, border } = useStyles()
 	const { t } = useTranslation()
 	const colors = useThemeColor()
@@ -284,8 +286,8 @@ const CustomConfig: React.FC<{ accordionRefs: AccordionRefs }> = ({ accordionRef
 					icon='services'
 					iconSize={50}
 				/>
-				<RelayDropdown ref={accordionRefs.relay} />
-				<BootstrapDropdown ref={accordionRefs.bootstrap} />
+				<RelayDropdown ref={relayRef} />
+				<BootstrapDropdown ref={bootstrapRef} />
 			</View>
 		</View>
 	)
@@ -428,11 +430,15 @@ export const CustomModeSettings: ScreenFC<'Onboarding.CustomModeSettings'> = () 
 	const colors = useThemeColor()
 	const { padding } = useStyles()
 	const dispatch = useAppDispatch()
-	const accordionRefs: AccordionRefs = {
-		relay: createRef<AccordionRef>(),
-		rdvp: createRef<AccordionRef>(),
-		bootstrap: createRef<AccordionRef>(),
-	}
+	// createRef() during render handed out a fresh ref on every render, so the
+	// accordions never kept one. useRef persists them.
+	const relayRef = useRef<AccordionRef | null>(null)
+	const rdvpRef = useRef<AccordionRef | null>(null)
+	const bootstrapRef = useRef<AccordionRef | null>(null)
+	const accordionRefs: AccordionRefs = useMemo(
+		() => ({ relay: relayRef, rdvp: rdvpRef, bootstrap: bootstrapRef }),
+		[],
+	)
 
 	useMountEffect(() => {
 		const getNetworkConfig = async () => {

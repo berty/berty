@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef } from 'react'
 import { Keyboard, StyleSheet, TouchableHighlight, View } from 'react-native'
 
 import beapi from '@berty/api'
@@ -19,12 +19,14 @@ export const ConversationButton: React.FC<React.PropsWithChildren<ConversationBu
 	const colors = useThemeColor()
 	const { padding, row, opacity } = useStyles()
 	const keyboardStatus = useKeyboardStatus()
-	const [isPressed, setIsPressed] = useState<boolean>(false)
+	// Only gates the effect below, never rendered, so a ref avoids a state
+	// update inside the effect.
+	const isPressed = useRef(false)
 
 	// this effect is usefull to hide keyboard before navigate to a conversation (else we have UI issue)
 	useEffect(() => {
-		if (isPressed && keyboardStatus === KeyboardStatus.KEYBOARD_HIDDEN) {
-			setIsPressed(false)
+		if (isPressed.current && keyboardStatus === KeyboardStatus.KEYBOARD_HIDDEN) {
+			isPressed.current = false
 			navigate({
 				name:
 					props.type === beapi.messenger.Conversation.Type.MultiMemberType
@@ -35,7 +37,7 @@ export const ConversationButton: React.FC<React.PropsWithChildren<ConversationBu
 				},
 			})
 		}
-	}, [isPressed, keyboardStatus, navigate, props.publicKey, props.type])
+	}, [keyboardStatus, navigate, props.publicKey, props.type])
 
 	return (
 		<TouchableHighlight
@@ -49,7 +51,7 @@ export const ConversationButton: React.FC<React.PropsWithChildren<ConversationBu
 			]}
 			onPress={() => {
 				Keyboard.dismiss()
-				setIsPressed(true)
+				isPressed.current = true
 			}}
 		>
 			<View style={[row.center, !props.isLast && styles.divider, padding.vertical.scale(7)]}>

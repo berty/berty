@@ -24,6 +24,7 @@ import {
 	useAppSelector,
 	useMessengerClient,
 	useMountEffect,
+	useNow,
 	useSyncNetworkConfigOnScreenRemoved,
 	useThemeColor,
 } from '@berty/hooks'
@@ -107,6 +108,7 @@ const ProfileButton: React.FC<{ show: () => void }> = ({ show }) => {
 
 export const SettingsHome: ScreenFC<'Settings.Home'> = () => {
 	const { scaleSize } = useAppDimensions()
+	const now = useNow()
 	const colors = useThemeColor()
 	const { navigate } = useNavigation()
 	const { t } = useTranslation()
@@ -275,7 +277,7 @@ export const SettingsHome: ScreenFC<'Settings.Home'> = () => {
 										iconName='bell-outline'
 										isToggleOn={
 											knownPushServer() &&
-											numberifyLong(account.mutedUntil) < Date.now() &&
+											numberifyLong(account.mutedUntil) < now &&
 											(permissions.notification === RESULTS.GRANTED ||
 												permissions.notification === RESULTS.LIMITED)
 										}
