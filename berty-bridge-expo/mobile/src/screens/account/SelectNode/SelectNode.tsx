@@ -1,6 +1,6 @@
 import React, { useEffect, useCallback, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { NativeModules, Platform, View } from 'react-native'
+import { Alert, NativeModules, Platform, View } from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
 import { CreateGroupFooterWithIcon, MenuToggle, ItemSection } from '@berty/components'
@@ -8,7 +8,7 @@ import { LoaderDots } from '@berty/components/LoaderDots'
 import { UnifiedText } from '@berty/components/shared-components/UnifiedText'
 import { StatusBarPrimary } from '@berty/components/StatusBarPrimary'
 import { useStyles } from '@berty/contexts/styles'
-import { ScreenFC, useRouteParams } from '@berty/navigation'
+import { ScreenFC, useNavigation, useRouteParams } from '@berty/navigation'
 import {
 	AsyncStorageKeys,
 	NodeInfos,
@@ -16,15 +16,37 @@ import {
 	storeData,
 	getData,
 } from '@berty/utils/async-storage/async-storage'
+import { initBridge } from '@berty/utils/bridge/bridge'
 import * as testIDs from '@berty/utils/testing/testIDs.json'
 
 import { LabelInput } from './components/LabelInput'
 
 export const SelectNode: ScreenFC<'Account.SelectNode'> = () => {
 	const params = useRouteParams('Account.SelectNode')
+	const { reset } = useNavigation()
+
 	// `action` is the action to do when the form is validated. This action can failed we must test the result.
 	// `init` is true when the screen is showed at the start of the app. In DevTools, `init` is false.
-	const { action, init } = params
+	// Neither is set when this is the entry route, so the app-start behaviour
+	// lives here rather than being passed in as a route param.
+	const startBridge = useCallback(
+		async (external: boolean, address: string, port: string) => {
+			const res = await initBridge(external, address, port)
+			if (!res) {
+				Alert.alert('bridge: init failed')
+				return false
+			}
+			reset({
+				index: 0,
+				routes: [{ name: 'Account.GoToLogInOrCreate', params: { isCreate: false } }],
+			})
+			return true
+		},
+		[reset],
+	)
+
+	const action = params.action ?? startBridge
+	const init = params.init ?? true
 	const { column, margin, padding, text, row } = useStyles()
 	const { t } = useTranslation()
 	const [nodeInfos, setNodeInfos] = useState(NodeInfosDefault)

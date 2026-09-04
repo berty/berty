@@ -85,9 +85,11 @@ export type ScreensParams = {
 		isCreate: boolean
 		selectedAccount?: string
 	}
+	// Both are optional: SelectNode falls back to the app-start behaviour when it
+	// is the entry route, and DevTools passes its own.
 	'Account.SelectNode': {
-		init: boolean
-		action: (external: boolean, address: string, port: string) => Promise<boolean>
+		init?: boolean
+		action?: (external: boolean, address: string, port: string) => Promise<boolean>
 	}
 	'Account.Opening': { selectedAccount: string; isNewAccount?: boolean }
 	'Account.Creating': undefined

@@ -14,7 +14,6 @@ import { useThemeColor } from '@berty/hooks'
 import { initI18N } from '@berty/i18n'
 import { useNavigation } from '@berty/navigation'
 import { CustomTitleStyle } from '@berty/navigation/screenOptions'
-import { DeepLinkBridge } from '@berty/navigation/deepLinkBridge'
 import { isReadyRef, navigationRef } from '@berty/navigation/rootRef'
 import 'intl-pluralrules'
 
@@ -480,7 +479,6 @@ export default function RootLayout() {
 					<ErrorScreen>
 						<PermissionsProvider>
 							<NotificationProvider>
-								<DeepLinkBridge />
 								<RootStack />
 							</NotificationProvider>
 						</PermissionsProvider>
