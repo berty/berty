@@ -10,6 +10,7 @@
     "ios": "expo run:ios",
     "web": "expo start --web",
     "test": "jest --watchAll",
+    "typecheck": "tsc --noEmit",
     "lint": "expo lint",
     "storybook-generate": "sb-rn-get-stories"
   },
