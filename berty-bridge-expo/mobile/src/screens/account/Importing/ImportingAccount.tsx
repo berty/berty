@@ -3,14 +3,11 @@ import React from 'react'
 import { StreamProgress } from '@berty/components'
 import { StatusBarPrimary } from '@berty/components/StatusBarPrimary'
 import { useAppDispatch } from '@berty/hooks'
-import { ScreenFC, useNavigation } from '@berty/navigation'
+import { ScreenFC, useNavigation, useRouteParams } from '@berty/navigation'
 import { importAccount, refreshAccountList } from '@berty/utils/accounts'
 
-export const ImportingAccount: ScreenFC<'Account.Importing'> = ({
-	route: {
-		params: { filePath },
-	},
-}) => {
+export const ImportingAccount: ScreenFC<'Account.Importing'> = () => {
+	const { filePath } = useRouteParams('Account.Importing')
 	const dispatch = useAppDispatch()
 	const { reset } = useNavigation()
 

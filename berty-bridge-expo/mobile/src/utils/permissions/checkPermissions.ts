@@ -1,17 +1,16 @@
-import { NavigationProp } from '@react-navigation/native'
 import { Platform } from 'react-native'
 import { PermissionStatus, RESULTS } from 'react-native-permissions'
 
 import beapi from '@berty/api'
-import { ScreensParams } from '@berty/navigation/types'
 
 import { getPermissions, PermissionType } from './permissions'
+import { Navigation } from '@berty/navigation'
 
 const getPermissionStatusAndSwitch = async (
 	permissionType: PermissionType,
 	accept: () => Promise<void> | void,
 	deny: () => Promise<void> | void,
-	navigate: NavigationProp<ScreensParams>['navigate'],
+	navigate: Navigation['navigate'],
 ) => {
 	let status: PermissionStatus = RESULTS.DENIED
 	try {
@@ -57,7 +56,7 @@ const getPermissionStatusAndSwitch = async (
 
 export const checkPermission = async (options: {
 	permissionType: PermissionType
-	navigate: NavigationProp<ScreensParams>['navigate']
+	navigate: Navigation['navigate']
 	accept: () => Promise<void> | void
 	deny: () => Promise<void> | void
 }) => {
@@ -70,7 +69,7 @@ export const checkProximityPermission = async (options: {
 	setNetworkConfig: (newConfig: beapi.account.INetworkConfig) => Promise<void>
 	networkConfig: beapi.account.INetworkConfig
 	changedKey: ('bluetoothLe' | 'androidNearby' | 'appleMultipeerConnectivity')[]
-	navigate: NavigationProp<ScreensParams>['navigate']
+	navigate: Navigation['navigate']
 	accept?: () => Promise<void> | void
 	deny?: () => Promise<void> | void
 }) => {

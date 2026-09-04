@@ -1,4 +1,3 @@
-import { NativeStackScreenProps } from '@react-navigation/native-stack'
 import React from 'react'
 import { PermissionStatus } from 'react-native-permissions'
 
@@ -99,6 +98,9 @@ export type ScreensParams = {
 	'Account.Deleting': { selectedAccount: string }
 }
 
-type ScreenProps<T extends keyof ScreensParams> = NativeStackScreenProps<ScreensParams, T>
-
-export type ScreenFC<T extends keyof ScreensParams> = React.FC<ScreenProps<T>>
+// Expo Router renders screens without the React Navigation `route`/`navigation`
+// props, so screens take no props and read their params with
+// `useRouteParams('<name>')` instead. The route name is kept as a type parameter
+// to document which entry of ScreensParams a screen belongs to.
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export type ScreenFC<T extends keyof ScreensParams> = React.FC

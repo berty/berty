@@ -1,4 +1,4 @@
-import { useFocusEffect } from '@react-navigation/core'
+import { useFocusEffect } from 'expo-router'
 import { CameraView } from 'expo-camera'
 import React, { FC, PropsWithChildren, ReactNode, use, useCallback, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'

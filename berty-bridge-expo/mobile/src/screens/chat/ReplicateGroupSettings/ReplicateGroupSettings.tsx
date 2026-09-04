@@ -1,5 +1,5 @@
 import { Layout } from '@ui-kitten/components'
-import React, { ComponentProps } from 'react'
+import React from 'react'
 import { useTranslation } from 'react-i18next'
 import { ScrollView, View } from 'react-native'
 
@@ -12,7 +12,7 @@ import {
 	useMessengerClient,
 	useThemeColor,
 } from '@berty/hooks'
-import { ScreenFC } from '@berty/navigation'
+import { Navigation, ScreenFC, useNavigation, useRouteParams } from '@berty/navigation'
 import {
 	replicateGroup,
 	servicesAuthViaDefault,
@@ -97,7 +97,7 @@ const getReplicationStatusColor = (status: replicationServerStatus): string => {
 
 const ReplicateGroupContent: React.FC<{
 	conversationPublicKey?: Maybe<string>
-	navigation: ComponentProps<typeof ReplicateGroupSettings>['navigation']
+	navigation: Navigation
 }> = ({ conversationPublicKey }) => {
 	const client = useMessengerClient()
 	const conversation = useConversation(conversationPublicKey)
@@ -159,11 +159,10 @@ const ReplicateGroupContent: React.FC<{
 	)
 }
 
-export const ReplicateGroupSettings: ScreenFC<'Chat.ReplicateGroupSettings'> = ({
-	route,
-	navigation,
-}) => {
-	const { convId } = route.params
+export const ReplicateGroupSettings: ScreenFC<'Chat.ReplicateGroupSettings'> = () => {
+	const params = useRouteParams('Chat.ReplicateGroupSettings')
+	const navigation = useNavigation()
+	const { convId } = params
 	const { padding } = useStyles()
 	const conv = useConversation(convId)
 

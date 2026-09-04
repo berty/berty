@@ -8,7 +8,7 @@ import { LoaderDots } from '@berty/components/LoaderDots'
 import { UnifiedText } from '@berty/components/shared-components/UnifiedText'
 import { StatusBarPrimary } from '@berty/components/StatusBarPrimary'
 import { useStyles } from '@berty/contexts/styles'
-import { ScreenFC } from '@berty/navigation'
+import { ScreenFC, useRouteParams } from '@berty/navigation'
 import {
 	AsyncStorageKeys,
 	NodeInfos,
@@ -20,10 +20,11 @@ import * as testIDs from '@berty/utils/testing/testIDs.json'
 
 import { LabelInput } from './components/LabelInput'
 
-export const SelectNode: ScreenFC<'Account.SelectNode'> = ({ route }) => {
+export const SelectNode: ScreenFC<'Account.SelectNode'> = () => {
+	const params = useRouteParams('Account.SelectNode')
 	// `action` is the action to do when the form is validated. This action can failed we must test the result.
 	// `init` is true when the screen is showed at the start of the app. In DevTools, `init` is false.
-	const { action, init } = route.params
+	const { action, init } = params
 	const { column, margin, padding, text, row } = useStyles()
 	const { t } = useTranslation()
 	const [nodeInfos, setNodeInfos] = useState(NodeInfosDefault)

@@ -5,18 +5,15 @@ import { StreamProgress } from '@berty/components'
 import { LoaderDots } from '@berty/components/LoaderDots'
 import { StatusBarPrimary } from '@berty/components/StatusBarPrimary'
 import { useAppDispatch, useAppSelector } from '@berty/hooks'
-import { ScreenFC, useNavigation } from '@berty/navigation'
+import { ScreenFC, useNavigation, useRouteParams } from '@berty/navigation'
 import { selectStreamProgress } from '@berty/redux/reducers/ui.reducer'
 import { openAccount } from '@berty/utils/accounts'
 import { openClients } from '@berty/utils/messenger/clients'
 
 import { prepareAccount } from './prepareAccount.effect'
 
-export const OpeningAccount: ScreenFC<'Account.Opening'> = ({
-	route: {
-		params: { selectedAccount, isNewAccount = false },
-	},
-}) => {
+export const OpeningAccount: ScreenFC<'Account.Opening'> = () => {
+	const { selectedAccount, isNewAccount = false } = useRouteParams('Account.Opening')
 	const dispatch = useAppDispatch()
 	const navigation = useNavigation()
 	const { t } = useTranslation()

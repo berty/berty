@@ -1,6 +1,6 @@
 {
   "name": "bertymessenger",
-  "main": "expo/AppEntry.js",
+  "main": "expo-router/entry",
   "version": "1.0.0",
   "scripts": {
     "prepare": "npm install --include=dev --prefix .. && npm run prepare --prefix ..",

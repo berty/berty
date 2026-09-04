@@ -25,7 +25,7 @@ import {
 	useAppDispatch,
 	useAppSelector,
 } from '@berty/hooks'
-import { ScreenFC } from '@berty/navigation'
+import { ScreenFC, useNavigation } from '@berty/navigation'
 import {
 	PersistentOptionsKeys,
 	selectNoNetworkPopupSuggested,
@@ -43,7 +43,8 @@ import { SearchComponent } from './components/Search'
 
 const T = beapi.messenger.StreamEvent.Notified.Type
 
-export const Home: ScreenFC<'Chat.Home'> = ({ navigation: { navigate } }) => {
+export const Home: ScreenFC<'Chat.Home'> = () => {
+	const { navigate } = useNavigation()
 	useNotificationsInhibitor(notif =>
 		[
 			T.TypeMessageReceived,

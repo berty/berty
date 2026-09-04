@@ -1,11 +1,9 @@
-import { NavigationProp } from '@react-navigation/native'
 import { useCallback } from 'react'
 import { Alert } from 'react-native'
 
 import beapi from '@berty/api'
 import { GoBridge } from 'berty-bridge-expo'
-import { useNavigation } from '@berty/navigation'
-import { ScreensParams } from '@berty/navigation/types'
+import { Navigation, useNavigation } from '@berty/navigation'
 import { selectSelectedAccount } from '@berty/redux/reducers/ui.reducer'
 import { createAccount, deleteAccount, updateAccount } from '@berty/utils/accounts'
 import { initBridge } from '@berty/utils/bridge/bridge'
@@ -63,14 +61,14 @@ export const useAccountServices = (): Array<beapi.messenger.IServiceToken> => {
  * hooks for differents actions after closing account
  */
 const resetToClosing = async (
-	reset: NavigationProp<ScreensParams>['reset'],
+	reset: Navigation['reset'],
 	callback: () => void,
 ) => {
 	reset({ routes: [{ name: 'Account.Closing', params: { callback } }] })
 }
 
 export const closeBridgeAndNavigateToOnboarding = async (
-	reset: NavigationProp<ScreensParams>['reset'],
+	reset: Navigation['reset'],
 	selectedAccount: string | null,
 ) => {
 	await GoBridge.closeBridge()

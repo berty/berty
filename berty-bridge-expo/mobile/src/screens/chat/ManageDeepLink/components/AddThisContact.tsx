@@ -1,4 +1,3 @@
-import { CommonActions } from '@react-navigation/native'
 import { Icon } from '@ui-kitten/components'
 import { Buffer } from 'buffer'
 import React, { useState } from 'react'
@@ -16,8 +15,7 @@ import {
 	useContactConversation,
 	useThemeColor,
 } from '@berty/hooks'
-import { useNavigation } from '@berty/navigation'
-import { dispatch as navDispatch } from '@berty/navigation/rootRef'
+import { resetRoutes, useNavigation } from '@berty/navigation'
 
 import InvalidScan from './InvalidScan'
 
@@ -75,7 +73,6 @@ const AddThisContact: React.FC<{
 	const _styles = useStylesModal()
 	const { t } = useTranslation()
 	const dispatch = useAppDispatch()
-	const { dispatch: navigationDispatch } = useNavigation()
 	const convId = useContactConversation(publicKey)?.publicKey
 
 	const [password, setPassword] = useState('')
@@ -84,28 +81,20 @@ const AddThisContact: React.FC<{
 
 	React.useEffect(() => {
 		if (done && !error) {
-			navDispatch(
-				CommonActions.reset({
-					routes: [{ name: 'Chat.Home' }],
-				}),
-			)
+			resetRoutes([{ name: 'Chat.Home' }])
 		}
 	}, [done, error, dispatch])
 
 	if (convId) {
-		navigationDispatch(
-			CommonActions.reset({
-				routes: [
-					{ name: 'Chat.Home' },
-					{
-						name: 'Chat.OneToOne',
-						params: {
-							convId,
-						},
-					},
-				],
-			}),
-		)
+		resetRoutes([
+			{ name: 'Chat.Home' },
+			{
+				name: 'Chat.OneToOne',
+				params: {
+					convId,
+				},
+			},
+		])
 	}
 	if (error) {
 		return <InvalidScan type={type} error={error} />

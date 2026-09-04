@@ -1,4 +1,3 @@
-import { CommonActions, useNavigation } from '@react-navigation/native'
 import { Icon } from '@ui-kitten/components'
 import { Buffer } from 'buffer'
 import React, { useState } from 'react'
@@ -11,7 +10,7 @@ import { FingerprintContent } from '@berty/components/shared-components/Fingerpr
 import { UnifiedText } from '@berty/components/shared-components/UnifiedText'
 import { useStyles } from '@berty/contexts/styles'
 import { bertyMethodsHooks, useAppDispatch, useConversation, useThemeColor } from '@berty/hooks'
-import { dispatch as navDispatch } from '@berty/navigation/rootRef'
+import { resetRoutes, useNavigation } from '@berty/navigation'
 import * as testIDs from '@berty/utils/testing/testIDs.json'
 
 import InvalidScan from './InvalidScan'
@@ -70,7 +69,6 @@ export const ManageGroupInvitation: React.FC<{
 	const _styles = useStylesModal()
 	const { t } = useTranslation()
 	const dispatch = useAppDispatch()
-	const { dispatch: navigationDispatch } = useNavigation()
 	const convId = useConversation(publicKey)?.publicKey
 
 	const [password, setPassword] = useState('')
@@ -79,29 +77,20 @@ export const ManageGroupInvitation: React.FC<{
 
 	React.useEffect(() => {
 		if (done && !error) {
-			navDispatch(
-				CommonActions.reset({
-					routes: [{ name: 'Chat.Home' }],
-				}),
-			)
+			resetRoutes([{ name: 'Chat.Home' }])
 		}
 	}, [done, error, dispatch])
 
 	if (convId) {
-		navigationDispatch(
-			CommonActions.reset({
-				index: 1,
-				routes: [
-					{ name: 'Chat.Home' },
-					{
-						name: 'Chat.MultiMember',
-						params: {
-							convId,
-						},
-					},
-				],
-			}),
-		)
+		resetRoutes([
+			{ name: 'Chat.Home' },
+			{
+				name: 'Chat.MultiMember',
+				params: {
+					convId,
+				},
+			},
+		])
 	}
 	if (error) {
 		return <InvalidScan type={type} error={error} />

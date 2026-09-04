@@ -5,7 +5,7 @@ import { useDispatch } from 'react-redux'
 
 import { Permission } from '@berty/components/permissions/Permission'
 import { useAppSelector } from '@berty/hooks'
-import { ScreenFC, useNavigation } from '@berty/navigation'
+import { ScreenFC, useNavigation, useRouteParams } from '@berty/navigation'
 import {
 	selectEditedNetworkConfig,
 	setBlePerm,
@@ -17,7 +17,8 @@ import {
 } from '@berty/utils/permissions/checkPermissions'
 import { acquirePermission, PermissionType } from '@berty/utils/permissions/permissions'
 
-export const Permissions: ScreenFC<'Settings.Permissions'> = ({ route: { params } }) => {
+export const Permissions: ScreenFC<'Settings.Permissions'> = () => {
+	const params = useRouteParams('Settings.Permissions')
 	const { accept, deny, status, permissionType } = params
 	const { goBack, navigate } = useNavigation()
 	const appState = React.useRef(AppState.currentState)

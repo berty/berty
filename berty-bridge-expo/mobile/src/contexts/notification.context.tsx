@@ -1,4 +1,3 @@
-import { CommonActions } from "@react-navigation/native";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { Platform } from "react-native";
 import { useEventListener } from "expo";
@@ -6,9 +5,9 @@ import BertyBridgeExpo from "berty-bridge-expo";
 import * as Notifications from "expo-notifications";
 
 import beapi from "@berty/api";
-import { useNavigation } from "@berty/navigation";
+import { resetRoutes } from "@berty/navigation";
 import { accountClient } from "@berty/utils/accounts/accountClient";
-import { navigationRef } from "@berty/navigation/rootRef";
+import { getCurrentRoute } from "@berty/navigation/rootRef";
 import {
 	useConversationsDict,
 	useMessengerClient,
@@ -30,7 +29,6 @@ Notifications.setNotificationHandler({
 const PushNotificationBridge = () => {
 	const conversations = useConversationsDict();
 	const messengerClient = useMessengerClient();
-	const { dispatch } = useNavigation();
 	const restartAfterClosing = useRestartAfterClosing();
 	const restartBridge = useCloseBridgeAfterClosing();
 
@@ -122,24 +120,20 @@ const PushNotificationBridge = () => {
 			return;
 		}
 		const conv = conversations[pendingConvPK];
-		dispatch(
-			CommonActions.reset({
-				routes: [
-					{ name: "Chat.Home" },
-					{
-						name:
-							conv?.type === beapi.messenger.Conversation.Type.MultiMemberType
-								? "Chat.MultiMember"
-								: "Chat.OneToOne",
-						params: {
-							convId: pendingConvPK,
-						},
-					},
-				],
-			}),
-		);
+		resetRoutes([
+			{ name: "Chat.Home" },
+			{
+				name:
+					conv?.type === beapi.messenger.Conversation.Type.MultiMemberType
+						? "Chat.MultiMember"
+						: "Chat.OneToOne",
+				params: {
+					convId: pendingConvPK,
+				},
+			},
+		]);
 		setPendingConvPK(null);
-	}, [pendingConvPK, messengerClient, conversations, dispatch]);
+	}, [pendingConvPK, messengerClient, conversations]);
 
 	const pushNotifListener = async (data: any) => {
 		const push = await accountClient.pushReceive({
@@ -154,7 +148,7 @@ const PushNotificationBridge = () => {
 			const convPK = push.pushData?.conversationPublicKey;
 			if (convPK) {
 				// Don't notify for the conversation the user is currently viewing.
-				const currentRoute = navigationRef.current?.getCurrentRoute();
+				const currentRoute = getCurrentRoute();
 				const isViewingConversation =
 					(currentRoute?.name === "Chat.OneToOne" ||
 						currentRoute?.name === "Chat.MultiMember") &&

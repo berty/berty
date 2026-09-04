@@ -12,7 +12,7 @@ import { UnifiedText } from '@berty/components/shared-components/UnifiedText'
 import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
 import { useStyles } from '@berty/contexts/styles'
 import { useConversation, useStylesBertyId, useThemeColor } from '@berty/hooks'
-import { ScreenFC } from '@berty/navigation'
+import { ScreenFC, useNavigation, useRouteParams } from '@berty/navigation'
 
 const styleBertyIdOptions = {
 	iconIdSize: 30,
@@ -140,12 +140,9 @@ const MultiMemberComponent: React.FC<{ conv: beapi.messenger.IConversation }> = 
 	)
 }
 
-export const MultiMemberQR: ScreenFC<'Chat.MultiMemberQR'> = ({
-	route: {
-		params: { convId },
-	},
-	navigation,
-}) => {
+export const MultiMemberQR: ScreenFC<'Chat.MultiMemberQR'> = () => {
+	const { convId } = useRouteParams('Chat.MultiMemberQR')
+	const navigation = useNavigation()
 	const colors = useThemeColor()
 	const conv = useConversation(convId)
 	const { iconIdSize } = useStylesBertyId(styleBertyIdOptions)

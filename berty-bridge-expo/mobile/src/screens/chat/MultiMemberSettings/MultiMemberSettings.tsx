@@ -1,6 +1,6 @@
 import Clipboard from '@react-native-clipboard/clipboard'
 import { Layout } from '@ui-kitten/components'
-import React, { ComponentProps } from 'react'
+import React from 'react'
 import { useTranslation } from 'react-i18next'
 import { View, ScrollView, Share, StatusBar, TouchableOpacity, Platform } from 'react-native'
 import QRCode from 'react-native-qrcode-svg'
@@ -13,7 +13,7 @@ import { UnifiedText } from '@berty/components/shared-components/UnifiedText'
 import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
 import { useStyles } from '@berty/contexts/styles'
 import { useConversation, useConversationMembers, useThemeColor } from '@berty/hooks'
-import { ScreenFC, useNavigation } from '@berty/navigation'
+import { Navigation, ScreenFC, useNavigation, useRouteParams } from '@berty/navigation'
 import { Maybe } from '@berty/utils/type/maybe'
 
 const GroupChatSettingsHeader: React.FC<{ publicKey: Maybe<string> }> = ({ publicKey }) => {
@@ -65,7 +65,7 @@ const GroupChatSettingsHeader: React.FC<{ publicKey: Maybe<string> }> = ({ publi
 const MultiMemberSettingsBody: React.FC<{
 	publicKey: string
 	link: string
-	navigation: ComponentProps<typeof MultiMemberSettings>['navigation']
+	navigation: Navigation
 }> = ({ publicKey, link, navigation }) => {
 	const { padding } = useStyles()
 	const members = useConversationMembers(publicKey)
@@ -136,11 +136,10 @@ const MultiMemberSettingsBody: React.FC<{
 	)
 }
 
-export const MultiMemberSettings: ScreenFC<'Chat.MultiMemberSettings'> = ({
-	route,
-	navigation,
-}) => {
-	const { convId } = route.params
+export const MultiMemberSettings: ScreenFC<'Chat.MultiMemberSettings'> = () => {
+	const params = useRouteParams('Chat.MultiMemberSettings')
+	const navigation = useNavigation()
+	const { convId } = params
 	const conv = useConversation(convId)
 	const colors = useThemeColor()
 	const { padding } = useStyles()

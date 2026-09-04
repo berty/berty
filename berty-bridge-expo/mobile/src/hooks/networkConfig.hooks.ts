@@ -1,4 +1,3 @@
-import { useNavigation } from '@react-navigation/native'
 import { useCallback, useEffect } from 'react'
 
 import beapi from '@berty/api'
@@ -11,6 +10,7 @@ import { accountClient } from '@berty/utils/accounts/accountClient'
 
 import { useRestartAfterClosing } from './accounts.hooks'
 import { useAppSelector } from './core.hooks'
+import { useNavigation } from '@berty/navigation'
 
 /**
  * Returns a function that updates the berty node network config

@@ -1,11 +1,9 @@
-import { NavigationProp } from '@react-navigation/native'
 import { createAsyncThunk } from '@reduxjs/toolkit'
 import { TFunction } from 'react-i18next'
 import { Platform } from 'react-native'
 
 import beapi from '@berty/api'
 import { ServiceClientType } from '@berty/grpc-bridge/welsh-clients.gen'
-import { ScreensParams } from '@berty/navigation/types'
 import { selectConversationsDict, selectAccount } from '@berty/redux/reducers/messenger.reducer'
 import { resetTheme } from '@berty/redux/reducers/theme.reducer'
 import {
@@ -18,6 +16,7 @@ import { storageGet, storageRemove } from '@berty/utils/accounts/accountClient'
 import { updateAccount } from '@berty/utils/accounts/accountUtils'
 import { GlobalPersistentOptionsKeys } from '@berty/utils/global-persistent-options/types'
 import { accountPushToggleState } from '@berty/utils/notification/notif-push'
+import { Navigation } from '@berty/navigation'
 
 const closeConvos = async (
 	messengerClient: ServiceClientType<beapi.messenger.MessengerService> | null,
@@ -60,7 +59,7 @@ export const prepareAccount = createAsyncThunk(
 	'account/prepared',
 	async (
 		arg: {
-			navigation: NavigationProp<ScreensParams>
+			navigation: Navigation
 			t: TFunction<'translation', undefined>
 			selectedAccount: string
 			isNewAccount: boolean

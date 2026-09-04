@@ -1,14 +1,13 @@
-import { NavigationProp } from '@react-navigation/native'
 
 import beapi from '@berty/api'
-import { ScreensParams } from '@berty/navigation/types'
 import { persistor } from '@berty/redux/store'
 
 import { accountClient } from './accountClient'
 import { refreshAccountList } from './accountUtils'
+import { Navigation } from '@berty/navigation'
 
 export const createAccount = async (
-	reset: NavigationProp<ScreensParams>['reset'],
+	reset: Navigation['reset'],
 	config?: beapi.account.INetworkConfig,
 ) => {
 	let resp: beapi.account.CreateAccount.Reply

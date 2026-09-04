@@ -10,7 +10,7 @@ import { UnifiedText } from '@berty/components/shared-components/UnifiedText'
 import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
 import { useStyles } from '@berty/contexts/styles'
 import { useContact, useConversation, useThemeColor } from '@berty/hooks'
-import { ScreenFC } from '@berty/navigation'
+import { ScreenFC, useNavigation, useRouteParams } from '@berty/navigation'
 
 const OneToOneHeader: React.FC<{ contact: any }> = ({ contact }) => {
 	const { text, padding, flex } = useStyles()
@@ -62,10 +62,9 @@ const OneToOneBody: React.FC<{
 	)
 }
 
-export const OneToOneSettings: ScreenFC<'Chat.OneToOneSettings'> = ({
-	route: { params },
-	navigation,
-}) => {
+export const OneToOneSettings: ScreenFC<'Chat.OneToOneSettings'> = () => {
+	const params = useRouteParams('Chat.OneToOneSettings')
+	const navigation = useNavigation()
 	const { padding } = useStyles()
 	const { scaleSize } = useAppDimensions()
 	const colors = useThemeColor()

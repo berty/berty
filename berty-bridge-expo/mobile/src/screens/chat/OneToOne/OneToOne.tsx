@@ -16,15 +16,17 @@ import {
 	useReadEffect,
 	useThemeColor,
 } from '@berty/hooks'
-import { ScreenFC } from '@berty/navigation'
-import { CustomTitleStyle } from '@berty/navigation/stacks'
+import { ScreenFC, useNavigation, useRouteParams } from '@berty/navigation'
+import { CustomTitleStyle } from '@berty/navigation/screenOptions'
 import { pbDateToNum } from '@berty/utils/convert/time'
 import { IOSOnlyKeyboardAvoidingView } from '@berty/utils/react-native/keyboardAvoiding'
 
 const NT = beapi.messenger.StreamEvent.Notified.Type
 
 export const OneToOne: ScreenFC<'Chat.OneToOne'> = React.memo(
-	function OneToOne({ route: { params }, navigation }) {
+	function OneToOne() {
+		const params = useRouteParams('Chat.OneToOne')
+		const navigation = useNavigation()
 		useNotificationsInhibitor(notif => {
 			if (
 				(notif.type === NT.TypeContactRequestSent &&

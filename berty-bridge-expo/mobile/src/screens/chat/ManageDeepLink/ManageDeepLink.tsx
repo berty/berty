@@ -5,11 +5,12 @@ import { SafeAreaView } from 'react-native-safe-area-context'
 
 import { useStyles } from '@berty/contexts/styles'
 import { useThemeColor } from '@berty/hooks'
-import { ScreenFC } from '@berty/navigation'
+import { ScreenFC, useRouteParams } from '@berty/navigation'
 
 import { ManageDeepLinkContent } from './ManageDeepLinkContent'
 
-export const ManageDeepLink: ScreenFC<'Chat.ManageDeepLink'> = ({ route: { params } }) => {
+export const ManageDeepLink: ScreenFC<'Chat.ManageDeepLink'> = () => {
+	const params = useRouteParams('Chat.ManageDeepLink')
 	const colors = useThemeColor()
 	const { border } = useStyles()
 

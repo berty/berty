@@ -1,11 +1,10 @@
-import { CommonActions } from '@react-navigation/native'
 import { Buffer } from 'buffer'
 import React, { useEffect, useState } from 'react'
 import { ActivityIndicator } from 'react-native'
 
 import beapi from '@berty/api'
 import { useConversationsDict, useMessengerClient } from '@berty/hooks'
-import { useNavigation } from '@berty/navigation'
+import { resetRoutes } from '@berty/navigation'
 import { base64ToURLBase64 } from '@berty/utils/convert/base64'
 
 import AddThisContact from './components/AddThisContact'
@@ -20,7 +19,6 @@ export const ManageDeepLinkContent = (props: ManageDeepLinkContentProps) => {
 	const messengerClient = useMessengerClient()
 	const conversations = useConversationsDict()
 
-	const { dispatch } = useNavigation()
 
 	const [reply, setReply] = useState<beapi.messenger.ParseDeepLink.Reply | null | undefined>(null)
 
@@ -41,24 +39,20 @@ export const ManageDeepLinkContent = (props: ManageDeepLinkContentProps) => {
 		}
 		const conv = conversations[reply?.link?.bertyMessageRef?.groupPk as string]
 		if (conv?.publicKey) {
-			dispatch(
-				CommonActions.reset({
-					routes: [
-						{ name: 'Chat.Home' },
-						{
-							name:
-								conv?.type === beapi.messenger.Conversation.Type.MultiMemberType
-									? 'Chat.MultiMember'
-									: 'Chat.OneToOne',
-							params: {
-								convId: conv?.publicKey,
-							},
-						},
-					],
-				}),
-			)
+			resetRoutes([
+				{ name: 'Chat.Home' },
+				{
+					name:
+						conv?.type === beapi.messenger.Conversation.Type.MultiMemberType
+							? 'Chat.MultiMember'
+							: 'Chat.OneToOne',
+					params: {
+						convId: conv?.publicKey,
+					},
+				},
+			])
 		}
-	}, [reply, conversations, dispatch])
+	}, [reply, conversations])
 
 	if (reply === null) {
 		return <ActivityIndicator size='large' />

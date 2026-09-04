@@ -4,9 +4,10 @@ import { StatusBar, View } from 'react-native'
 
 import { WebViews as SharedWebViews } from '@berty/components/shared-components'
 import { useThemeColor } from '@berty/hooks'
-import { ScreenFC } from '@berty/navigation'
+import { ScreenFC, useRouteParams } from '@berty/navigation'
 
-export const WebViews: ScreenFC<'Onboarding.WebViews'> = ({ route: { params } }) => {
+export const WebViews: ScreenFC<'Onboarding.WebViews'> = () => {
+	const params = useRouteParams('Onboarding.WebViews')
 	const { url } = params
 	const colors = useThemeColor()
 

@@ -3,13 +3,10 @@ import { useTranslation } from 'react-i18next'
 
 import { CenteredTextScreen } from '@berty/components/account'
 import { useDeleteAccount } from '@berty/hooks'
-import { ScreenFC } from '@berty/navigation'
+import { ScreenFC, useRouteParams } from '@berty/navigation'
 
-export const DeletingAccount: ScreenFC<'Account.Deleting'> = ({
-	route: {
-		params: { selectedAccount },
-	},
-}) => {
+export const DeletingAccount: ScreenFC<'Account.Deleting'> = () => {
+	const { selectedAccount } = useRouteParams('Account.Deleting')
 	const deleteAccount = useDeleteAccount()
 	const { t } = useTranslation()
 

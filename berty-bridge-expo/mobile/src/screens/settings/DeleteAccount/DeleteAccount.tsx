@@ -1,4 +1,3 @@
-import { useNavigation as useReactNavigation } from '@react-navigation/core'
 import { Layout } from '@ui-kitten/components'
 import React, { useState } from 'react'
 import { useTranslation } from 'react-i18next'
@@ -9,7 +8,7 @@ import { ErrorCard, SmallInput } from '@berty/components'
 import { UnifiedText } from '@berty/components/shared-components/UnifiedText'
 import { useStyles } from '@berty/contexts/styles'
 import { useThemeColor, useDeletingAccountAfterClosing } from '@berty/hooks'
-import { ScreenFC } from '@berty/navigation'
+import { ScreenFC, useNavigation } from '@berty/navigation'
 import { useTopInset } from '@berty/utils/react-native/useTopInset'
 
 export const DeleteAccount: ScreenFC<'Settings.DeleteAccount'> = () => {
@@ -19,7 +18,7 @@ export const DeleteAccount: ScreenFC<'Settings.DeleteAccount'> = () => {
 	const colors = useThemeColor()
 	const { t } = useTranslation()
 	const deletingAccountAfterClosing = useDeletingAccountAfterClosing()
-	const navigation = useReactNavigation()
+	const navigation = useNavigation()
 	const topInset = useTopInset()
 
 	// this is the translated string (of "delete"), that we have to compare with the input

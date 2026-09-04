@@ -12,7 +12,7 @@ import {
 	useReadEffect,
 	useThemeColor,
 } from '@berty/hooks'
-import { ScreenFC } from '@berty/navigation'
+import { ScreenFC, useNavigation, useRouteParams } from '@berty/navigation'
 import { IOSOnlyKeyboardAvoidingView } from '@berty/utils/react-native/keyboardAvoiding'
 
 import { HeaderTitle } from './components/HeaderTitle'
@@ -20,7 +20,9 @@ import { MultiMemberContent } from './components/MultiMemberContent'
 
 const NT = beapi.messenger.StreamEvent.Notified.Type
 
-export const MultiMember: ScreenFC<'Chat.MultiMember'> = ({ route: { params }, navigation }) => {
+export const MultiMember: ScreenFC<'Chat.MultiMember'> = () => {
+	const params = useRouteParams('Chat.MultiMember')
+	const navigation = useNavigation()
 	useNotificationsInhibitor(notif => {
 		if (
 			notif.type === NT.TypeMessageReceived &&

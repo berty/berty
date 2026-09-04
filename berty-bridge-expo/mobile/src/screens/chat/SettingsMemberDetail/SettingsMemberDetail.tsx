@@ -1,5 +1,5 @@
 import { Layout } from '@ui-kitten/components'
-import React, { ComponentProps } from 'react'
+import React from 'react'
 import { useTranslation } from 'react-i18next'
 import { StatusBar } from 'expo-status-bar'
 import { View, ScrollView } from 'react-native'
@@ -9,7 +9,7 @@ import UserDevicesList from '@berty/components/chat/DeviceList'
 import { FactionButtonSetting } from '@berty/components/shared-components/SettingsButtons'
 import { useStyles } from '@berty/contexts/styles'
 import { useMember, useThemeColor } from '@berty/hooks'
-import { ScreenFC } from '@berty/navigation'
+import { Navigation, ScreenFC, useNavigation, useRouteParams } from '@berty/navigation'
 import { Maybe } from '@berty/utils/type/maybe'
 
 const SettingsMemberDetailHeader: React.FC<{
@@ -33,7 +33,7 @@ const SettingsMemberDetailHeader: React.FC<{
 const SettingsMemberDetailBody: React.FC<{
 	convId: string
 	memberPk: string
-	navigation: ComponentProps<typeof SettingsMemberDetail>['navigation']
+	navigation: Navigation
 }> = ({ convId, memberPk }) => {
 	const { padding, margin } = useStyles()
 	const { t } = useTranslation()
@@ -52,11 +52,10 @@ const SettingsMemberDetailBody: React.FC<{
 	)
 }
 
-export const SettingsMemberDetail: ScreenFC<'Chat.SettingsMemberDetail'> = ({
-	route,
-	navigation,
-}) => {
-	const { convId, memberPk, displayName } = route.params
+export const SettingsMemberDetail: ScreenFC<'Chat.SettingsMemberDetail'> = () => {
+	const params = useRouteParams('Chat.SettingsMemberDetail')
+	const navigation = useNavigation()
+	const { convId, memberPk, displayName } = params
 	const member = useMember(convId, memberPk)
 	const colors = useThemeColor()
 	const { padding } = useStyles()

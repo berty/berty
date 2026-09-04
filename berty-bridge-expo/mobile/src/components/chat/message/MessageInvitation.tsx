@@ -1,4 +1,3 @@
-import { CommonActions } from '@react-navigation/native'
 import { Buffer } from 'buffer'
 import React, { useState } from 'react'
 import { useTranslation } from 'react-i18next'
@@ -13,7 +12,7 @@ import {
 	useThemeColor,
 	useMessengerClient,
 } from '@berty/hooks'
-import { useNavigation } from '@berty/navigation'
+import { resetRoutes, useNavigation } from '@berty/navigation'
 import { InteractionGroupInvitation } from '@berty/utils/api'
 import { base64ToURLBase64 } from '@berty/utils/convert/base64'
 
@@ -78,19 +77,15 @@ const MessageInvitationReceived: React.FC<{ message: InteractionGroupInvitation 
 			client
 				.conversationJoin({ link })
 				.then(() => {
-					dispatch(
-						CommonActions.reset({
-							routes: [
-								{ name: 'Chat.Home' },
-								{
-									name: 'Chat.MultiMember',
-									params: {
-										convId: convPk,
-									},
-								},
-							],
-						}),
-					)
+					resetRoutes([
+						{ name: 'Chat.Home' },
+						{
+							name: 'Chat.MultiMember',
+							params: {
+								convId: convPk,
+							},
+						},
+					])
 				})
 				.catch(err => {
 					console.warn(err)

@@ -3,7 +3,7 @@ import base64 from 'base64-js'
 import { Platform } from 'react-native'
 
 import beapi from '@berty/api'
-import { navigationRef } from '@berty/navigation/rootRef'
+import { getCurrentRoute } from '@berty/navigation/rootRef'
 import { GRPCError, createServiceClient } from '@berty/grpc-bridge'
 import { logger } from '@berty/grpc-bridge/middleware'
 import { bridge as rpcBridge, grpcweb as rpcWeb } from '@berty/grpc-bridge/rpc'
@@ -56,7 +56,7 @@ const isViewingConversation = (convPK: string | undefined): boolean => {
 	if (!convPK) {
 		return false
 	}
-	const route = navigationRef.current?.getCurrentRoute()
+	const route = getCurrentRoute()
 	return (
 		(route?.name === 'Chat.OneToOne' || route?.name === 'Chat.MultiMember') &&
 		(route?.params as { convId?: string } | undefined)?.convId === convPK

@@ -1,5 +1,3 @@
-import { NavigationContainer } from "@react-navigation/native";
-import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import React from "react";
 
 import type { Meta, StoryObj } from "@storybook/react";
@@ -12,7 +10,6 @@ import { CreatingAccount, OpeningAccount } from "../account";
 import { CreateAccount } from "./CreateAccount/CreateAccount";
 import { DefaultMode } from "./DefaultMode/DefaultMode";
 
-const Stack = createNativeStackNavigator();
 
 const meta: Meta = {
 	title: "Onboarding",
@@ -40,16 +37,11 @@ export const CreatingAccountStory: Story = {
 
 export const Onboarding: Story = {
 	name: "Onboarding",
-	render: (args) => (
-		<Stack.Navigator>
-			<Stack.Screen
-				name="Account.Opening"
-				initialParams={{
-					selectedAccount: "123-account-id-123",
-					isNewAccount: true,
-				}}
-				component={OpeningAccount}
-			/>
-		</Stack.Navigator>
-	),
+	parameters: {
+		routeParams: {
+			selectedAccount: "123-account-id-123",
+			isNewAccount: true,
+		},
+	},
+	render: () => <OpeningAccount />,
 };

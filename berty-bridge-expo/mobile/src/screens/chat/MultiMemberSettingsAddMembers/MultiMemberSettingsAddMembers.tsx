@@ -23,19 +23,18 @@ import {
 	useMessengerClient,
 	useThemeColor,
 } from '@berty/hooks'
-import { ScreenFC } from '@berty/navigation'
+import { ScreenFC, useNavigation, useRouteParams } from '@berty/navigation'
 import { selectInvitationListMembers } from '@berty/redux/reducers/groupCreationForm.reducer'
 
-export const MultiMemberSettingsAddMembers: ScreenFC<'Chat.MultiMemberSettingsAddMembers'> = ({
-	route,
-	navigation,
-}) => {
+export const MultiMemberSettingsAddMembers: ScreenFC<'Chat.MultiMemberSettingsAddMembers'> = () => {
+	const params = useRouteParams('Chat.MultiMemberSettingsAddMembers')
+	const navigation = useNavigation()
 	const { flex, margin } = useStyles()
 	const { scaleHeight, scaleSize } = useAppDimensions()
 	const colors = useThemeColor()
 	const { t } = useTranslation()
 	const client = useMessengerClient()
-	const conv = useConversation(route.params.convPK)
+	const conv = useConversation(params.convPK)
 	const accountContacts = useAllContacts()
 	const members = useAppSelector(selectInvitationListMembers)
 	const dispatch = useAppDispatch()

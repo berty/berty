@@ -11,7 +11,7 @@ import { FingerprintContent } from '@berty/components/shared-components/Fingerpr
 import { UnifiedText } from '@berty/components/shared-components/UnifiedText'
 import { useStyles } from '@berty/contexts/styles'
 import { useContact, useConversation, useThemeColor } from '@berty/hooks'
-import { ScreenFC } from '@berty/navigation'
+import { ScreenFC, useNavigation, useRouteParams } from '@berty/navigation'
 
 const ContactSettingsHeaderContent: React.FC = ({ children }) => {
 	const { margin } = useStyles()
@@ -94,11 +94,10 @@ const ContactSettingsHeader: React.FC<{ contact: beapi.messenger.IContact }> = (
 	)
 }
 
-export const ContactSettings: ScreenFC<'Chat.ContactSettings'> = ({
-	route,
-	navigation: { goBack },
-}) => {
-	const { contactId } = route.params
+export const ContactSettings: ScreenFC<'Chat.ContactSettings'> = () => {
+	const params = useRouteParams('Chat.ContactSettings')
+	const { goBack } = useNavigation()
+	const { contactId } = params
 	const colors = useThemeColor()
 	const contact = useContact(contactId)
 	const { padding } = useStyles()

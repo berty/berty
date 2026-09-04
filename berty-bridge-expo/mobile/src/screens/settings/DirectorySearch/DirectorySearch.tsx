@@ -11,7 +11,7 @@ import { UnifiedText } from '@berty/components/shared-components/UnifiedText'
 import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
 import { ServiceClientType } from '@berty/grpc-bridge/welsh-clients.gen'
 import { useMessengerClient, useThemeColor } from '@berty/hooks'
-import { ScreenFC } from '@berty/navigation'
+import { ScreenFC, useNavigation } from '@berty/navigation'
 import { IdentityType } from '@berty/utils/linkedidentities/types'
 import { acquirePermission, PermissionType } from '@berty/utils/permissions/permissions'
 import { useTopInset } from '@berty/utils/react-native/useTopInset'
@@ -90,9 +90,8 @@ const searchOnDirectoryService = async (
 	return setSearchResults(searchId, { results, errors })
 }
 
-export const DirectorySearch: ScreenFC<'Settings.DirectorySearch'> = ({
-	navigation: { navigate },
-}) => {
+export const DirectorySearch: ScreenFC<'Settings.DirectorySearch'> = () => {
+	const { navigate } = useNavigation()
 	const { scaleSize } = useAppDimensions()
 	const colors = useThemeColor()
 	const [searchQuery, setSearchQuery] = React.useState('')

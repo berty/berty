@@ -2,7 +2,7 @@ import React from 'react'
 
 import { useStyles } from '@berty/contexts/styles'
 import { bertyMethodsHooks, useThemeColor } from '@berty/hooks'
-import { ScreenFC } from '@berty/navigation'
+import { ScreenFC, useNavigation, useRouteParams } from '@berty/navigation'
 
 import { Request } from './components/Request'
 
@@ -29,10 +29,9 @@ const useStylesContactRequest = () => {
 	}
 }
 
-export const ContactRequest: ScreenFC<'Chat.ContactRequest'> = ({
-	route: { params },
-	navigation: { goBack },
-}) => {
+export const ContactRequest: ScreenFC<'Chat.ContactRequest'> = () => {
+	const params = useRouteParams('Chat.ContactRequest')
+	const { goBack } = useNavigation()
 	const _styles = useStylesContactRequest()
 	const colors = useThemeColor()
 	const { call: accept } = bertyMethodsHooks.useContactAccept()

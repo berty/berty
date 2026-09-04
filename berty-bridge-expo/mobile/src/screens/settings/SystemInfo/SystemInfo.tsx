@@ -15,7 +15,7 @@ import { UnifiedText } from '@berty/components/shared-components/UnifiedText'
 import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
 import { useStyles } from '@berty/contexts/styles'
 import { bertyMethodsHooks, useMountEffect, useThemeColor } from '@berty/hooks'
-import { ScreenFC } from '@berty/navigation'
+import { ScreenFC, useNavigation } from '@berty/navigation'
 import { accountClient } from '@berty/utils/accounts/accountClient'
 import { useTopInset } from '@berty/utils/react-native/useTopInset'
 
@@ -23,7 +23,8 @@ import { useTopInset } from '@berty/utils/react-native/useTopInset'
 const longReplacer = (_key: string, value: unknown) =>
 	Long.isLong(value) ? (value as Long).toString() : value
 
-export const SystemInfo: ScreenFC<'Settings.SystemInfo'> = ({ navigation }) => {
+export const SystemInfo: ScreenFC<'Settings.SystemInfo'> = () => {
+	const navigation = useNavigation()
 	const { padding } = useStyles()
 	const { scaleSize } = useAppDimensions()
 	const colors = useThemeColor()

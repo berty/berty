@@ -1,32 +1,72 @@
-import { NavigationContainerRef } from '@react-navigation/native'
-import { NavigationAction } from '@react-navigation/routers'
-import React from 'react'
+import { router } from 'expo-router'
 
+import { decodeParams, encodeParams } from './params'
+import { ROUTE_NAMES, ROUTE_PATHS, toRouteName } from './routes'
 import { ScreensParams } from './types'
 
-// https://reactnavigation.org/docs/navigating-without-navigation-prop/#handling-initialization
+// Expo Router owns the navigation container, so code outside React navigates
+// through its imperative `router`. The container ref is still published here by
+// app/_layout.tsx for the few callers that need to inspect the active route.
 
-export const isReadyRef: React.MutableRefObject<any> = React.createRef()
+type ContainerRef = {
+	getCurrentRoute: () => { name: string; params?: object } | undefined
+	reset?: (state: { index: number; routes: { name: string; params?: object }[] }) => void
+} | null
 
-export const navigationRef = React.createRef<NavigationContainerRef<ScreensParams>>()
+export const navigationRef: { current: ContainerRef } = { current: null }
 
-// NOTE: this function is comment to avoid dead code, but it can be useful for some cases, uncomment it if it's necessary
-/* export const navigate = <T extends keyof ScreensParams>(name: T, params: ScreensParams[T]) => {
-  if (isReadyRef.current && navigationRef.current) {
-    // Perform navigation if the app has mounted
-    navigationRef.current.navigate(name, params)
-  } else {
-    // You can decide what to do if the app hasn't mounted
-    // You can ignore this, or add these actions to a queue you can call later
-  }
-} */
+export const isReadyRef: { current: boolean } = { current: false }
 
-export function dispatch(action: NavigationAction): void {
-	if (isReadyRef.current && navigationRef.current) {
-		// Perform navigation if the app has mounted
-		navigationRef.current.dispatch(action)
-	} else {
-		// You can decide what to do if the app hasn't mounted
-		// You can ignore this, or add these actions to a queue you can call later
+export type CurrentRoute = {
+	name: keyof ScreensParams | undefined
+	params: Record<string, unknown>
+}
+
+// Reports the active route using the legacy dotted names ('Chat.OneToOne')
+// rather than the Expo Router path ('chat/one-to-one').
+export const getCurrentRoute = (): CurrentRoute | undefined => {
+	const route = navigationRef.current?.getCurrentRoute()
+	if (!route) {
+		return undefined
+	}
+	return {
+		name: ROUTE_NAMES[route.name],
+		params: (route.params ?? {}) as Record<string, unknown>,
 	}
 }
+
+export const navigate = <T extends keyof ScreensParams>(name: T, params?: ScreensParams[T]) => {
+	router.push({
+		pathname: ROUTE_PATHS[name] as never,
+		params: encodeParams(name, params) as never,
+	})
+}
+
+export const goBack = (): void => {
+	if (router.canGoBack()) {
+		router.back()
+	}
+}
+
+type ResetRoute<T extends keyof ScreensParams = keyof ScreensParams> = {
+	name: T
+	params?: ScreensParams[T]
+}
+
+// Replaces the whole stack. Previously expressed as
+// `dispatch(CommonActions.reset({ routes }))` against the container ref.
+export const resetRoutes = (routes: ResetRoute[]): void => {
+	const container = navigationRef.current
+	if (!isReadyRef.current || !container?.reset) {
+		return
+	}
+	container.reset({
+		index: routes.length - 1,
+		routes: routes.map(route => ({
+			name: toRouteName(route.name),
+			params: encodeParams(route.name, route.params as never),
+		})),
+	})
+}
+
+export { decodeParams }

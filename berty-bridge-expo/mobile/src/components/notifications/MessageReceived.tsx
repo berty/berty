@@ -1,11 +1,10 @@
-import { CommonActions } from '@react-navigation/native'
 import React from 'react'
 import { TouchableOpacity, View } from 'react-native'
 
 import beapi from '@berty/api'
 import { useStyles } from '@berty/contexts/styles'
 import { useConversation } from '@berty/hooks'
-import { dispatch } from '@berty/navigation'
+import { resetRoutes } from '@berty/navigation'
 
 import { ConversationAvatar } from '../avatars'
 import { UnifiedText } from '../shared-components/UnifiedText'
@@ -23,23 +22,19 @@ const MessageReceived: React.FC<any> = ({ onClose, title, message, ...props }) =
 	const handlePressConvMessage = () => {
 		if (convExists && inteExists) {
 			// TODO: Investigate: doesn't work if app crashes and is restarted
-			dispatch(
-				CommonActions.reset({
-					routes: [
-						{ name: 'Chat.Home' },
-						{
-							name:
-								payload.conversation.type === beapi.messenger.Conversation.Type.ContactType
-									? 'Chat.OneToOne'
-									: 'Chat.MultiMember',
-							params: {
-								convId: payload.conversation?.publicKey,
-								scrollToMessage: payload?.interaction?.cid,
-							},
-						},
-					],
-				}),
-			)
+			resetRoutes([
+				{ name: 'Chat.Home' },
+				{
+					name:
+						payload.conversation.type === beapi.messenger.Conversation.Type.ContactType
+							? 'Chat.OneToOne'
+							: 'Chat.MultiMember',
+					params: {
+						convId: payload.conversation?.publicKey,
+						scrollToMessage: payload?.interaction?.cid,
+					},
+				},
+			])
 		} else {
 			console.warn('Notif: Conversation or interaction not found')
 		}

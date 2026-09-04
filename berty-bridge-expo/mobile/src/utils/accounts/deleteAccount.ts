@@ -1,14 +1,13 @@
-import { NavigationProp } from '@react-navigation/native'
 
 import beapi from '@berty/api'
 import { closeBridgeAndNavigateToOnboarding } from '@berty/hooks'
-import { ScreensParams } from '@berty/navigation/types'
 
 import { accountClient } from './accountClient'
 import { refreshAccountList } from './accountUtils'
+import { Navigation } from '@berty/navigation'
 
 export const deleteAccount = async (
-	reset: NavigationProp<ScreensParams>['reset'],
+	reset: Navigation['reset'],
 	selectedAccount: string | null,
 ) => {
 	console.log('deleteAccount', selectedAccount)
