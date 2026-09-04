@@ -1,4 +1,4 @@
-import { ComponentStory } from '@storybook/react-native'
+import type { StoryFn } from '@storybook/react-native'
 import React from 'react'
 
 import { Permission } from '@berty/components/permissions/Permission'
@@ -21,7 +21,7 @@ export default {
 	],
 }
 
-const Template: ComponentStory<typeof Permission> = (args: typeof Default.args) => (
+const Template: StoryFn<typeof Permission> = (args: typeof Default.args) => (
 	<>
 		<Permission
 			permissionType={PermissionType.notification}

@@ -13,7 +13,7 @@ import { useStyles } from '@berty/contexts/styles'
 import { useContact, useConversation, useThemeColor } from '@berty/hooks'
 import { ScreenFC, useNavigation, useRouteParams } from '@berty/navigation'
 
-const ContactSettingsHeaderContent: React.FC = ({ children }) => {
+const ContactSettingsHeaderContent: React.FC<React.PropsWithChildren> = ({ children }) => {
 	const { margin } = useStyles()
 	return <View style={[margin.top.big]}>{children}</View>
 }

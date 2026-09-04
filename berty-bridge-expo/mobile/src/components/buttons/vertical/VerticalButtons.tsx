@@ -10,7 +10,7 @@ interface VerticalButtonsProps {
 	children: string[]
 }
 
-export const VerticalButtons: React.FC<VerticalButtonsProps> = props => {
+export const VerticalButtons: React.FC<React.PropsWithChildren<VerticalButtonsProps>> = props => {
 	return (
 		<View>
 			<PrimaryButton onPress={props.onPressTop}>{props.children[0]}</PrimaryButton>

@@ -1,4 +1,4 @@
-import { cacheDirectory, copyAsync } from 'expo-file-system'
+import { cacheDirectory, copyAsync } from 'expo-file-system/legacy'
 import { PermissionsAndroid } from 'react-native'
 import RNFS from 'react-native-fs'
 

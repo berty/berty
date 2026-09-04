@@ -14,7 +14,7 @@ interface ConversationButtonProps {
 	isLast: boolean
 }
 
-export const ConversationButton: React.FC<ConversationButtonProps> = props => {
+export const ConversationButton: React.FC<React.PropsWithChildren<ConversationButtonProps>> = props => {
 	const { navigate } = useNavigation()
 	const colors = useThemeColor()
 	const { padding, row, opacity } = useStyles()

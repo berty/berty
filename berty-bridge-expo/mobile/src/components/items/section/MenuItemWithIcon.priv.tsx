@@ -7,9 +7,7 @@ import { IconWithTextPriv } from '../IconWithText.priv'
 import { MenuItemWithIconProps, PackProps } from '../interfaces'
 import { MenuItemPriv } from '../MenuItem.priv'
 
-export const MenuItemWithIconPriv: React.FC<
-	MenuItemWithIconProps & PackProps & { color?: string }
-> = props => {
+export const MenuItemWithIconPriv: React.FC<React.PropsWithChildren<MenuItemWithIconProps & PackProps & { color?: string }>> = props => {
 	const colors = useThemeColor()
 
 	return (

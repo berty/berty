@@ -9,7 +9,7 @@ interface BottomModalProps {
 	setIsVisible: (val: boolean) => void
 }
 
-export const BottomModal: React.FC<BottomModalProps> = ({ children, isVisible, setIsVisible }) => {
+export const BottomModal: React.FC<React.PropsWithChildren<BottomModalProps>> = ({ children, isVisible, setIsVisible }) => {
 	const colors = useThemeColor()
 
 	return (

@@ -48,13 +48,10 @@ const makeMethodHook =
 	() => {
 		const client = useMessengerClient()
 
-		const [state, dispatch] = useReducer<(state: MethodState<R>, action: any) => MethodState<R>>(
-			methodReducer,
-			initialState,
-		)
+		const [state, dispatch] = useReducer(methodReducer, initialState as MethodState<R>)
 
 		const call = useCallback(
-			payload => {
+			(payload: any) => {
 				if (client === null) {
 					console.warn('client is null', client)
 					return
@@ -78,7 +75,7 @@ const makeMethodHook =
 		)
 
 		const refresh = useCallback(
-			payload => {
+			(payload: any) => {
 				console.warn('Using deprecated "refresh" in method hook, please use "call" instead')
 				call(payload)
 			},

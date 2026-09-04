@@ -51,7 +51,6 @@ const GroupChatSettingsHeader: React.FC<{ publicKey: Maybe<string> }> = ({ publi
 								value={conv?.link && conv?.link}
 								logo={logo}
 								color={colors['background-header']}
-								mode='circle'
 								backgroundColor={colors['main-background']}
 							/>
 						) : null}

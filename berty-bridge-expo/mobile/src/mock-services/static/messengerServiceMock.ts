@@ -1,4 +1,4 @@
-import faker from '@faker-js/faker'
+import { faker } from '@faker-js/faker'
 import { Buffer } from 'buffer'
 import cloneDeep from 'lodash/cloneDeep'
 import range from 'lodash/range'
@@ -151,7 +151,7 @@ export class MessengerServiceMock implements Partial<IMessengerServiceMock> {
 	}
 
 	Interact = async (request: beapi.messenger.Interact.IRequest) => {
-		const cid = faker.datatype.uuid()
+		const cid = faker.string.uuid()
 		this.emitStreamEvent({
 			type: beapi.messenger.StreamEvent.Type.TypeInteractionUpdated,
 			payload: beapi.messenger.StreamEvent.InteractionUpdated.encode({
@@ -186,7 +186,7 @@ export class MessengerServiceMock implements Partial<IMessengerServiceMock> {
 				send({
 					device: {
 						memberPublicKey: device?.memberPk || request.memberPk,
-						publicKey: device?.devicePk || faker.datatype.uuid(),
+						publicKey: device?.devicePk || faker.string.uuid(),
 					},
 				}),
 			),
@@ -236,9 +236,9 @@ export class MessengerServiceMock implements Partial<IMessengerServiceMock> {
 
 	ConversationCreate = async (request: beapi.messenger.ConversationCreate.IRequest) => {
 		const now = Date.now()
-		const pk = faker.datatype.uuid()
+		const pk = faker.string.uuid()
 		const link = `https://berty.tech/mock#group/${pk}/name=${request.displayName}`
-		const memberPK = faker.datatype.uuid()
+		const memberPK = faker.string.uuid()
 		this.emitStreamEvent({
 			type: beapi.messenger.StreamEvent.Type.TypeConversationUpdated,
 			payload: beapi.messenger.StreamEvent.ConversationUpdated.encode({
@@ -264,7 +264,7 @@ export class MessengerServiceMock implements Partial<IMessengerServiceMock> {
 				type: beapi.messenger.StreamEvent.Type.TypeInteractionUpdated,
 				payload: beapi.messenger.StreamEvent.InteractionUpdated.encode({
 					interaction: {
-						cid: faker.datatype.uuid(),
+						cid: faker.string.uuid(),
 						conversationPublicKey: contact.conversationPublicKey,
 						type: beapi.messenger.AppMessage.Type.TypeGroupInvitation,
 						payload: beapi.messenger.AppMessage.GroupInvitation.encode({
@@ -376,8 +376,8 @@ export class MessengerServiceMock implements Partial<IMessengerServiceMock> {
 			throw new Error('invalid link kind')
 		}
 		const longNow = Long.fromNumber(Date.now())
-		const convPK = faker.datatype.uuid()
-		const contactPK = faker.datatype.uuid()
+		const convPK = faker.string.uuid()
+		const contactPK = faker.string.uuid()
 		this.emitStreamEvent({
 			type: beapi.messenger.StreamEvent.Type.TypeContactUpdated,
 			payload: beapi.messenger.StreamEvent.ContactUpdated.encode({
@@ -412,8 +412,8 @@ export class MessengerServiceMock implements Partial<IMessengerServiceMock> {
 			throw new Error('invalid link kind')
 		}
 		const longNow = Long.fromNumber(Date.now())
-		const convPK = faker.datatype.uuid()
-		const memberPK = faker.datatype.uuid()
+		const convPK = faker.string.uuid()
+		const memberPK = faker.string.uuid()
 		this.emitStreamEvent({
 			type: beapi.messenger.StreamEvent.Type.TypeConversationUpdated,
 			payload: beapi.messenger.StreamEvent.ConversationUpdated.encode({

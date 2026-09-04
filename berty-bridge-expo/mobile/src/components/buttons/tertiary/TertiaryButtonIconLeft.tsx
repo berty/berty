@@ -5,7 +5,7 @@ import { ButtonDefProps, IconNameProps } from '../interfaces'
 import { TertiaryButtonPriv } from './TertiaryButton.priv'
 import { TertiaryTextPriv } from './TertiaryText.priv'
 
-export const TertiaryButtonIconLeft: React.FC<ButtonDefProps & IconNameProps> = props => {
+export const TertiaryButtonIconLeft: React.FC<React.PropsWithChildren<ButtonDefProps & IconNameProps>> = props => {
 	return (
 		<TertiaryButtonPriv {...props}>
 			<IconWrapperLeftPriv disabled={!!props.disabled} name={props.name} type='tertiary' />

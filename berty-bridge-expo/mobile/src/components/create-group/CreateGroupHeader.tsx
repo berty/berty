@@ -8,7 +8,7 @@ import { useThemeColor } from '@berty/hooks'
 
 import { UnifiedText } from '../shared-components/UnifiedText'
 
-export const CreateGroupHeader: React.FC<{
+export const CreateGroupHeader: React.FC<React.PropsWithChildren<{
 	title: string
 	icon?: string
 	iconPack?: string
@@ -16,7 +16,7 @@ export const CreateGroupHeader: React.FC<{
 	disabled?: boolean
 	onPress?: () => void
 	style?: StyleProp<ViewStyle>
-}> = ({
+}>> = ({
 	children,
 	title,
 	icon,

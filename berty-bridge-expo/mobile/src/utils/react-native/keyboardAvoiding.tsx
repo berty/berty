@@ -5,10 +5,10 @@ import Animated, { useAnimatedStyle } from 'react-native-reanimated'
 
 // Keyboard avoidance via the keyboard's animated height as bottom padding (reliable
 // under Android edge-to-edge, unlike KeyboardAvoidingView). Name kept for call sites.
-export const IOSOnlyKeyboardAvoidingView: React.FC<{
+export const IOSOnlyKeyboardAvoidingView: React.FC<React.PropsWithChildren<{
 	style?: StyleProp<ViewStyle>
 	children: React.ReactNode
-}> = ({ style, children }) => {
+}>> = ({ style, children }) => {
 	const { height } = useReanimatedKeyboardAnimation()
 
 	const animatedStyle = useAnimatedStyle(() => ({

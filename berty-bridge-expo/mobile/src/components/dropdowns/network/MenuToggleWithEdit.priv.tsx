@@ -10,9 +10,7 @@ import { IsToggleProps, MenuItemProps, OnToggleProps } from '../../items/interfa
 import { MenuItemPriv } from '../../items/MenuItem.priv'
 import { TextPriv } from '../../items/Text.priv'
 
-export const MenuToggleWithEditPriv: React.FC<
-	MenuItemProps & OnToggleProps & IsToggleProps & { onPressModify?: () => void }
-> = props => {
+export const MenuToggleWithEditPriv: React.FC<React.PropsWithChildren<MenuItemProps & OnToggleProps & IsToggleProps & { onPressModify?: () => void }>> = props => {
 	const colors = useThemeColor()
 	const { margin } = useStyles()
 

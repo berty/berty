@@ -146,7 +146,7 @@ const SearchResultItem: React.FC<SearchItemProps> = ({ data, kind, searchText = 
 
 	let name: string
 	let inte: ParsedInteraction | undefined
-	let avatar: JSX.Element
+	let avatar: React.JSX.Element
 	switch (kind) {
 		case SearchResultKind.Contact:
 			avatar = <ContactAvatar publicKey={contactPk} size={_resultAvatarSize} />

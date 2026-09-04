@@ -38,7 +38,13 @@ export const SelectNode: ScreenFC<'Account.SelectNode'> = () => {
 	const insets = useSafeAreaInsets()
 
 	const validate = useCallback(
-		async (externalNode, address, accountPort, messengerPort, dontAsk) => {
+		async (
+			externalNode: boolean,
+			address: string,
+			accountPort: string,
+			messengerPort: string,
+			dontAsk: boolean,
+		) => {
 			const nodeInfos: NodeInfos = {
 				external: externalNode,
 				address: address,

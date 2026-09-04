@@ -18,7 +18,7 @@ import { selectMessengerClient } from './ui.reducer'
  *
  */
 
-const conversationsAdapter = createEntityAdapter<beapi.messenger.IConversation>({
+const conversationsAdapter = createEntityAdapter<beapi.messenger.IConversation, string>({
 	selectId: conversation => conversation.publicKey || '',
 	sortComparer: (a, b) =>
 		pbDateToNum(b.lastUpdate || b.createdDate) - pbDateToNum(a.lastUpdate || a.createdDate),
@@ -26,13 +26,13 @@ const conversationsAdapter = createEntityAdapter<beapi.messenger.IConversation>(
 
 const conversationsSelectors = conversationsAdapter.getSelectors()
 
-const contactsAdapter = createEntityAdapter<beapi.messenger.IContact>({
+const contactsAdapter = createEntityAdapter<beapi.messenger.IContact, string>({
 	selectId: contact => contact.publicKey || '',
 })
 
 const contactsSelectors = contactsAdapter.getSelectors()
 
-const interactionsAdapter = createEntityAdapter<ParsedInteraction>({
+const interactionsAdapter = createEntityAdapter<ParsedInteraction, string>({
 	selectId: inte => inte.cid || '',
 	sortComparer: (a, b) => pbDateToNum(b.sentDate) - pbDateToNum(a.sentDate),
 })
@@ -41,16 +41,16 @@ export const interactionsSelectors = interactionsAdapter.getSelectors()
 
 type InteractionsBucket = {
 	conversationPublicKey: string
-	interactions: EntityState<ParsedInteraction>
+	interactions: EntityState<ParsedInteraction, string>
 }
 
-const interactionsBucketsAdapter = createEntityAdapter<InteractionsBucket>({
+const interactionsBucketsAdapter = createEntityAdapter<InteractionsBucket, string>({
 	selectId: bucket => bucket.conversationPublicKey,
 })
 
 const interactionsBucketsSelectors = interactionsBucketsAdapter.getSelectors()
 
-const membersAdapter = createEntityAdapter<beapi.messenger.IMember>({
+const membersAdapter = createEntityAdapter<beapi.messenger.IMember, string>({
 	selectId: member => member.publicKey || '',
 	sortComparer: (a, b) => (a.displayName || '').localeCompare(b.displayName || ''),
 })
@@ -59,10 +59,10 @@ const membersSelectors = membersAdapter.getSelectors()
 
 type MembersBucket = {
 	conversationPublicKey: string
-	members: EntityState<beapi.messenger.IMember>
+	members: EntityState<beapi.messenger.IMember, string>
 }
 
-const membersBucketsAdapter = createEntityAdapter<MembersBucket>({
+const membersBucketsAdapter = createEntityAdapter<MembersBucket, string>({
 	selectId: bucket => bucket.conversationPublicKey,
 })
 

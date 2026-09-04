@@ -3,7 +3,7 @@ import { SafeAreaView } from 'react-native-safe-area-context'
 
 import { useThemeColor } from '@berty/hooks'
 
-const OnboardingWrapper: React.FC = ({ children }) => {
+const OnboardingWrapper: React.FC<React.PropsWithChildren> = ({ children }) => {
 	const colors = useThemeColor()
 
 	return (

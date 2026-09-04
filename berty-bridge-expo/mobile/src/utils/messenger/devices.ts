@@ -14,8 +14,6 @@ export const getDevicesForConversationAndMember = (
 
 	return new Promise<beapi.messenger.IDevice[]>(resolve => {
 		let devices = [] as beapi.messenger.IDevice[]
-		let subStream: { stop: () => void } | null
-
 		client
 			?.listMemberDevices({ memberPk: memberPk, conversationPk: conversationPk })
 			.then(async stream => {
@@ -35,10 +33,5 @@ export const getDevicesForConversationAndMember = (
 			})
 			.then(() => resolve(devices))
 
-		return () => {
-			if (subStream !== null) {
-				subStream.stop()
-			}
-		}
 	})
 }

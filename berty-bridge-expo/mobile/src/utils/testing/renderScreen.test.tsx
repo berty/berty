@@ -16,7 +16,7 @@ import store from '@berty/redux/store'
 
 import { makeRouteContext, routeContextKey } from './routerContext'
 
-const TestProvider: React.FC = ({ children }) => {
+const TestProvider: React.FC<React.PropsWithChildren> = ({ children }) => {
 	return (
 		<SafeAreaProvider
 			initialMetrics={{

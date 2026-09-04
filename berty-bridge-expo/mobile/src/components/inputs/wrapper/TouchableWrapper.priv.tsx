@@ -3,7 +3,7 @@ import { TouchableOpacity } from 'react-native'
 
 import { TouchableWrapperProps } from '../interfaces'
 
-export const TouchableWrapperPriv: React.FC<TouchableWrapperProps> = props => {
+export const TouchableWrapperPriv: React.FC<React.PropsWithChildren<TouchableWrapperProps>> = props => {
 	return (
 		<TouchableOpacity style={props.style} activeOpacity={1} onPress={props.onPress}>
 			{props.children}

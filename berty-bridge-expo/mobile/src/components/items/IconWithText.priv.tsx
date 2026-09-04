@@ -10,7 +10,7 @@ interface IconWithTextPrivProps {
 	color?: string
 }
 
-export const IconWithTextPriv: React.FC<IconWithTextPrivProps> = props => {
+export const IconWithTextPriv: React.FC<React.PropsWithChildren<IconWithTextPrivProps>> = props => {
 	return (
 		<View style={styles.row}>
 			<Icon

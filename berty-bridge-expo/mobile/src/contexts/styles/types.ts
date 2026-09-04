@@ -44,14 +44,14 @@ export type Sizes<T> = SizesDeclaration<T> & {
 	scale: (size: number) => T
 }
 
-type AlignHorizontal<T> = {
+export type AlignHorizontal<T> = {
 	left: T
 	right: T
 	center: T
 	fill: T
 }
 
-type AlignVertical<T> = {
+export type AlignVertical<T> = {
 	top: T
 	bottom: T
 	justify: T
@@ -59,7 +59,7 @@ type AlignVertical<T> = {
 	center?: T
 }
 
-type Align<T> = AlignHorizontal<T> & AlignVertical<T>
+export type Align<T> = AlignHorizontal<T> & AlignVertical<T>
 
 type Text = {
 	color: Colors<{}> & ColorsBrightness<{}>

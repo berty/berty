@@ -315,8 +315,6 @@ export const getSharedPushTokensForConversation = (
 
 	return new Promise<beapi.messenger.IPushMemberToken[]>(resolve => {
 		let tokens = [] as beapi.messenger.IPushMemberToken[]
-		let subStream: { stop: () => void } | null
-
 		client
 			?.pushTokenSharedForConversation({ conversationPk: conversationPk })
 			.then(async stream => {
@@ -338,11 +336,6 @@ export const getSharedPushTokensForConversation = (
 				resolve(tokens)
 			})
 
-		return () => {
-			if (subStream !== null) {
-				subStream.stop()
-			}
-		}
 	})
 }
 

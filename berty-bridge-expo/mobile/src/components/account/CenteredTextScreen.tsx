@@ -4,7 +4,7 @@ import { StatusBar } from 'react-native'
 import { FlexCenterViewPriv } from '../flex'
 import { UnifiedText } from '../shared-components/UnifiedText'
 
-export const CenteredTextScreen: React.FC = ({ children }) => {
+export const CenteredTextScreen: React.FC<React.PropsWithChildren> = ({ children }) => {
 	return (
 		<>
 			<StatusBar barStyle='dark-content' />

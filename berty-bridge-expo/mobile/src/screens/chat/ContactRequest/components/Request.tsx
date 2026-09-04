@@ -144,7 +144,7 @@ type BodyRequestProps = {
 	buttons?: Buttons[]
 }
 
-const BodyRequestContent: React.FC<{}> = ({ children }) => {
+const BodyRequestContent: React.FC<React.PropsWithChildren<{}>> = ({ children }) => {
 	const { margin } = useStyles()
 	return (
 		<View style={[margin.top.big]}>

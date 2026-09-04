@@ -3,7 +3,7 @@ import { StyleSheet, TouchableOpacity } from 'react-native'
 
 import { MenuItemProps } from './interfaces'
 
-export const MenuItemPriv: React.FC<MenuItemProps> = props => {
+export const MenuItemPriv: React.FC<React.PropsWithChildren<MenuItemProps>> = props => {
 	return (
 		<TouchableOpacity style={styles.button} onPress={props.onPress} testID={props.testID}>
 			{props.children}

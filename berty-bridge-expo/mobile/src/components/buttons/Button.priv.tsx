@@ -1,7 +1,7 @@
 import React from 'react'
 import { StyleSheet, TouchableOpacity, TouchableOpacityProps } from 'react-native'
 
-export const ButtonPriv: React.FC<TouchableOpacityProps> = props => {
+export const ButtonPriv: React.FC<React.PropsWithChildren<TouchableOpacityProps>> = props => {
 	return (
 		<TouchableOpacity {...props} style={[styles.button, props.style]} onPress={props.onPress}>
 			{props.children}

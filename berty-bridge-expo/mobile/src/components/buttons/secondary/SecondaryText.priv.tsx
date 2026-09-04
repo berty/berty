@@ -4,7 +4,7 @@ import { useThemeColor } from '@berty/hooks'
 
 import { TextButtonPriv } from '../TextButton.priv'
 
-export const SecondaryTextPriv: React.FC<{ disabled: boolean }> = props => {
+export const SecondaryTextPriv: React.FC<React.PropsWithChildren<{ disabled: boolean }>> = props => {
 	const colors = useThemeColor()
 
 	return (

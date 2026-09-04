@@ -21,7 +21,7 @@ interface ActionCardProps extends ModalCardProps, ActionButtonsProps {
 	withLogo?: boolean
 }
 
-export const ActionCard: React.FC<ActionCardProps> = props => {
+export const ActionCard: React.FC<React.PropsWithChildren<ActionCardProps>> = props => {
 	const { text, margin, padding, row } = useStyles()
 	const colors = useThemeColor()
 

@@ -64,7 +64,6 @@ const SelectedContent: React.FC<{ conv: beapi.messenger.IConversation }> = ({ co
 							size={qrCodeSize}
 							value={conv.link}
 							logo={logo}
-							mode='circle'
 							color={colors['background-header']}
 							backgroundColor={colors['main-background']}
 						/>

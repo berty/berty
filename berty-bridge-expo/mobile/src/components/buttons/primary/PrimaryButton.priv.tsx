@@ -6,7 +6,7 @@ import { useThemeColor } from '@berty/hooks'
 import { ButtonPriv } from '../Button.priv'
 import { ButtonDefProps } from '../interfaces'
 
-export const PrimaryButtonPriv: React.FC<ButtonDefProps & { alternative?: boolean }> = props => {
+export const PrimaryButtonPriv: React.FC<React.PropsWithChildren<ButtonDefProps & { alternative?: boolean }>> = props => {
 	const colors = useThemeColor()
 
 	let backgroundColor = colors['background-header']

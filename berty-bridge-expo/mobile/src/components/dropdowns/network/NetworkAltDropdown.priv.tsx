@@ -9,7 +9,7 @@ interface NetworkAltDropdownPrivProps extends NetworkProps {
 	children: ReactNode
 }
 
-export const NetworkAltDropdownPriv: React.FC<NetworkAltDropdownPrivProps> = props => {
+export const NetworkAltDropdownPriv: React.FC<React.PropsWithChildren<NetworkAltDropdownPrivProps>> = props => {
 	return (
 		<View style={styles.container}>
 			<DropdownPriv placeholder={props.placeholder} testID={props.testID}>

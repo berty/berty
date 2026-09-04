@@ -109,7 +109,7 @@ const slice = createSlice({
 	},
 	extraReducers: builder => {
 		builder.addCase(resetChatInput, (state, { payload: convPK }: PayloadAction<EntityId>) =>
-			adapter.updateOne(state, { id: convPK, changes: { isSending: false } }),
+			adapter.updateOne(state, { id: String(convPK), changes: { isSending: false } }),
 		)
 	},
 })

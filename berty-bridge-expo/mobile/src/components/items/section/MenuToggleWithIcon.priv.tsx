@@ -7,9 +7,7 @@ import { IconWithTextPriv } from '../IconWithText.priv'
 import { OnToggleProps, PackProps, ToggleMenuItemWithIconProps } from '../interfaces'
 import { MenuItemPriv } from '../MenuItem.priv'
 
-export const MenuToggleWithIconPriv: React.FC<
-	ToggleMenuItemWithIconProps & OnToggleProps & PackProps
-> = props => {
+export const MenuToggleWithIconPriv: React.FC<React.PropsWithChildren<ToggleMenuItemWithIconProps & OnToggleProps & PackProps>> = props => {
 	const colors = useThemeColor()
 
 	return (

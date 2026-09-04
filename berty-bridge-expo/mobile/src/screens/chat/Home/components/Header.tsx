@@ -16,7 +16,7 @@ import { UnreadCount } from './UnreadCount'
 export const HomeHeader: React.FC<
 	ViewProps & {
 		hasRequests: boolean
-		scrollRef: React.RefObject<ScrollView>
+		scrollRef: React.RefObject<ScrollView | null>
 		isOnTop: boolean
 		value: string
 		onChange: (value: string) => void

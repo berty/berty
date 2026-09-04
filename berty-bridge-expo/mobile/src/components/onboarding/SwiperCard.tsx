@@ -7,7 +7,7 @@ import { useThemeColor } from '@berty/hooks'
 import { PrimaryButton, SecondaryButton, TertiaryAltButton } from '../buttons'
 import { UnifiedText } from '../shared-components/UnifiedText'
 
-const Card: React.FC<ViewProps> = ({ style, children, ...props }) => (
+const Card: React.FC<React.PropsWithChildren<ViewProps>> = ({ style, children, ...props }) => (
 	<View
 		{...props}
 		style={[
@@ -24,7 +24,7 @@ const Card: React.FC<ViewProps> = ({ style, children, ...props }) => (
 )
 
 interface SwiperCardProps {
-	children: React.ReactNode
+	children?: React.ReactNode
 	title: string
 	desc?: string
 	header?: string

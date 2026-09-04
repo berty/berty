@@ -20,18 +20,18 @@ export type GRPCMethod = (req: any, cb: () => {}) => Promise<any>
 
 export type RequestStreamType<
 	Method extends GRPCMethod,
-	Request = Parameters<Method>[0],
-	Reply = Await<ReturnType<Method>>,
+	Request extends {} = Parameters<Method>[0],
+	Reply extends {} = Await<ReturnType<Method>>,
 > = RequestStream<Request, Reply>
 
 export type ResponseStreamType<
 	Method extends GRPCMethod,
-	Request = Parameters<Method>[0],
-	Reply = Await<ReturnType<Method>>,
+	Request extends {} = Parameters<Method>[0],
+	Reply extends {} = Await<ReturnType<Method>>,
 > = ResponseStream<Request, Reply>
 
 export type UnaryType<
 	Method extends GRPCMethod,
-	Request = Parameters<Method>[0],
-	Reply = Await<ReturnType<Method>>,
+	Request extends {} = Parameters<Method>[0],
+	Reply extends {} = Await<ReturnType<Method>>,
 > = Unary<Request, Reply>

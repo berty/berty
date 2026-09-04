@@ -2,7 +2,7 @@ import React from 'react'
 
 import { TextButtonPriv } from '../TextButton.priv'
 
-export const TertiaryTextPriv: React.FC<{ disabled: boolean; alternative?: boolean }> = props => {
+export const TertiaryTextPriv: React.FC<React.PropsWithChildren<{ disabled: boolean; alternative?: boolean }>> = props => {
 	// TODO: replace with value from theme
 	const getColor = (): string => {
 		if (props.disabled) {

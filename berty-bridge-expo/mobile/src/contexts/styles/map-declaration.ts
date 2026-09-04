@@ -6,7 +6,7 @@ import { initialScaleSize, initialFontScale, initialScaleHeight } from './consta
 import { mapBorder } from './map-border'
 import { mapColorsDeclaration } from './map-colors'
 import { mapSides } from './map-sides'
-import { Declaration, Styles, ColorsStyles } from './types'
+import { Align, AlignHorizontal, AlignVertical, Declaration, Styles, ColorsStyles } from './types'
 
 export const defaultStylesDeclaration: Declaration = {
 	colors: {
@@ -122,7 +122,7 @@ const mapDeclarationWithDims = (
 				center: { textAlign: 'center' },
 				justify: { textAlignVertical: 'center' },
 				fill: { textAlign: 'center', textAlignVertical: 'center' },
-			}),
+			}) as Align<{}>,
 		},
 		row: {
 			item: StyleSheet.create({
@@ -130,7 +130,7 @@ const mapDeclarationWithDims = (
 				bottom: { alignSelf: 'flex-end' },
 				justify: { alignSelf: 'center' },
 				fill: { alignSelf: 'stretch' },
-			}),
+			}) as AlignVertical<{}>,
 			...StyleSheet.create({
 				left: { flexDirection: 'row', alignItems: 'stretch', justifyContent: 'flex-start' },
 				right: { flexDirection: 'row', alignItems: 'stretch', justifyContent: 'flex-end' },
@@ -144,7 +144,7 @@ const mapDeclarationWithDims = (
 				right: { alignSelf: 'flex-end' },
 				center: { alignSelf: 'center' },
 				fill: { alignSelf: 'stretch' },
-			}),
+			}) as AlignHorizontal<{}>,
 			...StyleSheet.create({
 				top: { flexDirection: 'column', alignItems: 'stretch', justifyContent: 'flex-start' },
 				bottom: { flexDirection: 'column', alignItems: 'stretch', justifyContent: 'flex-end' },

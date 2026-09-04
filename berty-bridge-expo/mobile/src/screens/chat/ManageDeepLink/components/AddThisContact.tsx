@@ -27,7 +27,7 @@ const useStylesModal = () => {
 	}
 }
 
-const BodyAddThisContactContent: React.FC<{}> = ({ children }) => {
+const BodyAddThisContactContent: React.FC<React.PropsWithChildren<{}>> = ({ children }) => {
 	const { margin } = useStyles()
 	return (
 		<View style={[margin.top.big]}>

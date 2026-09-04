@@ -6,7 +6,7 @@ import { useThemeColor } from '@berty/hooks'
 import { ButtonPriv } from '../Button.priv'
 import { ButtonDefProps } from '../interfaces'
 
-export const SecondaryButtonPriv: React.FC<ButtonDefProps & { alternative?: boolean }> = props => {
+export const SecondaryButtonPriv: React.FC<React.PropsWithChildren<ButtonDefProps & { alternative?: boolean }>> = props => {
 	const colors = useThemeColor()
 
 	// TODO: replace with value from theme

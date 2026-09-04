@@ -1,7 +1,7 @@
 import React from 'react'
 import { StyleSheet, View } from 'react-native'
 
-export const HeaderPictoWrapperPriv: React.FC<{}> = props => {
+export const HeaderPictoWrapperPriv: React.FC<React.PropsWithChildren<{}>> = props => {
 	return <View style={styles.avatar}>{props.children}</View>
 }
 

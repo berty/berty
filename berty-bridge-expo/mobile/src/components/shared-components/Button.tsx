@@ -6,16 +6,14 @@ import { useThemeColor } from '@berty/hooks'
 
 import { UnifiedText } from './UnifiedText'
 
-const Button: React.FC<
-	{
+const Button: React.FC<React.PropsWithChildren<{
 		onPress: () => void
 		width?: number
 		status?: 'primary' | 'secondary'
 		disabled?: boolean
 		style?: ViewStyle | ViewStyle[]
 		textStyle?: TextStyle | TextStyle[]
-	} & Omit<TextProps, 'style'>
-> = ({
+	} & Omit<TextProps, 'style'>>> = ({
 	children,
 	onPress,
 	width = 250,

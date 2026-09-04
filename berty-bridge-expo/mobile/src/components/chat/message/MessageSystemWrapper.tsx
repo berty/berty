@@ -43,10 +43,10 @@ const MessageSystemLogo = () => {
 	)
 }
 
-export const MessageSystemWrapper: React.FC<{
+export const MessageSystemWrapper: React.FC<React.PropsWithChildren<{
 	styleContainer?: StyleProp<ViewStyle>
 	logo?: boolean
-}> = ({ children, styleContainer = {}, logo = true }) => {
+}>> = ({ children, styleContainer = {}, logo = true }) => {
 	const { padding, border, margin, width } = useStyles()
 	const colors = useThemeColor()
 	const logoDiameter = 28

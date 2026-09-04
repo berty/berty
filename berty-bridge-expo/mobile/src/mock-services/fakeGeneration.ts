@@ -1,4 +1,4 @@
-import faker from '@faker-js/faker'
+import { faker } from '@faker-js/faker'
 import range from 'lodash/range'
 import Long from 'long'
 
@@ -12,8 +12,8 @@ import { randomValueFromEnum } from '@berty/utils/testing/mockServices.test'
  */
 
 const genFakeAccount = ({
-	displayName = faker.name.findName(),
-	publicKey = faker.datatype.uuid(),
+	displayName = faker.person.fullName(),
+	publicKey = faker.string.uuid(),
 }): beapi.messenger.IAccount => {
 	return {
 		displayName: displayName,
@@ -31,17 +31,17 @@ const contactStates = [
 
 const genFakeContactsMap = ({ count = 20, baseDate = Date.now() }) => {
 	return range(0, count).reduce(contacts => {
-		const infoDate = faker.date.past(1, baseDate)
-		const sentDate = faker.date.past(1, infoDate)
-		const createdDate = faker.date.past(1, sentDate)
+		const infoDate = faker.date.past({ years: 1, refDate: baseDate })
+		const sentDate = faker.date.past({ years: 1, refDate: infoDate })
+		const createdDate = faker.date.past({ years: 1, refDate: sentDate })
 		const contact: beapi.messenger.IContact = {
 			infoDate: Long.fromNumber(infoDate.getTime()),
 			sentDate: Long.fromNumber(sentDate.getTime()),
 			createdDate: Long.fromNumber(createdDate.getTime()),
 			state: faker.helpers.arrayElement(contactStates),
-			publicKey: faker.datatype.uuid(),
-			conversationPublicKey: faker.datatype.uuid(),
-			displayName: faker.name.findName(),
+			publicKey: faker.string.uuid(),
+			conversationPublicKey: faker.string.uuid(),
+			displayName: faker.person.fullName(),
 		}
 		contacts[contact.publicKey || ''] = contact
 		return contacts
@@ -50,19 +50,19 @@ const genFakeContactsMap = ({ count = 20, baseDate = Date.now() }) => {
 
 const genFakeMultiMemberConversations = ({ count = 20, baseDate = Date.now() }) =>
 	range(0, count).map(() => {
-		const displayName = faker.lorem.sentence(faker.datatype.number({ min: 1, max: 5 }))
-		const lastUpdate = faker.date.past(1, baseDate)
-		const publicKey = faker.datatype.uuid()
+		const displayName = faker.lorem.sentence(faker.number.int({ min: 1, max: 5 }))
+		const lastUpdate = faker.date.past({ years: 1, refDate: baseDate })
+		const publicKey = faker.string.uuid()
 		const conv: beapi.messenger.IConversation = {
 			publicKey,
 			displayName,
 			type: beapi.messenger.Conversation.Type.MultiMemberType,
 			isOpen: false,
 			link: `https://berty.tech/mock#group/${publicKey}/name=${displayName}`,
-			unreadCount: faker.datatype.boolean() ? faker.datatype.number({ min: 0, max: 200 }) : 0,
+			unreadCount: faker.datatype.boolean() ? faker.number.int({ min: 0, max: 200 }) : 0,
 			lastUpdate: Long.fromNumber(lastUpdate.getTime()),
-			createdDate: Long.fromNumber(faker.date.past(1, lastUpdate).getTime()),
-			accountMemberPublicKey: faker.datatype.uuid(),
+			createdDate: Long.fromNumber(faker.date.past({ years: 1, refDate: lastUpdate }).getTime()),
+			accountMemberPublicKey: faker.string.uuid(),
 		}
 		return conv
 	})
@@ -81,13 +81,13 @@ const genFakeContactConversations = ({
 		if (!createdDate) {
 			throw new Error('golden contact badly defined')
 		}
-		const lastUpdate = faker.date.between(createdDate.toNumber(), baseDate)
+		const lastUpdate = faker.date.between({ from: createdDate.toNumber(), to: baseDate })
 		const conv: beapi.messenger.IConversation = {
 			publicKey: contact.conversationPublicKey,
 			contactPublicKey: contact.publicKey,
 			type: beapi.messenger.Conversation.Type.ContactType,
 			isOpen: false,
-			unreadCount: faker.datatype.boolean() ? faker.datatype.number({ min: 0, max: 200 }) : 0,
+			unreadCount: faker.datatype.boolean() ? faker.number.int({ min: 0, max: 200 }) : 0,
 			lastUpdate: Long.fromNumber(lastUpdate.getTime()),
 			createdDate: contact.createdDate,
 			accountMemberPublicKey,
@@ -113,14 +113,14 @@ const genFakeMembersMap = ({
 					isMe: true,
 				},
 			]
-			range(0, faker.datatype.number({ min: 0, max: 20 })).forEach(() => {
+			range(0, faker.number.int({ min: 0, max: 20 })).forEach(() => {
 				members[conv.publicKey || ''].push({
 					conversationPublicKey: conv.publicKey,
-					publicKey: faker.datatype.uuid(),
-					displayName: faker.name.findName(),
+					publicKey: faker.string.uuid(),
+					displayName: faker.person.fullName(),
 					devices: range(0, 1).map(() => ({
-						publicKey: faker.datatype.uuid(),
-						memberPublicKey: faker.datatype.uuid(),
+						publicKey: faker.string.uuid(),
+						memberPublicKey: faker.string.uuid(),
 					})),
 				})
 			})
@@ -157,14 +157,14 @@ const genFakeInteractionsMap = ({
 			}
 		}
 
-		let lastSent = faker.date.recent(1, baseDate)
+		let lastSent = faker.date.recent({ days: 1, refDate: baseDate })
 
-		range(0, faker.datatype.number({ min: 0, max: maxPerConv })).forEach(() => {
+		range(0, faker.number.int({ min: 0, max: maxPerConv })).forEach(() => {
 			const convMembers = membersMap[conv.publicKey || '']
-			const member = convMembers[faker.datatype.number(convMembers.length - 1)]
+			const member = convMembers[faker.number.int(convMembers.length - 1)]
 			const isMine = member.publicKey === conv.accountMemberPublicKey
 			const inte: beapi.messenger.IInteraction = {
-				cid: faker.datatype.uuid(),
+				cid: faker.string.uuid(),
 				conversationPublicKey: conv.publicKey,
 				type: beapi.messenger.AppMessage.Type.TypeUserMessage,
 				isMine,
@@ -175,7 +175,7 @@ const genFakeInteractionsMap = ({
 				sentDate: Long.fromNumber(lastSent.getTime()),
 				acknowledged: faker.datatype.boolean(),
 			}
-			lastSent = faker.date.recent(1, lastSent)
+			lastSent = faker.date.recent({ days: 1, refDate: lastSent })
 			intes[conv.publicKey || ''].push(inte)
 		})
 
@@ -243,10 +243,10 @@ export const genFakeMessengerData = ({
 	const peersNetworkStatus: beapi.messenger.StreamEvent.IPeerStatusConnected[] = []
 	const devices: { devicePk: string | null | undefined; memberPk: string | null | undefined }[] = []
 	members.forEach(value => {
-		const peerId = faker.datatype.uuid()
+		const peerId = faker.string.uuid()
 
 		const devicePk =
-			!value?.devices || !value?.devices.length ? faker.datatype.uuid() : value.devices[0].publicKey
+			!value?.devices || !value?.devices.length ? faker.string.uuid() : value.devices[0].publicKey
 		const device = {
 			devicePk,
 			memberPk: value.publicKey,

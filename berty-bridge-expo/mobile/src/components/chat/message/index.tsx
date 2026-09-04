@@ -1,4 +1,3 @@
-import { Dictionary } from '@reduxjs/toolkit'
 import React from 'react'
 import { View } from 'react-native'
 
@@ -19,7 +18,7 @@ import { UserMessage } from './user-message/UserMessage'
 export const Message: React.FC<{
 	inte?: ParsedInteraction
 	convKind: beapi.messenger.Conversation.Type
-	members?: Dictionary<beapi.messenger.IMember>
+	members?: Record<string, beapi.messenger.IMember | undefined>
 	convPK: string
 	previousMessage?: ParsedInteraction
 	nextMessage?: ParsedInteraction

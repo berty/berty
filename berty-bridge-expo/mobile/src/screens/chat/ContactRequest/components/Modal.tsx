@@ -36,7 +36,7 @@ const useStylesModal = () => {
 	}
 }
 
-export const Modal: React.FC<ModalProps> = ({
+export const Modal: React.FC<React.PropsWithChildren<ModalProps>> = ({
 	children,
 	icon = true,
 	blurAmount = 50,

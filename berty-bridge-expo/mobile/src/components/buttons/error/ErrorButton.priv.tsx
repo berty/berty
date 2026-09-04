@@ -4,7 +4,7 @@ import { ActivityIndicator, ViewStyle } from 'react-native'
 import { ButtonPriv } from '../Button.priv'
 import { ButtonDefProps } from '../interfaces'
 
-export const ErrorButtonPriv: React.FC<ButtonDefProps> = props => {
+export const ErrorButtonPriv: React.FC<React.PropsWithChildren<ButtonDefProps>> = props => {
 	// TODO: replace with value from theme
 	const getStyle = (): ViewStyle => {
 		if (props.disabled) {

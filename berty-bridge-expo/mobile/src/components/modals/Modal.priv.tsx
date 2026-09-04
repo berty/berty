@@ -9,7 +9,7 @@ interface ModalPrivProps {
 	backgroundColor?: string
 }
 
-export const ModalPriv: React.FC<ModalPrivProps> = props => {
+export const ModalPriv: React.FC<React.PropsWithChildren<ModalPrivProps>> = props => {
 	const { windowHeight } = useAppDimensions()
 
 	return (

@@ -6,7 +6,7 @@ import { IsToggleProps, MenuItemProps, OnToggleProps } from '../interfaces'
 import { MenuItemPriv } from '../MenuItem.priv'
 import { TextPriv } from '../Text.priv'
 
-export const MenuToggle: React.FC<MenuItemProps & OnToggleProps & IsToggleProps> = props => {
+export const MenuToggle: React.FC<React.PropsWithChildren<MenuItemProps & OnToggleProps & IsToggleProps>> = props => {
 	return (
 		<MenuItemPriv onPress={props.onPress} testID={props.testID}>
 			<TextPriv>{props.children}</TextPriv>

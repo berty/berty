@@ -5,7 +5,7 @@ import { ButtonDefProps, IconNameProps } from '../interfaces'
 import { ErrorButtonPriv } from './ErrorButton.priv'
 import { ErrorTextPriv } from './ErrorText.priv'
 
-export const ErrorButtonIconRight: React.FC<ButtonDefProps & IconNameProps> = props => {
+export const ErrorButtonIconRight: React.FC<React.PropsWithChildren<ButtonDefProps & IconNameProps>> = props => {
 	return (
 		<ErrorButtonPriv {...props}>
 			<ErrorTextPriv disabled={!!props.disabled}>{props.children}</ErrorTextPriv>

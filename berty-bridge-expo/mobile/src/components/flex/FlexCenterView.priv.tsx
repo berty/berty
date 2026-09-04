@@ -3,7 +3,7 @@ import { View } from 'react-native'
 
 import { useStyles } from '@berty/contexts/styles'
 
-export const FlexCenterViewPriv: React.FC = ({ children }) => {
+export const FlexCenterViewPriv: React.FC<React.PropsWithChildren> = ({ children }) => {
 	const { flex } = useStyles()
 
 	return <View style={[flex.tiny, flex.align.center, flex.justify.center]}>{children}</View>

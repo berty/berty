@@ -9,14 +9,14 @@ import { InteractionUserMessage } from '@berty/utils/api'
 const AVATAR_SIZE = 30
 const AVATAR_SPACE_RIGHT = 5
 
-export const UserMessageWrapper: React.FC<{
+export const UserMessageWrapper: React.FC<React.PropsWithChildren<{
 	inte: InteractionUserMessage
 	members?: { [key: string]: beapi.messenger.IMember | undefined }
 	convKind: beapi.messenger.Conversation.Type
 	children: React.ReactNode
 	isGroup: boolean
 	isFollowedMessage: boolean | undefined
-}> = ({ inte, children, isGroup, isFollowedMessage }) => {
+}>> = ({ inte, children, isGroup, isFollowedMessage }) => {
 	const { row, padding, column } = useStyles()
 
 	return (

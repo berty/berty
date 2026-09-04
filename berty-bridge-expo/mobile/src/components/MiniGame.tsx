@@ -77,6 +77,13 @@ enum PatternType {
 }
 const { width, height } = Dimensions.get('window')
 
+type MiniGameCorners = {
+	top?: string | null
+	bottom?: string | null
+	left?: string | null
+	right?: string | null
+}
+
 export const MiniGame: React.FC<{
 	htmlString: string
 	exit: () => void
@@ -106,7 +113,7 @@ export const MiniGame: React.FC<{
 	}, [indexOfPattern])
 
 	const checkPattern = React.useCallback(
-		({ top, bottom, left, right }) => {
+		({ top, bottom, left, right }: MiniGameCorners) => {
 			if (
 				pattern[indexOfPattern] === top ||
 				pattern[indexOfPattern] === bottom ||

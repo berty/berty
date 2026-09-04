@@ -6,7 +6,10 @@ export type OnLoadEventPayload = {
 
 export type BertyBridgeExpoModuleEvents = {
   onChange: (params: ChangeEventPayload) => void;
+  onPushReceived: (params: PushReceivedEventPayload) => void;
 };
+
+export type PushReceivedEventPayload = string;
 
 export type ChangeEventPayload = {
   value: string;

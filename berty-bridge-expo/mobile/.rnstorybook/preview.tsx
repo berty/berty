@@ -15,11 +15,11 @@ const preview: Preview = {
   },
 };
 
-export const ScroolViewDecorator = (getStory, context) => (
+export const ScroolViewDecorator = (getStory: any, context: any) => (
   <ScrollView style={styles.scrollview}>{getStory(context)}</ScrollView>
 )
 
-export const AppDecorator = (getStory, context) => (
+export const AppDecorator = (getStory: any, context: any) => (
   <AppCommonProviders>{getStory(context)}</AppCommonProviders>
 )
 
@@ -29,7 +29,7 @@ const STORY_ROUTE = '/storybook'
 
 // A story supplies route params with `parameters: { routeParams: { ... } }`,
 // which stand in for the old Stack.Screen `initialParams`.
-export const NavigationDecorator = (story, context: any) => {
+export const NavigationDecorator = (story: any, context: any) => {
   const Screen = () => story()
   const routeParams = context?.parameters?.routeParams
   const search = routeParams

@@ -49,9 +49,9 @@ interface AccordionRef {
 }
 
 interface AccordionRefs {
-	relay: RefObject<AccordionRef>
-	rdvp: RefObject<AccordionRef>
-	bootstrap: RefObject<AccordionRef>
+	relay: RefObject<AccordionRef | null>
+	rdvp: RefObject<AccordionRef | null>
+	bootstrap: RefObject<AccordionRef | null>
 }
 
 const ConfigPart: React.FC<{

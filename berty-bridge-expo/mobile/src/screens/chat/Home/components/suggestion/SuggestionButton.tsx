@@ -10,7 +10,7 @@ interface SuggestionButtonProps {
 	style?: ViewStyle
 }
 
-export const SuggestionButton: React.FC<SuggestionButtonProps> = props => {
+export const SuggestionButton: React.FC<React.PropsWithChildren<SuggestionButtonProps>> = props => {
 	const { row, border, padding } = useStyles()
 	const colors = useThemeColor()
 

@@ -7,7 +7,7 @@ interface HorizontalDuoProps {
 	children: ReactNode[]
 }
 
-export const HorizontalDuo: React.FC<HorizontalDuoProps> = props => {
+export const HorizontalDuo: React.FC<React.PropsWithChildren<HorizontalDuoProps>> = props => {
 	const { row, margin } = useStyles()
 
 	return (

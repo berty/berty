@@ -12,7 +12,7 @@ import { CardBodyPriv } from './CardBody.priv'
 import { CardWrapperPriv } from './CardWrapper.priv'
 import { HeaderPictoWrapperPriv } from './HeaderPictoWrapper.priv'
 
-export const ErrorCard: React.FC<ModalCardProps> = props => {
+export const ErrorCard: React.FC<React.PropsWithChildren<ModalCardProps>> = props => {
 	const { text, margin, padding, row } = useStyles()
 	const { t } = useTranslation()
 

@@ -4,7 +4,7 @@ import { StyleSheet, View } from 'react-native'
 import { useStyles } from '@berty/contexts/styles'
 import { useThemeColor } from '@berty/hooks'
 
-export const FloatingContainerPriv: React.FC<{ backgroundColor?: string }> = props => {
+export const FloatingContainerPriv: React.FC<React.PropsWithChildren<{ backgroundColor?: string }>> = props => {
 	const { border } = useStyles()
 	const colors = useThemeColor()
 

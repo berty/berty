@@ -29,7 +29,7 @@ const styleBertyIdOptions = {
 	avatarSize: 90,
 }
 
-const BertyIdContent: React.FC<{}> = ({ children }) => {
+const BertyIdContent: React.FC<React.PropsWithChildren<{}>> = ({ children }) => {
 	const { column } = useStyles()
 
 	return (
@@ -56,7 +56,6 @@ const ContactRequestQR = () => {
 				size={qrCodeSize}
 				value={account.link}
 				color={colors['background-header']}
-				mode='circle'
 				backgroundColor={colors['main-background']}
 			/>
 		</View>

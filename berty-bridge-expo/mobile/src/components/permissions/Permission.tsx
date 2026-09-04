@@ -1,4 +1,4 @@
-import LottieView, { AnimatedLottieViewProps } from 'lottie-react-native'
+import LottieView, { LottieViewProps } from 'lottie-react-native'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
 import { Platform, StatusBar, StyleSheet, View } from 'react-native'
@@ -16,7 +16,7 @@ import { useThemeColor } from '@berty/hooks'
 import { PermissionType } from '@berty/utils/permissions/permissions'
 import * as testIDs from '@berty/utils/testing/testIDs.json'
 
-const animations: Record<PermissionType, AnimatedLottieViewProps['source']> = {
+const animations: Record<PermissionType, LottieViewProps['source']> = {
 	audio: audioLottie,
 	camera: cameraLottie,
 	notification: notificationLottie,

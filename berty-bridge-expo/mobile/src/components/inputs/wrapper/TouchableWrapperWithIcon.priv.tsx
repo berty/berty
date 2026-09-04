@@ -4,7 +4,7 @@ import { StyleSheet } from 'react-native'
 import { TouchableWrapperProps } from '../interfaces'
 import { TouchableWrapperPriv } from './TouchableWrapper.priv'
 
-export const TouchableWrapperWithIconPriv: React.FC<TouchableWrapperProps> = props => {
+export const TouchableWrapperWithIconPriv: React.FC<React.PropsWithChildren<TouchableWrapperProps>> = props => {
 	return (
 		<TouchableWrapperPriv style={[styles.button, props.style]} onPress={props.onPress}>
 			{props.children}

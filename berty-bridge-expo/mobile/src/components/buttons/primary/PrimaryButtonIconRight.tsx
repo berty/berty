@@ -5,7 +5,7 @@ import { ButtonDefProps, IconNameProps } from '../interfaces'
 import { PrimaryButtonPriv } from './PrimaryButton.priv'
 import { PrimaryTextPriv } from './PrimaryText.priv'
 
-export const PrimaryButtonIconRight: React.FC<ButtonDefProps & IconNameProps> = props => {
+export const PrimaryButtonIconRight: React.FC<React.PropsWithChildren<ButtonDefProps & IconNameProps>> = props => {
 	return (
 		<PrimaryButtonPriv {...props}>
 			<PrimaryTextPriv>{props.children}</PrimaryTextPriv>

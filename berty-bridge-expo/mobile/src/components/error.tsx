@@ -47,7 +47,7 @@ const Label: React.FC<{ title: string; type: "error" }> = ({ title, type }) => {
 	);
 };
 
-const Body: React.FC<{ children: React.ReactElement[] }> = ({ children }) => {
+const Body: React.FC<React.PropsWithChildren<{ children: React.ReactElement[] }>> = ({ children }) => {
 	const { border, padding } = useStyles();
 	const colors = useThemeColor();
 
@@ -121,11 +121,11 @@ const ErrorDetails: React.FC<{ error: Error }> = ({ error }) => {
 	);
 };
 
-const ErrorScreenContainer: React.FC<{
+const ErrorScreenContainer: React.FC<React.PropsWithChildren<{
 	labelTitle: string;
 	children: React.ReactElement[];
 	error: Error;
-}> = ({ labelTitle, children, error }) => {
+}>> = ({ labelTitle, children, error }) => {
 	const { padding } = useStyles();
 	const colors = useThemeColor();
 
@@ -228,7 +228,7 @@ const WTFScreen: React.FC<ErrorProps> = ({ error }) => {
 	);
 };
 
-const SorryScreen: React.FC<ErrorProps> = ({ error }) => {
+const SorryScreen: React.FC<React.PropsWithChildren<ErrorProps>> = ({ error }) => {
 	const { margin, text } = useStyles();
 	const colors = useThemeColor();
 	const { t } = useTranslation();

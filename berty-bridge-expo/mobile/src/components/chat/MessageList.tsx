@@ -1,4 +1,4 @@
-import { FlashList } from '@shopify/flash-list'
+import { FlashList, FlashListRef } from '@shopify/flash-list'
 import Long from 'long'
 import moment from 'moment'
 import React, { useCallback, useMemo, useRef, useState } from 'react'
@@ -71,9 +71,9 @@ const NoopComponent: React.FC = () => null
 const keyExtractor = (item: ParsedInteraction, index: number) => item.cid || `${index}`
 
 const updateStickyDate: (
-	setStickyDate: (date: Long.Long) => void,
+	setStickyDate: (date: Long) => void,
 ) => (info: { viewableItems: ViewToken[] }) => void =
-	(setStickyDate: (date: Long.Long) => void) =>
+	(setStickyDate: (date: Long) => void) =>
 	({ viewableItems }) => {
 		if (viewableItems && viewableItems.length) {
 			const minDate = viewableItems[viewableItems.length - 1]?.section?.title
@@ -136,7 +136,7 @@ const fetchMore = async ({
 export const MessageList: React.FC<{
 	id: string
 	scrollToMessage?: string
-	setStickyDate: (date: Long.Long) => void
+	setStickyDate: (date: Long) => void
 	setShowStickyDate: (value: boolean) => void
 	isGroup?: boolean
 }> = React.memo(
@@ -164,10 +164,10 @@ export const MessageList: React.FC<{
 				? InfosMultiMember
 				: NoopComponent
 
-		const flashListRef = React.useRef<FlashList<ParsedInteraction> | null>(null)
+		const flashListRef = React.useRef<FlashListRef<ParsedInteraction> | null>(null)
 
 		const handleScrollToCid = useCallback(
-			cid => {
+			(cid: string) => {
 				flashListRef.current?.scrollToIndex({
 					index: messages.findIndex(message => message.cid === cid),
 				})
@@ -176,7 +176,7 @@ export const MessageList: React.FC<{
 		)
 
 		const renderItem = useCallback(
-			({ item, index }) => (
+			({ item, index }: { item: ParsedInteraction; index: number }) => (
 				// Flipped back upright; see styles.invertedList.
 				<View style={styles.invertedCell}>
 					{index > 0 && <DateSeparator current={item} next={messages[index - 1]} />}
@@ -245,7 +245,7 @@ export const MessageList: React.FC<{
 		)
 
 		const style = React.useMemo(
-			() => [overflow, row.item.fill, flex.tiny],
+			() => StyleSheet.flatten([overflow, row.item.fill, flex.tiny]),
 			[flex.tiny, overflow, row.item.fill],
 		)
 		const contentContainerStyle = React.useMemo(

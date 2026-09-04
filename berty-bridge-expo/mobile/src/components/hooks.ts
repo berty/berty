@@ -24,7 +24,7 @@ export const useLayout = (): [LayoutRectangle, (e: LayoutChangeEvent) => void] =
 
 export function usePrevious<T>(value: T) {
 	// https://blog.logrocket.com/how-to-get-previous-props-state-with-react-hooks/
-	const ref = useRef<T>()
+	const ref = useRef<T | undefined>(undefined)
 	useEffect(() => {
 		ref.current = value
 	})

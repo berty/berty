@@ -23,7 +23,7 @@ const useStylesModal = () => {
 	}
 }
 
-const BodyManageGroupInvitationContent: React.FC<{}> = ({ children }) => {
+const BodyManageGroupInvitationContent: React.FC<React.PropsWithChildren<{}>> = ({ children }) => {
 	const { margin } = useStyles()
 	return (
 		<View style={[margin.top.big]}>

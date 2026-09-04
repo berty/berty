@@ -17,7 +17,7 @@ const READ_MORE_SUBSTR_LENGTH = 300
 
 const additionalTlds = ['crypto']
 
-const linkify_conf = linkify().tlds([...tlds, ...additionalTlds], true)
+const linkify_conf = new linkify().tlds([...tlds, ...additionalTlds], true)
 
 async function isBertyDeepLink(client: WelshMessengerServiceClient, url: string): Promise<boolean> {
 	return new Promise(resolve => {
@@ -93,29 +93,31 @@ export const HyperlinkUserMessage: React.FC<{
 					linkStyle={{ textDecorationLine: 'underline' }}
 					linkify={linkify_conf}
 				>
-					<UnifiedText testID={message} style={{ fontSize: 17, color: msgTextColor }}>
-						{message && message.length > READ_MORE_MESSAGE_LENGTH
-							? isReadMore
-								? message?.substring(0, READ_MORE_SUBSTR_LENGTH).concat('...')
-								: message
-							: message || ''}
-					</UnifiedText>
+					<>
+						<UnifiedText testID={message} style={{ fontSize: 17, color: msgTextColor }}>
+							{message && message.length > READ_MORE_MESSAGE_LENGTH
+								? isReadMore
+									? message?.substring(0, READ_MORE_SUBSTR_LENGTH).concat('...')
+									: message
+								: message || ''}
+						</UnifiedText>
 
-					{message && message.length > READ_MORE_MESSAGE_LENGTH ? (
-						<TouchableOpacity onPress={() => setReadMore(!isReadMore)}>
-							<UnifiedText
-								style={[
-									margin.top.tiny,
-									text.size.small,
-									{ color: colors['secondary-text'], alignSelf: 'center' },
-								]}
-							>
-								<>
-									{isReadMore ? t('chat.user-message.read-more') : t('chat.user-message.show-less')}
-								</>
-							</UnifiedText>
-						</TouchableOpacity>
-					) : null}
+						{message && message.length > READ_MORE_MESSAGE_LENGTH ? (
+							<TouchableOpacity onPress={() => setReadMore(!isReadMore)}>
+								<UnifiedText
+									style={[
+										margin.top.tiny,
+										text.size.small,
+										{ color: colors['secondary-text'], alignSelf: 'center' },
+									]}
+								>
+									<>
+										{isReadMore ? t('chat.user-message.read-more') : t('chat.user-message.show-less')}
+									</>
+								</UnifiedText>
+							</TouchableOpacity>
+						) : null}
+					</>
 				</Hyperlink>
 			) : (
 				// using the previous jsx with an empty body crashes the render

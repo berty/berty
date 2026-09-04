@@ -3,7 +3,7 @@ import { View } from 'react-native'
 
 import { useStyles } from '@berty/contexts/styles'
 
-export const CreateGroupFooterPriv: React.FC = props => {
+export const CreateGroupFooterPriv: React.FC<React.PropsWithChildren> = props => {
 	const { padding, margin } = useStyles()
 
 	return (

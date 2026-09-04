@@ -19,7 +19,7 @@ import { useThemeColor } from '@berty/hooks'
 
 import { UnifiedText } from './UnifiedText'
 
-export const Section: React.FC<{}> = ({ children }) => {
+export const Section: React.FC<React.PropsWithChildren<{}>> = ({ children }) => {
 	const { margin, border, padding } = useStyles()
 	const colors = useThemeColor()
 
@@ -40,7 +40,7 @@ export const Section: React.FC<{}> = ({ children }) => {
 	)
 }
 
-export const ButtonSettingV2: React.FC<{
+export const ButtonSettingV2: React.FC<React.PropsWithChildren<{
 	text: string
 	icon?: string | React.ReactNode
 	onPress?: () => void
@@ -55,7 +55,7 @@ export const ButtonSettingV2: React.FC<{
 	pack?: string
 	disabled?: boolean
 	last?: boolean
-}> = ({
+}>> = ({
 	text,
 	icon,
 	onPress,
@@ -181,7 +181,7 @@ type SettingButtonProps = {
 	alone?: boolean
 	toggled?: boolean
 	actionIcon?: string | null
-	actionIconAngle?: Animated.AnimatedInterpolation | null
+	actionIconAngle?: Animated.AnimatedInterpolation<number> | null
 	actionIconSize?: number
 	actionIconColor?: string
 	actionToggle?: (value: boolean) => void
@@ -207,7 +207,7 @@ const useStylesSettingButton = () => {
 	}
 }
 
-export const ButtonSetting: React.FC<SettingButtonProps> = ({
+export const ButtonSetting: React.FC<React.PropsWithChildren<SettingButtonProps>> = ({
 	name,
 	color = null,
 	textSize,
@@ -260,15 +260,7 @@ export const ButtonSetting: React.FC<SettingButtonProps> = ({
 
 	return (
 		<TouchableOpacity
-			activeOpacity={
-				toggled && !disabled
-					? 1
-					: 0.2 || (disabled && !toggled)
-					? 0.5
-					: 0.2 || (toggled && disabled)
-					? 0.5
-					: 0.2
-			}
+			activeOpacity={toggled && !disabled ? 1 : 0.5}
 			style={[
 				{ minHeight: 60 * scaleSize, backgroundColor, flex: 1 },
 				alone ? border.radius.medium : null,
@@ -424,7 +416,7 @@ type FactionButtonSettingProps = {
 }
 
 // Styles
-export const FactionButtonSetting: React.FC<FactionButtonSettingProps> = ({
+export const FactionButtonSetting: React.FC<React.PropsWithChildren<FactionButtonSettingProps>> = ({
 	children,
 	name = null,
 	icon = null,
