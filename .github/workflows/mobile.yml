@@ -62,3 +62,58 @@ jobs:
       - name: Typecheck
         working-directory: berty-bridge-expo/mobile
         run: npm run typecheck
+
+  lint:
+    name: Lint
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: Setup asdf
+        uses: asdf-vm/actions/setup@9cd779f40fe38688dd19505ccbc4eaaf018b44e7
+        with:
+          asdf_version: 0.16.7
+
+      - name: Setup node
+        working-directory: berty-bridge-expo
+        run: |
+          asdf plugin add nodejs
+          asdf install nodejs
+          echo "NODE_VERSION=$(asdf current nodejs | xargs | cut -d ' ' -f 6)" >> $GITHUB_ENV
+
+      - name: Set nodejs as global exec
+        run: |
+          asdf set -u nodejs ${{ env.NODE_VERSION }}
+
+      - name: Cache expo module node modules
+        uses: actions/cache@v4
+        with:
+          path: berty-bridge-expo/node_modules
+          key: ${{ runner.OS }}-node-${{ env.NODE_VERSION }}-berty-bridge-expo-${{ hashFiles('berty-bridge-expo/package-lock.json') }}
+          restore-keys: ${{ runner.OS }}-node-${{ env.NODE_VERSION }}-berty-bridge-expo-
+
+      - name: Cache app node modules
+        uses: actions/cache@v4
+        with:
+          path: berty-bridge-expo/mobile/node_modules
+          key: ${{ runner.OS }}-node-${{ env.NODE_VERSION }}-mobile-${{ hashFiles('berty-bridge-expo/mobile/package-lock.json') }}
+          restore-keys: ${{ runner.OS }}-node-${{ env.NODE_VERSION }}-mobile-
+
+      - name: Fetch expo module node modules
+        working-directory: berty-bridge-expo
+        run: npm install
+
+      - name: Fetch app node modules
+        working-directory: berty-bridge-expo/mobile
+        run: npm install
+
+      # Fails on error-level rules only; the config's warnings are not gated.
+      # react-hooks/rules-of-hooks and import/no-unresolved are errors here, and
+      # catch what the compiler cannot: conditional hook calls, and imports of
+      # packages that are not installed.
+      - name: Lint
+        working-directory: berty-bridge-expo/mobile
+        run: npm run lint
