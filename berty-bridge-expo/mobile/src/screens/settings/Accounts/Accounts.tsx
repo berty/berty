@@ -26,6 +26,7 @@ export const Accounts: ScreenFC<'Settings.Accounts'> = () => {
 
 		return (
 			<ScrollView
+				contentInsetAdjustmentBehavior='automatic'
 				bounces={false}
 				style={{ backgroundColor: colors['secondary-background'] }}
 				contentContainerStyle={{

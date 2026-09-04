@@ -9,7 +9,8 @@ export const DevText: ScreenFC<'Settings.DevText'> = () => {
 	const { text } = useRouteParams('Settings.DevText')
 	const topInset = useTopInset()
 	return (
-		<ScrollView contentContainerStyle={{ paddingTop: topInset }}>
+		<ScrollView
+			contentInsetAdjustmentBehavior='automatic' contentContainerStyle={{ paddingTop: topInset }}>
 			<UnifiedText selectable={true}>{text}</UnifiedText>
 		</ScrollView>
 	)

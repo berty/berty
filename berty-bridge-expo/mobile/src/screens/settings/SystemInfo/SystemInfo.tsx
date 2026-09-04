@@ -69,6 +69,7 @@ export const SystemInfo: ScreenFC<'Settings.SystemInfo'> = () => {
 	return (
 		<Layout style={{ flex: 1, backgroundColor: colors['main-background'], paddingTop: topInset }}>
 			<ScrollView
+				contentInsetAdjustmentBehavior='automatic'
 				bounces={false}
 				contentContainerStyle={[padding.horizontal.medium, padding.bottom.scale(90)]}
 			>

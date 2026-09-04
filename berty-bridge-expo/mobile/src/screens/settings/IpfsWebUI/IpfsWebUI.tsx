@@ -31,7 +31,8 @@ export const IpfsWebUI: ScreenFC<'Settings.IpfsWebUI'> = () => {
 
 	return (
 		<Layout style={{ flex: 1, backgroundColor: colors['main-background'], paddingTop: topInset }}>
-			<ScrollView bounces={false}>
+			<ScrollView
+				contentInsetAdjustmentBehavior='automatic' bounces={false}>
 				<BodyIpfsWebUI />
 			</ScrollView>
 		</Layout>

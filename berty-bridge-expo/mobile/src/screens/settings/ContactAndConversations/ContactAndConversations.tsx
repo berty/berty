@@ -21,6 +21,7 @@ export const ContactAndConversations: ScreenFC<'Settings.ContactAndConversations
 	return (
 		<View style={{ backgroundColor: colors['secondary-background'], flex: 1, paddingTop: topInset }}>
 			<ScrollView
+				contentInsetAdjustmentBehavior='automatic'
 				bounces={false}
 				contentContainerStyle={{ paddingBottom: 12 * scaleSize }}
 				showsVerticalScrollIndicator={false}

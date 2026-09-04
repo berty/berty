@@ -173,7 +173,8 @@ export const ReplicateGroupSettings: ScreenFC<'Chat.ReplicateGroupSettings'> = (
 
 	return (
 		<Layout style={{ flex: 1 }}>
-			<ScrollView contentContainerStyle={[padding.bottom.huge]} bounces={false}>
+			<ScrollView
+				contentInsetAdjustmentBehavior='automatic' contentContainerStyle={[padding.bottom.huge]} bounces={false}>
 				<ReplicateGroupContent conversationPublicKey={conv.publicKey} navigation={navigation} />
 			</ScrollView>
 		</Layout>

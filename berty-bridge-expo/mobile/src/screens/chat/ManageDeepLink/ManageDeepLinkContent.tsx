@@ -8,6 +8,7 @@ import { resetRoutes } from '@berty/navigation'
 import { base64ToURLBase64 } from '@berty/utils/convert/base64'
 
 import AddThisContact from './components/AddThisContact'
+import InvalidScan from './components/InvalidScan'
 import { ManageGroupInvitation } from './components/ManageGroupInvitation'
 
 interface ManageDeepLinkContentProps {
@@ -21,15 +22,28 @@ export const ManageDeepLinkContent = (props: ManageDeepLinkContentProps) => {
 
 
 	const [reply, setReply] = useState<beapi.messenger.ParseDeepLink.Reply | null | undefined>(null)
+	const [error, setError] = useState<unknown>(null)
 
 	useEffect(() => {
-		console.warn(['Parsing deeplink', props.link])
-		async function parseDeepLink() {
-			const result = await messengerClient?.parseDeepLink({ link: props.link })
-			console.log('result', result)
-			setReply(result)
+		let canceled = false
+		messengerClient
+			?.parseDeepLink({ link: props.link })
+			.then(result => {
+				if (!canceled) {
+					setReply(result)
+				}
+			})
+			.catch(err => {
+				// A malformed or unsupported link rejects here. Without this the
+				// rejection went unhandled and the screen spun forever.
+				console.warn('failed to parse deep link', err)
+				if (!canceled) {
+					setError(err)
+				}
+			})
+		return () => {
+			canceled = true
 		}
-		parseDeepLink()
 	}, [messengerClient, props.link])
 
 	// Navigate from an effect, not render, to avoid "update a component while rendering".
@@ -54,6 +68,9 @@ export const ManageDeepLinkContent = (props: ManageDeepLinkContentProps) => {
 		}
 	}, [reply, conversations])
 
+	if (error) {
+		return <InvalidScan type={props.type} error={error} />
+	}
 	if (reply === null) {
 		return <ActivityIndicator size='large' />
 	}

@@ -85,7 +85,8 @@ export const AddDevConversations: ScreenFC<'Settings.AddDevConversations'> = () 
 
 	return (
 		<Layout style={{ flex: 1, backgroundColor: colors['main-background'], paddingTop: topInset }}>
-			<ScrollView bounces={false}>
+			<ScrollView
+				contentInsetAdjustmentBehavior='automatic' bounces={false}>
 				<BodyAddContactList />
 			</ScrollView>
 		</Layout>

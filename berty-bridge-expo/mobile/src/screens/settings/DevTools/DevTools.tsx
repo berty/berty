@@ -791,7 +791,8 @@ export const DevTools: ScreenFC<"Settings.DevTools"> = () => {
 	return (
 		<>
 			<StatusBar style="light" />
-			<ScrollView bounces={false}
+			<ScrollView
+				contentInsetAdjustmentBehavior='automatic' bounces={false}
 				// Required on Android so the nested dropdown ScrollViews don't swallow the page scroll; no-op on iOS.
 				nestedScrollEnabled
 				style={{ backgroundColor: colors["secondary-background"] }}

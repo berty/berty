@@ -68,7 +68,8 @@ export const FakeData: ScreenFC<'Settings.FakeData'> = () => {
 	const topInset = useTopInset()
 
 	return (
-		<ScrollView bounces={false}
+		<ScrollView
+			contentInsetAdjustmentBehavior='automatic' bounces={false}
 			style={{ backgroundColor: colors['main-background'] }}
 			contentContainerStyle={{ paddingTop: topInset, backgroundColor: colors['main-background'] }}>
 			<BodyFakeData />

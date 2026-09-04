@@ -25,8 +25,6 @@ type UiState = {
 	notificationsInhibitors: NotificationsInhibitor[]
 	// variable for AppInspector
 	debugMode: boolean
-	// deeplink or universal link
-	handledLink: string | null
 }
 
 /**
@@ -51,7 +49,6 @@ const initialState: UiState = {
 	streamProgress: null,
 	notificationsInhibitors: [],
 	debugMode: false,
-	handledLink: null,
 }
 
 const rootInitialState = makeRoot(initialState)
@@ -132,9 +129,6 @@ const slice = createSlice({
 		setDebugMode(state: UiState, { payload }: PayloadAction<boolean>) {
 			state.debugMode = payload
 		},
-		setHandledLink(state: UiState, { payload }: PayloadAction<string | null>) {
-			state.handledLink = payload
-		},
 	},
 })
 
@@ -163,8 +157,6 @@ export const selectNotificationsInhibitors = (state: LocalRootState) =>
 
 export const selectAccounts = (state: LocalRootState) => selectSlice(state).accounts
 
-export const selectHandledLink = (state: LocalRootState) => selectSlice(state).handledLink
-
 export const {
 	setClients,
 	setClearClients,
@@ -174,7 +166,6 @@ export const {
 	setDebugMode,
 	setStreamError,
 	setAccounts,
-	setHandledLink,
 	addNotificationInhibitor,
 	removeNotificationInhibitor,
 } = slice.actions

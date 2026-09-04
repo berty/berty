@@ -174,7 +174,8 @@ export const ThemeEditor: ScreenFC<'Settings.ThemeEditor'> = () => {
 	return (
 		<Layout style={{ backgroundColor: colors['main-background'], flex: 1, paddingTop: topInset }}>
 			<StatusBar style='light' />
-			<ScrollView bounces={false}>
+			<ScrollView
+				contentInsetAdjustmentBehavior='automatic' bounces={false}>
 				<BodyThemeEditor openModal={() => setIsModal(true)} />
 			</ScrollView>
 			{isModal && <ThemeColorName closeModal={() => setIsModal(false)} />}

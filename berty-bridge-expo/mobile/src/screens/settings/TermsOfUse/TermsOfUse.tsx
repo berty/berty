@@ -80,7 +80,8 @@ export const TermsOfUse: ScreenFC<'Settings.TermsOfUse'> = () => {
 
 	return (
 		<Layout style={{ backgroundColor: colors['main-background'], flex: 1, paddingTop: topInset }}>
-			<ScrollView bounces={false}>
+			<ScrollView
+				contentInsetAdjustmentBehavior='automatic' bounces={false}>
 				<BodyTermsOfUse />
 			</ScrollView>
 		</Layout>

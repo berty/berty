@@ -165,6 +165,7 @@ export const Notifications: ScreenFC<'Settings.Notifications'> = () => {
 
 	return (
 		<ScrollView
+			contentInsetAdjustmentBehavior='automatic'
 			bounces={false}
 			style={{ backgroundColor: colors['secondary-background'], minHeight: '100%' }}
 			contentContainerStyle={{ paddingTop: topInset, paddingBottom: 12 * scaleSize }}

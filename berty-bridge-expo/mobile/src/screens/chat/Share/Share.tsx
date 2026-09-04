@@ -223,7 +223,10 @@ export const ShareModal: ScreenFC<'Chat.Share'> = () => {
 	return (
 		<View style={{ flex: 1 }}>
 			<StatusBar style='light' />
-			<ScrollView style={[{ backgroundColor: colors['main-background'] }]}>
+			<ScrollView
+				contentInsetAdjustmentBehavior='automatic'
+				style={[{ backgroundColor: colors['main-background'] }]}
+			>
 				<ShareContainer
 					element={isScannerSelected ? <ScanBody visible={isScannerVisible} /> : <ShareQr />}
 				>

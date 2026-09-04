@@ -17,6 +17,7 @@ export const AboutBerty: ScreenFC<'Settings.AboutBerty'> = () => {
 
 	return (
 		<ScrollView
+			contentInsetAdjustmentBehavior='automatic'
 			bounces={false}
 			style={{ backgroundColor: colors['secondary-background'] }}
 			contentContainerStyle={{ paddingTop: topInset, paddingBottom: 12 * scaleSize }}

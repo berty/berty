@@ -135,6 +135,7 @@ const NetworkBody: React.FC = () => {
 
 	return (
 		<ScrollView
+			contentInsetAdjustmentBehavior='automatic'
 			bounces={false}
 			style={{ backgroundColor: colors['secondary-background']}}
 			contentContainerStyle={{ paddingTop: topInset, paddingBottom: 12, backgroundColor: colors['secondary-background'] }}
