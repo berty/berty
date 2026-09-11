@@ -9,12 +9,12 @@ import os
 import Bertybridge
 
 public class BertyLogger {
-    public enum LogLevel: String {
+    public enum LogLevel: String, Comparable {
         case DEBUG
         case INFO
         case WARN
         case ERROR
-      
+
         var levelString: String {
             return self.rawValue
         }
@@ -44,28 +44,70 @@ public class BertyLogger {
                 return .info
             }
         }
+
+        // For comparison - higher value = more severe
+        var severity: Int {
+            switch self {
+            case .DEBUG: return 0
+            case .INFO: return 1
+            case .WARN: return 2
+            case .ERROR: return 3
+            }
+        }
+
+        public static func < (lhs: LogLevel, rhs: LogLevel) -> Bool {
+            return lhs.severity < rhs.severity
+        }
     }
 
-    private static var bridge: BertybridgeBridge? = nil;
+    // MARK: - Static Configuration
+
+    /// Debug mode - defaults to false (production-safe)
+    private static var debugMode: Bool = false
+
+    /// Minimum log level for production (only warnings and errors)
+    private static let productionMinLevel: LogLevel = .WARN
+
+    private static var bridge: BertybridgeBridge? = nil
+
+    var subsystem: String
+
+    // MARK: - Initialization
+
+    /**
+     * Initialize debug mode based on build configuration.
+     * Call this during app initialization before any Berty code runs.
+     */
+    public static func initializeDebugMode(_ isDebug: Bool) {
+        debugMode = isDebug
+        let log = OSLog(subsystem: "BertyLogger", category: "init")
+        os_log("BertyLogger initialized: debugMode=%{public}@", log: log, type: .info,
+               isDebug ? "true" : "false")
+    }
 
     public static func useBridge(_ bridge: BertybridgeBridge?) {
         BertyLogger.bridge = bridge
     }
 
-    var subsytem: String
-    public init(_ subsytem: String = "logger") {
-        self.subsytem = subsytem
+    public init(_ subsystem: String = "logger") {
+        self.subsystem = subsystem
     }
 
-    public func log(_ level: LogLevel, _ message: String) {
-        if (BertyLogger.bridge == nil) {
-            let log = OSLog(subsystem: self.subsytem, category: self.subsytem)
+    // MARK: - Logging
 
-            os_log("[%{public}s] %{public}s", log: log, type: level.levelNative,
-                level.levelString, message)
+    public func log(_ level: LogLevel, _ message: String) {
+        // In production builds, only log warnings and errors to prevent log flooding
+        if !BertyLogger.debugMode && level < BertyLogger.productionMinLevel {
             return
         }
-      BertyLogger.bridge!.log(level.levelGo, subsystem: self.subsytem, message: message)
+
+        if let bridge = BertyLogger.bridge {
+            bridge.log(level.levelGo, subsystem: self.subsystem, message: message)
+        } else {
+            let log = OSLog(subsystem: self.subsystem, category: self.subsystem)
+            os_log("[%{public}s] %{public}s", log: log, type: level.levelNative,
+                   level.levelString, message)
+        }
     }
 
     public func debug(_ message: String) {

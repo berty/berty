@@ -4,6 +4,7 @@ import android.os.Handler;
 
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.atomic.AtomicLong;
 
 // Vastly inspired from https://medium.com/@martijn.van.welie/making-android-ble-work-part-1-a736dcd53b02
 // Github repo: https://github.com/weliem/blessed-android
@@ -25,7 +26,7 @@ public class BleQueue {
     private boolean mIsRetrying = false;
     private int mNrTries = 0;
 
-    private int mIndex = 0;
+    private final AtomicLong mIndex = new AtomicLong(0);
 
     public BleQueue(Logger logger, Handler handler) {
         mLogger = logger;
@@ -179,14 +180,14 @@ public class BleQueue {
         private final Callback callback;
         private final long delay;
         private final Runnable cancel;
-        private final int index;
+        private final long index;
 
         public TaskDelay(Runnable t, Callback cb, long d, Runnable c) {
             task = t;
             callback = cb;
             delay = d;
             cancel = c;
-            index = mIndex++;
+            index = mIndex.getAndIncrement();
         }
     }
 
