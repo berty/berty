@@ -43,6 +43,7 @@ var quotes = []Quote{
 	{"Ursula K. Le Guin", "Privacy, in fact, was almost as desirable for physics as it was for sex."},
 	{"Voltaire", "We have a natural right to make use of our pens as of our tongue, at our peril, risk and hazard."},
 	{"Jonathan Franzen", "Without privacy there was no point in being an individual."},
+	{"Aidan Johnson", "I don't want to live in a world where there's no privacy, and therefore no room for intellectual exploration and creativity."},
 }
 
 // RandomQuote returns a random quote from the quote list.
