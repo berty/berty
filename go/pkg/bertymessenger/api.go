@@ -1111,11 +1111,22 @@ func (svc *service) monitorGroupPeersStatus(groupPK string) error {
 
 	groupPeers := make(map[string]struct{})
 	go func() {
+		defer func() {
+			svc.muCancelGroupStatus.Lock()
+			// a canceled subCtx means ConversationClose already removed this entry,
+			// and a new monitor may have been registered since
+			if subCtx.Err() == nil {
+				delete(svc.cancelGroupStatus, groupPK)
+			}
+			svc.muCancelGroupStatus.Unlock()
+			cancel()
+		}()
+
 		for {
 			statusEvent, err := cs.Recv()
 			switch {
 			case err == nil: // ok
-			case err == io.EOF, status.Code(err) != codes.Canceled: // shutdown gracefully
+			case err == io.EOF, status.Code(err) == codes.Canceled: // shutdown gracefully
 				return
 			default:
 				svc.logger.Error("error while getting GroupDeviceStatus from protocol", zap.Error(err))
