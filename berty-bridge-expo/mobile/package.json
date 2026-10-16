@@ -102,7 +102,7 @@
   },
   "devDependencies": {
     "@babel/core": "^7.29.6",
-    "@faker-js/faker": "^9.8.0",
+    "@faker-js/faker": "^10.5.0",
     "@testing-library/dom": "^10.4.0",
     "@testing-library/react": "^16.3.0",
     "@types/jest": "^29.5.12",
