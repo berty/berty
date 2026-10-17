@@ -15,7 +15,7 @@ public class DeviceManager {
     public DeviceManager(Logger logger) {
         mLogger = logger;
     }
-    
+
     public synchronized PeerDevice put(String macAddress, PeerDevice value) {
         mLogger.d(TAG, "put() called");
         PeerDevice peerDevice = mPeerDevices.get(macAddress);

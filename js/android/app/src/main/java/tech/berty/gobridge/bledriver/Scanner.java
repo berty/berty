@@ -11,11 +11,11 @@ import android.content.Context;
 import android.os.ParcelUuid;
 
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
@@ -29,7 +29,7 @@ public class Scanner extends ScanCallback {
     private static final int SCANNER_STATE_ENABLED = 1;
     private static final int SCANNER_STATE_PAUSED = 2;
     // key is MAC address
-    private static final HashMap<String, ScanResult> foundMap = new HashMap<>();
+    private static final Map<String, ScanResult> foundMap = new ConcurrentHashMap<>();
     private final Context mContext;
     private final BluetoothAdapter mBluetoothAdapter;
     private String mLocalPID;
@@ -98,6 +98,7 @@ public class Scanner extends ScanCallback {
         CountDownLatch countDown;
 
         setProcessingResult(true);
+        mLogger.d(TAG, "processResult: found " + foundMap.size() + " devices to process");
         countDown = new CountDownLatch(foundMap.size());
         for (Map.Entry<String, ScanResult> keySet : foundMap.entrySet()) {
             result = keySet.getValue();
@@ -188,9 +189,16 @@ public class Scanner extends ScanCallback {
         } else {
             mLogger.e(TAG, "stop scanner error: BT adapter not running");
         }
-        mTask.cancel();
-        mTimer.purge();
-        mTimer = null;
+
+        if (mTask != null) {
+            mTask.cancel();
+            mTask = null;
+        }
+        if (mTimer != null) {
+            mTimer.purge();
+            mTimer.cancel();
+            mTimer = null;
+        }
     }
 
     // Return the status of the scanner

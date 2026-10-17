@@ -32,7 +32,8 @@ import java.util.concurrent.locks.ReentrantLock;
 public class GattServer {
     // BLE protocol reserves 3 bytes out of MTU_SIZE for metadata
     public static final int ATT_HEADER_SIZE = 3;
-    private static final long OP_TIMEOUT = 10000;
+    private static final long OP_TIMEOUT_MS = 10000;
+    private static final long SERVICE_START_TIMEOUT_MS = 30000;
     // GATT service UUID
     static final UUID SERVICE_UUID = UUID.fromString("00004240-0000-1000-8000-00805F9B34FB");
     // GATT characteristic used for peer ID exchange
@@ -60,6 +61,8 @@ public class GattServer {
     private volatile boolean mStarted = false;
     private final Lock mLock = new ReentrantLock();
     private BluetoothGattCharacteristic mWriterCharacteristic;
+    private volatile Thread mL2capThread = null;
+    private volatile boolean mL2capRunning = false;
 
     public GattServer(Context context, BleDriver bleDriver, Logger logger, BluetoothManager bluetoothManager) {
         mContext = context;
@@ -133,56 +136,71 @@ public class GattServer {
                 mBluetoothServerSocket = null;
             }
 
-            // loop to accept multiple incoming connections
             if (mBluetoothServerSocket != null) {
-                Thread l2capThread = new Thread(() -> {
-                    while (true) {
-                        if (mBluetoothServerSocket != null) {
-                            BluetoothSocket bluetoothSocket;
-                            try {
-                                bluetoothSocket = mBluetoothServerSocket.accept();
-                            } catch (IOException e) {
+                mL2capRunning = true;
+                mL2capThread = new Thread(() -> {
+                    mLogger.d(TAG, "L2CAP accept thread started");
+                    while (mL2capRunning && mBluetoothServerSocket != null) {
+                        BluetoothSocket bluetoothSocket;
+                        try {
+                            bluetoothSocket = mBluetoothServerSocket.accept();
+                        } catch (IOException e) {
+                            if (mL2capRunning) {
                                 mLogger.e(TAG, "L2CAP accept(): exception catch: ", e);
-                                return;
-                            }
-
-                            PeerDevice peerDevice;
-                            if ((peerDevice = mBleDriver.deviceManager().get(bluetoothSocket.getRemoteDevice().getAddress())) == null) {
-                                mLogger.e(TAG, String.format("L2CAP accept(): device=%s not found", mLogger.sensitiveObject(bluetoothSocket.getRemoteDevice().getAddress())));
-                                continue;
                             } else {
-                                mLogger.d(TAG, String.format("L2CAP accept(): accepted incoming connection from known device=%s", mLogger.sensitiveObject(bluetoothSocket.getRemoteDevice().getAddress())));
+                                mLogger.d(TAG, "L2CAP accept(): socket closed during shutdown");
                             }
-
-                            peerDevice.setBluetoothSocket(bluetoothSocket);
-                            peerDevice.setL2capServerHandshakeStarted(true);
-                            try {
-                                peerDevice.setInputStream(bluetoothSocket.getInputStream());
-                                peerDevice.setOutputStream(bluetoothSocket.getOutputStream());
-
-                                Thread readThread = new Thread(() -> {
-                                    peerDevice.l2capRead();
-                                });
-                                readThread.start();
-                            } catch (IOException e) {
-                                mLogger.e(TAG, String.format("L2CAP accept() error: l2cap cannot get stream: device=%s", mLogger.sensitiveObject(peerDevice.getMACAddress())), e);
-                                try {
-                                    bluetoothSocket.close();
-                                } catch (IOException ioException) {
-                                    // ignore
-                                } finally {
-                                    peerDevice.setBluetoothSocket(null);
-                                    peerDevice.setInputStream(null);
-                                    peerDevice.setOutputStream(null);
-                                }
-                            }
-                        } else {
-                            mLogger.e(TAG, "L2CAP accept(): BluetoothServerSocket is null");
                             return;
                         }
+
+                        if (!mL2capRunning) {
+                            try {
+                                bluetoothSocket.close();
+                            } catch (IOException e) {
+                                // ignore
+                            }
+                            return;
+                        }
+
+                        PeerDevice peerDevice;
+                        if ((peerDevice = mBleDriver.deviceManager().get(bluetoothSocket.getRemoteDevice().getAddress())) == null) {
+                            mLogger.e(TAG, String.format("L2CAP accept(): device=%s not found", mLogger.sensitiveObject(bluetoothSocket.getRemoteDevice().getAddress())));
+                            try {
+                                bluetoothSocket.close();
+                            } catch (IOException e) {
+                                // ignore
+                            }
+                            continue;
+                        } else {
+                            mLogger.d(TAG, String.format("L2CAP accept(): accepted incoming connection from known device=%s", mLogger.sensitiveObject(bluetoothSocket.getRemoteDevice().getAddress())));
+                        }
+
+                        peerDevice.setBluetoothSocket(bluetoothSocket);
+                        peerDevice.setL2capServerHandshakeStarted(true);
+                        try {
+                            peerDevice.setInputStream(bluetoothSocket.getInputStream());
+                            peerDevice.setOutputStream(bluetoothSocket.getOutputStream());
+
+                            Thread readThread = new Thread(() -> {
+                                peerDevice.l2capRead();
+                            });
+                            readThread.start();
+                        } catch (IOException e) {
+                            mLogger.e(TAG, String.format("L2CAP accept() error: l2cap cannot get stream: device=%s", mLogger.sensitiveObject(peerDevice.getMACAddress())), e);
+                            try {
+                                bluetoothSocket.close();
+                            } catch (IOException ioException) {
+                                // ignore
+                            } finally {
+                                peerDevice.setBluetoothSocket(null);
+                                peerDevice.setInputStream(null);
+                                peerDevice.setOutputStream(null);
+                            }
+                        }
                     }
+                    mLogger.d(TAG, "L2CAP accept thread stopped");
                 });
-                l2capThread.start();
+                mL2capThread.start();
             }
         }
 
@@ -193,11 +211,16 @@ public class GattServer {
             return false;
         }
 
-        // wait that service starts
         try {
-            mDoneSignal.await();
+            if (!mDoneSignal.await(SERVICE_START_TIMEOUT_MS, TimeUnit.MILLISECONDS)) {
+                mLogger.e(TAG, "start: service registration timed out");
+                mBluetoothGattServer.close();
+                mBluetoothGattServer = null;
+                return false;
+            }
         } catch (InterruptedException e) {
             mLogger.e(TAG, "start: interrupted exception:", e);
+            return false;
         }
 
         // mStarted is updated by GattServerCallback
@@ -243,6 +266,9 @@ public class GattServer {
         mLogger.i(TAG, "stop() called");
         if (isStarted()) {
             setStarted(false);
+
+            mL2capRunning = false;
+
             if (mBluetoothServerSocket != null) {
                 try {
                     mLogger.d(TAG, "stop BluetoothServerSocket (L2cap)");
@@ -253,6 +279,16 @@ public class GattServer {
                     mBluetoothServerSocket = null;
                 }
             }
+
+            if (mL2capThread != null) {
+                try {
+                    mL2capThread.join(1000); // 1 second timeout
+                } catch (InterruptedException e) {
+                    mLogger.e(TAG, "stop: L2CAP thread join interrupted");
+                }
+                mL2capThread = null;
+            }
+
             mBluetoothGattServer.close();
             mLock.lock();
             try {
@@ -311,7 +347,10 @@ public class GattServer {
         }
 
         try {
-            countDownLatch.await(OP_TIMEOUT, TimeUnit.SECONDS);
+            if (!countDownLatch.await(OP_TIMEOUT_MS, TimeUnit.MILLISECONDS)) {
+                mLogger.e(TAG, String.format("_writeAndNotify: device=%s: operation timed out", mLogger.sensitiveObject(device.getMACAddress())));
+                return false;
+            }
         } catch (InterruptedException e) {
             mLogger.e(TAG, String.format("_writeAndNotify: device=%s: await failed", mLogger.sensitiveObject(device.getMACAddress())));
             return false;

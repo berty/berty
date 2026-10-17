@@ -29,6 +29,7 @@ import java.util.List;
 import java.util.Random;
 import java.util.UUID;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 
 public class PeerDevice {
     // Mark used to tell all data is transferred
@@ -47,6 +48,9 @@ public class PeerDevice {
     private final BleDriver mBleDriver;
     // Connection timeout
     private static final int CONNECTION_TIMEOUT = 15000;
+    private static final int OPERATION_TIMEOUT_MS = 30000;
+    // Max buffer size to prevent OOM from malicious/malfunctioning peer (64KB)
+    private static final int MAX_IN_DATA_BUFFER_SIZE = 64 * 1024;
     // Minimal and default MTU
     private static final int DEFAULT_MTU = 23;
     // Client Characteristic Configuration (CCC) descriptor of the characteristic
@@ -83,7 +87,7 @@ public class PeerDevice {
     private InputStream mInputStream;
     private OutputStream mOutputStream;
     private byte[] mInDataBuffer;
-    private CircularBuffer<byte[]> mDataCache = new CircularBuffer<>(10);
+    private CircularBuffer<byte[]> mDataCache = new CircularBuffer<>(100);
     private int mMtu = DEFAULT_MTU;
     private boolean mL2capClientHandshakeStarted;
     private boolean mL2capServerHandshakeStarted;
@@ -93,6 +97,9 @@ public class PeerDevice {
     private boolean mL2capHandshakeStepStatus;
     private CountDownLatch mL2capHandshakeLatch;
     private boolean mUseL2cap = false;
+    // L2CAP read thread control
+    private volatile boolean mL2capRunning = false;
+    private volatile Thread mL2capReadThread;
 
     private final BluetoothGattCallback mGattCallback =
         new BluetoothGattCallback() {
@@ -444,6 +451,9 @@ public class PeerDevice {
     }
 
     private void closeL2cap() {
+        // Signal read thread to stop
+        mL2capRunning = false;
+
         if (mBluetoothSocket != null) {
             mLogger.d(TAG, String.format("closeL2cap called: device=%s", mLogger.sensitiveObject(getMACAddress())));
             try {
@@ -460,6 +470,16 @@ public class PeerDevice {
             } catch (IOException e) {
                 mLogger.e(TAG, String.format("disconnect: device=%s: error when closing l2cap channel", mLogger.sensitiveObject(getMACAddress())));
             }
+        }
+
+        // Wait briefly for read thread to exit
+        if (mL2capReadThread != null && mL2capReadThread.isAlive()) {
+            try {
+                mL2capReadThread.join(500);
+            } catch (InterruptedException e) {
+                mLogger.w(TAG, "closeL2cap: interrupted while waiting for read thread");
+            }
+            mL2capReadThread = null;
         }
     }
 
@@ -627,8 +647,10 @@ public class PeerDevice {
         // read loop
         byte[] buffer = new byte[L2CAP_BUFFER];
         int size;
+        mL2capRunning = true;
+        mL2capReadThread = Thread.currentThread();
 
-        while (true) {
+        while (mL2capRunning) {
             try {
                 if (!mBluetoothSocket.isConnected()) {
                     mLogger.w(TAG, "l2capRead: socket not connected");
@@ -821,9 +843,13 @@ public class PeerDevice {
         }
 
         try {
-            countDownLatch.await();
+            if (!countDownLatch.await(OPERATION_TIMEOUT_MS, TimeUnit.MILLISECONDS)) {
+                mLogger.e(TAG, String.format("setNotify error: device=%s: operation timed out", mLogger.sensitiveObject(getMACAddress())));
+                return false;
+            }
         } catch (InterruptedException e) {
             mLogger.e(TAG, "setNotify: interrupted exception:", e);
+            return false;
         }
 
         return success[0];
@@ -959,9 +985,14 @@ public class PeerDevice {
         }
 
         try {
-            countDownLatch.await();
+            if (!countDownLatch.await(OPERATION_TIMEOUT_MS, TimeUnit.MILLISECONDS)) {
+                mLogger.e(TAG, String.format("read error: device=%s: operation timed out, cleaning up stale connection", mLogger.sensitiveObject(getMACAddress())));
+                disconnect();
+                return false;
+            }
         } catch (InterruptedException e) {
             mLogger.e(TAG, "read: interrupted exception:", e);
+            return false;
         }
 
         return success[0];
@@ -1023,9 +1054,13 @@ public class PeerDevice {
             }
 
             try {
-                countDownLatch.await();
+                if (!countDownLatch.await(OPERATION_TIMEOUT_MS, TimeUnit.MILLISECONDS)) {
+                    mLogger.e(TAG, String.format("l2capWrite error: device=%s: operation timed out", mLogger.sensitiveObject(getMACAddress())));
+                    return false;
+                }
             } catch (InterruptedException e) {
                 mLogger.e(TAG, "l2capWrite: interrupted exception:", e);
+                return false;
             }
         }
 
@@ -1070,9 +1105,14 @@ public class PeerDevice {
         }
 
         try {
-            countDownLatch.await();
+            if (!countDownLatch.await(OPERATION_TIMEOUT_MS, TimeUnit.MILLISECONDS)) {
+                mLogger.e(TAG, String.format("internalWrite error: device=%s: operation timed out, cleaning up stale connection", mLogger.sensitiveObject(getMACAddress())));
+                disconnect();
+                return false;
+            }
         } catch (InterruptedException e) {
             mLogger.e(TAG, "internalWrite: interrupted exception:", e);
+            return false;
         }
 
         return success[0];
@@ -1127,9 +1167,12 @@ public class PeerDevice {
         mL2capHandshakeLatch = new CountDownLatch(1);
 
         // step 1
+        final CountDownLatch timerLatch = mL2capHandshakeLatch;
         startTimer(() -> {
             mLogger.i(TAG, "testL2capConnection: timer fired, L2CAP will be not used");
-            mL2capHandshakeLatch.countDown();
+            if (timerLatch != null) {
+                timerLatch.countDown();
+            }
         }, 10000);
 
         mL2capHandshakeData = createRandomBytes(L2CAP_HANDSHAKE_DATA_LEN);
@@ -1141,8 +1184,16 @@ public class PeerDevice {
         }
 
         // wait that l2capRead receives the remote PID
+        // Store local reference to avoid race condition with timer callback
+        CountDownLatch latch = mL2capHandshakeLatch;
         try {
-            mL2capHandshakeLatch.await();
+            if (latch != null && !latch.await(OPERATION_TIMEOUT_MS, TimeUnit.MILLISECONDS)) {
+                mLogger.e(TAG, "testL2capConnection: timed out waiting for L2CAP handshake");
+                cancelTimer();
+                mL2capHandshakeLatch = null;
+                mL2capHandshakeData = null;
+                return false;
+            }
         } catch (InterruptedException e) {
             mLogger.e(TAG, "testL2capConnection: interrupted exception:", e);
             cancelTimer();
@@ -1348,6 +1399,12 @@ public class PeerDevice {
     public void putInDataBuffer(byte[] value) {
         if (mInDataBuffer == null) {
             mInDataBuffer = new byte[0];
+        }
+
+        // Prevent unbounded buffer growth (OOM protection)
+        if (mInDataBuffer.length + value.length > MAX_IN_DATA_BUFFER_SIZE) {
+            mLogger.e(TAG, "putInDataBuffer: buffer overflow, rejecting data");
+            return;
         }
 
         byte[] tmp = new byte[mInDataBuffer.length + value.length];
