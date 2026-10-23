@@ -118,7 +118,13 @@ export default ({ config }: ConfigContext): ExpoConfig => {
 					],
 				},
 			],
-			"expo-camera",
+			[
+				"expo-camera",
+				{
+					cameraPermission:
+						"Berty uses your camera to scan QR codes, for example to add a contact or join a group.",
+				},
+			],
 			"expo-notifications",
 			"expo-web-browser",
 			[

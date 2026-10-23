@@ -11,11 +11,8 @@ import {
 	setBlePerm,
 	setCurrentNetworkConfig,
 } from '@berty/redux/reducers/networkConfig.reducer'
-import {
-	checkPermission,
-	checkProximityPermission,
-} from '@berty/utils/permissions/checkPermissions'
-import { acquirePermission, PermissionType } from '@berty/utils/permissions/permissions'
+import { checkProximityPermission } from '@berty/utils/permissions/checkPermissions'
+import { acquirePermission, getPermissions, PermissionType } from '@berty/utils/permissions/permissions'
 
 export const Permissions: ScreenFC<'Settings.Permissions'> = ({ route: { params } }) => {
 	const { accept, deny, status, permissionType } = params
@@ -28,11 +25,9 @@ export const Permissions: ScreenFC<'Settings.Permissions'> = ({ route: { params 
 	const networkConfig = useAppSelector(selectEditedNetworkConfig)
 
 	const handleOnPressPrimary = React.useCallback(async () => {
-		// enable listener
-		setListenerAvailable(true)
-
 		// openSettings if status is blocked
 		if (status === RESULTS.BLOCKED) {
+			setListenerAvailable(true)
 			await openSettings()
 		} else {
 			try {
@@ -58,7 +53,7 @@ export const Permissions: ScreenFC<'Settings.Permissions'> = ({ route: { params 
 				goBack()
 			}
 		}
-	}, [accept, dispatch, goBack, permissionType, status])
+	}, [accept, deny, dispatch, goBack, permissionType, status])
 
 	const handleOnPressSecondary = React.useCallback(async () => {
 		await deny()
@@ -93,16 +88,16 @@ export const Permissions: ScreenFC<'Settings.Permissions'> = ({ route: { params 
 						deny,
 					})
 				} else {
-					status = await checkPermission({
-						permissionType: PermissionType.audio,
-						navigate,
-						accept,
-						deny,
-					})
+					status = (await getPermissions())[permissionType]
 				}
 
+				setListenerAvailable(false)
 				// this is the check of the permission status after having gone to the settings
-				status === RESULTS.GRANTED ? await accept() : await deny()
+				if (status === RESULTS.GRANTED) {
+					await accept()
+				} else {
+					await deny()
+				}
 				goBack()
 			}
 
@@ -125,8 +120,7 @@ export const Permissions: ScreenFC<'Settings.Permissions'> = ({ route: { params 
 				sub.remove()
 			}
 		}
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [])
+	}, [listenerAvailable, handleAppStateChange])
 
 	return (
 		<Permission

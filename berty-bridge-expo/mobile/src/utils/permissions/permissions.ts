@@ -106,10 +106,10 @@ export const getPermissions = async (): Promise<Permissions> => {
 		ret[PermissionType.notification] = status === 'granted' ? RESULTS.GRANTED : RESULTS.DENIED
 	}
 
-	ret[PermissionType.camera] =
-		(await Camera.getCameraPermissionsAsync()).status === 'granted'
-			? RESULTS.GRANTED
-			: RESULTS.DENIED
+	const cameraPermission = await Camera.getCameraPermissionsAsync()
+	ret[PermissionType.camera] = cameraPermission.granted
+		? RESULTS.GRANTED
+		: cameraPermission.canAskAgain ? RESULTS.DENIED : RESULTS.BLOCKED
 
 	ret[PermissionType.proximity] = await checkBluetoothPermission() ? RESULTS.GRANTED : RESULTS.DENIED
 
@@ -126,10 +126,12 @@ export const acquirePermission = async (
 			return status === 'granted' ? RESULTS.GRANTED : RESULTS.DENIED
 		}
 		return RESULTS.UNAVAILABLE
-	case PermissionType.camera:
-		return (await Camera.requestCameraPermissionsAsync()).status === 'granted'
+	case PermissionType.camera: {
+		const permission = await Camera.requestCameraPermissionsAsync()
+		return permission.granted
 			? RESULTS.GRANTED
-			: RESULTS.DENIED
+			: permission.canAskAgain ? RESULTS.DENIED : RESULTS.BLOCKED
+	}
 	case PermissionType.proximity:
 		return (await requestBluetoothPermission())
 			? RESULTS.GRANTED
