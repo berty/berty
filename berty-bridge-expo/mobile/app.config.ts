@@ -27,11 +27,6 @@ export default ({ config }: ConfigContext): ExpoConfig => {
 		icon: ICON,
 		scheme: SCHEME,
 		githubUrl: "https://github.com/berty/berty",
-		splash: {
-			image: "./assets/images/splash.png",
-			resizeMode: "contain",
-			backgroundColor: "#F8F9FA",
-		},
 		ios: {
 			supportsTablet: true,
 			bundleIdentifier: bundleIdentifier,
@@ -136,9 +131,6 @@ export default ({ config }: ConfigContext): ExpoConfig => {
 			"@react-native-community/datetimepicker",
 			"expo-asset",
 		],
-		experiments: {
-			typedRoutes: true,
-		},
 		owner: "bertytechnologies",
 	};
 };

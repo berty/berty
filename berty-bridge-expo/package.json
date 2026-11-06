@@ -32,10 +32,11 @@
   "license": "MIT",
   "homepage": "https://github.com/berty/berty#readme",
   "devDependencies": {
+    "@types/node": "^22.20.5",
     "@types/react": "~19.2.10",
-    "expo": "~55.0.32",
-    "expo-module-scripts": "^55.0.2",
-    "react-native": "0.83.10"
+    "expo": "~57.0.32",
+    "expo-module-scripts": "^56.0.3",
+    "react-native": "0.86.3"
   },
   "peerDependencies": {
     "expo": "*",
