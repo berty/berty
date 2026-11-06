@@ -46,6 +46,10 @@ public class BertyBridgeExpoModule: Module {
     }
       
     OnDestroy {
+      // Detach the static logger before closing the bridge so native logs
+      // fall back to os_log instead of hitting a closed Go bridge.
+      BertyLogger.useBridge(nil)
+
       do {
           if self.bridgeMessenger != nil {
               try self.bridgeMessenger?.close()
