@@ -88,7 +88,11 @@ export const HyperlinkUserMessage: React.FC<{
 							navigation.navigate('Chat.ManageDeepLink', { type: 'link', value: url })
 							return
 						}
-						Linking.canOpenURL(url).then(supported => supported && Linking.openURL(url))
+						Linking.canOpenURL(url).then(async supported => {
+							if (supported) {
+								await Linking.openURL(url)
+							}
+						})
 					}}
 					linkStyle={{ textDecorationLine: 'underline' }}
 					linkify={linkify_conf}

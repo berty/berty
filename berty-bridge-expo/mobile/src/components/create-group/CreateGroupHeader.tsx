@@ -16,6 +16,7 @@ export const CreateGroupHeader: React.FC<{
 	disabled?: boolean
 	onPress?: () => void
 	style?: StyleProp<ViewStyle>
+	children?: React.ReactNode
 }> = ({
 	children,
 	title,

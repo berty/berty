@@ -3,8 +3,7 @@ import {
 	View,
 	Platform,
 	StyleSheet,
-	NativeSyntheticEvent,
-	TextInputSelectionChangeEventData,
+	TextInputSelectionChangeEvent,
 } from 'react-native'
 
 import { InputPriv } from '@berty/components/inputs/Input.priv'
@@ -34,7 +33,7 @@ export const ChatTextInput: React.FC<ChatInputProps> = React.memo(function ChatT
 	)
 
 	const handleSelectionChange = React.useCallback(
-		(e: NativeSyntheticEvent<TextInputSelectionChangeEventData>) => {
+		(e: TextInputSelectionChangeEvent) => {
 			if (isFocused) {
 				dispatch(setChatInputSelection({ convPK, selection: e.nativeEvent.selection }))
 			}

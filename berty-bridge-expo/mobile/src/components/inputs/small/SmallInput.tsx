@@ -1,12 +1,12 @@
 import React, { useRef } from 'react'
-import { StyleSheet, TextInput } from 'react-native'
+import { StyleSheet, type TextInputInstance } from 'react-native'
 
 import { InputProps } from '../interfaces'
 import { StyledInputPriv } from '../StyledInput.priv'
 import { TouchableWrapperPriv } from '../wrapper/TouchableWrapper.priv'
 
 export const SmallInput: React.FC<InputProps> = props => {
-	const input = useRef<TextInput>(null)
+	const input = useRef<TextInputInstance>(null)
 
 	return (
 		<TouchableWrapperPriv onPress={() => input.current?.focus()} style={styles.button}>

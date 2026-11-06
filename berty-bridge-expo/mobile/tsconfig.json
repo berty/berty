@@ -3,7 +3,6 @@
   "compilerOptions": {
     "strict": true,
     "types": ["jest", "node"],
-    "customConditions": ["react-native", "react-native-legacy-deep-imports"],
     "paths": {
       "berty-bridge-expo": ["../src/index"],
       "berty-bridge-expo/*": ["../src/*"],

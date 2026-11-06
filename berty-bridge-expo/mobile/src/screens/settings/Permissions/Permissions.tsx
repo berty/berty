@@ -66,7 +66,7 @@ export const Permissions: ScreenFC<'Settings.Permissions'> = ({ route: { params 
 			// this condition is valid when the OS settings is open (so permission is BLOCKED)
 			// and we return to the app (with or without changes)
 			if (
-				appState.current.match(/inactive|background/) &&
+				appState.current?.match(/inactive|background/) &&
 				nextAppState === 'active' &&
 				listenerAvailable
 			) {

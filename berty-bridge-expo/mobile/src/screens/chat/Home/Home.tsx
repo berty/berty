@@ -3,7 +3,7 @@ import pickBy from 'lodash/pickBy'
 import React, { useEffect, useMemo, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { StatusBar } from 'expo-status-bar'
-import { ScrollView, View } from 'react-native'
+import { ScrollView, View, type ScrollViewInstance } from 'react-native'
 import { useSelector } from 'react-redux'
 import { SafeAreaView } from 'react-native-safe-area-context'
 
@@ -74,7 +74,7 @@ export const Home: ScreenFC<'Chat.Home'> = ({ navigation: { navigate } }) => {
 	const colors = useThemeColor()
 	const { t } = useTranslation()
 
-	const scrollRef = useRef<ScrollView>(null)
+	const scrollRef = useRef<ScrollViewInstance>(null)
 	const searching = !!searchText
 	const lowSearchText = searchText.toLowerCase()
 	const searchCheck = React.useCallback(
