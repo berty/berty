@@ -187,15 +187,20 @@ func TestDrainBoundedStream(t *testing.T) {
 	require.Equal(t, []string{"h1", "h2", "h3"}, handled)
 }
 
-// fakeProtocolClient implements only GroupMessageList; other calls hit the nil embedded interface.
+// fakeProtocolClient implements only GroupMessageList and GroupDeviceStatus; other calls hit the nil embedded interface.
 type fakeProtocolClient struct {
 	protocoltypes.ProtocolServiceClient
 
-	groupMessageList func(ctx context.Context, req *protocoltypes.GroupMessageList_Request) (protocoltypes.ProtocolService_GroupMessageListClient, error)
+	groupMessageList  func(ctx context.Context, req *protocoltypes.GroupMessageList_Request) (protocoltypes.ProtocolService_GroupMessageListClient, error)
+	groupDeviceStatus func(ctx context.Context, req *protocoltypes.GroupDeviceStatus_Request) (protocoltypes.ProtocolService_GroupDeviceStatusClient, error)
 }
 
 func (f *fakeProtocolClient) GroupMessageList(ctx context.Context, req *protocoltypes.GroupMessageList_Request, _ ...grpc.CallOption) (protocoltypes.ProtocolService_GroupMessageListClient, error) {
 	return f.groupMessageList(ctx, req)
+}
+
+func (f *fakeProtocolClient) GroupDeviceStatus(ctx context.Context, req *protocoltypes.GroupDeviceStatus_Request, _ ...grpc.CallOption) (protocoltypes.ProtocolService_GroupDeviceStatusClient, error) {
+	return f.groupDeviceStatus(ctx, req)
 }
 
 // TestReconcileGroupMessagesRequest: the startup pass requests a bounded backfill (SinceId == cursor, UntilNow) and replays it.
