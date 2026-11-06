@@ -402,7 +402,7 @@ const AccountsInspector: React.FC<{
 }
 
 const AppInspector: React.FC<{ error: Error | null }> = ({ error }) => {
-	const [lastUpdate, setLastUpdate] = useState(Date.now())
+	const [lastUpdate, setLastUpdate] = useState(() => Date.now())
 	const { t } = useTranslation()
 	const { text } = useStyles()
 	const dispatch = useAppDispatch()
@@ -411,7 +411,7 @@ const AppInspector: React.FC<{ error: Error | null }> = ({ error }) => {
 
 	return (
 		<SafeAreaView style={[styles.safeViewContainer]}>
-			<StatusBar backgroundColor='black' barStyle='light-content' />
+			<StatusBar barStyle='light-content' />
 			<View style={{ paddingHorizontal: 12, flexDirection: 'column' }}>
 				<UnifiedText style={[styles.text, text.bold, styles.header1]}>
 					{t('debug.inspector.title')}

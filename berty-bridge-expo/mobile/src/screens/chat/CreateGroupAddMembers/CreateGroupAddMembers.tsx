@@ -23,7 +23,7 @@ export const CreateGroupAddMembers: ScreenFC<'Chat.CreateGroupAddMembers'> = () 
 
 	return (
 		<View style={[flex.tiny, { backgroundColor: '#FFFFFF', minHeight: '100%' }]}>
-			<StatusBar backgroundColor={colors['background-header']} barStyle='light-content' />
+			<StatusBar barStyle='light-content' />
 			<View style={{ backgroundColor: colors['background-header'] }}>
 				<CreateGroupMemberList />
 			</View>

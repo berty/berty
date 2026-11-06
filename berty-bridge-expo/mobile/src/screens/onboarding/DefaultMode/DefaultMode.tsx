@@ -135,7 +135,7 @@ export const DefaultMode: ScreenFC<'Onboarding.DefaultMode'> = () => {
 
 	return (
 		<OnboardingWrapper>
-			<StatusBar backgroundColor={colors['background-header']} barStyle='light-content' />
+			<StatusBar barStyle='light-content' />
 			<DefaultModeBody />
 		</OnboardingWrapper>
 	)
