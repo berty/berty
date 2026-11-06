@@ -115,35 +115,39 @@ export const Home: ScreenFC<'Chat.Home'> = ({ navigation: { navigate } }) => {
 		[contacts, searchCheck, searching],
 	)
 
-	const searchInteractions = useRef<beapi.messenger.IInteraction[]>([])
+	// Results are tagged with their query so a new search starts empty without a
+	// synchronous reset in the effect below.
+	const [interactionResults, setInteractionResults] = useState<{
+		query: string
+		items: beapi.messenger.IInteraction[]
+	}>({ query: '', items: [] })
+	const searchInteractions =
+		interactionResults.query === searchText ? interactionResults.items : []
 	const [earliestResult, setEarliestResult] = useState('')
 
 	const dispatch = useAppDispatch()
 	const [noNetwork, setNoNetwork] = useState<boolean>(false)
 	const noNetworkPopupSuggested = useAppSelector(selectNoNetworkPopupSuggested)
-	const handleNetworkChange = React.useCallback(async () => {
+	// show the no-network popup once if the device is offline
+	useEffect(() => {
 		if (noNetworkPopupSuggested) {
 			return
 		}
-		try {
-			const data = await Network.getNetworkStateAsync()
-
-			if (!data.isConnected || !data.isInternetReachable) {
-				setNoNetwork(true)
-			}
-		} catch (err) {
-			console.error(err)
+		let canceled = false
+		Network.getNetworkStateAsync()
+			.then(data => {
+				if (!canceled && (!data.isConnected || !data.isInternetReachable)) {
+					setNoNetwork(true)
+				}
+			})
+			.catch(err => console.error(err))
+		return () => {
+			canceled = true
 		}
 	}, [noNetworkPopupSuggested])
 
-	// effect handle network change, no network popup
-	useEffect(() => {
-		handleNetworkChange()
-	}, [handleNetworkChange, noNetwork, noNetworkPopupSuggested])
-
 	useEffect(() => {
 		let canceled = false
-		searchInteractions.current = []
 
 		if (searchText.trim() === '') {
 			return
@@ -175,7 +179,11 @@ export const Home: ScreenFC<'Chat.Home'> = ({ navigation: { navigate } }) => {
 						return
 					}
 
-					searchInteractions.current = searchInteractions.current.concat(results!.results)
+					const newItems = results!.results
+					setInteractionResults(prev => ({
+						query: searchText,
+						items: prev.query === searchText ? prev.items.concat(newItems) : newItems,
+					}))
 					setEarliestResult(results!.results[results!.results.length - 1].cid!)
 					earliestResult = results!.results[results!.results.length - 1].cid!
 					// TODO: remove this loop, add loading on scroll
@@ -189,9 +197,9 @@ export const Home: ScreenFC<'Chat.Home'> = ({ navigation: { navigate } }) => {
 		return () => {
 			canceled = true
 		}
-	}, [messengerClient, searchInteractions, searchText])
+	}, [messengerClient, searchText])
 
-	const hasResults = [searchConversations, searchContacts, searchInteractions.current].some(
+	const hasResults = [searchConversations, searchContacts, searchInteractions].some(
 		c => Object.keys(c).length > 0,
 	)
 	const styleBackground = useMemo(
@@ -273,7 +281,7 @@ export const Home: ScreenFC<'Chat.Home'> = ({ navigation: { navigate } }) => {
 							insets={null}
 							conversations={searchConversations}
 							contacts={searchContacts}
-							interactions={searchInteractions.current}
+							interactions={searchInteractions}
 							value={searchText}
 							hasResults={hasResults}
 							earliestInteractionCID={earliestResult}

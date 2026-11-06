@@ -8,6 +8,7 @@ import { SecondaryButton } from '@berty/components'
 import { UnifiedText } from '@berty/components/shared-components/UnifiedText'
 import { useStyles } from '@berty/contexts/styles'
 import { ServiceClientType } from '@berty/grpc-bridge/welsh-clients.gen'
+import { useNow } from '@berty/hooks'
 import { pbDateToNum } from '@berty/utils/convert/time'
 import { IdentityType, mailPrefix, telPrefix } from '@berty/utils/linkedidentities/types'
 
@@ -77,9 +78,9 @@ const formatIdentifier = (identifier: string): string => {
 export const LinkedIdentityDropdown: React.FC<LinkedIdentityDropdownProps> = props => {
 	const { t } = useTranslation()
 
-	const now = new Date()
+	const now = useNow()
 	const expirationDate = new Date(pbDateToNum(props.identity.expirationDate))
-	const isExpired = expirationDate < now
+	const isExpired = expirationDate.getTime() < now
 	const identifierType = getIdentityType(props.identity.identifier || '')
 
 	const recordRegistrations =
@@ -91,7 +92,7 @@ export const LinkedIdentityDropdown: React.FC<LinkedIdentityDropdownProps> = pro
 	const { text } = useStyles()
 	const activeRegistrations =
 		recordRegistrations.filter(
-			record => !record.revoked && pbDateToNum(record.expirationDate) > Date.now(),
+			record => !record.revoked && pbDateToNum(record.expirationDate) > now,
 		) || []
 	const firstServiceAddr = props.knownDirectoryServices.filter(e =>
 		e.capabilities.some(cap => cap === identifierType),

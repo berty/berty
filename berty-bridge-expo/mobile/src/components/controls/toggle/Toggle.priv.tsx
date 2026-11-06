@@ -1,5 +1,5 @@
 import { Icon } from '@ui-kitten/components'
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { TouchableOpacity, Animated, StyleSheet } from 'react-native'
 
 import { ToggleProps } from './interfaces'
@@ -23,10 +23,10 @@ export const TogglePriv: React.FC<TogglePrivProps> = ({
 	styleColors,
 	testID,
 }) => {
-	const circleLeftPositionAnimation = React.useRef(
-		new Animated.Value(checked ? CIRCLE_RIGHT_POSITION : 0),
-	).current
-	const checkIconOpacityAnimation = React.useRef(new Animated.Value(checked ? 1 : 0)).current
+	const [circleLeftPositionAnimation] = useState(
+		() => new Animated.Value(checked ? CIRCLE_RIGHT_POSITION : 0),
+	)
+	const [checkIconOpacityAnimation] = useState(() => new Animated.Value(checked ? 1 : 0))
 
 	useEffect(() => {
 		Animated.parallel([

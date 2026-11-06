@@ -131,7 +131,8 @@ export const InfosChat: React.FC<beapi.messenger.IConversation> = ({
 	const { t } = useTranslation()
 
 	const { dateMessage } = useStylesOneToOne()
-	const createdDate = pbDateToNum(createdDateStr) || Date.now()
+	const [mountedAt] = useState(() => Date.now())
+	const createdDate = pbDateToNum(createdDateStr) || mountedAt
 	const contact = useOneToOneContact(publicKey || '')
 	const protocolClient = useProtocolClient()
 
@@ -143,8 +144,9 @@ export const InfosChat: React.FC<beapi.messenger.IConversation> = ({
 	const textColor = colors['background-header']
 
 	const [isRefresh, setIsRefresh] = useState<boolean>(false)
+	const contactPk = contact?.publicKey
 	const handleRefreshButton = useCallback(async () => {
-		if (!contact?.publicKey) {
+		if (!contactPk) {
 			console.warn("Failed to refresh: contact.publicKey doesn't exist.")
 			return
 		}
@@ -152,7 +154,7 @@ export const InfosChat: React.FC<beapi.messenger.IConversation> = ({
 		try {
 			// this function takes 20sec max
 			await protocolClient?.refreshContactRequest({
-				contactPk: new Uint8Array(base64.toByteArray(contact?.publicKey)),
+				contactPk: new Uint8Array(base64.toByteArray(contactPk)),
 				timeout: Long.fromInt(5),
 			})
 		} catch (e) {
@@ -160,7 +162,7 @@ export const InfosChat: React.FC<beapi.messenger.IConversation> = ({
 		}
 
 		setIsRefresh(false)
-	}, [contact?.publicKey, protocolClient])
+	}, [contactPk, protocolClient])
 
 	return (
 		<View style={[padding.medium]}>

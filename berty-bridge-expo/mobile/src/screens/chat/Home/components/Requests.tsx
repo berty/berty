@@ -1,5 +1,5 @@
 import { Icon } from '@ui-kitten/components'
-import React from 'react'
+import React, { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { LayoutChangeEvent, ScrollView, TouchableOpacity, View } from 'react-native'
 
@@ -98,7 +98,8 @@ const ContactRequest: React.FC<beapi.messenger.IContact> = ({
 	const { border, padding, row, absolute, text } = useStyles()
 	const { scaleSize } = useAppDimensions()
 	const colors = useThemeColor()
-	const createdDate = pbDateToNum(createdDateStr) || Date.now()
+	const [mountedAt] = useState(() => Date.now())
+	const createdDate = pbDateToNum(createdDateStr) || mountedAt
 	return (
 		<TouchableOpacity
 			style={contactReqContainer}

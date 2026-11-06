@@ -304,6 +304,8 @@ export const ErrorScreen = ({ children }: ErrorScreenProps) => {
 	const components = [WTFScreen, SorryScreen];
 
 	const [error, setError] = React.useState<Error | null>(null);
+	// Pick the error screen variant once, not on every render.
+	const [variant] = React.useState(() => Math.floor(Math.random() * components.length));
 
 	const debugMode = useAppSelector(selectDebugMode);
 
@@ -324,7 +326,7 @@ export const ErrorScreen = ({ children }: ErrorScreenProps) => {
 	}
 
 	if (error !== null) {
-		const Component = components[Math.floor(Math.random() * components.length)];
+		const Component = components[variant];
 		return <Component error={error} />;
 	}
 	return <>{children}</>;
