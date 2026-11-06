@@ -2,13 +2,13 @@ import { Icon } from "@ui-kitten/components";
 import React from "react";
 import { useTranslation } from "react-i18next";
 import { View, TouchableOpacity, StatusBar, SafeAreaView } from "react-native";
-import { setJSExceptionHandler } from "react-native-exception-handler";
 import RNRestart from "react-native-restart";
 
 import { useAppDimensions } from "@berty/contexts/app-dimensions.context";
 import { useStyles } from "@berty/contexts/styles";
 import { useAppSelector, useThemeColor } from "@berty/hooks";
 import { selectDebugMode } from "@berty/redux/reducers/ui.reducer";
+import { setJSExceptionHandler } from "@berty/utils/errors/jsExceptionHandler";
 
 import AppInspector from "./debug/AppInspector";
 import { UnifiedText } from "./shared-components/UnifiedText";

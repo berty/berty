@@ -75,7 +75,6 @@
     "react-dom": "19.3.0",
     "react-i18next": "^11.14.3",
     "react-native": "0.88.1",
-    "react-native-exception-handler": "^2.10.10",
     "react-native-fs": "^2.20.0",
     "react-native-gesture-handler": "~3.3.0",
     "react-native-hyperlink": "^0.0.22",
