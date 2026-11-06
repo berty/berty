@@ -1,6 +1,6 @@
 import { registerWebModule, NativeModule } from 'expo';
 
-import { BertyBridgeExpoModuleEvents } from './BertyBridgeExpo.types';
+import type { BertyBridgeExpoModuleEvents } from './BertyBridgeExpo.types';
 
 class BertyBridgeExpoModule extends NativeModule<BertyBridgeExpoModuleEvents> {
   PI = Math.PI;

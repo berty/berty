@@ -27,20 +27,23 @@ const QrCode: FC<{ size: number }> = ({ size }) => {
 	const account = useAccount()
 	const [link, setLink] = useState<string>('')
 
-	const getAccountLink = useCallback(async () => {
-		if (account.displayName) {
-			const ret = await client?.instanceShareableBertyID({
-				reset: false,
-				displayName: account.displayName,
-			})
-			if (ret?.internalUrl) {
-				setLink(ret?.internalUrl)
-			}
-		}
-	}, [account.displayName, client])
-
+	// Fetched once on mount, as before.
 	useEffect(() => {
-		getAccountLink()
+		if (!account.displayName) {
+			return
+		}
+		let canceled = false
+		client
+			?.instanceShareableBertyID({ reset: false, displayName: account.displayName })
+			.then(ret => {
+				if (!canceled && ret?.internalUrl) {
+					setLink(ret.internalUrl)
+				}
+			})
+			.catch(err => console.warn('failed to get account link:', err))
+		return () => {
+			canceled = true
+		}
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [])
 

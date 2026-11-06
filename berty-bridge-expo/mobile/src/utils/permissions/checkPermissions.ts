@@ -5,7 +5,7 @@ import { PermissionStatus, RESULTS } from 'react-native-permissions'
 import beapi from '@berty/api'
 import { ScreensParams } from '@berty/navigation/types'
 
-import { getPermissions, PermissionType } from './permissions'
+import { acquirePermission, getPermissions, PermissionType } from './permissions'
 
 const getPermissionStatusAndSwitch = async (
 	permissionType: PermissionType,
@@ -18,6 +18,20 @@ const getPermissionStatusAndSwitch = async (
 		// check permission status
 		status = (await getPermissions())[permissionType]
 		if (Platform.OS === 'web') {
+			return status
+		}
+		if (
+			Platform.OS === 'ios' &&
+			permissionType === PermissionType.camera &&
+			status === RESULTS.DENIED
+		) {
+			// Let the system prompt explain camera access and record the user's choice.
+			status = await acquirePermission(permissionType)
+			if (status === RESULTS.GRANTED) {
+				await accept()
+			} else {
+				await deny()
+			}
 			return status
 		}
 		switch (status) {

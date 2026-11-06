@@ -31,15 +31,24 @@ class ConnectivityDriver: NSObject, BertybridgeIConnectivityDriverProtocol, CBCe
         self.centralManager = CBCentralManager(delegate: self, queue: nil)
 
         self.pathMonitor.pathUpdateHandler = { [weak self] path in
-            self!.logger.debug("Network state changed")
-          
-            self!.updateNetworkState(path)
+            // The module (and this driver) is recreated on every JS reload;
+            // a late callback may arrive after deallocation.
+            guard let self = self else { return }
 
-            for handler in self!.handlers {
-                handler.handleConnectivityUpdate(self!.state)
+            self.logger.debug("Network state changed")
+
+            self.updateNetworkState(path)
+
+            for handler in self.handlers {
+                handler.handleConnectivityUpdate(self.state)
             }
         }
         self.pathMonitor.start(queue: self.queue)
+    }
+
+    deinit {
+        // NWPathMonitor keeps running (and calling its handler) until cancelled.
+        self.pathMonitor.cancel()
     }
 
     func updateNetworkState(_ info: NWPath) {

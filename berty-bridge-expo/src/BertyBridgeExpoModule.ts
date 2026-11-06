@@ -1,6 +1,6 @@
 import { NativeModule, requireNativeModule } from "expo";
 
-import { BertyBridgeExpoModuleEvents } from "./BertyBridgeExpo.types";
+import type { BertyBridgeExpoModuleEvents } from "./BertyBridgeExpo.types";
 
 export enum GoLogLevel {
 	debug = "debug",

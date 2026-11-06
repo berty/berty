@@ -2,13 +2,13 @@ import { Icon } from "@ui-kitten/components";
 import React from "react";
 import { useTranslation } from "react-i18next";
 import { View, TouchableOpacity, StatusBar, SafeAreaView } from "react-native";
-import { setJSExceptionHandler } from "react-native-exception-handler";
 import RNRestart from "react-native-restart";
 
 import { useAppDimensions } from "@berty/contexts/app-dimensions.context";
 import { useStyles } from "@berty/contexts/styles";
 import { useAppSelector, useThemeColor } from "@berty/hooks";
 import { selectDebugMode } from "@berty/redux/reducers/ui.reducer";
+import { setJSExceptionHandler } from "@berty/utils/errors/jsExceptionHandler";
 
 import AppInspector from "./debug/AppInspector";
 import { UnifiedText } from "./shared-components/UnifiedText";
@@ -304,6 +304,8 @@ export const ErrorScreen = ({ children }: ErrorScreenProps) => {
 	const components = [WTFScreen, SorryScreen];
 
 	const [error, setError] = React.useState<Error | null>(null);
+	// Pick the error screen variant once, not on every render.
+	const [variant] = React.useState(() => Math.floor(Math.random() * components.length));
 
 	const debugMode = useAppSelector(selectDebugMode);
 
@@ -324,7 +326,7 @@ export const ErrorScreen = ({ children }: ErrorScreenProps) => {
 	}
 
 	if (error !== null) {
-		const Component = components[Math.floor(Math.random() * components.length)];
+		const Component = components[variant];
 		return <Component error={error} />;
 	}
 	return <>{children}</>;

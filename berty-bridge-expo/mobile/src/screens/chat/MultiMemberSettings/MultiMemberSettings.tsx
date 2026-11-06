@@ -151,7 +151,7 @@ export const MultiMemberSettings: ScreenFC<'Chat.MultiMemberSettings'> = ({
 	}
 	return (
 		<Layout style={{ flex: 1, backgroundColor: colors['main-background'] }}>
-			<StatusBar backgroundColor={colors['background-header']} barStyle='light-content' />
+			<StatusBar barStyle='light-content' />
 			<ScrollView bounces={false}>
 				<View style={[padding.medium, { backgroundColor: colors['background-header'] }]}>
 					<GroupChatSettingsHeader publicKey={conv.publicKey} />

@@ -13,7 +13,11 @@ gomobile_cache_abs := $(abspath $(gomobile_cache))
 IOS_OUTPUT_BERTYPUSH_FRAMEWORK ?= $(make_dir)/plugin/src/NotificationService/Bertypush.xcframework
 IOS_OUTPUT_BERTYBRIDGE_FRAMEWORK ?= $(make_dir)/ios/Frameworks/Bertybridge.xcframework
 ANDROID_OUTPUT_LIBS ?= $(make_dir)/android/libs/gobridge.aar
-ext_ldflags = -ldflags="-checklinkname=0 -X berty.tech/berty/v2/go/pkg/bertyversion.VcsRef=$$VCS_REF -X berty.tech/berty/v2/go/pkg/bertyversion.Version=$$VERSION"
+common_ldflags = -checklinkname=0 -X berty.tech/berty/v2/go/pkg/bertyversion.VcsRef=$$VCS_REF -X berty.tech/berty/v2/go/pkg/bertyversion.Version=$$VERSION
+ext_ldflags = -ldflags="$(common_ldflags)"
+# Align ELF LOAD segments on 16 KB, required by Google Play for Android 15+ devices
+# with 16 KB pages. Android only: Apple's linker does not support -z.
+android_ext_ldflags = -ldflags="$(common_ldflags) -extldflags=-Wl,-z,max-page-size=16384"
 minimum_ios_ver = 12.0
 minimum_android_ver = 21
 go_modcacherw_flags = GOFLAGS="$(strip $(GOFLAGS) -modcacherw)"
@@ -94,7 +98,7 @@ $(ANDROID_OUTPUT_LIBS): $(bridge_src)
 		$(gomobile_version) && \
 		GO111MODULE=on $(go_modcacherw_flags) $(GO) run golang.org/x/mobile/cmd/gomobile bind \
 		-o $(abspath $@) \
-		-v $(ext_ldflags) \
+		-v $(android_ext_ldflags) \
 		$(GO_TAGS) \
 		-cache $(gomobile_cache_abs)/android_bertybridge \
 		-target $(GOMOBILE_ANDROID_TARGET) \

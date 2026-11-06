@@ -36,3 +36,19 @@ export const useKeyboardStatus = (): KeyboardStatus => {
 
 	return keyboardStatus
 }
+
+/**
+ * Current timestamp (ms) for render-time comparisons such as "is this mute still
+ * active". Reading Date.now() during render is impure; this keeps the value in state
+ * and refreshes it periodically so expirations are picked up while mounted.
+ */
+export const useNow = (refreshIntervalMs = 30_000): number => {
+	const [now, setNow] = useState(() => Date.now())
+
+	useEffect(() => {
+		const id = setInterval(() => setNow(Date.now()), refreshIntervalMs)
+		return () => clearInterval(id)
+	}, [refreshIntervalMs])
+
+	return now
+}

@@ -58,6 +58,32 @@ export const defaultStylesDeclaration: Declaration = {
 	},
 }
 
+// Built once at module level: inline in the typed object below, StyleSheet.create
+// would infer its type from the target type instead of the literal.
+const textAlignStyles = StyleSheet.create({
+	top: { textAlignVertical: 'top' },
+	left: { textAlign: 'left' },
+	right: { textAlign: 'right' },
+	bottom: { textAlignVertical: 'bottom' },
+	center: { textAlign: 'center' },
+	justify: { textAlignVertical: 'center' },
+	fill: { textAlign: 'center', textAlignVertical: 'center' },
+})
+
+const rowItemStyles = StyleSheet.create({
+	top: { alignSelf: 'flex-start' },
+	bottom: { alignSelf: 'flex-end' },
+	justify: { alignSelf: 'center' },
+	fill: { alignSelf: 'stretch' },
+})
+
+const columnItemStyles = StyleSheet.create({
+	left: { alignSelf: 'flex-start' },
+	right: { alignSelf: 'flex-end' },
+	center: { alignSelf: 'center' },
+	fill: { alignSelf: 'stretch' },
+})
+
 const mapDeclarationWithDims = (
 	decl: Declaration,
 	{ fontScale, scaleSize } = {
@@ -114,23 +140,10 @@ const mapDeclarationWithDims = (
 					(size: number) => StyleSheet.create({ scale: { fontSize: size * fontScale } }).scale,
 				),
 			},
-			align: StyleSheet.create({
-				top: { textAlignVertical: 'top' },
-				left: { textAlign: 'left' },
-				right: { textAlign: 'right' },
-				bottom: { textAlignVertical: 'bottom' },
-				center: { textAlign: 'center' },
-				justify: { textAlignVertical: 'center' },
-				fill: { textAlign: 'center', textAlignVertical: 'center' },
-			}),
+			align: textAlignStyles,
 		},
 		row: {
-			item: StyleSheet.create({
-				top: { alignSelf: 'flex-start' },
-				bottom: { alignSelf: 'flex-end' },
-				justify: { alignSelf: 'center' },
-				fill: { alignSelf: 'stretch' },
-			}),
+			item: rowItemStyles,
 			...StyleSheet.create({
 				left: { flexDirection: 'row', alignItems: 'stretch', justifyContent: 'flex-start' },
 				right: { flexDirection: 'row', alignItems: 'stretch', justifyContent: 'flex-end' },
@@ -139,12 +152,7 @@ const mapDeclarationWithDims = (
 			}),
 		},
 		column: {
-			item: StyleSheet.create({
-				left: { alignSelf: 'flex-start' },
-				right: { alignSelf: 'flex-end' },
-				center: { alignSelf: 'center' },
-				fill: { alignSelf: 'stretch' },
-			}),
+			item: columnItemStyles,
 			...StyleSheet.create({
 				top: { flexDirection: 'column', alignItems: 'stretch', justifyContent: 'flex-start' },
 				bottom: { flexDirection: 'column', alignItems: 'stretch', justifyContent: 'flex-end' },

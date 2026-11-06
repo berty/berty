@@ -44,7 +44,7 @@ export const Permission: React.FC<PermissionProps> = props => {
 
 	return (
 		<View style={[flex.tiny, { backgroundColor: colors['background-header'], minHeight: '100%' }]}>
-			<StatusBar backgroundColor={colors['background-header']} barStyle='light-content' />
+			<StatusBar barStyle='light-content' />
 			<View style={[styles.lottieContainer]}>
 				<LottieView source={animations[permissionType]} autoPlay style={[styles.lottie]} />
 			</View>

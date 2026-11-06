@@ -24,6 +24,7 @@ import {
 	useAppSelector,
 	useMessengerClient,
 	useMountEffect,
+	useNow,
 	useSyncNetworkConfigOnScreenRemoved,
 	useThemeColor,
 } from '@berty/hooks'
@@ -118,6 +119,7 @@ export const SettingsHome: ScreenFC<'Settings.Home'> = () => {
 	const networkConfig = useAppSelector(selectEditedNetworkConfig)
 	const dispatch = useDispatch()
 	const account = useAccount()
+	const now = useNow()
 	const { permissions } = useContext(PermissionsContext)
 	const devMode = useSelector(selectDevMode)
 	const [nbClick, setNbClick] = React.useState<number>(0)
@@ -275,7 +277,7 @@ export const SettingsHome: ScreenFC<'Settings.Home'> = () => {
 										iconName='bell-outline'
 										isToggleOn={
 											knownPushServer() &&
-											numberifyLong(account.mutedUntil) < Date.now() &&
+											numberifyLong(account.mutedUntil) < now &&
 											(permissions.notification === RESULTS.GRANTED ||
 												permissions.notification === RESULTS.LIMITED)
 										}

@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useRef } from 'react'
 import { Vibration, View } from 'react-native'
 import { Gesture, GestureDetector } from 'react-native-gesture-handler'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
@@ -10,7 +10,6 @@ import { selectNotificationsInhibitors } from '@berty/redux/reducers/ui.reducer'
 import { NotificationsInhibitor } from '@berty/utils/notification/notif-in-app'
 import { SoundKey } from '@berty/utils/sound/sound.types'
 
-import { usePrevious } from './hooks'
 import notifications, { DefaultNotification } from './notifications'
 
 const NotificationContents: React.FC<{
@@ -75,8 +74,7 @@ const notifsSounds: { [key: number]: SoundKey } = {
 
 const GatedNotificationBody: React.FC<any> = props => {
 	const account = useAccount()
-	const prevProps = usePrevious(props)
-	const justOpened = props.isOpen && !prevProps?.isOpen
+	const wasOpen = useRef(false)
 
 	const notificationsInhibitors = useAppSelector(selectNotificationsInhibitors)
 	const playSound = usePlaySound()
@@ -96,13 +94,17 @@ const GatedNotificationBody: React.FC<any> = props => {
 
 	const notifType = notif?.type || 0
 
+	const isOpen = !!props.isOpen
 	useEffect(() => {
+		// Play the sound once, when the notification goes from closed to open.
+		const justOpened = isOpen && !wasOpen.current
+		wasOpen.current = isOpen
 		const sound: SoundKey | undefined = notifsSounds[notifType]
 		if (justOpened && sound && (!inhibit || inhibit === 'sound-only')) {
 			Vibration.vibrate(400)
 			playSound(sound)
 		}
-	}, [playSound, notifType, justOpened, inhibit])
+	}, [playSound, notifType, isOpen, inhibit])
 
 	if (!isValid || inhibit) {
 		if (props.isOpen) {

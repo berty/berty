@@ -35,7 +35,9 @@ const PushNotificationBridge = () => {
 	const restartBridge = useCloseBridgeAfterClosing();
 
 	// Tapped conversation to open once the messenger client is ready (see effect below).
-	const [pendingConvPK, setPendingConvPK] = useState<string | null>(null);
+	// A new object per tap, so tapping the same conversation again still navigates.
+	const [pending, setPending] = useState<{ convPK: string } | null>(null);
+	const handledPending = useRef<{ convPK: string } | null>(null);
 	// Dedupe responses delivered both via getLastNotificationResponseAsync and the listener.
 	const handledResponseIds = useRef<Set<string>>(new Set());
 
@@ -57,7 +59,7 @@ const PushNotificationBridge = () => {
 				const data = response.notification.request.content.data;
 
 				// "action" notifications (restart prompts) are handled on their own.
-				if (data.type === "action") {
+				if (data?.type === "action") {
 					const action = data?.action as string;
 					if (action === "restartAfterClosing") {
 						restartAfterClosing();
@@ -71,11 +73,11 @@ const PushNotificationBridge = () => {
 				const convPK = data?.convPK as string | undefined;
 				if (convPK) {
 					// Defer navigation to the effect below (waits for the messenger client).
-					setPendingConvPK(convPK);
+					setPending({ convPK });
 					return;
 				}
 
-				console.warn("notification without a conversation public key", data.type);
+				console.warn("notification without a conversation public key", data?.type);
 			} catch (e) {
 				console.warn("failed to handle notification response:", e);
 			}
@@ -118,10 +120,11 @@ const PushNotificationBridge = () => {
 
 	// Navigate to the pending conversation once the messenger is ready.
 	useEffect(() => {
-		if (!pendingConvPK || !messengerClient) {
+		if (!pending || !messengerClient || handledPending.current === pending) {
 			return;
 		}
-		const conv = conversations[pendingConvPK];
+		handledPending.current = pending;
+		const conv = conversations[pending.convPK];
 		dispatch(
 			CommonActions.reset({
 				routes: [
@@ -132,14 +135,13 @@ const PushNotificationBridge = () => {
 								? "Chat.MultiMember"
 								: "Chat.OneToOne",
 						params: {
-							convId: pendingConvPK,
+							convId: pending.convPK,
 						},
 					},
 				],
 			}),
 		);
-		setPendingConvPK(null);
-	}, [pendingConvPK, messengerClient, conversations, dispatch]);
+	}, [pending, messengerClient, conversations, dispatch]);
 
 	const pushNotifListener = async (data: any) => {
 		const push = await accountClient.pushReceive({

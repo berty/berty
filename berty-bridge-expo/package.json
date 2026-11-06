@@ -10,7 +10,7 @@
     "clean": "expo-module clean",
     "lint": "expo-module lint",
     "test": "expo-module test",
-    "prepare": "expo-module prepare",
+    "prepare": "EXPO_NONINTERACTIVE=1 npm run build",
     "prepublishOnly": "expo-module prepublishOnly",
     "expo-module": "expo-module",
     "open:ios": "xed example/ios",
@@ -32,10 +32,12 @@
   "license": "MIT",
   "homepage": "https://github.com/berty/berty#readme",
   "devDependencies": {
-    "@types/react": "~19.0.0",
-    "expo": "~53.0.0",
-    "expo-module-scripts": "^4.1.7",
-    "react-native": "0.79.1"
+    "@types/node": "^22.20.5",
+    "@types/react": "~19.3.0",
+    "expo": "~58.0.23",
+    "expo-module-scripts": "^56.0.3",
+    "react-native": "0.88.1",
+    "typescript": "~6.0.3"
   },
   "peerDependencies": {
     "expo": "*",

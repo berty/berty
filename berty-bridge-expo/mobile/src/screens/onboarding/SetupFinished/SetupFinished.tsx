@@ -175,7 +175,7 @@ export const SetupFinished: ScreenFC<'Onboarding.SetupFinished'> = () => {
 
 	return (
 		<OnboardingWrapper>
-			<StatusBar backgroundColor={colors['background-header']} barStyle='light-content' />
+			<StatusBar barStyle='light-content' />
 			<SetupFinishedBody />
 		</OnboardingWrapper>
 	)

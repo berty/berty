@@ -6,6 +6,7 @@ declare module "*.svg" {
 }
 declare module "*.ttf";
 
+// eslint-disable-next-line no-var -- ambient globals must be declared with var
 declare var __DEV__: boolean | undefined;
 
 declare module "google-palette" {

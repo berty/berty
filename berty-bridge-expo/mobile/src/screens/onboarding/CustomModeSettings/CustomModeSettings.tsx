@@ -1,5 +1,5 @@
 import { Icon } from '@ui-kitten/components'
-import React, { createRef, RefObject } from 'react'
+import React, { RefObject, useMemo, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 import {
 	ScrollView,
@@ -48,10 +48,12 @@ interface AccordionRef {
 	close: () => void
 }
 
+type AccordionRefObject = RefObject<AccordionRef | null>
+
 interface AccordionRefs {
-	relay: RefObject<AccordionRef>
-	rdvp: RefObject<AccordionRef>
-	bootstrap: RefObject<AccordionRef>
+	relay: AccordionRefObject
+	rdvp: AccordionRefObject
+	bootstrap: AccordionRefObject
 }
 
 const ConfigPart: React.FC<{
@@ -211,7 +213,7 @@ const Proximity: React.FC = () => {
 	)
 }
 
-const Routing: React.FC<{ accordionRefs: AccordionRefs }> = ({ accordionRefs }) => {
+const Routing: React.FC<{ rdvpRef: AccordionRefObject }> = ({ rdvpRef }) => {
 	const { t } = useTranslation()
 	const dispatch = useAppDispatch()
 	const currentNetworkConfig = useAppSelector(selectEditedNetworkConfig)
@@ -237,12 +239,16 @@ const Routing: React.FC<{ accordionRefs: AccordionRefs }> = ({ accordionRefs }) 
 				{t('onboarding.custom-mode.settings.routing.dht-button')}
 			</FloatingMenuToggleAlt>
 
-			<RendezvousDropdown ref={accordionRefs.rdvp} />
+			<RendezvousDropdown ref={rdvpRef} />
 		</View>
 	)
 }
 
-const CustomConfig: React.FC<{ accordionRefs: AccordionRefs }> = ({ accordionRefs }) => {
+const CustomConfig: React.FC<{
+	relayRef: AccordionRefObject
+	rdvpRef: AccordionRefObject
+	bootstrapRef: AccordionRefObject
+}> = ({ relayRef, rdvpRef, bootstrapRef }) => {
 	const { margin, padding, border } = useStyles()
 	const { t } = useTranslation()
 	const colors = useThemeColor()
@@ -268,7 +274,7 @@ const CustomConfig: React.FC<{ accordionRefs: AccordionRefs }> = ({ accordionRef
 				]}
 			>
 				<ConfigPart title={t('onboarding.custom-mode.settings.routing.title')} icon='peer' />
-				<Routing accordionRefs={accordionRefs} />
+				<Routing rdvpRef={rdvpRef} />
 			</View>
 
 			<View
@@ -284,8 +290,8 @@ const CustomConfig: React.FC<{ accordionRefs: AccordionRefs }> = ({ accordionRef
 					icon='services'
 					iconSize={50}
 				/>
-				<RelayDropdown ref={accordionRefs.relay} />
-				<BootstrapDropdown ref={accordionRefs.bootstrap} />
+				<RelayDropdown ref={relayRef} />
+				<BootstrapDropdown ref={bootstrapRef} />
 			</View>
 		</View>
 	)
@@ -428,11 +434,13 @@ export const CustomModeSettings: ScreenFC<'Onboarding.CustomModeSettings'> = () 
 	const colors = useThemeColor()
 	const { padding } = useStyles()
 	const dispatch = useAppDispatch()
-	const accordionRefs: AccordionRefs = {
-		relay: createRef<AccordionRef>(),
-		rdvp: createRef<AccordionRef>(),
-		bootstrap: createRef<AccordionRef>(),
-	}
+	const relayRef = useRef<AccordionRef>(null)
+	const rdvpRef = useRef<AccordionRef>(null)
+	const bootstrapRef = useRef<AccordionRef>(null)
+	const accordionRefs: AccordionRefs = useMemo(
+		() => ({ relay: relayRef, rdvp: rdvpRef, bootstrap: bootstrapRef }),
+		[],
+	)
 
 	useMountEffect(() => {
 		const getNetworkConfig = async () => {
@@ -454,7 +462,7 @@ export const CustomModeSettings: ScreenFC<'Onboarding.CustomModeSettings'> = () 
 				contentContainerStyle={[padding.medium]}
 				showsVerticalScrollIndicator={false}
 			>
-				<CustomConfig accordionRefs={accordionRefs} />
+				<CustomConfig relayRef={relayRef} rdvpRef={rdvpRef} bootstrapRef={bootstrapRef} />
 				<View style={{ flexDirection: 'row', alignItems: 'center' }}>
 					<EnableDisableAll accordionRefs={accordionRefs} />
 					<ApplyChanges />

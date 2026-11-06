@@ -44,9 +44,17 @@ export const PermissionsProvider = ({ children }: PermissionsProviderProps) => {
 	);
 
 	useEffect(() => {
-		refreshPermissions();
+		let canceled = false;
+		getPermissions().then((permissions) => {
+			if (!canceled) {
+				setState(permissions);
+			}
+		});
 		const sub = AppState.addEventListener("change", refreshPermissions);
-		return () => sub.remove();
+		return () => {
+			canceled = true;
+			sub.remove();
+		};
 
 		// const listener = AppState.addEventListener('change', refreshPermissions)
 		// return () => listener.remove()

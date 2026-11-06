@@ -1,7 +1,7 @@
 import { requireNativeView } from 'expo';
 import * as React from 'react';
 
-import { BertyBridgeExpoViewProps } from './BertyBridgeExpo.types';
+import type { BertyBridgeExpoViewProps } from './BertyBridgeExpo.types';
 
 const NativeView: React.ComponentType<BertyBridgeExpoViewProps> =
   requireNativeView('BertyBridgeExpo');

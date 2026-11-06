@@ -25,7 +25,7 @@ export const GetStarted: ScreenFC<'Onboarding.GetStarted'> = () => {
 				{ backgroundColor: colors['main-background'], flex: 1, justifyContent: 'center' },
 			]}
 		>
-			<StatusBar backgroundColor={colors['main-background']} barStyle='dark-content' />
+			<StatusBar barStyle='dark-content' />
 			<View style={[margin.bottom.big, { flexDirection: 'row', justifyContent: 'center' }]}>
 				<Logo />
 			</View>

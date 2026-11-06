@@ -1,12 +1,12 @@
 import React from 'react'
-import { StyleSheet, TextInput, View } from 'react-native'
+import { StyleSheet, View, type TextInputInstance } from 'react-native'
 
 import { useStyles } from '@berty/contexts/styles'
 
 import { InputProps } from './interfaces'
 import { StyledInputPriv } from './StyledInput.priv'
 
-export const InputWithIconPriv = React.forwardRef<TextInput, InputProps>(
+export const InputWithIconPriv = React.forwardRef<TextInputInstance, InputProps>(
 	function InputWithIconPriv(props, ref) {
 	const { margin } = useStyles()
 

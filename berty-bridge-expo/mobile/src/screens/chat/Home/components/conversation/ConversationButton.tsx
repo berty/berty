@@ -1,9 +1,9 @@
-import React, { useEffect, useState } from 'react'
+import React, { useCallback } from 'react'
 import { Keyboard, StyleSheet, TouchableHighlight, View } from 'react-native'
 
 import beapi from '@berty/api'
 import { useStyles } from '@berty/contexts/styles'
-import { KeyboardStatus, useKeyboardStatus, useThemeColor } from '@berty/hooks'
+import { useThemeColor } from '@berty/hooks'
 import { useNavigation } from '@berty/navigation'
 import * as testIDs from '@berty/utils/testing/testIDs.json'
 
@@ -18,24 +18,31 @@ export const ConversationButton: React.FC<ConversationButtonProps> = props => {
 	const { navigate } = useNavigation()
 	const colors = useThemeColor()
 	const { padding, row, opacity } = useStyles()
-	const keyboardStatus = useKeyboardStatus()
-	const [isPressed, setIsPressed] = useState<boolean>(false)
 
-	// this effect is usefull to hide keyboard before navigate to a conversation (else we have UI issue)
-	useEffect(() => {
-		if (isPressed && keyboardStatus === KeyboardStatus.KEYBOARD_HIDDEN) {
-			setIsPressed(false)
-			navigate({
-				name:
-					props.type === beapi.messenger.Conversation.Type.MultiMemberType
-						? 'Chat.MultiMember'
-						: 'Chat.OneToOne',
-				params: {
-					convId: props.publicKey,
-				},
-			})
+	const openConversation = useCallback(() => {
+		navigate({
+			name:
+				props.type === beapi.messenger.Conversation.Type.MultiMemberType
+					? 'Chat.MultiMember'
+					: 'Chat.OneToOne',
+			params: {
+				convId: props.publicKey,
+			},
+		})
+	}, [navigate, props.publicKey, props.type])
+
+	// hide the keyboard before navigating to a conversation (else we have UI issue)
+	const handlePress = useCallback(() => {
+		if (!Keyboard.isVisible()) {
+			openConversation()
+			return
 		}
-	}, [isPressed, keyboardStatus, navigate, props.publicKey, props.type])
+		const subscription = Keyboard.addListener('keyboardDidHide', () => {
+			subscription.remove()
+			openConversation()
+		})
+		Keyboard.dismiss()
+	}, [openConversation])
 
 	return (
 		<TouchableHighlight
@@ -47,10 +54,7 @@ export const ConversationButton: React.FC<ConversationButtonProps> = props => {
 					props.type !== beapi.messenger.Conversation.Type.MultiMemberType &&
 					opacity(0.6),
 			]}
-			onPress={() => {
-				Keyboard.dismiss()
-				setIsPressed(true)
-			}}
+			onPress={handlePress}
 		>
 			<View style={[row.center, !props.isLast && styles.divider, padding.vertical.scale(7)]}>
 				{props.children}

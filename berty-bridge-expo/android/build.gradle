@@ -11,13 +11,17 @@ if (skipGomobile) {
     logger.lifecycle("bertybridgeexpo: skipping Go bridge build (-PskipGomobile=true)")
 } else {
     logger.lifecycle("bertybridgeexpo: building Go bridge (make android.gomobile), this can take several minutes on first build...")
-    exec {
-        workingDir '..'
-        if (forceGomobile) {
-            commandLine 'make', '-B', 'android.gomobile'
-        } else {
-            commandLine 'make', 'android.gomobile'
-        }
+    // Project.exec was removed in Gradle 9; providers.exec is the supported replacement.
+    def gomobile = providers.exec {
+        workingDir = projectDir.parentFile
+        commandLine(forceGomobile ? ['make', '-B', 'android.gomobile'] : ['make', 'android.gomobile'])
+        ignoreExitValue = true
+    }
+    def gomobileExitValue = gomobile.result.get().exitValue
+    logger.lifecycle(gomobile.standardOutput.asText.get())
+    if (gomobileExitValue != 0) {
+        logger.error(gomobile.standardError.asText.get())
+        throw new GradleException("bertybridgeexpo: 'make android.gomobile' failed with exit code ${gomobileExitValue}")
     }
 }
 
