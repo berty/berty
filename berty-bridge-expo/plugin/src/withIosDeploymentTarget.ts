@@ -4,7 +4,8 @@ import { mergeContents } from "@expo/config-plugins/build/utils/generateCode";
 // TEMPORARY: React Native's updateOSDeploymentTarget only raises each pod's
 // main target, not its resource bundle targets, which keep the podspec's old
 // minimum. Fixed upstream in facebook/react-native#58687 (first shipped in
-// RN 0.89). Remove this plugin once the app is on RN >= 0.89.
+// RN 0.89). Remove this plugin once the app is on RN >= 0.89
+// (https://github.com/berty/berty/issues/5288).
 const withIosDeploymentTarget: ConfigPlugin = (config) => {
 	return withPodfile(config, (config) => {
 		config.modResults.contents = mergeContents({
