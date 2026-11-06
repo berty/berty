@@ -17,7 +17,7 @@ const READ_MORE_SUBSTR_LENGTH = 300
 
 const additionalTlds = ['crypto']
 
-const linkify_conf = linkify().tlds([...tlds, ...additionalTlds], true)
+const linkify_conf = new linkify().tlds([...tlds, ...additionalTlds], true)
 
 async function isBertyDeepLink(client: WelshMessengerServiceClient, url: string): Promise<boolean> {
 	return new Promise(resolve => {
