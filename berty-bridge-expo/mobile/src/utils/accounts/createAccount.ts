@@ -2,7 +2,6 @@ import { NavigationProp } from '@react-navigation/native'
 
 import beapi from '@berty/api'
 import { ScreensParams } from '@berty/navigation/types'
-import { persistor } from '@berty/redux/store'
 
 import { accountClient } from './accountClient'
 import { refreshAccountList } from './accountUtils'
@@ -20,12 +19,11 @@ export const createAccount = async (
 		} else {
 			networkConfig = config
 		}
+		// Redux persistence is not enabled here: it uses account-scoped app storage, which
+		// is only available once the account is opened (openAccount enables it then).
 		resp = await accountClient.createAccount({
 			networkConfig,
 		})
-		// this line can cause error like AppStorageGet: datastore key not found
-		// this error is triggered when it's the first time that the account is persisted, and it's normal
-		persistor.persist()
 	} catch (e) {
 		console.warn('unable to create account', e)
 		return
