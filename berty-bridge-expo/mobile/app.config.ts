@@ -24,7 +24,6 @@ export default ({ config }: ConfigContext): ExpoConfig => {
 		platforms: ["ios", "android"],
 		orientation: "portrait",
 		userInterfaceStyle: "automatic",
-		newArchEnabled: true,
 		icon: ICON,
 		scheme: SCHEME,
 		githubUrl: "https://github.com/berty/berty",
@@ -98,9 +97,6 @@ export default ({ config }: ConfigContext): ExpoConfig => {
 			bundler: "metro",
 			output: "single",
 			favicon: "./assets/images/favicon.png",
-		},
-		notification: {
-			iosDisplayInForeground: true,
 		},
 		plugins: [
 			"../app.plugin.js",
