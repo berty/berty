@@ -57,7 +57,7 @@ const PushNotificationBridge = () => {
 				const data = response.notification.request.content.data;
 
 				// "action" notifications (restart prompts) are handled on their own.
-				if (data.type === "action") {
+				if (data?.type === "action") {
 					const action = data?.action as string;
 					if (action === "restartAfterClosing") {
 						restartAfterClosing();
@@ -75,7 +75,7 @@ const PushNotificationBridge = () => {
 					return;
 				}
 
-				console.warn("notification without a conversation public key", data.type);
+				console.warn("notification without a conversation public key", data?.type);
 			} catch (e) {
 				console.warn("failed to handle notification response:", e);
 			}
