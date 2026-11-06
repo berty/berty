@@ -63,3 +63,6 @@ yarn-error.log
 android/libs
 ios/Frameworks
 plugin/src/NotificationService/Bertypush.xcframework
+
+# TypeScript incremental build cache (plugin/build is ignored too)
+*.tsbuildinfo
