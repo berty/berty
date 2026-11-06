@@ -96,7 +96,7 @@ export default ({ config }: ConfigContext): ExpoConfig => {
 		},
 		web: {
 			bundler: "metro",
-			output: "static",
+			output: "single",
 			favicon: "./assets/images/favicon.png",
 		},
 		notification: {
@@ -104,7 +104,6 @@ export default ({ config }: ConfigContext): ExpoConfig => {
 		},
 		plugins: [
 			"../app.plugin.js",
-			"expo-router",
 			[
 				"expo-font",
 				{
