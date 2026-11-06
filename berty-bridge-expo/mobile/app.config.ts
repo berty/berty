@@ -94,7 +94,7 @@ export default ({ config }: ConfigContext): ExpoConfig => {
 				"expo-navigation-bar",
 				{
 					// White (iOS-like) bar under edge-to-edge: no contrast scrim, dark icons.
-					barStyle: "dark",
+					style: "dark",
 					enforceContrast: false,
 				},
 			],
