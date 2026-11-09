@@ -90,6 +90,19 @@ func TestMarshalLink(t *testing.T) {
 			false,
 			"https://berty.tech/id#group/rUwVHzzEiMxGhM7iY4wW5yZFH3ZcjiWAhxva6tXUcfniDsoT3rmF3WdshR8955KAgeCTvirdfppTAMehPqmBV1YYjAiXYUQm98J992TuPT/name=%21%40%23%24%25%5E%26%2A%28%29_%3D%2B+%3A%2F%2F%F0%9F%98%80",
 			"BERTY://PB/1FKTFXAW7RN$NCK6*$DSJREWJGK9IBQPJE:FZA4ZVM9DMH55U85P7IMU7OCQ.QE:9/98RB45ENQ61/X23FSZXH/U-XZJ.$E$4JNKK9L7-9F/8Z8DP78US/-6BZXX.$BJ6$NELVC$UREEQ8E8T//0NFE2",
+		}, {
+			"message",
+			&messengertypes.BertyLink{
+				Kind: messengertypes.BertyLink_MessageV1Kind,
+				BertyMessageRef: &messengertypes.BertyLink_BertyMessageRef{
+					AccountId: "acc",
+					GroupPk:   "B3jWtHQS5d8fbeQwUoeVdgEgHsSRMMB2Uk6FpqDPYLyB",
+					MessageId: "cid",
+				},
+			},
+			false,
+			"https://berty.tech/id#message/PGuJELVNaMNxkf5vNeRkJuBqQcR2EMQdZ4AD9ZBWpX3mhWLujsbot5KTduhb7KjqTCvHe2k68XTFhc7",
+			"BERTY://PB/BQW0AM:PSWH*:DVLWDWRCJG.LRMDK*GJM5Z$7K3/MGKRPZ3H3LCY5T/IW8*:E2QQF:9UZO84ZWTR33RY2O3KUM-R8",
 		},
 		// FIXME: invalid kind
 		// FIXME: incomplete link

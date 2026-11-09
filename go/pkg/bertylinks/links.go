@@ -249,7 +249,7 @@ func UnmarshalLink(uri string, key []byte) (*messengertypes.BertyLink, error) {
 			}
 		case "message":
 			link.Kind = messengertypes.BertyLink_MessageV1Kind
-			if link.Encrypted == nil {
+			if link.BertyMessageRef == nil {
 				link.BertyMessageRef = &messengertypes.BertyLink_BertyMessageRef{}
 			}
 		default:
