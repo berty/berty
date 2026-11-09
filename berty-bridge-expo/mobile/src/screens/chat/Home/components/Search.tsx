@@ -378,6 +378,7 @@ export const SearchComponent: React.FC<{
 			}}
 			stickySectionHeadersEnabled={false}
 			bounces={false}
+			scrollEnabled={false} // Home's ScrollView scrolls the results
 			keyExtractor={item => item.cid || item.publicKey}
 			sections={sections}
 			renderSectionHeader={({ section }) => {
