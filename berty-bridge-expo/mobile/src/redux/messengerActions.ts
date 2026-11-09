@@ -6,6 +6,12 @@ import { messengerActions } from './messengerActions.gen'
 
 type MessengerAction = ReturnType<typeof messengerActions[keyof typeof messengerActions]>
 
+// Same as protobufjs' toJSON() (longs and bytes as strings, so payloads stay serializable in
+// the store), except enums: the app compares them against the numeric `beapi` enums
+// (e.g. conversation.type === Conversation.Type.MultiMemberType), so keep them as numbers.
+// With toJSON()'s enum names, every group was treated as a one-to-one conversation.
+const storeObjectOptions = { longs: String, enums: Number, bytes: String, json: true }
+
 export const streamEventToAction: (
 	evt: beapi.messenger.IStreamEvent,
 ) => MessengerAction | undefined = evt => {
@@ -30,7 +36,7 @@ export const streamEventToAction: (
 	if (typeof pl === 'string') {
 		pl = Buffer.from(pl, 'base64')
 	}
-	const eventPayload = pl ? pbobj.decode(pl).toJSON() : {}
+	const eventPayload = pl ? pbobj.toObject(pbobj.decode(pl), storeObjectOptions) : {}
 	if (!eventPayload) {
 		console.warn('failed to decode payload', payloadName, pl)
 		return
