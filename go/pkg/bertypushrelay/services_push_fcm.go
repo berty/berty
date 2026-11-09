@@ -64,7 +64,7 @@ func PushDispatcherLoadFirebaseAPIKey(ctx context.Context, logger *zap.Logger, b
 
 		appID := splitResult[0]
 		apiKey := splitResult[1]
-		opt := option.WithCredentialsFile(apiKey)
+		opt := option.WithAuthCredentialsFile(option.ServiceAccount, apiKey)
 		dispatchers[i], err = pushDispatcherLoadFCMAPIKey(ctx, logger, appID, opt)
 		if err != nil {
 			return nil, err
