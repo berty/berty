@@ -198,7 +198,7 @@ export const CreateGroupFinalize: ScreenFC<'Chat.CreateGroupFinalize'> = () => {
 	}, [done, error, reset, reply, dispatch])
 
 	return (
-		<IOSOnlyKeyboardAvoidingView behavior='position' >
+		<IOSOnlyKeyboardAvoidingView>
 			<ScrollView style={{ backgroundColor: colors['main-background'] }}>
 				<View style={{ backgroundColor: colors['background-header'] }}>
 					<View>

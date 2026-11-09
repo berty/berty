@@ -362,7 +362,8 @@
 			"invalid-qr": "Invalid QR code!",
 			"error": "Error!",
 			"contact-already-added": "Contact already added",
-			"contact-already-added-message": "You can't add same contact multiple times"
+			"contact-already-added-message": "You can't add same contact multiple times",
+			"conversation-not-found": "This message belongs to a conversation you are not part of"
 		},
 		"invalid-scan": {
 			"dismiss-button": "Dismiss"

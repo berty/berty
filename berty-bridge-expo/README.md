@@ -4,7 +4,7 @@ This is the bertybridge Expo module.
 
 ## Prerequisites
 
-* Required on macOS: Xcode 26+ (macOS 15+)
+* Required on macOS: Xcode 26.4+ (macOS 26.2+), the minimum for Expo SDK 58
 * Required to build for Android: Android Studio
 
 Berty is based on weshnet. Follow its [install instructions](https://github.com/berty/weshnet/blob/main/INSTALL.md)

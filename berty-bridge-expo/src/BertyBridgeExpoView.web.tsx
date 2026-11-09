@@ -1,6 +1,4 @@
-import * as React from 'react';
-
-import { BertyBridgeExpoViewProps } from './BertyBridgeExpo.types';
+import type { BertyBridgeExpoViewProps } from './BertyBridgeExpo.types';
 
 export default function BertyBridgeExpoView(props: BertyBridgeExpoViewProps) {
   return (

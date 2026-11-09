@@ -34,8 +34,11 @@ jobs:
           name: ${{ inputs.app-json-artifact }}
           path: berty-bridge-expo/mobile
 
-      - name: Select Xcode 26
-        run: sudo xcode-select -s /Applications/Xcode_26.3.0.app
+      # Expo SDK 56+ requires Xcode >= 26.4. Xcode 27 (iOS 27 SDK) is only on the
+      # `xcode-27` runner image, still in preview: move to it once it is GA
+      # (https://github.com/berty/berty/issues/5287).
+      - name: Select Xcode 26.6
+        run: sudo xcode-select -s /Applications/Xcode_26.6.app
 
       - name: Setup asdf
         uses: asdf-vm/actions/setup@9cd779f40fe38688dd19505ccbc4eaaf018b44e7

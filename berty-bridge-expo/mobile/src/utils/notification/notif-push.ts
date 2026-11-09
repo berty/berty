@@ -352,6 +352,7 @@ export const requestAndPersistPushToken = async (
 	if (Platform.OS === 'android') {
     await Notifications.setNotificationChannelAsync('bertyNotificationChannel', {
       name: 'A channel is needed for the permissions prompt to appear',
+      // eslint-disable-next-line import/namespace -- exported at runtime via `export *` from a compiled enum
       importance: Notifications.AndroidImportance.MAX,
       vibrationPattern: [0, 250, 250, 250],
       lightColor: '#FF231F7C',

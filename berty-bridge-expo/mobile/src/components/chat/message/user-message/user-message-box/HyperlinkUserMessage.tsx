@@ -17,7 +17,7 @@ const READ_MORE_SUBSTR_LENGTH = 300
 
 const additionalTlds = ['crypto']
 
-const linkify_conf = linkify().tlds([...tlds, ...additionalTlds], true)
+const linkify_conf = new linkify().tlds([...tlds, ...additionalTlds], true)
 
 async function isBertyDeepLink(client: WelshMessengerServiceClient, url: string): Promise<boolean> {
 	return new Promise(resolve => {
@@ -88,7 +88,11 @@ export const HyperlinkUserMessage: React.FC<{
 							navigation.navigate('Chat.ManageDeepLink', { type: 'link', value: url })
 							return
 						}
-						Linking.canOpenURL(url).then(supported => supported && Linking.openURL(url))
+						Linking.canOpenURL(url).then(async supported => {
+							if (supported) {
+								await Linking.openURL(url)
+							}
+						})
 					}}
 					linkStyle={{ textDecorationLine: 'underline' }}
 					linkify={linkify_conf}

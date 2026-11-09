@@ -6,7 +6,7 @@ import {
 	ActivityIndicator,
 	ActivityIndicatorProps,
 	View,
-	ViewToken,
+	ListViewToken,
 	StyleSheet,
 	Animated,
 	NativeSyntheticEvent,
@@ -72,7 +72,7 @@ const keyExtractor = (item: ParsedInteraction, index: number) => item.cid || `${
 
 const updateStickyDate: (
 	setStickyDate: (date: Long.Long) => void,
-) => (info: { viewableItems: ViewToken[] }) => void =
+) => (info: { viewableItems: ListViewToken[] }) => void =
 	(setStickyDate: (date: Long.Long) => void) =>
 	({ viewableItems }) => {
 		if (viewableItems && viewableItems.length) {

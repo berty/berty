@@ -77,7 +77,7 @@ export const CreateAccount: ScreenFC<'Onboarding.CreateAccount'> = () => {
 
 	return (
 		<OnboardingWrapper>
-			<StatusBar backgroundColor={colors['background-header']} barStyle='light-content' />
+			<StatusBar barStyle='light-content' />
 			<CreateAccountBody />
 		</OnboardingWrapper>
 	)

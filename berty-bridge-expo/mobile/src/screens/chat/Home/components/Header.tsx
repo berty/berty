@@ -1,7 +1,7 @@
 import LottieView from 'lottie-react-native'
 import React, { useEffect, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
-import { ScrollView, TouchableOpacity, View, ViewProps } from 'react-native'
+import { TouchableOpacity, View, ViewProps, type ScrollViewInstance } from 'react-native'
 
 import { MediumClearableInput } from '@berty/components'
 import { AccountAvatar } from '@berty/components/avatars'
@@ -16,7 +16,7 @@ import { UnreadCount } from './UnreadCount'
 export const HomeHeader: React.FC<
 	ViewProps & {
 		hasRequests: boolean
-		scrollRef: React.RefObject<ScrollView>
+		scrollRef: React.RefObject<ScrollViewInstance | null>
 		isOnTop: boolean
 		value: string
 		onChange: (value: string) => void

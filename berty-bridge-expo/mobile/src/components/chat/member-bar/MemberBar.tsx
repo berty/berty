@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import { ActivityIndicator, StyleSheet, TouchableOpacity, View } from 'react-native'
 
 import beapi from '@berty/api'
@@ -37,59 +37,64 @@ export const MemberBar: React.FC<MemberBarProps> = props => {
 	const [memberList, setMemberList] = useState<MemberBarItem[] | undefined>(undefined)
 	const [isOneConnected, setIsOneConnected] = useState<boolean>(false)
 
-	const handleMemberList = useCallback(async () => {
-		const list: MemberBarItem[] = []
-
+	// peers/groups are dependencies so the connection status of members stays up to date
+	useEffect(() => {
 		if (!messengerClient) {
 			return
 		}
+		let canceled = false
+		const updateMemberList = async () => {
+			const list: MemberBarItem[] = []
 
-		let connected: boolean = false
-		for (const member of members) {
-			const action = await dispatch(
-				getPeerFromMemberPK({ memberPK: member.publicKey, convPK: props.convId }),
-			)
-			const peer = action.payload as PeerNetworkStatus
+			let connected: boolean = false
+			for (const member of members) {
+				const action = await dispatch(
+					getPeerFromMemberPK({ memberPK: member.publicKey, convPK: props.convId }),
+				)
+				const peer = action.payload as PeerNetworkStatus
 
-			if (
-				peer?.alreadyConnected ||
-				peer?.connectionStatus === beapi.protocol.GroupDeviceStatus.Type.TypePeerConnected
-			) {
-				connected = true
-				list.push({
-					networkStatus: peer,
-					publicKey: member.publicKey ?? undefined,
-					alreadyConnected: peer?.alreadyConnected,
-				})
-			}
-
-			// TODO: find a optimized way to push in the list 5 interested peers and not 5 firsts members
-			if (list.length >= 5) {
-				break
-			}
-		}
-
-		setIsOneConnected(connected)
-
-		setMemberList(
-			list.sort((a, b) => {
 				if (
-					b?.networkStatus?.connectionStatus ===
-						beapi.protocol.GroupDeviceStatus.Type.TypePeerConnected &&
-					a?.networkStatus?.connectionStatus !==
-						beapi.protocol.GroupDeviceStatus.Type.TypePeerConnected
+					peer?.alreadyConnected ||
+					peer?.connectionStatus === beapi.protocol.GroupDeviceStatus.Type.TypePeerConnected
 				) {
-					return 1
+					connected = true
+					list.push({
+						networkStatus: peer,
+						publicKey: member.publicKey ?? undefined,
+						alreadyConnected: peer?.alreadyConnected,
+					})
 				}
-				return -1
-			}),
-		)
-	}, [dispatch, messengerClient, props.convId, members])
 
-	useEffect(() => {
-		handleMemberList()
-		// we put peers/members/groups dependencies to update the connectionStatus of peers
-	}, [handleMemberList, groups, peers, members])
+				// TODO: find a optimized way to push in the list 5 interested peers and not 5 firsts members
+				if (list.length >= 5) {
+					break
+				}
+			}
+
+			if (canceled) {
+				return
+			}
+			setIsOneConnected(connected)
+
+			setMemberList(
+				list.sort((a, b) => {
+					if (
+						b?.networkStatus?.connectionStatus ===
+							beapi.protocol.GroupDeviceStatus.Type.TypePeerConnected &&
+						a?.networkStatus?.connectionStatus !==
+							beapi.protocol.GroupDeviceStatus.Type.TypePeerConnected
+					) {
+						return 1
+					}
+					return -1
+				}),
+			)
+		}
+		updateMemberList()
+		return () => {
+			canceled = true
+		}
+	}, [dispatch, messengerClient, props.convId, members, groups, peers])
 
 	return (
 		<TouchableOpacity

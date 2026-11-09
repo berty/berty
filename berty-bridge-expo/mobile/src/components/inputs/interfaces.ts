@@ -1,3 +1,4 @@
+import type { ReactNode } from 'react'
 import { StyleProp, ViewStyle, TextInputProps } from 'react-native'
 
 export interface InputProps extends Omit<TextInputProps, 'style'> {}
@@ -9,4 +10,5 @@ export interface InputWithIconProps extends InputProps {
 export interface TouchableWrapperProps {
 	style: StyleProp<ViewStyle>
 	onPress?: () => void
+	children?: ReactNode
 }

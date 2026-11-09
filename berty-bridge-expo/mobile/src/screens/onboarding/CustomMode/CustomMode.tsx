@@ -115,7 +115,7 @@ export const CustomMode: ScreenFC<'Onboarding.CustomMode'> = () => {
 
 	return (
 		<OnboardingWrapper>
-			<StatusBar backgroundColor={colors['background-header']} barStyle='light-content' />
+			<StatusBar barStyle='light-content' />
 			<CustomModeBody />
 		</OnboardingWrapper>
 	)

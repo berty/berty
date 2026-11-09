@@ -1,5 +1,5 @@
 import React, { useRef } from 'react'
-import { StyleSheet, TextInput } from 'react-native'
+import { StyleSheet, type TextInputInstance } from 'react-native'
 
 import { IconPriv } from '../Icon.priv'
 import { InputWithIconPriv } from '../InputWithIcon.priv'
@@ -7,7 +7,7 @@ import { InputWithIconProps } from '../interfaces'
 import { TouchableWrapperWithIconPriv } from '../wrapper/TouchableWrapperWithIcon.priv'
 
 export const LargeInputWithIcon: React.FC<InputWithIconProps> = props => {
-	const input = useRef<TextInput>(null)
+	const input = useRef<TextInputInstance>(null)
 
 	return (
 		<TouchableWrapperWithIconPriv onPress={() => input.current?.focus()} style={styles.container}>

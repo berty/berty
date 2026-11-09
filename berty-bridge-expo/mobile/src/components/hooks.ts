@@ -1,4 +1,4 @@
-import { useState, useCallback, useRef, useEffect } from 'react'
+import { useState, useCallback } from 'react'
 import { LayoutChangeEvent, LayoutRectangle } from 'react-native'
 
 export const useLayout = (): [LayoutRectangle, (e: LayoutChangeEvent) => void] => {
@@ -20,13 +20,4 @@ export const useLayout = (): [LayoutRectangle, (e: LayoutChangeEvent) => void] =
 		[],
 	)
 	return [layout, onLayout]
-}
-
-export function usePrevious<T>(value: T) {
-	// https://blog.logrocket.com/how-to-get-previous-props-state-with-react-hooks/
-	const ref = useRef<T>()
-	useEffect(() => {
-		ref.current = value
-	})
-	return ref.current
 }

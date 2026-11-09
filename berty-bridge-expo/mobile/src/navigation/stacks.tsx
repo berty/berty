@@ -79,8 +79,9 @@ const AltBackgroundHeaderScreenOptions: (
 }
 
 // Expo dev-client launch URLs (Metro connection), not Berty deep links: ignore them.
+// `expo run:android` opens the app with `exp+<slug>://?__expo_url=...`.
 const isExpoDevClientUrl = (url: string) =>
-	url.includes('expo-development-client') || url.startsWith('exp://')
+	url.includes('expo-development-client') || url.startsWith('exp://') || url.startsWith('exp+')
 
 // Process the persisted launch URL once; DeepLinkBridge mounts on every screen, so
 // re-reading it would loop (navigate -> mount -> re-read -> navigate).

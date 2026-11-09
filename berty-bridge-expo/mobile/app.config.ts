@@ -24,15 +24,9 @@ export default ({ config }: ConfigContext): ExpoConfig => {
 		platforms: ["ios", "android"],
 		orientation: "portrait",
 		userInterfaceStyle: "automatic",
-		newArchEnabled: true,
 		icon: ICON,
 		scheme: SCHEME,
 		githubUrl: "https://github.com/berty/berty",
-		splash: {
-			image: "./assets/images/splash.png",
-			resizeMode: "contain",
-			backgroundColor: "#F8F9FA",
-		},
 		ios: {
 			supportsTablet: true,
 			bundleIdentifier: bundleIdentifier,
@@ -53,11 +47,6 @@ export default ({ config }: ConfigContext): ExpoConfig => {
 			package: packageName,
 			versionCode: config.android?.versionCode,
 			googleServicesFile: "./google-services.json",
-		},
-		androidNavigationBar: {
-			// White (iOS-like) bar under edge-to-edge: no contrast scrim, dark icons.
-			barStyle: "dark-content",
-			enforceContrast: false,
 		},
 		updates: {
 			url: `https://u.expo.dev/${EAS_PROJECT_ID}`,
@@ -96,15 +85,19 @@ export default ({ config }: ConfigContext): ExpoConfig => {
 		},
 		web: {
 			bundler: "metro",
-			output: "static",
+			output: "single",
 			favicon: "./assets/images/favicon.png",
-		},
-		notification: {
-			iosDisplayInForeground: true,
 		},
 		plugins: [
 			"../app.plugin.js",
-			"expo-router",
+			[
+				"expo-navigation-bar",
+				{
+					// White (iOS-like) bar under edge-to-edge: no contrast scrim, dark icons.
+					style: "dark",
+					enforceContrast: false,
+				},
+			],
 			[
 				"expo-font",
 				{
@@ -118,7 +111,13 @@ export default ({ config }: ConfigContext): ExpoConfig => {
 					],
 				},
 			],
-			"expo-camera",
+			[
+				"expo-camera",
+				{
+					cameraPermission:
+						"Berty uses your camera to scan QR codes, for example to add a contact or join a group.",
+				},
+			],
 			"expo-notifications",
 			"expo-web-browser",
 			[
@@ -132,9 +131,6 @@ export default ({ config }: ConfigContext): ExpoConfig => {
 			"@react-native-community/datetimepicker",
 			"expo-asset",
 		],
-		experiments: {
-			typedRoutes: true,
-		},
 		owner: "bertytechnologies",
 	};
 };
