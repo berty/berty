@@ -9,6 +9,7 @@ import (
 	"github.com/sideshow/apns2"
 	"github.com/sideshow/apns2/certificate"
 	"github.com/sideshow/apns2/payload"
+	"github.com/sideshow/apns2/token"
 	"go.uber.org/zap"
 
 	"berty.tech/berty/v2/go/pkg/errcode"
@@ -82,6 +83,92 @@ func pushDispatcherLoadAPNSCertificate(logger *zap.Logger, path string) (PushDis
 		bundleID: bundleID,
 		client:   client,
 	}, nil
+}
+
+// APNSAuthKeyConfig configures token-based authentication with APNs, using an
+// APNs auth key (.p8) instead of a per-app certificate (.p12). Unlike a
+// certificate, one key can be used for several apps and for both APNs
+// environments, so the apps to serve are listed per environment.
+type APNSAuthKeyConfig struct {
+	// KeyPath is the path of the .p8 key file.
+	KeyPath string
+	// KeyID is the 10-character identifier of the key.
+	KeyID string
+	// TeamID is the identifier of the Apple developer team owning the key.
+	TeamID string
+	// ProductionBundleIDs are the apps whose notifications go through the APNs production environment.
+	ProductionBundleIDs []string
+	// SandboxBundleIDs are the apps whose notifications go through the APNs sandbox environment.
+	SandboxBundleIDs []string
+}
+
+func (c APNSAuthKeyConfig) isEmpty() bool {
+	return c.KeyPath == "" && c.KeyID == "" && c.TeamID == "" &&
+		len(c.ProductionBundleIDs) == 0 && len(c.SandboxBundleIDs) == 0
+}
+
+// PushDispatcherLoadAPNSAuthKey returns one APNs dispatcher per configured
+// bundle ID, all authenticated with the same .p8 key. It returns no dispatcher
+// if the config is empty.
+func PushDispatcherLoadAPNSAuthKey(logger *zap.Logger, cfg APNSAuthKeyConfig) ([]PushDispatcher, error) {
+	if cfg.isEmpty() {
+		return nil, nil
+	}
+
+	if cfg.KeyPath == "" || cfg.KeyID == "" || cfg.TeamID == "" {
+		return nil, errcode.ErrCode_ErrPushInvalidServerConfig.Wrap(fmt.Errorf("apns auth key: the key path, key ID and team ID are all required"))
+	}
+
+	if len(cfg.ProductionBundleIDs) == 0 && len(cfg.SandboxBundleIDs) == 0 {
+		return nil, errcode.ErrCode_ErrPushInvalidServerConfig.Wrap(fmt.Errorf("apns auth key: at least one bundle ID is required"))
+	}
+
+	authKey, err := token.AuthKeyFromFile(cfg.KeyPath)
+	if err != nil {
+		return nil, errcode.ErrCode_ErrPushInvalidServerConfig.Wrap(fmt.Errorf("apns auth key: %w", err))
+	}
+
+	// shared by both clients, it renews the JWT before it expires
+	authToken := &token.Token{
+		AuthKey: authKey,
+		KeyID:   cfg.KeyID,
+		TeamID:  cfg.TeamID,
+	}
+
+	logger = logger.Named("apns")
+	dispatchers := make([]PushDispatcher, 0, len(cfg.ProductionBundleIDs)+len(cfg.SandboxBundleIDs))
+	seen := make(map[string]struct{})
+
+	for _, env := range []struct {
+		bundleIDs []string
+		client    func() *apns2.Client
+	}{
+		{cfg.ProductionBundleIDs, func() *apns2.Client { return apns2.NewTokenClient(authToken).Production() }},
+		{cfg.SandboxBundleIDs, func() *apns2.Client { return apns2.NewTokenClient(authToken).Development() }},
+	} {
+		if len(env.bundleIDs) == 0 {
+			continue
+		}
+
+		client := env.client()
+		for _, bundleID := range env.bundleIDs {
+			if bundleID == "" {
+				return nil, errcode.ErrCode_ErrPushInvalidServerConfig.Wrap(fmt.Errorf("apns auth key: empty bundle ID"))
+			}
+			if _, ok := seen[bundleID]; ok {
+				return nil, errcode.ErrCode_ErrPushInvalidServerConfig.Wrap(fmt.Errorf("apns auth key: bundle ID %s listed twice", bundleID))
+			}
+			seen[bundleID] = struct{}{}
+
+			dispatchers = append(dispatchers, &pushDispatcherAPNS{
+				logger:   logger,
+				bundleID: bundleID,
+				client:   client,
+			})
+		}
+	}
+
+	return dispatchers, nil
 }
 
 func (d *pushDispatcherAPNS) Dispatch(data []byte, receiver *pushtypes.PushServiceReceiver) error {

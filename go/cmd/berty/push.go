@@ -5,6 +5,7 @@ import (
 	"encoding/base64"
 	"flag"
 	"fmt"
+	"strings"
 
 	"github.com/peterbourgon/ff/v3/ffcli"
 
@@ -16,15 +17,25 @@ import (
 
 func pushServerCommand() *ffcli.Command {
 	var (
-		apns         *string
-		fcmBundleIDs *string
-		fcmKeys      *string
-		sk           *string
+		apns                    *string
+		apnsKey                 *string
+		apnsKeyID               *string
+		apnsTeamID              *string
+		apnsKeyBundleIDs        *string
+		apnsKeySandboxBundleIDs *string
+		fcmBundleIDs            *string
+		fcmKeys                 *string
+		sk                      *string
 	)
 
 	fsBuilder := func() (*flag.FlagSet, error) {
 		fs := flag.NewFlagSet("berty push-server", flag.ExitOnError)
 		apns = fs.String("apns", "", "Apple's apns certs path, comma-separated")
+		apnsKey = fs.String("apns-key", "", "Apple's apns auth key (.p8) path, an alternative to -apns certs")
+		apnsKeyID = fs.String("apns-key-id", "", "ID of the -apns-key auth key")
+		apnsTeamID = fs.String("apns-team-id", "", "Apple developer team ID owning the -apns-key auth key")
+		apnsKeyBundleIDs = fs.String("apns-key-bundleids", "", "App BundleIDs sent through APNs production with -apns-key, comma-separated")
+		apnsKeySandboxBundleIDs = fs.String("apns-key-sandbox-bundleids", "", "App BundleIDs sent through the APNs sandbox with -apns-key, comma-separated")
 		fcmBundleIDs = fs.String("fcm-bundleids", "", "App BundleIDs, comma-separated. Require if the GOOGLE_APPLICATION_CREDENTIALS env var is set for FCM credentials")
 		fcmKeys = fs.String("fcm-keys", "", "Firebase's FCM API keys, formatted like app_id:api_key.json and comma-separated, if the GOOGLE_APPLICATION_CREDENTIALS env var is not set")
 		sk = fs.String("push-private-key", "", "Push server private key, base64 formatted")
@@ -84,6 +95,19 @@ func pushServerCommand() *ffcli.Command {
 
 			dispatchers = append(dispatchers, apnsDispatchers...)
 
+			apnsKeyDispatchers, err := bertypushrelay.PushDispatcherLoadAPNSAuthKey(logger, bertypushrelay.APNSAuthKeyConfig{
+				KeyPath:             *apnsKey,
+				KeyID:               *apnsKeyID,
+				TeamID:              *apnsTeamID,
+				ProductionBundleIDs: splitCommaList(*apnsKeyBundleIDs),
+				SandboxBundleIDs:    splitCommaList(*apnsKeySandboxBundleIDs),
+			})
+			if err != nil {
+				return err
+			}
+
+			dispatchers = append(dispatchers, apnsKeyDispatchers...)
+
 			fcmDispatchers, err := bertypushrelay.PushDispatcherLoadFirebaseAPIKey(ctx, logger, fcmBundleIDs, fcmKeys)
 			if err != nil {
 				return err
@@ -109,4 +133,15 @@ func pushServerCommand() *ffcli.Command {
 			return manager.RunWorkers(ctx)
 		},
 	}
+}
+
+// splitCommaList splits a comma-separated flag value, ignoring blank entries.
+func splitCommaList(value string) []string {
+	var items []string
+	for _, item := range strings.Split(value, ",") {
+		if item = strings.TrimSpace(item); item != "" {
+			items = append(items, item)
+		}
+	}
+	return items
 }
