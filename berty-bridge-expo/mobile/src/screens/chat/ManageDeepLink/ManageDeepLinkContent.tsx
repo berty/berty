@@ -9,6 +9,7 @@ import { useNavigation } from '@berty/navigation'
 import { base64ToURLBase64 } from '@berty/utils/convert/base64'
 
 import AddThisContact from './components/AddThisContact'
+import InvalidScan from './components/InvalidScan'
 import { ManageGroupInvitation } from './components/ManageGroupInvitation'
 
 interface ManageDeepLinkContentProps {
@@ -22,16 +23,28 @@ export const ManageDeepLinkContent = (props: ManageDeepLinkContentProps) => {
 
 	const { dispatch } = useNavigation()
 
-	const [reply, setReply] = useState<beapi.messenger.ParseDeepLink.Reply | null | undefined>(null)
+	// Keyed by link so a result parsed for a previous link is never shown for the current one.
+	const [parsed, setParsed] = useState<{
+		link: string
+		reply?: beapi.messenger.ParseDeepLink.Reply
+		error?: unknown
+	} | null>(null)
+	const current = parsed?.link === props.link ? parsed : null
+	const reply = current?.reply ?? null
+	const error = current?.error
 
 	useEffect(() => {
-		console.warn(['Parsing deeplink', props.link])
-		async function parseDeepLink() {
-			const result = await messengerClient?.parseDeepLink({ link: props.link })
-			console.log('result', result)
-			setReply(result)
+		if (!messengerClient) {
+			return
 		}
-		parseDeepLink()
+		const link = props.link
+		messengerClient
+			.parseDeepLink({ link })
+			.then(result => setParsed({ link, reply: result }))
+			.catch(err => {
+				console.warn('failed to parse deep link:', err)
+				setParsed({ link, error: err ?? new Error('failed to parse deep link') })
+			})
 	}, [messengerClient, props.link])
 
 	// Navigate from an effect, not render, to avoid "update a component while rendering".
@@ -60,6 +73,11 @@ export const ManageDeepLinkContent = (props: ManageDeepLinkContentProps) => {
 		}
 	}, [reply, conversations, dispatch])
 
+	// This screen is a transparent modal: anything that renders nothing (or spins forever) leaves
+	// an invisible layer swallowing every touch, so failures must render a dismissable error.
+	if (error) {
+		return <InvalidScan type={props.type} error={error} />
+	}
 	if (reply === null) {
 		return <ActivityIndicator size='large' />
 	}
@@ -95,5 +113,5 @@ export const ManageDeepLinkContent = (props: ManageDeepLinkContentProps) => {
 		// Navigation is handled by the effect above; show a spinner meanwhile.
 		return <ActivityIndicator size='large' />
 	}
-	return null
+	return <InvalidScan type={props.type} error={new Error('unsupported link kind')} />
 }
