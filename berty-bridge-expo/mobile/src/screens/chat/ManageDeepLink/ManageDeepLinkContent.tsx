@@ -1,6 +1,7 @@
 import { CommonActions } from '@react-navigation/native'
 import { Buffer } from 'buffer'
 import React, { useEffect, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { ActivityIndicator } from 'react-native'
 
 import beapi from '@berty/api'
@@ -22,6 +23,7 @@ export const ManageDeepLinkContent = (props: ManageDeepLinkContentProps) => {
 	const conversations = useConversationsDict()
 
 	const { dispatch } = useNavigation()
+	const { t } = useTranslation()
 
 	// Keyed by link so a result parsed for a previous link is never shown for the current one.
 	const [parsed, setParsed] = useState<{
@@ -110,6 +112,16 @@ export const ManageDeepLinkContent = (props: ManageDeepLinkContentProps) => {
 		)
 	}
 	if (reply?.link?.kind === beapi.messenger.BertyLink.Kind.MessageV1Kind) {
+		// The messenger client is only available once the event stream has listed every
+		// conversation, so a missing one is not "still loading": we are not a member of it.
+		if (!conversations[reply.link.bertyMessageRef?.groupPk as string]?.publicKey) {
+			return (
+				<InvalidScan
+					type={props.type}
+					error={t('modals.manage-deep-link.conversation-not-found')}
+				/>
+			)
+		}
 		// Navigation is handled by the effect above; show a spinner meanwhile.
 		return <ActivityIndicator size='large' />
 	}
