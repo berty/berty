@@ -743,11 +743,18 @@ USAGE
 
 FLAGS
   -apns ...                                       Apple's apns certs path, comma-separated
-  -fcm ...                                        Firebase's FCM API keys, formatted like app_id:api_key and comma-separated
+  -apns-key ...                                   Apple's apns auth key (.p8) path, an alternative to -apns certs
+  -apns-key-bundleids ...                         App BundleIDs sent through APNs production with -apns-key, comma-separated
+  -apns-key-id ...                                ID of the -apns-key auth key
+  -apns-key-sandbox-bundleids ...                 App BundleIDs sent through the APNs sandbox with -apns-key, comma-separated
+  -apns-team-id ...                               Apple developer team ID owning the -apns-key auth key
+  -fcm-bundleids ...                              App BundleIDs, comma-separated. Require if the GOOGLE_APPLICATION_CREDENTIALS env var is set for FCM credentials
+  -fcm-keys ...                                   Firebase's FCM API keys, formatted like app_id:api_key.json and comma-separated, if the GOOGLE_APPLICATION_CREDENTIALS env var is not set
   -log.file ...                                   log file path (pattern)
   -log.file-filters debug+:bty*,-*.grpc,error+:*  file zapfilter configuration
   -log.filters info+:bty*,-*.grpc,error+:*        stderr zapfilter configuration
   -log.format color                               stderr logging format. can be: json, console, color, light-console, light-color
+  -log.native false                               enable native logger (android & darwin only)
   -log.ring-filters info+:bty*,-*.grpc,error+:*   ring zapfilter configuration
   -log.ring-size 10                               ring buffer size in MB
   -log.tyber-auto-attach ...                      tyber host addresses to be automatically attached to
