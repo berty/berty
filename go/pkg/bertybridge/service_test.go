@@ -8,6 +8,7 @@ import (
 	"github.com/stretchr/testify/require"
 	"go.uber.org/zap"
 	grpc "google.golang.org/grpc"
+	"google.golang.org/grpc/metadata"
 	"google.golang.org/protobuf/proto"
 
 	berty_testutil "berty.tech/berty/v2/go/internal/testutil"
@@ -396,14 +397,133 @@ func TestDuplexStreamServiceError(t *testing.T) {
 	}
 }
 
+func TestConvertMetadataSkipsStatusDetails(t *testing.T) {
+	md := metadata.Pairs(
+		"foo", "bar",
+		"grpc-status-details-bin", "details",
+	)
+
+	out := convertMetadata(md)
+
+	require.Len(t, out, 1)
+	require.NotNil(t, out[0])
+	assert.Equal(t, "foo", out[0].Key)
+	assert.Equal(t, []string{"bar"}, out[0].Values)
+}
+
+func TestStreamCloseReleasesStream(t *testing.T) {
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+
+	logger, cleanup := testutil.Logger(t)
+	defer cleanup()
+
+	cl, svc := createBridgeTestingService(t, ctx, logger)
+
+	streamid := createEchoStream(t, ctx, cl)
+	require.Equal(t, 1, registeredStreams(svc))
+
+	// closing the stream releases it
+	{
+		res, err := cl.ClientStreamClose(ctx, &ClientStreamClose_Request{
+			StreamId: streamid,
+		})
+
+		require.NoError(t, err)
+		require.NotNil(t, res.Error)
+		assert.Equal(t, GRPCErrCode_OK, res.Error.GrpcErrorCode)
+		assert.Equal(t, 0, registeredStreams(svc))
+	}
+
+	// a recv that arrives after the close ends like a cancelled stream
+	{
+		res, err := cl.ClientStreamRecv(ctx, &ClientStreamRecv_Request{
+			StreamId: streamid,
+		})
+
+		require.NoError(t, err)
+		require.NotNil(t, res.Error)
+		assert.Equal(t, GRPCErrCode_CANCELED, res.Error.GrpcErrorCode)
+	}
+
+	// closing an already released stream is a no-op
+	{
+		res, err := cl.ClientStreamClose(ctx, &ClientStreamClose_Request{
+			StreamId: streamid,
+		})
+
+		require.NoError(t, err)
+		require.NotNil(t, res.Error)
+		assert.Equal(t, GRPCErrCode_OK, res.Error.GrpcErrorCode)
+	}
+}
+
+func TestStreamCloseAndRecvReleasesStream(t *testing.T) {
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+
+	logger, cleanup := testutil.Logger(t)
+	defer cleanup()
+
+	cl, svc := createBridgeTestingService(t, ctx, logger)
+
+	streamid := createEchoStream(t, ctx, cl)
+	require.Equal(t, 1, registeredStreams(svc))
+
+	res, err := cl.ClientStreamCloseAndRecv(ctx, &ClientStreamCloseAndRecv_Request{
+		StreamId: streamid,
+	})
+
+	require.NoError(t, err)
+	require.NotNil(t, res.Error)
+	assert.Equal(t, GRPCErrCode_OK, res.Error.GrpcErrorCode)
+	assert.Equal(t, 0, registeredStreams(svc))
+}
+
+func createEchoStream(t *testing.T, ctx context.Context, cl BridgeServiceClient) string {
+	t.Helper()
+
+	payload, err := proto.Marshal(&berty_testutil.EchoTest_Request{
+		Delay: 10,
+		Echo:  echoStringTest,
+	})
+	require.NoError(t, err)
+
+	res, err := cl.CreateClientStream(ctx, &ClientCreateStream_Request{
+		MethodDesc: &MethodDesc{
+			Name:           "/testutil.TestService/EchoStreamTest",
+			IsServerStream: true,
+		},
+		Payload: payload,
+	})
+
+	require.NoError(t, err)
+	require.NotEmpty(t, res.StreamId)
+	return res.StreamId
+}
+
+func registeredStreams(s *service) int {
+	s.muStreams.RLock()
+	defer s.muStreams.RUnlock()
+
+	return len(s.streams)
+}
+
 func createBridgeTestingClient(t *testing.T, ctx context.Context, logger *zap.Logger) BridgeServiceClient {
+	t.Helper()
+
+	cl, _ := createBridgeTestingService(t, ctx, logger)
+	return cl
+}
+
+func createBridgeTestingService(t *testing.T, ctx context.Context, logger *zap.Logger) (BridgeServiceClient, *service) {
 	t.Helper()
 
 	srv := grpc.NewServer()
 
 	svc := NewService(&Options{
 		Logger: logger,
-	})
+	}).(*service)
 
 	RegisterBridgeServiceServer(srv, svc)
 
@@ -424,5 +544,5 @@ func createBridgeTestingClient(t *testing.T, ctx context.Context, logger *zap.Lo
 		svc.RegisterService(serviceName, tcc)
 	}
 
-	return NewBridgeServiceClient(cc)
+	return NewBridgeServiceClient(cc), svc
 }
