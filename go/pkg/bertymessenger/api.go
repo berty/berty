@@ -1085,13 +1085,20 @@ func (svc *service) ConversationOpen(_ context.Context, req *messengertypes.Conv
 	return &ret, nil
 }
 
+// groupStatusMonitor is a running peer status monitor for one group. Its
+// pointer identifies it, so a monitor that exits on its own removes only its
+// own registry entry, never one started after it.
+type groupStatusMonitor struct {
+	cancel context.CancelFunc
+}
+
 func (svc *service) monitorGroupPeersStatus(groupPK string) error {
 	svc.muCancelGroupStatus.Lock()
 	defer svc.muCancelGroupStatus.Unlock()
 
 	if _, found := svc.cancelGroupStatus[groupPK]; found {
-		// skip if already have a monitor group in progress
-		return fmt.Errorf("monitor peer status for group already running")
+		// a monitor is already running for this group
+		return nil
 	}
 
 	rawGroupPK, err := messengerutil.B64DecodeBytes(groupPK)
@@ -1107,15 +1114,28 @@ func (svc *service) monitorGroupPeersStatus(groupPK string) error {
 		return fmt.Errorf("unable to get group device status: %w", err)
 	}
 
-	svc.cancelGroupStatus[groupPK] = cancel
+	monitor := &groupStatusMonitor{cancel: cancel}
+	svc.cancelGroupStatus[groupPK] = monitor
 
 	groupPeers := make(map[string]struct{})
 	go func() {
+		// The stream can also end on its own (a protocol error, or the protocol
+		// shutting down). Release this monitor then, so that the next
+		// ConversationOpen can start a new one.
+		defer func() {
+			svc.muCancelGroupStatus.Lock()
+			if svc.cancelGroupStatus[groupPK] == monitor {
+				delete(svc.cancelGroupStatus, groupPK)
+			}
+			svc.muCancelGroupStatus.Unlock()
+			cancel()
+		}()
+
 		for {
 			statusEvent, err := cs.Recv()
 			switch {
 			case err == nil: // ok
-			case err == io.EOF, status.Code(err) != codes.Canceled: // shutdown gracefully
+			case err == io.EOF, status.Code(err) == codes.Canceled: // shutdown gracefully
 				return
 			default:
 				svc.logger.Error("error while getting GroupDeviceStatus from protocol", zap.Error(err))
@@ -1197,6 +1217,18 @@ func (svc *service) monitorGroupPeersStatus(groupPK string) error {
 	return nil
 }
 
+// stopMonitorGroupPeersStatus stops the group's peer status monitor, if one is
+// running.
+func (svc *service) stopMonitorGroupPeersStatus(groupPK string) {
+	svc.muCancelGroupStatus.Lock()
+	defer svc.muCancelGroupStatus.Unlock()
+
+	if monitor, found := svc.cancelGroupStatus[groupPK]; found {
+		monitor.cancel()
+		delete(svc.cancelGroupStatus, groupPK)
+	}
+}
+
 func (svc *service) ConversationClose(_ context.Context, req *messengertypes.ConversationClose_Request) (*messengertypes.ConversationClose_Reply, error) {
 	// check input
 	if req.GroupPk == "" {
@@ -1205,6 +1237,10 @@ func (svc *service) ConversationClose(_ context.Context, req *messengertypes.Con
 
 	ret := messengertypes.ConversationClose_Reply{}
 
+	// Stop monitoring peer status first, so the monitor is stopped even when
+	// the conversation was already marked as closed.
+	svc.stopMonitorGroupPeersStatus(req.GroupPk)
+
 	conv, updated, err := svc.db.SetConversationIsOpenStatus(req.GetGroupPk(), false)
 
 	if err != nil {
@@ -1212,14 +1248,6 @@ func (svc *service) ConversationClose(_ context.Context, req *messengertypes.Con
 	} else if !updated {
 		return &ret, nil
 	}
-
-	// stop monitoring peer status
-	svc.muCancelGroupStatus.Lock()
-	if cancel, found := svc.cancelGroupStatus[req.GroupPk]; found {
-		cancel()
-		delete(svc.cancelGroupStatus, req.GroupPk)
-	}
-	svc.muCancelGroupStatus.Unlock()
 
 	if err := svc.dispatcher.StreamEvent(messengertypes.StreamEvent_TypeConversationUpdated, &messengertypes.StreamEvent_ConversationUpdated{Conversation: conv}, false); err != nil {
 		return nil, errcode.ErrCode_TODO.Wrap(err)
