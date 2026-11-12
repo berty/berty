@@ -1,4 +1,4 @@
-import { NavigationContainer } from "@react-navigation/native";
+import { DefaultTheme, NavigationContainer } from "@react-navigation/native";
 import React from "react";
 import { View } from "react-native";
 
@@ -7,7 +7,8 @@ import AppCommonProviders from "@berty/contexts/AppCommonProviders";
 import NotificationProvider from "@berty/contexts/notification.context";
 import { PermissionsProvider } from "@berty/contexts/permissions.context";
 import { UIKittenProvider } from "@berty/contexts/uiKitten.context";
-import { useMountEffect, useThemeColor } from "@berty/hooks";
+import { useIsDarkTheme, useMountEffect, useThemeColor } from "@berty/hooks";
+import { loadThemeMode } from "@berty/utils/theme/themeMode";
 import { isReadyRef, navigationRef } from "@berty/navigation";
 import { Navigation } from "@berty/navigation/stacks";
 import { initI18N } from "@berty/i18n";
@@ -28,6 +29,41 @@ const Background = ({ children }: BackgroundProps) => {
 	);
 };
 
+// Navigation colors (screen backgrounds, transitions) follow the theme
+const ThemedNavigationContainer = ({ children }: BackgroundProps) => {
+	const colors = useThemeColor();
+	const isDark = useIsDarkTheme();
+	const navigationTheme = React.useMemo(
+		() => ({
+			...DefaultTheme,
+			dark: isDark,
+			colors: {
+				...DefaultTheme.colors,
+				background: colors["main-background"],
+				card: colors["main-background"],
+				text: colors["main-text"],
+				border: colors["secondary-background"] ?? colors["main-background"],
+			},
+		}),
+		[colors, isDark]
+	);
+
+	return (
+		<NavigationContainer
+			ref={navigationRef}
+			theme={navigationTheme}
+			onReady={() => {
+				isReadyRef.current = true;
+			}}
+		>
+			{children}
+		</NavigationContainer>
+	);
+};
+
+// the theme mode is a device setting: load it as early as possible
+loadThemeMode();
+
 const App: React.FC = () => {
 	useMountEffect(() => {
 		return () => {
@@ -40,18 +76,13 @@ const App: React.FC = () => {
 			<UIKittenProvider>
 				<Background>
 					<ErrorScreen>
-						<NavigationContainer
-							ref={navigationRef}
-							onReady={() => {
-								isReadyRef.current = true;
-							}}
-						>
+						<ThemedNavigationContainer>
 							<PermissionsProvider>
 								<NotificationProvider>
 									<Navigation />
 								</NotificationProvider>
 							</PermissionsProvider>
-						</NavigationContainer>
+						</ThemedNavigationContainer>
 					</ErrorScreen>
 				</Background>
 			</UIKittenProvider>

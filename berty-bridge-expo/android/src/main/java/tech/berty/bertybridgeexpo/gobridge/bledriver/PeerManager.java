@@ -1,6 +1,8 @@
 package tech.berty.bertybridgeexpo.gobridge.bledriver;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 
 public class PeerManager {
     private static final String TAG = "bty.ble.PeerManager";
@@ -63,6 +65,19 @@ public class PeerManager {
 
         peer.removeDevices();
         mPeers.remove(peerID);
+    }
+
+    // Drop every known peer, notifying the Go side. Used when the BLE driver is stopped
+    // (e.g. Bluetooth turned off): the underlying connections no longer exist.
+    public synchronized void unregisterAllPeers() {
+        for (Map.Entry<String, Peer> entry : new ArrayList<>(mPeers.entrySet())) {
+            Peer peer = entry.getValue();
+            if (peer.isHandshakeSuccessful()) {
+                BleInterface.BLEHandleLostPeer(entry.getKey());
+            }
+            peer.removeDevices();
+        }
+        mPeers.clear();
     }
 
     public synchronized Peer get(String peerID) {

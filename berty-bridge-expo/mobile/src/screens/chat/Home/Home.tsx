@@ -2,8 +2,10 @@ import * as Network from 'expo-network'
 import pickBy from 'lodash/pickBy'
 import React, { useEffect, useMemo, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
+import { useFocusEffect } from '@react-navigation/native'
+import { GoBridge } from 'berty-bridge-expo'
 import { StatusBar } from 'expo-status-bar'
-import { ScrollView, View, type ScrollViewInstance } from 'react-native'
+import { BackHandler, Platform, ScrollView, View, type ScrollViewInstance } from 'react-native'
 import { useSelector } from 'react-redux'
 import { SafeAreaView } from 'react-native-safe-area-context'
 
@@ -13,12 +15,14 @@ import { PrimaryFloatingButton } from '@berty/components'
 import { useLayout } from '@berty/components/hooks'
 import { ButtonSettingV2 } from '@berty/components/shared-components'
 import { UnifiedText } from '@berty/components/shared-components/UnifiedText'
+import { ConfirmDialog } from '@berty/components/modals/ConfirmDialog'
 import { useStyles } from '@berty/contexts/styles'
 import {
 	useContactsDict,
 	useConversationsDict,
 	useIncomingContactRequests,
 	useAllConversations,
+	useIsDarkTheme,
 	useThemeColor,
 	useMessengerClient,
 	useNotificationsInhibitor,
@@ -72,7 +76,24 @@ export const Home: ScreenFC<'Chat.Home'> = ({ navigation: { navigate } }) => {
 
 	const { text, opacity, flex, margin, border } = useStyles()
 	const colors = useThemeColor()
+	const isDark = useIsDarkTheme()
 	const { t } = useTranslation()
+
+	// Android: the back gesture on the home screen asks before quitting, because quitting
+	// also stops the background service and so the delivery of messages and notifications.
+	const [quitDialogVisible, setQuitDialogVisible] = React.useState(false)
+	useFocusEffect(
+		React.useCallback(() => {
+			if (Platform.OS !== 'android') {
+				return
+			}
+			const subscription = BackHandler.addEventListener('hardwareBackPress', () => {
+				setQuitDialogVisible(true)
+				return true
+			})
+			return () => subscription.remove()
+		}, []),
+	)
 
 	const scrollRef = useRef<ScrollViewInstance>(null)
 	const searching = !!searchText
@@ -212,7 +233,7 @@ export const Home: ScreenFC<'Chat.Home'> = ({ navigation: { navigate } }) => {
 
 	return (
 		<SafeAreaView style={[styleBackground, { flex: 1 }]}>
-			<StatusBar style={requests.length && !isOnTop ? 'light' : 'dark'} />
+			<StatusBar style={isDark || (requests.length && !isOnTop) ? 'light' : 'dark'} />
 			<ScrollView
 				ref={scrollRef}
 				stickyHeaderIndices={!searchText?.length && !hasResults ? [1] : [0]}
@@ -326,6 +347,18 @@ export const Home: ScreenFC<'Chat.Home'> = ({ navigation: { navigate } }) => {
 					closeModal={() => setIsAddBot({ ...isAddBot, isVisible: false })}
 				/>
 			) : null}
+			<ConfirmDialog
+				visible={quitDialogVisible}
+				title={t('notification.quit.title')}
+				message={t('notification.quit.desc')}
+				confirmLabel={t('notification.quit.confirm')}
+				cancelLabel={t('notification.quit.cancel')}
+				onCancel={() => setQuitDialogVisible(false)}
+				onConfirm={() => {
+					setQuitDialogVisible(false)
+					GoBridge.quitApp().catch(err => console.warn('unable to quit the app: ', err))
+				}}
+			/>
 		</SafeAreaView>
 	)
 }

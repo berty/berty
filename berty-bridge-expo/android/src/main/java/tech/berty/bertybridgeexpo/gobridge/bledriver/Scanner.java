@@ -5,11 +5,14 @@ import android.bluetooth.BluetoothDevice;
 import android.bluetooth.le.BluetoothLeScanner;
 import android.bluetooth.le.ScanCallback;
 import android.bluetooth.le.ScanFilter;
+import android.bluetooth.le.ScanRecord;
 import android.bluetooth.le.ScanResult;
 import android.bluetooth.le.ScanSettings;
 import android.content.Context;
 import android.os.ParcelUuid;
+import android.os.SystemClock;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -28,6 +31,14 @@ public class Scanner extends ScanCallback {
     private static final int SCANNER_STATE_DISABLED = 0;
     private static final int SCANNER_STATE_ENABLED = 1;
     private static final int SCANNER_STATE_PAUSED = 2;
+    // The scan cycle is driven by a timer that ticks every SCAN_TICK_MS: the scanner runs for
+    // SCAN_WINDOW_TICKS ticks, then is paused for SCAN_PAUSE_TICKS tick(s) (Android refuses more
+    // than 5 scan starts per 30 seconds). Before, it was 12 s of scan and 12 s of pause.
+    private static final long SCAN_TICK_MS = 4000;
+    private static final int SCAN_WINDOW_TICKS = 3;
+    private static final int SCAN_PAUSE_TICKS = 1;
+    // minimum delay between two "connect now" requests (see maybeRequestEarlyProcessing)
+    private static final long EARLY_MIN_INTERVAL_MS = 2000;
     // key is MAC address
     private static final HashMap<String, ScanResult> foundMap = new HashMap<>();
     private final Context mContext;
@@ -38,10 +49,12 @@ public class Scanner extends ScanCallback {
     private ScanSettings mScanSettings;
     private BluetoothLeScanner mBluetoothLeScanner;
     private boolean mInit;
-    private int mScannerState;
+    private volatile int mScannerState;
     private boolean mProcessingResult = false;
-    private Timer mTimer;
+    private volatile Timer mTimer;
     private TimerTask mTask;
+    private volatile int mTicks = 0;
+    private volatile long mLastEarlyMs = 0;
 
     public Scanner(Context context, BleDriver bleDriver, Logger logger, BluetoothAdapter bluetoothAdapter) {
         mContext = context;
@@ -94,14 +107,16 @@ public class Scanner extends ScanCallback {
     }
 
     private synchronized void processResult() {
-        ScanResult result;
-        CountDownLatch countDown;
+        // take the results found so far; the ones found while connecting stay for the next time
+        List<ScanResult> results;
+        synchronized (foundMap) {
+            results = new ArrayList<>(foundMap.values());
+            foundMap.clear();
+        }
 
         setProcessingResult(true);
-        countDown = new CountDownLatch(foundMap.size());
-        for (Map.Entry<String, ScanResult> keySet : foundMap.entrySet()) {
-            result = keySet.getValue();
-
+        CountDownLatch countDown = new CountDownLatch(results.size());
+        for (ScanResult result : results) {
             parseResult(result, countDown);
         }
         try {
@@ -109,8 +124,108 @@ public class Scanner extends ScanCallback {
         } catch (InterruptedException e) {
             mLogger.e(TAG, "processResult: interrupted exception", e);
         }
-        foundMap.clear();
         setProcessingResult(false);
+    }
+
+    // Stop the scan and connect to the devices found. Always runs on the timer thread.
+    private void pauseAndProcess(ScanCallback callback) {
+        mLogger.d(TAG, "stop scanning");
+        if (mBluetoothAdapter.getState() == BluetoothAdapter.STATE_ON) {
+            mBluetoothLeScanner.stopScan(callback);
+        } else {
+            mLogger.e(TAG, "stop scanner in timer error: BT adapter not running");
+        }
+        setScannerState(SCANNER_STATE_PAUSED);
+        mTicks = 0;
+
+        // Processing scan result
+        processResult();
+    }
+
+    private void resumeScanning(ScanCallback callback) {
+        mLogger.d(TAG, "start scanning");
+        if (mBluetoothAdapter.getState() == BluetoothAdapter.STATE_ON) {
+            mBluetoothLeScanner.startScan(Collections.singletonList(mScanFilter), mScanSettings, callback);
+        } else {
+            mLogger.e(TAG, "start scanner in timer error: BT adapter not running");
+        }
+        setScannerState(SCANNER_STATE_ENABLED);
+        mTicks = 0;
+    }
+
+    // Before, the devices found were only handled at the end of the scan window (every 24 s in
+    // the worst case), so a peer that came back (e.g. after a Bluetooth off/on) was dialed up to
+    // 24 s after it was visible. Now, as soon as a Berty device we would connect to is seen, the
+    // scan is stopped and the connection is started on the timer thread (same thread as the
+    // regular ticks, so both can't run at the same time).
+    private void requestEarlyProcessing() {
+        final Timer timer = mTimer;
+        if (timer == null) {
+            return;
+        }
+        final ScanCallback callback = this;
+        try {
+            timer.schedule(new TimerTask() {
+                @Override
+                public void run() {
+                    if (getScannerState() == SCANNER_STATE_ENABLED) {
+                        mLogger.d(TAG, "Berty device found, connecting without waiting for the end of the scan window");
+                        pauseAndProcess(callback);
+                    }
+                }
+            }, 0);
+        } catch (IllegalStateException e) {
+            // timer cancelled by stop()
+        }
+    }
+
+    // true if the scan result is a Berty device we would connect to as a client: has the Berty
+    // service, has a greater ID than ours and is not connected yet (same rules as parseResult)
+    private boolean isConnectCandidate(ScanResult result) {
+        try {
+            ScanRecord record = result.getScanRecord();
+            if (record == null) {
+                return false;
+            }
+            List<ParcelUuid> services = record.getServiceUuids();
+            if (services == null || !services.contains(GattServer.P_SERVICE_UUID)) {
+                return false;
+            }
+
+            String id = null;
+            if (record.getDeviceName() != null && record.getDeviceName().length() > 0) {
+                id = record.getDeviceName();
+            } else {
+                byte[] data = record.getServiceData(GattServer.P_SERVICE_UUID);
+                if (data != null && data.length > 0) {
+                    id = new String(data);
+                }
+            }
+            String localId = mId;
+            if (id == null || localId == null || localId.compareTo(id) >= 0) {
+                return false;
+            }
+
+            PeerDevice peerDevice = mBleDriver.deviceManager().get(result.getDevice().getAddress());
+            return peerDevice == null || peerDevice.isClientDisconnected();
+        } catch (RuntimeException e) {
+            return false;
+        }
+    }
+
+    private void maybeRequestEarlyProcessing(ScanResult result) {
+        if (mScannerState != SCANNER_STATE_ENABLED) {
+            return;
+        }
+        long now = SystemClock.elapsedRealtime();
+        if (now - mLastEarlyMs < EARLY_MIN_INTERVAL_MS) {
+            return;
+        }
+        if (!isConnectCandidate(result)) {
+            return;
+        }
+        mLastEarlyMs = now;
+        requestEarlyProcessing();
     }
 
     // enable scanning
@@ -133,38 +248,28 @@ public class Scanner extends ScanCallback {
         setScannerState(SCANNER_STATE_ENABLED);
 
         ScanCallback callback = this;
+        mTicks = 0;
         mTimer = new Timer();
         mTask = new TimerTask() {
             @Override
             public void run() {
                 if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
                     if (getScannerState() == SCANNER_STATE_ENABLED) {
-                        mLogger.d(TAG, "stop scanning");
-                        if (mBluetoothAdapter.getState() == BluetoothAdapter.STATE_ON) {
-                            mBluetoothLeScanner.stopScan(callback);
-                        } else {
-                            mLogger.e(TAG, "stop scanner in timer error: BT adapter not running");
+                        mTicks++;
+                        if (mTicks >= SCAN_WINDOW_TICKS) {
+                            pauseAndProcess(callback);
                         }
-                        setScannerState(SCANNER_STATE_PAUSED);
-
-                        // Processing scan result
-                        processResult();
-                    } else {
-                        if (!isProcessingResult()) {
-                            mLogger.d(TAG, "start scanning");
-                            if (mBluetoothAdapter.getState() == BluetoothAdapter.STATE_ON) {
-                                mBluetoothLeScanner.startScan(Collections.singletonList(mScanFilter), mScanSettings, callback);
-                            } else {
-                                mLogger.e(TAG, "start scanner in timer error: BT adapter not running");
-                            }
-                            setScannerState(SCANNER_STATE_ENABLED);
+                    } else if (!isProcessingResult()) {
+                        mTicks++;
+                        if (mTicks >= SCAN_PAUSE_TICKS) {
+                            resumeScanning(callback);
                         }
                     }
                 }
             }
         };
 
-        mTimer.schedule(mTask, 12000, 12000);
+        mTimer.schedule(mTask, SCAN_TICK_MS, SCAN_TICK_MS);
 
         return true;
     }
@@ -176,6 +281,18 @@ public class Scanner extends ScanCallback {
             return;
         }
 
+        // Always stop the scan cycle first: the state can be DISABLED while the timer is alive
+        // (pause phase of the cycle) and a timer left running would keep driving a scanner that
+        // is no longer valid after the driver has been restarted.
+        if (mTask != null) {
+            mTask.cancel();
+        }
+        if (mTimer != null) {
+            mTimer.cancel(); // also ends the timer thread
+            mTimer.purge();
+            mTimer = null;
+        }
+
         if (getScannerState() == SCANNER_STATE_DISABLED) {
             mLogger.i(TAG, "stop: scanner not running");
             return;
@@ -184,13 +301,11 @@ public class Scanner extends ScanCallback {
         mLogger.i(TAG, "stop scanning");
         if (mBluetoothAdapter.getState() == BluetoothAdapter.STATE_ON) {
             mBluetoothLeScanner.stopScan(this);
-            setScannerState(SCANNER_STATE_DISABLED);
         } else {
             mLogger.e(TAG, "stop scanner error: BT adapter not running");
         }
-        mTask.cancel();
-        mTimer.purge();
-        mTimer = null;
+        // always reset the state, even if Bluetooth is off (otherwise the scanner stays "enabled")
+        setScannerState(SCANNER_STATE_DISABLED);
     }
 
     // Return the status of the scanner
@@ -240,7 +355,10 @@ public class Scanner extends ScanCallback {
     @Override
     public void onScanResult(int callbackType, ScanResult result) {
 //        mLogger.v(TAG, "onScanResult called with result: " + result);
-        foundMap.put(result.getDevice().getAddress(), result);
+        synchronized (foundMap) {
+            foundMap.put(result.getDevice().getAddress(), result);
+        }
+        maybeRequestEarlyProcessing(result);
         super.onScanResult(callbackType, result);
     }
 
@@ -251,7 +369,10 @@ public class Scanner extends ScanCallback {
         }
 
         for (ScanResult result : results) {
-            foundMap.put(result.getDevice().getAddress(), result);
+            synchronized (foundMap) {
+                foundMap.put(result.getDevice().getAddress(), result);
+            }
+            maybeRequestEarlyProcessing(result);
         }
         super.onBatchScanResults(results);
     }
