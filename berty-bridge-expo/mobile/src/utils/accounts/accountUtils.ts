@@ -139,7 +139,7 @@ export const exportLogfile = async (accountId: string | null, onSharing?: () => 
 		})
 	} catch (err) {
 		console.warn('exportLogfile failed', err)
-		const message = (err as any)?.message || String(err)
+		const message = err instanceof Error && err.message ? err.message : String(err)
 		Alert.alert(`${title} failed`, String(message))
 	}
 }
