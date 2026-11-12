@@ -125,7 +125,7 @@ export const useBluetoothEnablePrompt = () => {
 			// The enums of these objects can be strings ("Enabled") and not numbers (the settings
 			// screens convert them with fromObject), so convert before comparing.
 			const toFlag = (value: unknown) =>
-				beapi.account.NetworkConfig.fromObject({ bluetoothLe: value as any }).bluetoothLe
+				beapi.account.NetworkConfig.fromObject({ bluetoothLe: value }).bluetoothLe
 			let bluetoothLe = toFlag(nodeNetworkConfig?.bluetoothLe)
 			if (!bluetoothLe) {
 				const conf = await accountClient.networkConfigGet({ accountId: selectedAccount })

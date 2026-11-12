@@ -25,7 +25,7 @@ const withAndroidBackgroundService: ConfigPlugin = (config) => {
 		}
 
 		const alreadyExists = application.service.some(
-			(service: any) => service.$["android:name"] === SERVICE_NAME
+			(service) => service.$["android:name"] === SERVICE_NAME
 		);
 
 		if (!alreadyExists) {
