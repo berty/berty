@@ -3,9 +3,12 @@ import i18next from "i18next";
 import React, { useCallback, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import {
+	ActivityIndicator,
 	Alert,
+	Modal,
 	Platform,
 	ScrollView,
+	Text as RNText,
 	Vibration,
 	View,
 } from "react-native";
@@ -428,6 +431,7 @@ const BodyDevTools = () => {
 
 	const importingAccountAfterClosing = useImportingAccountAfterClosing();
 	const [isHandlingPress, setIsHandlingPress] = React.useState(false);
+	const [exportingLogs, setExportingLogs] = React.useState(false);
 	const accounts = useSelector(selectAccounts);
 	const switchAccount = useSwitchAccountAfterClosing();
 	const handlePress = React.useCallback(
@@ -452,6 +456,37 @@ const BodyDevTools = () => {
 				{ backgroundColor: colors["secondary-background"] },
 			]}
 		>
+			<Modal
+				transparent
+				visible={exportingLogs}
+				animationType="fade"
+				statusBarTranslucent
+				onRequestClose={() => {}}
+			>
+				<View
+					style={{
+						flex: 1,
+						alignItems: "center",
+						justifyContent: "center",
+						backgroundColor: "rgba(0, 0, 0, 0.5)",
+					}}
+				>
+					<View
+						style={{
+							alignItems: "center",
+							paddingVertical: 24,
+							paddingHorizontal: 32,
+							borderRadius: 12,
+							backgroundColor: colors["secondary-background"],
+						}}
+					>
+						<ActivityIndicator size="large" color={colors["secondary-text"]} />
+						<RNText style={{ marginTop: 16, color: colors["secondary-text"] }}>
+							{t("settings.devtools.export-logs-preparing", "Preparing the logs…")}
+						</RNText>
+					</View>
+				</View>
+			</Modal>
 			<ItemSection>
 				<AccountsDropdown
 					placeholder={t("settings.accounts.accounts-button")}
@@ -640,8 +675,16 @@ const BodyDevTools = () => {
 					iconSize={30}
 					iconColor={colors["alt-secondary-background-header"]}
 					onPress={async () => {
-						// await logfileList()
-						await exportLogfile(selectedAccount);
+						if (exportingLogs) {
+							return;
+						}
+						// reading the logs takes some time: show that something is happening
+						setExportingLogs(true);
+						try {
+							await exportLogfile(selectedAccount, () => setExportingLogs(false));
+						} finally {
+							setExportingLogs(false);
+						}
 					}}
 				/>
 				<StringOptionInput

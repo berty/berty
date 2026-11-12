@@ -7,12 +7,16 @@ import (
 	"io"
 	"os"
 	"path/filepath"
+	"strings"
 
 	"berty.tech/berty/v2/go/internal/accountutils"
 	"berty.tech/berty/v2/go/pkg/accounttypes"
 	"berty.tech/berty/v2/go/pkg/errcode"
 	"berty.tech/weshnet/v2/pkg/logutil"
 )
+
+// size (in bytes) from which the lines read from a log file are sent to the client
+const logfileChunkSize = 128 * 1024
 
 func (s *service) LogfileList(ctx context.Context, _ *accounttypes.LogfileList_Request) (*accounttypes.LogfileList_Reply, error) {
 	rootDir := s.appRootDir
@@ -98,19 +102,55 @@ func (s *service) StreamLogfile(req *accounttypes.StreamLogfile_Request, server 
 	}
 
 	// stream log file
+	//
+	// The lines are sent in chunks (the lines of a chunk are separated by "\n", without a trailing
+	// "\n"): sending one message per line took very long for a big log file (tens of thousands
+	// of messages through the bridge). The receiver adds a "\n" after each message.
 	scanner := bufio.NewScanner(file)
-	for scanner.Scan() {
-		err := server.Send(&accounttypes.StreamLogfile_Reply{
-			Line: scanner.Text(),
-		})
+	// the default limit is 64KB per line: a longer line (e.g. a big JSON log entry)
+	// silently stopped the export
+	scanner.Buffer(make([]byte, 0, 64*1024), 16*1024*1024)
 
-		switch err {
-		case nil: // ok
-		case io.EOF:
+	var chunk strings.Builder
+	chunkLines := 0
+	flush := func() error {
+		if chunkLines == 0 {
 			return nil
-		default:
-			return errcode.ErrCode_TODO.Wrap(err)
 		}
+		line := strings.ToValidUTF8(chunk.String(), "\uFFFD")
+		chunk.Reset()
+		chunkLines = 0
+		return server.Send(&accounttypes.StreamLogfile_Reply{Line: line})
+	}
+
+	for scanner.Scan() {
+		if chunkLines > 0 {
+			chunk.WriteByte('\n')
+		}
+		chunk.WriteString(scanner.Text())
+		chunkLines++
+
+		if chunk.Len() >= logfileChunkSize {
+			switch err := flush(); err {
+			case nil: // ok
+			case io.EOF:
+				return nil
+			default:
+				return errcode.ErrCode_TODO.Wrap(err)
+			}
+		}
+	}
+
+	switch err := flush(); err {
+	case nil: // ok
+	case io.EOF:
+		return nil
+	default:
+		return errcode.ErrCode_TODO.Wrap(err)
+	}
+
+	if err := scanner.Err(); err != nil {
+		return errcode.ErrCode_TODO.Wrap(err)
 	}
 	return nil
 }

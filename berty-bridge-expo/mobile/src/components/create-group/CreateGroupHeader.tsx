@@ -32,7 +32,7 @@ export const CreateGroupHeader: React.FC<{
 	const colors = useThemeColor()
 
 	return (
-		<View style={[!first && { backgroundColor: '#FFFFFF' }]}>
+		<View style={[!first && { backgroundColor: colors['main-background'] }]}>
 			<TouchableWithoutFeedback onPress={() => onPress?.()}>
 				<View
 					style={[
@@ -40,7 +40,7 @@ export const CreateGroupHeader: React.FC<{
 						!first && border.shadow.big,
 						!first && { shadowColor: colors.shadow },
 						disabled && opacity(0.5),
-						{ backgroundColor: '#FFFFFF' },
+						{ backgroundColor: colors['main-background'] },
 						style,
 					]}
 				>

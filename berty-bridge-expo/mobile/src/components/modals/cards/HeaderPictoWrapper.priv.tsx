@@ -1,15 +1,21 @@
 import React from 'react'
 import { StyleSheet, View } from 'react-native'
 
+import { useThemeColor } from '@berty/hooks'
+
 export const HeaderPictoWrapperPriv: React.FC<{}> = props => {
-	return <View style={styles.avatar}>{props.children}</View>
+	const colors = useThemeColor()
+	return (
+		<View style={[styles.avatar, { backgroundColor: colors['main-background'] }]}>
+			{props.children}
+		</View>
+	)
 }
 
 const styles = StyleSheet.create({
 	avatar: {
 		width: 98,
 		height: 98,
-		backgroundColor: 'white',
 		justifyContent: 'center',
 		alignItems: 'center',
 		position: 'relative',

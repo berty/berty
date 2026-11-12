@@ -71,6 +71,7 @@ class NotificationService: UNNotificationServiceExtension {
         os_log("successfully decrypt push", log: oslogger)
 
         if decrypted.muted {
+            self.contentHandler = nil
             contentHandler(UNNotificationContent())
             return
         }
@@ -86,6 +87,7 @@ class NotificationService: UNNotificationServiceExtension {
             self.bestAttemptContent!.subtitle = decrypted.subtitle
         }
 
+        self.contentHandler = nil
         contentHandler(self.bestAttemptContent!)
     }
 
@@ -121,7 +123,25 @@ class NotificationService: UNNotificationServiceExtension {
         return bundle
     }
 
+    // Called when the push cannot be decrypted (keychain not available yet, error, timeout).
+    // Dropping it silently means the user never learns about the message, so display a
+    // generic notification that doesn't leak anything instead.
     func displayFallback() {
-        self.contentHandler!(UNNotificationContent())
+        guard let handler = self.contentHandler else {
+            return
+        }
+        self.contentHandler = nil // never deliver twice (didReceive vs serviceExtensionTimeWillExpire)
+
+        guard let content = self.bestAttemptContent else {
+            handler(UNNotificationContent())
+            return
+        }
+
+        if content.title.isEmpty && content.body.isEmpty {
+            let bundle = getLocalizedBundle()
+            content.title = "Berty"
+            content.body = bundle?.localizedString(forKey: "notification.fallback.body", value: "You have a new message", table: nil) ?? "You have a new message"
+        }
+        handler(content)
     }
 }

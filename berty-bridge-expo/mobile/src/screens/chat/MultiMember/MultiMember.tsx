@@ -33,7 +33,7 @@ export const MultiMember: ScreenFC<'Chat.MultiMember'> = ({ route: { params }, n
 	const { flex, opacity } = useStyles()
 	const { scaleSize } = useAppDimensions()
 	const colors = useThemeColor()
-	useReadEffect(params.convId, 1000)
+	useReadEffect(params.convId, 0)
 	useDismissNotificationsEffect(params.convId)
 	const conv = useConversation(params.convId)
 

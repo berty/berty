@@ -56,7 +56,8 @@ export const ConversationButton: React.FC<ConversationButtonProps> = props => {
 			]}
 			onPress={handlePress}
 		>
-			<View style={[row.center, !props.isLast && styles.divider, padding.vertical.scale(7)]}>
+			<View style={[row.center, !props.isLast && styles.divider,
+							!props.isLast && { borderColor: colors['secondary-background'] }, padding.vertical.scale(7)]}>
 				{props.children}
 			</View>
 		</TouchableHighlight>
@@ -66,6 +67,5 @@ export const ConversationButton: React.FC<ConversationButtonProps> = props => {
 const styles = StyleSheet.create({
 	divider: {
 		borderBottomWidth: 1,
-		borderColor: '#EDF1F7',
 	},
 })
