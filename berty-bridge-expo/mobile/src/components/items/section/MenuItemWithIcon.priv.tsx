@@ -22,7 +22,7 @@ export const MenuItemWithIconPriv: React.FC<
 				{props.children}
 			</IconWithTextPriv>
 			{!props.noRightArrow && (
-				<Icon name='arrow-ios-forward' width={20} height={20} fill='#393C63' />
+				<Icon name='arrow-ios-forward' width={20} height={20} fill={colors['main-text']} />
 			)}
 		</MenuItemPriv>
 	)

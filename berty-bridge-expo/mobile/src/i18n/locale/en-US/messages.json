@@ -153,7 +153,7 @@
 	"settings": {
 		"home": {
 			"title": "Settings",
-			"proximity-button": "Off-Grid Communication",
+			"proximity-button": "Nearby communication (Bluetooth)",
 			"notifications-button": "Notifications",
 			"appearance-button": "Appearance",
 			"accounts-button": "Accounts",
@@ -187,6 +187,11 @@
 		"appearance": {
 			"title": "Appearance",
 			"dark-button": "Dark Mode",
+			"theme-title": "Theme",
+			"mode-system": "System default",
+			"mode-light": "Light",
+			"mode-dark": "Dark",
+			"mode-black": "Black (AMOLED)",
 			"editor-button": "Theme Editor",
 			"theme-editor": {
 				"title": "Theme Editor"
@@ -269,6 +274,7 @@
 				"bullet-point": "Restart app after changing this field"
 			},
 			"export-logs-button": "Export logs",
+			"export-logs-preparing": "Preparing the logs…",
 			"add-dev-conversations-button": "Add dev conversations",
 			"share-button": {
 				"title": "Share ID on discord",
@@ -541,6 +547,18 @@
 		"need-restart": {
 			"title": "Restart required",
 			"desc": "Restart Berty to save your data and enable notifications!"
+		},
+		"background-service": {
+			"title": "Berty is running in the background",
+			"desc": "Berty keeps running to receive your messages. Touch and hold this notification to hide it.",
+			"setting-title": "Run in the background",
+			"setting-desc": "Keep Berty running to receive messages and notifications when the app is closed"
+		},
+		"quit": {
+			"title": "Quit Berty?",
+			"desc": "Berty will stop running in the background. You won't receive messages or notifications until you open it again.",
+			"cancel": "Cancel",
+			"confirm": "Quit"
 		}
 	},
 	"error": {

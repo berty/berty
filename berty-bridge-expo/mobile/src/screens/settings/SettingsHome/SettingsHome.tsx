@@ -3,6 +3,7 @@ import React, { useContext } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Platform, ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native'
 import { RESULTS } from 'react-native-permissions'
+import { GoBridge } from 'berty-bridge-expo'
 import { useDispatch, useSelector } from 'react-redux'
 
 import beapi from '@berty/api'
@@ -169,6 +170,31 @@ export const SettingsHome: ScreenFC<'Settings.Home'> = () => {
 		f()
 	})
 
+	// Android: keep Berty running in the background (foreground service)
+	const [backgroundServiceEnabled, setBackgroundServiceEnabled] = React.useState(true)
+	React.useEffect(() => {
+		if (Platform.OS !== 'android') {
+			return
+		}
+		GoBridge.isBackgroundServiceEnabled()
+			.then(setBackgroundServiceEnabled)
+			.catch(err => console.warn('unable to get the background service setting: ', err))
+	}, [])
+	const onToggleBackgroundService = React.useCallback(async () => {
+		const enabled = !backgroundServiceEnabled
+		setBackgroundServiceEnabled(enabled)
+		try {
+			await GoBridge.setBackgroundServiceEnabled(
+				enabled,
+				t('notification.background-service.title'),
+				t('notification.background-service.desc'),
+			)
+		} catch (err) {
+			console.warn('unable to change the background service setting: ', err)
+			setBackgroundServiceEnabled(!enabled)
+		}
+	}, [backgroundServiceEnabled, t])
+
 	const getOffGridCommunicationValue = React.useCallback(() => {
 		if (
 			blePerm === 'granted' &&
@@ -270,6 +296,18 @@ export const SettingsHome: ScreenFC<'Settings.Home'> = () => {
 								<DividerItem />
 							</>
 						)}
+						{Platform.OS === 'android' && (
+							<>
+								<MenuToggleWithIcon
+									iconName='smartphone-outline'
+									isToggleOn={backgroundServiceEnabled}
+									onPress={onToggleBackgroundService}
+								>
+									{t('notification.background-service.setting-title')}
+								</MenuToggleWithIcon>
+								<DividerItem />
+							</>
+						)}
 						{pushAvailable && (
 							<>
 								{pushFilteringAvailable ? (
@@ -312,6 +350,13 @@ export const SettingsHome: ScreenFC<'Settings.Home'> = () => {
 							onPress={() => navigate('Settings.Accounts')}
 						>
 							{t('settings.home.accounts-button')}
+						</MenuItemWithIcon>
+						<DividerItem />
+						<MenuItemWithIcon
+							iconName='color-palette-outline'
+							onPress={() => navigate('Settings.Appearance')}
+						>
+							{t('settings.home.appearance-button')}
 						</MenuItemWithIcon>
 						<DividerItem />
 						{networkConfig && (

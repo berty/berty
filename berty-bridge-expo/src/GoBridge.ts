@@ -21,6 +21,14 @@ export interface GoBridgeInterface {
 	invokeBridgeMethod(method: string, b64message: string): Promise<string>;
 	connectService(serviceName: string, address: string): Promise<void>;
 	requestPushToken(): Promise<string>;
+	startBackgroundService(title: string, text: string): Promise<void>;
+	stopBackgroundService(): Promise<void>;
+	isBackgroundServiceEnabled(): Promise<boolean>;
+	setBackgroundServiceEnabled(enabled: boolean, title: string, text: string): Promise<void>;
+	quitApp(): Promise<void>;
+	isBluetoothEnabled(): Promise<boolean>;
+	hasNetworkConnection(): Promise<boolean>;
+	requestEnableBluetooth(): Promise<boolean>;
 }
 
 class GoBridge implements GoBridgeInterface {
@@ -54,6 +62,38 @@ class GoBridge implements GoBridgeInterface {
 
 	requestPushToken(): Promise<string> {
 		return BertyBridgeExpoModule.requestPushToken();
+	}
+
+	startBackgroundService(title: string, text: string): Promise<void> {
+		return BertyBridgeExpoModule.startBackgroundService(title, text);
+	}
+
+	stopBackgroundService(): Promise<void> {
+		return BertyBridgeExpoModule.stopBackgroundService();
+	}
+
+	isBackgroundServiceEnabled(): Promise<boolean> {
+		return BertyBridgeExpoModule.isBackgroundServiceEnabled();
+	}
+
+	setBackgroundServiceEnabled(enabled: boolean, title: string, text: string): Promise<void> {
+		return BertyBridgeExpoModule.setBackgroundServiceEnabled(enabled, title, text);
+	}
+
+	quitApp(): Promise<void> {
+		return BertyBridgeExpoModule.quitApp();
+	}
+
+	hasNetworkConnection(): Promise<boolean> {
+		return BertyBridgeExpoModule.hasNetworkConnection();
+	}
+
+	isBluetoothEnabled(): Promise<boolean> {
+		return BertyBridgeExpoModule.isBluetoothEnabled();
+	}
+
+	requestEnableBluetooth(): Promise<boolean> {
+		return BertyBridgeExpoModule.requestEnableBluetooth();
 	}
 }
 

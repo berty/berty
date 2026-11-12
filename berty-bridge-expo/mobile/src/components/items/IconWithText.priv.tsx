@@ -2,6 +2,8 @@ import { Icon } from '@ui-kitten/components'
 import React from 'react'
 import { StyleSheet, View } from 'react-native'
 
+import { useThemeColor } from '@berty/hooks'
+
 import { TextPriv } from './Text.priv'
 
 interface IconWithTextPrivProps {
@@ -11,6 +13,7 @@ interface IconWithTextPrivProps {
 }
 
 export const IconWithTextPriv: React.FC<IconWithTextPrivProps> = props => {
+	const colors = useThemeColor()
 	return (
 		<View style={styles.row}>
 			<Icon
@@ -18,7 +21,7 @@ export const IconWithTextPriv: React.FC<IconWithTextPrivProps> = props => {
 				pack={props.pack}
 				width={20}
 				height={20}
-				fill={props.color ?? '#393C63'}
+				fill={props.color ?? colors['main-text']}
 			/>
 			<TextPriv>{props.children}</TextPriv>
 		</View>

@@ -3,16 +3,19 @@ import { StyleSheet, View } from 'react-native'
 
 import beapi from '@berty/api'
 import { MemberAvatar } from '@berty/components/avatars'
+import { useThemeColor } from '@berty/hooks'
 
 import { MemberBarItem } from './interfaces'
 
 export const AvatarWrapper: React.FC<{ member: MemberBarItem; convId: string; index: number }> =
 	props => {
+		const colors = useThemeColor()
 		return (
 			<View
 				style={[
 					styles.avatarWrapper,
 					{
+						borderColor: colors['main-background'],
 						zIndex: props.index,
 						opacity:
 							props.member.alreadyConnected &&
@@ -37,7 +40,6 @@ const styles = StyleSheet.create({
 		width: 32,
 		height: 32,
 		borderRadius: 32,
-		borderColor: 'white',
 		borderWidth: 1.5,
 		justifyContent: 'center',
 		alignItems: 'center',

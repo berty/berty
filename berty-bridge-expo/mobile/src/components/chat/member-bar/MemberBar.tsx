@@ -7,6 +7,7 @@ import {
 	useAppSelector,
 	useConversationMembers,
 	useMessengerClient,
+	useThemeColor,
 } from '@berty/hooks'
 import { useNavigation } from '@berty/navigation'
 import {
@@ -26,6 +27,7 @@ interface MemberBarProps {
 
 export const MemberBar: React.FC<MemberBarProps> = props => {
 	const navigation = useNavigation()
+	const colors = useThemeColor()
 	const messengerClient = useMessengerClient()
 	const dispatch = useAppDispatch()
 	const peers = useAppSelector(selectPeerNetworkStatusDict)
@@ -99,7 +101,7 @@ export const MemberBar: React.FC<MemberBarProps> = props => {
 	return (
 		<TouchableOpacity
 			onPress={() => navigation.navigate('Chat.MultiMemberSettings', { convId: props.convId })}
-			style={styles.container}
+			style={[styles.container, { backgroundColor: colors['main-background'] }]}
 		>
 			<View style={styles.barWidth}>
 				{isOneConnected && memberList !== undefined ? (
@@ -116,7 +118,6 @@ export const MemberBar: React.FC<MemberBarProps> = props => {
 const styles = StyleSheet.create({
 	container: {
 		marginTop: 10,
-		backgroundColor: 'white',
 		borderRadius: 18,
 		shadowOffset: {
 			width: 0,

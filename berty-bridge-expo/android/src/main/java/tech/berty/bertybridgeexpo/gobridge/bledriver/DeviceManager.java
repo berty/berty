@@ -87,6 +87,16 @@ public class DeviceManager {
         }
     }
 
+    // Forget every device (used when the driver is stopped, e.g. Bluetooth turned off):
+    // BluetoothGatt objects and states from the previous Bluetooth session are not reusable.
+    public synchronized void clearAll() {
+        mLogger.i(TAG, "clearAll called");
+        for (PeerDevice peerDevice : new java.util.ArrayList<>(mPeerDevices.values())) {
+            peerDevice.forceReset();
+        }
+        mPeerDevices.clear();
+    }
+
     public synchronized void remove(String macAddress) {
         mLogger.d(TAG, String.format("remove called: device=%s", mLogger.sensitiveObject(macAddress)));
 

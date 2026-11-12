@@ -6,12 +6,13 @@ import Logo from '@berty/assets/logo/berty_gradient_square.svg'
 import { PrimaryButton, SecondaryButton } from '@berty/components'
 import { UnifiedText } from '@berty/components/shared-components/UnifiedText'
 import { useStyles } from '@berty/contexts/styles'
-import { useNotificationsInhibitor, useThemeColor } from '@berty/hooks'
+import { useIsDarkTheme, useNotificationsInhibitor, useThemeColor } from '@berty/hooks'
 import { ScreenFC, useNavigation } from '@berty/navigation'
 import { importAccountFromDocumentPicker } from '@berty/utils/accounts/accountBackup'
 import * as testIDs from '@berty/utils/testing/testIDs.json'
 
 export const GetStarted: ScreenFC<'Onboarding.GetStarted'> = () => {
+	const isDark = useIsDarkTheme()
 	useNotificationsInhibitor(() => true)
 	const { margin, padding, text } = useStyles()
 	const colors = useThemeColor()
@@ -25,7 +26,7 @@ export const GetStarted: ScreenFC<'Onboarding.GetStarted'> = () => {
 				{ backgroundColor: colors['main-background'], flex: 1, justifyContent: 'center' },
 			]}
 		>
-			<StatusBar barStyle='dark-content' />
+			<StatusBar barStyle={isDark ? 'light-content' : 'dark-content'} />
 			<View style={[margin.bottom.big, { flexDirection: 'row', justifyContent: 'center' }]}>
 				<Logo />
 			</View>

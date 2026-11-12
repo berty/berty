@@ -8,7 +8,7 @@ import * as Notifications from "expo-notifications";
 import beapi from "@berty/api";
 import { useNavigation } from "@berty/navigation";
 import { accountClient } from "@berty/utils/accounts/accountClient";
-import { navigationRef } from "@berty/navigation/rootRef";
+import { isViewingConversation } from "@berty/utils/notification/viewing";
 import {
 	useConversationsDict,
 	useMessengerClient,
@@ -156,13 +156,7 @@ const PushNotificationBridge = () => {
 			const convPK = push.pushData?.conversationPublicKey;
 			if (convPK) {
 				// Don't notify for the conversation the user is currently viewing.
-				const currentRoute = navigationRef.current?.getCurrentRoute();
-				const isViewingConversation =
-					(currentRoute?.name === "Chat.OneToOne" ||
-						currentRoute?.name === "Chat.MultiMember") &&
-					(currentRoute?.params as { convId?: string } | undefined)?.convId ===
-						convPK;
-				if (isViewingConversation) {
+				if (isViewingConversation(convPK)) {
 					return;
 				}
 

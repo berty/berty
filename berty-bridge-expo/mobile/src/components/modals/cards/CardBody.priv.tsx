@@ -2,12 +2,21 @@ import React from 'react'
 import { StyleSheet, View } from 'react-native'
 
 import { useStyles } from '@berty/contexts/styles'
+import { useThemeColor } from '@berty/hooks'
 
 export const CardBodyPriv: React.FC<{}> = props => {
 	const { padding } = useStyles()
+	const colors = useThemeColor()
 
 	return (
-		<View style={[padding.horizontal.large, padding.bottom.medium, styles.content]}>
+		<View
+			style={[
+				padding.horizontal.large,
+				padding.bottom.medium,
+				styles.content,
+				{ backgroundColor: colors['main-background'] },
+			]}
+		>
 			{props.children}
 		</View>
 	)
@@ -15,7 +24,6 @@ export const CardBodyPriv: React.FC<{}> = props => {
 
 const styles = StyleSheet.create({
 	content: {
-		backgroundColor: 'white',
 		elevation: 7,
 		shadowOpacity: 0.1,
 		shadowRadius: 40,

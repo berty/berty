@@ -11,7 +11,7 @@ export const FloatingContainerPriv: React.FC<{ backgroundColor?: string }> = pro
 	return (
 		<View
 			style={[
-				{ shadowColor: colors.shadow, backgroundColor: props.backgroundColor ?? 'white' },
+				{ shadowColor: colors.shadow, backgroundColor: props.backgroundColor ?? colors['main-background'] },
 				border.shadow.medium,
 				styles.container,
 			]}

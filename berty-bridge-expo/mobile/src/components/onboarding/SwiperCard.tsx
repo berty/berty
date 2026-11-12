@@ -51,7 +51,7 @@ const SwiperCard = ({ children, desc, header, title, button, skip, secondButton 
 			>
 				{header}
 			</UnifiedText>
-			<Card style={[{ backgroundColor: '#F2F2F2', shadowColor: colors.shadow }]}>
+			<Card style={[{ backgroundColor: colors['main-background'], shadowColor: colors.shadow }]}>
 				<View style={[padding.medium]}>
 					<UnifiedText
 						style={[
