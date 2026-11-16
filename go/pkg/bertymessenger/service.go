@@ -68,7 +68,7 @@ type service struct {
 	muPushClients         sync.RWMutex
 	tyberCleanup          func()
 	logFilePath           string
-	cancelGroupStatus     map[string] /*groupPK */ context.CancelFunc
+	cancelGroupStatus     map[string] /*groupPK */ *groupStatusMonitor
 	muCancelGroupStatus   sync.Mutex
 	knownPeers            map[string] /* peer.ID */ protocoltypes.GroupDeviceStatus_Type
 	muKnownPeers          sync.Mutex
@@ -237,7 +237,7 @@ func New(client protocoltypes.ProtocolServiceClient, opts *Opts) (_ Service, err
 		handlerMutex:          sync.Mutex{},
 		ring:                  opts.Ring,
 		logFilePath:           opts.LogFilePath,
-		cancelGroupStatus:     make(map[string] /* groupPK */ context.CancelFunc),
+		cancelGroupStatus:     make(map[string] /* groupPK */ *groupStatusMonitor),
 		knownPeers:            make(map[string] /* peer.ID */ protocoltypes.GroupDeviceStatus_Type),
 		subsMutex:             &sync.Mutex{},
 		groupsToSubTo:         make(map[string]struct{}),
