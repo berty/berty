@@ -250,3 +250,177 @@ func TestReconnectGroupMessagesCancel(t *testing.T) {
 	got := svc.reconnectGroupMessages(ctx, []byte("g"), nil, connect)
 	require.Nil(t, got)
 }
+
+// fakeGroupMetadataStream yields queued events in order, then returns errAfter or (if block) tails until ctx is done.
+type fakeGroupMetadataStream struct {
+	grpc.ServerStreamingClient[protocoltypes.GroupMetadataEvent]
+
+	mu       sync.Mutex
+	events   []*protocoltypes.GroupMetadataEvent
+	idx      int
+	errAfter error
+	block    bool
+	ctx      context.Context
+}
+
+func (f *fakeGroupMetadataStream) Recv() (*protocoltypes.GroupMetadataEvent, error) {
+	f.mu.Lock()
+	if f.idx < len(f.events) {
+		e := f.events[f.idx]
+		f.idx++
+		f.mu.Unlock()
+		return e, nil
+	}
+	f.mu.Unlock()
+
+	if f.block {
+		<-f.ctx.Done()
+		return nil, f.ctx.Err()
+	}
+	return nil, f.errAfter
+}
+
+func mkGroupMetadataEvent(id string) *protocoltypes.GroupMetadataEvent {
+	return &protocoltypes.GroupMetadataEvent{
+		EventContext: &protocoltypes.EventContext{Id: []byte(id)},
+	}
+}
+
+// runGroupMetadataStream runs streamGroupMetadata until want events are handled, then stops it,
+// returning the handled ids and the cursors passed to each reconnect.
+func runGroupMetadataStream(t *testing.T, first *fakeGroupMetadataStream, next func(ctx context.Context) *fakeGroupMetadataStream, want int) ([]string, [][]byte) {
+	t.Helper()
+
+	svc := &service{logger: zap.NewNop()}
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+
+	var mu sync.Mutex
+	var handled []string
+	var sinceIDs [][]byte
+
+	connect := func(_ context.Context, _, sinceID []byte) (groupMetadataStream, error) {
+		mu.Lock()
+		defer mu.Unlock()
+		if sinceID == nil {
+			sinceIDs = append(sinceIDs, nil)
+		} else {
+			sinceIDs = append(sinceIDs, append([]byte(nil), sinceID...))
+		}
+		return next(ctx), nil
+	}
+	handle := func(gme *protocoltypes.GroupMetadataEvent) {
+		mu.Lock()
+		defer mu.Unlock()
+		handled = append(handled, string(gme.GetEventContext().GetId()))
+	}
+
+	done := make(chan struct{})
+	go func() {
+		svc.streamGroupMetadata(ctx, []byte("group-pk"), first, connect, handle)
+		close(done)
+	}()
+
+	require.Eventually(t, func() bool {
+		mu.Lock()
+		defer mu.Unlock()
+		return len(handled) >= want
+	}, 5*time.Second, 10*time.Millisecond)
+
+	cancel()
+	<-done
+
+	mu.Lock()
+	defer mu.Unlock()
+	return handled, sinceIDs
+}
+
+// TestStreamGroupMetadataReconnectResume: on stream failure, reconnect from the last handled event,
+// skip that event when the resumed stream replays it, and keep delivering.
+func TestStreamGroupMetadataReconnectResume(t *testing.T) {
+	first := &fakeGroupMetadataStream{
+		events: []*protocoltypes.GroupMetadataEvent{
+			mkGroupMetadataEvent("e1"),
+			{EventContext: nil}, // sentinel: must be skipped
+			mkGroupMetadataEvent("e2"),
+		},
+		errAfter: errors.New("stream boom"),
+	}
+	next := func(ctx context.Context) *fakeGroupMetadataStream {
+		// since_id is inclusive, so the resumed stream starts with e2 again
+		return &fakeGroupMetadataStream{
+			events: []*protocoltypes.GroupMetadataEvent{mkGroupMetadataEvent("e2"), mkGroupMetadataEvent("e3")},
+			block:  true,
+			ctx:    ctx,
+		}
+	}
+
+	handled, sinceIDs := runGroupMetadataStream(t, first, next, 3)
+
+	require.Equal(t, []string{"e1", "e2", "e3"}, handled)
+	require.Equal(t, [][]byte{[]byte("e2")}, sinceIDs)
+}
+
+// TestStreamGroupMetadataReconnectBeforeFirstEvent: a drop before any event reconnects from the start of the log.
+func TestStreamGroupMetadataReconnectBeforeFirstEvent(t *testing.T) {
+	first := &fakeGroupMetadataStream{errAfter: errors.New("stream boom")} // fails immediately
+	next := func(ctx context.Context) *fakeGroupMetadataStream {
+		return &fakeGroupMetadataStream{
+			events: []*protocoltypes.GroupMetadataEvent{mkGroupMetadataEvent("e1")},
+			block:  true,
+			ctx:    ctx,
+		}
+	}
+
+	handled, sinceIDs := runGroupMetadataStream(t, first, next, 1)
+
+	require.Equal(t, []string{"e1"}, handled)
+	require.Equal(t, [][]byte{nil}, sinceIDs)
+}
+
+// TestStreamGroupMetadataStopsOnCancel: once the subscription context is canceled, the loop exits without reconnecting.
+func TestStreamGroupMetadataStopsOnCancel(t *testing.T) {
+	svc := &service{logger: zap.NewNop()}
+	ctx, cancel := context.WithCancel(context.Background())
+
+	stream := &fakeGroupMetadataStream{block: true, ctx: ctx}
+	connect := func(_ context.Context, _, _ []byte) (groupMetadataStream, error) {
+		t.Error("unexpected reconnect after cancel")
+		return nil, errors.New("unexpected")
+	}
+
+	done := make(chan struct{})
+	go func() {
+		svc.streamGroupMetadata(ctx, []byte("group-pk"), stream, connect, func(*protocoltypes.GroupMetadataEvent) {})
+		close(done)
+	}()
+
+	cancel()
+	select {
+	case <-done:
+	case <-time.After(5 * time.Second):
+		t.Fatal("streamGroupMetadata did not stop after cancel")
+	}
+}
+
+// TestReconnectGroupMetadataCancel: the reconnect loop gives up when ctx is canceled mid-retry.
+func TestReconnectGroupMetadataCancel(t *testing.T) {
+	svc := &service{logger: zap.NewNop()}
+
+	ctx, cancel := context.WithCancel(context.Background())
+
+	var calls int32
+	var mu sync.Mutex
+	connect := func(_ context.Context, _, _ []byte) (groupMetadataStream, error) {
+		mu.Lock()
+		calls++
+		if calls == 1 {
+			cancel() // cancel right after the first failed attempt
+		}
+		mu.Unlock()
+		return nil, errors.New("still down")
+	}
+
+	got := svc.reconnectGroupMetadata(ctx, []byte("g"), nil, connect)
+	require.Nil(t, got)
+}

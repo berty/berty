@@ -1,6 +1,7 @@
 package bertymessenger
 
 import (
+	"bytes"
 	"context"
 	"time"
 
@@ -153,42 +154,136 @@ func (svc *service) subscribeToMetadata(ctx, tyberCtx context.Context, gpkb []by
 		tyber.LogStep(tyberCtx, svc.logger, traceName)
 	}
 
-	// subscribe
-	s, err := svc.protocolClient.GroupMetadataList(
-		ctx,
-		&protocoltypes.GroupMetadataList_Request{GroupPk: gpkb},
-	)
+	// subscribe: replays the whole metadata log, then tails
+	s, err := svc.connectGroupMetadata(ctx, gpkb, nil)
 	if err != nil {
 		return errcode.ErrCode_ErrEventListMetadata.Wrap(err)
 	}
-	go func() {
-		for {
-			gme, err := s.Recv()
-			if err != nil {
-				svc.logStreamingError("group metadata", err)
+	go svc.streamGroupMetadata(ctx, gpkb, s, svc.connectGroupMetadata, svc.handleGroupMetadataEvent)
+	return nil
+}
+
+// groupMetadataStream is the GroupMetadataList client subset used by the loop (an interface for testing).
+type groupMetadataStream interface {
+	Recv() (*protocoltypes.GroupMetadataEvent, error)
+}
+
+// groupMetadataConnector opens (or reopens) the group metadata stream from
+// sinceID (nil => the whole log), then tails.
+type groupMetadataConnector func(ctx context.Context, gpkb, sinceID []byte) (groupMetadataStream, error)
+
+// connectGroupMetadata is the production groupMetadataConnector backed by the protocol client.
+func (svc *service) connectGroupMetadata(ctx context.Context, gpkb, sinceID []byte) (groupMetadataStream, error) {
+	s, err := svc.protocolClient.GroupMetadataList(ctx, &protocoltypes.GroupMetadataList_Request{
+		GroupPk: gpkb,
+		SinceId: sinceID,
+	})
+	if err != nil {
+		return nil, err
+	}
+	return s, nil
+}
+
+// streamGroupMetadata drains the metadata stream and reconnects on failure, resuming
+// from the last handled event so group changes made during the outage are not missed.
+func (svc *service) streamGroupMetadata(
+	ctx context.Context,
+	gpkb []byte,
+	s groupMetadataStream,
+	connect groupMetadataConnector,
+	handle func(gme *protocoltypes.GroupMetadataEvent),
+) {
+	// Id of the last handled event, used as the reconnect cursor.
+	var lastID []byte
+
+	for {
+		gme, err := s.Recv()
+		if err != nil {
+			svc.logStreamingError("group metadata", err)
+
+			// Stop for good once the subscription context is canceled.
+			if ctx.Err() != nil {
 				return
 			}
 
-			cid, err := ipfscid.Cast(gme.EventContext.Id)
-			eventHandler := svc.eventHandler
-			if err != nil {
-				svc.logger.Error("failed to cast cid for logging", logutil.PrivateBinary("cid-bytes", gme.EventContext.Id))
-				ctx, _ := tyber.ContextWithTraceID(svc.eventHandler.Ctx())
-				eventHandler = eventHandler.WithContext(ctx)
-			} else {
-				eventHandler = eventHandler.WithContext(tyber.ContextWithConstantTraceID(svc.eventHandler.Ctx(), "msgrcvd-"+cid.String()))
+			s = svc.reconnectGroupMetadata(ctx, gpkb, lastID, connect)
+			if s == nil {
+				// context canceled while reconnecting
+				return
 			}
-
-			svc.handlerMutex.Lock()
-			if err := eventHandler.HandleMetadataEvent(gme); err != nil {
-				_ = tyber.LogFatalError(eventHandler.Ctx(), eventHandler.Logger(), "Failed to handle protocol event", err)
-			} else {
-				eventHandler.Logger().Debug("Messenger event handler succeeded", tyber.FormatStepLogFields(eventHandler.Ctx(), []tyber.Detail{}, tyber.EndTrace)...)
-			}
-			svc.handlerMutex.Unlock()
+			continue
 		}
-	}()
-	return nil
+
+		ec := gme.GetEventContext()
+		if ec == nil {
+			// not an event (bounded-stream sentinel)
+			continue
+		}
+
+		// since_id is inclusive: a resumed stream starts with the event it
+		// resumes from, which was already handled.
+		if lastID != nil && bytes.Equal(ec.GetId(), lastID) {
+			continue
+		}
+
+		handle(gme)
+		lastID = ec.GetId()
+	}
+}
+
+// reconnectGroupMetadata reopens the metadata stream, retrying with exponential backoff
+// until it succeeds or ctx is canceled (returns nil).
+func (svc *service) reconnectGroupMetadata(ctx context.Context, gpkb, sinceID []byte, connect groupMetadataConnector) groupMetadataStream {
+	delay := groupMessagesMinReconnectDelay
+	for {
+		if ctx.Err() != nil {
+			return nil
+		}
+
+		s, err := connect(ctx, gpkb, sinceID)
+		if err == nil {
+			svc.logger.Info("resubscribed to group metadata",
+				logutil.PrivateString("group-pk", messengerutil.B64EncodeBytes(gpkb)),
+				zap.Bool("resuming", sinceID != nil))
+			return s
+		}
+
+		svc.logger.Warn("unable to resubscribe to group metadata, will retry",
+			logutil.PrivateString("group-pk", messengerutil.B64EncodeBytes(gpkb)),
+			zap.Duration("retry-in", delay),
+			zap.Error(err))
+
+		select {
+		case <-ctx.Done():
+			return nil
+		case <-time.After(delay):
+		}
+		if delay *= 2; delay > groupMessagesMaxReconnectDelay {
+			delay = groupMessagesMaxReconnectDelay
+		}
+	}
+}
+
+// handleGroupMetadataEvent dispatches one metadata event to the event handler.
+func (svc *service) handleGroupMetadataEvent(gme *protocoltypes.GroupMetadataEvent) {
+	cid, err := ipfscid.Cast(gme.EventContext.Id)
+	eventHandler := svc.eventHandler
+	if err != nil {
+		svc.logger.Error("failed to cast cid for logging", logutil.PrivateBinary("cid-bytes", gme.EventContext.Id))
+		ctx, _ := tyber.ContextWithTraceID(svc.eventHandler.Ctx())
+		eventHandler = eventHandler.WithContext(ctx)
+	} else {
+		eventHandler = eventHandler.WithContext(tyber.ContextWithConstantTraceID(svc.eventHandler.Ctx(), "msgrcvd-"+cid.String()))
+	}
+
+	svc.handlerMutex.Lock()
+	defer svc.handlerMutex.Unlock()
+
+	if err := eventHandler.HandleMetadataEvent(gme); err != nil {
+		_ = tyber.LogFatalError(eventHandler.Ctx(), eventHandler.Logger(), "Failed to handle protocol event", err)
+	} else {
+		eventHandler.Logger().Debug("Messenger event handler succeeded", tyber.FormatStepLogFields(eventHandler.Ctx(), []tyber.Detail{}, tyber.EndTrace)...)
+	}
 }
 
 func (svc *service) subscribeToMessages(ctx, tyberCtx context.Context, gpkb []byte) error {
