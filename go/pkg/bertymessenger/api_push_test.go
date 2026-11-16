@@ -55,7 +55,7 @@ func TestService_PushReceive(t *testing.T) {
 	// create a sub context to be able to closing the GRPC stream prior to closing the service
 	eventCtx, eventCancel := context.WithCancel(ctx)
 	defer eventCancel()
-	events, err := ts.Client.EventStream(eventCtx, &messengertypes.EventStream_Request{ShallowAmount: -1})
+	events, err := ts.Client.EventStream(eventCtx, &messengertypes.EventStream_Request{ShallowAmount: 0})
 	require.NoError(t, err)
 
 	// put received events in a channel
@@ -73,6 +73,10 @@ func TestService_PushReceive(t *testing.T) {
 			c <- event
 		}
 	}()
+
+	// the stream is subscribed to new events once the existing models have been listed
+	_, err = blockUntilEventOfType(t, c, messengertypes.StreamEvent_TypeListEnded)
+	require.NoError(t, err)
 
 	t.Log("creating multimember group")
 	_, err = ts.Client.ConversationCreate(ctx, &messengertypes.ConversationCreate_Request{DisplayName: "conv"})
@@ -230,7 +234,7 @@ func TestService_PushShareTokenForConversation(t *testing.T) {
 	// create a sub context to be able to closing the GRPC stream prior to closing the service
 	eventCtx, eventCancel := context.WithCancel(ctx)
 	defer eventCancel()
-	events, err := ts.Client.EventStream(eventCtx, &messengertypes.EventStream_Request{ShallowAmount: -1})
+	events, err := ts.Client.EventStream(eventCtx, &messengertypes.EventStream_Request{ShallowAmount: 0})
 	require.NoError(t, err)
 
 	// put received events in a channel
@@ -248,6 +252,10 @@ func TestService_PushShareTokenForConversation(t *testing.T) {
 			c <- event
 		}
 	}()
+
+	// the stream is subscribed to new events once the existing models have been listed
+	_, err = blockUntilEventOfType(t, c, messengertypes.StreamEvent_TypeListEnded)
+	require.NoError(t, err)
 
 	t.Log("setting push server")
 	_, err = ts.Client.PushSetServer(ctx, &messengertypes.PushSetServer_Request{Server: &messengertypes.PushServer{
@@ -401,7 +409,7 @@ func TestService_PushSetDeviceToken(t *testing.T) {
 	// create a sub context to be able to closing the GRPC stream prior to closing the service
 	eventCtx, eventCancel := context.WithCancel(ctx)
 	defer eventCancel()
-	events, err := ts.Client.EventStream(eventCtx, &messengertypes.EventStream_Request{ShallowAmount: -1})
+	events, err := ts.Client.EventStream(eventCtx, &messengertypes.EventStream_Request{ShallowAmount: 0})
 	require.NoError(t, err)
 
 	// put received events in a channel
@@ -420,6 +428,10 @@ func TestService_PushSetDeviceToken(t *testing.T) {
 			c <- event
 		}
 	}()
+
+	// the stream is subscribed to new events once the existing models have been listed
+	_, err = blockUntilEventOfType(t, c, messengertypes.StreamEvent_TypeListEnded)
+	require.NoError(t, err)
 
 	t.Log("check if no device token is set")
 	currentPush, err := dbWrapper.GetPushDeviceToken(accountPK)
@@ -508,7 +520,7 @@ func TestService_PushSetServer(t *testing.T) {
 	// create a sub context to be able to closing the GRPC stream prior to closing the service
 	eventCtx, eventCancel := context.WithCancel(ctx)
 	defer eventCancel()
-	events, err := ts.Client.EventStream(eventCtx, &messengertypes.EventStream_Request{ShallowAmount: -1})
+	events, err := ts.Client.EventStream(eventCtx, &messengertypes.EventStream_Request{ShallowAmount: 0})
 	require.NoError(t, err)
 
 	// put received events in a channel
@@ -527,6 +539,10 @@ func TestService_PushSetServer(t *testing.T) {
 			c <- event
 		}
 	}()
+
+	// the stream is subscribed to new events once the existing models have been listed
+	_, err = blockUntilEventOfType(t, c, messengertypes.StreamEvent_TypeListEnded)
+	require.NoError(t, err)
 
 	t.Log("check if no push server is set")
 	currentServers, err := dbWrapper.GetPushServerRecords(accountPK)
