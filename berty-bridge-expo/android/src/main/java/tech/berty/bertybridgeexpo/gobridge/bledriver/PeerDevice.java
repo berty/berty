@@ -29,6 +29,7 @@ import java.util.List;
 import java.util.Random;
 import java.util.UUID;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 
 public class PeerDevice {
     // Mark used to tell all data is transferred
@@ -47,6 +48,10 @@ public class PeerDevice {
     private final BleDriver mBleDriver;
     // Connection timeout
     private static final int CONNECTION_TIMEOUT = 15000;
+    // Safety net for the threads waiting for a queued BLE operation (handshake thread, writers):
+    // BleQueue reports timeouts and dropped commands, but if its handler's looper has been
+    // stopped the callback is lost, and the shared handshake thread would be blocked forever.
+    private static final long OPERATION_TIMEOUT = 30000;
     // Minimal and default MTU
     private static final int DEFAULT_MTU = 23;
     // Client Characteristic Configuration (CCC) descriptor of the characteristic
@@ -793,7 +798,7 @@ public class PeerDevice {
         });
 
         // turn on/off the notification in queue
-        success[0] = mBleQueue.add(() -> {
+        boolean queued = mBleQueue.add(() -> {
             if (!isClientConnected()) {
                 mLogger.e(TAG, "setNotify error: device not connected");
                 mBleQueue.completedCommand(STATUS_ERROR);
@@ -815,13 +820,16 @@ public class PeerDevice {
             }
         }, callback, 0, this::disconnect);
 
-        if (success[0] == false) {
+        if (!queued) {
             mLogger.e(TAG, String.format("setNotify error: device=%s: unable to put code in queue", mLogger.sensitiveObject(getMACAddress())));
             return false;
         }
 
         try {
-            countDownLatch.await();
+            if (!countDownLatch.await(OPERATION_TIMEOUT, TimeUnit.MILLISECONDS)) {
+                mLogger.e(TAG, String.format("setNotify error: device=%s: timeout", mLogger.sensitiveObject(getMACAddress())));
+                return false;
+            }
         } catch (InterruptedException e) {
             mLogger.e(TAG, "setNotify: interrupted exception:", e);
         }
@@ -934,7 +942,7 @@ public class PeerDevice {
             countDownLatch.countDown();
         });
 
-        success[0] = mBleQueue.add(() -> {
+        boolean queued = mBleQueue.add(() -> {
             mLogger.v(TAG, String.format("BleQueue: read: device=%s characteristicUUID=%s", mLogger.sensitiveObject(getMACAddress()), characteristic.getUuid()));
             synchronized (mLockClient) {
                 if (isClientConnected()) {
@@ -953,13 +961,16 @@ public class PeerDevice {
             }
         }, callback, 0, this::disconnect);
 
-        if (success[0] == false) {
+        if (!queued) {
             mLogger.e(TAG, String.format("read error: device=%s: unable to put code in queue", mLogger.sensitiveObject(getMACAddress())));
             return false;
         }
 
         try {
-            countDownLatch.await();
+            if (!countDownLatch.await(OPERATION_TIMEOUT, TimeUnit.MILLISECONDS)) {
+                mLogger.e(TAG, String.format("read error: device=%s: timeout", mLogger.sensitiveObject(getMACAddress())));
+                return false;
+            }
         } catch (InterruptedException e) {
             mLogger.e(TAG, "read: interrupted exception:", e);
         }
@@ -978,7 +989,7 @@ public class PeerDevice {
         });
 
         if ((isClientConnected() || isServerConnected()) && mBluetoothSocket != null && mBluetoothSocket.isConnected() && mOutputStream != null && mInputStream != null) {
-            success[0] = mWriteQueue.add(() -> {
+            boolean queued = mWriteQueue.add(() -> {
                 try {
                     int nbOfChunk = payload.length / L2CAP_MPS;
                     int minOffset = 0;
@@ -1017,13 +1028,16 @@ public class PeerDevice {
                 }
             }, callback, 0, this::disconnect);
 
-            if (success[0] == false) {
+            if (!queued) {
                 mLogger.e(TAG, String.format("l2capWrite error: device=%s: unable to put code in queue", mLogger.sensitiveObject(getMACAddress())));
                 return false;
             }
 
             try {
-                countDownLatch.await();
+                if (!countDownLatch.await(OPERATION_TIMEOUT, TimeUnit.MILLISECONDS)) {
+                    mLogger.e(TAG, String.format("l2capWrite error: device=%s: timeout", mLogger.sensitiveObject(getMACAddress())));
+                    return false;
+                }
             } catch (InterruptedException e) {
                 mLogger.e(TAG, "l2capWrite: interrupted exception:", e);
             }
@@ -1042,7 +1056,7 @@ public class PeerDevice {
             countDownLatch.countDown();
         });
 
-        success[0] = mBleQueue.add(() -> {
+        boolean queued = mBleQueue.add(() -> {
             mLogger.v(TAG, String.format("BleQueue: internalWrite: device %s length=%d base64=%s", mLogger.sensitiveObject(getMACAddress()), payload.length, mLogger.sensitiveObject(Base64.encodeToString(payload, Base64.DEFAULT))));
             if (mLogger.showSensitiveData()) {
                 printLongLog(BleDriver.bytesToHex(payload));
@@ -1064,13 +1078,16 @@ public class PeerDevice {
             }
         }, callback,0, this::disconnect);
 
-        if (success[0] == false) {
+        if (!queued) {
             mLogger.e(TAG, String.format("internalWrite error: device=%s: unable to put code in queue", mLogger.sensitiveObject(getMACAddress())));
             return false;
         }
 
         try {
-            countDownLatch.await();
+            if (!countDownLatch.await(OPERATION_TIMEOUT, TimeUnit.MILLISECONDS)) {
+                mLogger.e(TAG, String.format("internalWrite error: device=%s: timeout", mLogger.sensitiveObject(getMACAddress())));
+                return false;
+            }
         } catch (InterruptedException e) {
             mLogger.e(TAG, "internalWrite: interrupted exception:", e);
         }

@@ -1,7 +1,11 @@
 package tech.berty.bertybridgeexpo.gobridge.bledriver;
 
+import static android.bluetooth.BluetoothGatt.GATT_FAILURE;
+
 import android.os.Handler;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
@@ -16,6 +20,9 @@ public class BleQueue {
 
     // timeout in ms before cancelling task
     private static final long TIMEOUT = 5000;
+
+    // status given to the callback of a command that timed out or was dropped
+    private static final int STATUS_FAILURE = GATT_FAILURE;
     private final Queue<TaskDelay> mCommandQueue = new ConcurrentLinkedQueue<>();
     private String mId;
     private Runnable mTimeoutRunnable;
@@ -103,19 +110,41 @@ public class BleQueue {
         mLogger.v(TAG, String.format("id=%s startTimer called: index=%s", mLogger.sensitiveObject(mId), bluetoothCommand.index));
 
         cancelTimer();
-        mTimeoutRunnable = () -> {
+        mTimeoutRunnable = () -> onCommandTimeout(bluetoothCommand);
+
+        mHandler.postDelayed(mTimeoutRunnable, TIMEOUT);
+    }
+
+    private void onCommandTimeout(TaskDelay bluetoothCommand) {
+        synchronized (this) {
+            // the command may have been completed or cleared since the timer was posted
+            if (mCommandQueue.peek() != bluetoothCommand) {
+                return;
+            }
             mLogger.d(TAG, String.format("BleQueue id=%s startTimer: cancel runnable: index=%s", mLogger.sensitiveObject(mId), bluetoothCommand.index));
 
             mCommandQueue.poll();
             mIsRetrying = false;
             mCommandQueueBusy = false;
-            bluetoothCommand.cancel.run();
-            nextCommand();
-
             mTimeoutRunnable = null;
-        };
+        }
 
-        mHandler.postDelayed(mTimeoutRunnable, TIMEOUT);
+        // Run outside of the lock: the cancel runnable (usually disconnect()) takes other locks
+        // and may clear this queue.
+        bluetoothCommand.cancel.run();
+        // Release the caller waiting for this command, otherwise it waits forever.
+        failCallback(bluetoothCommand);
+        nextCommand();
+    }
+
+    // Report a failure to the callback of a command that will never be completed.
+    // The callback is run directly instead of being posted: the handler's looper may already be
+    // stopped (driver stopping), and the callbacks only release a latch.
+    private void failCallback(TaskDelay command) {
+        if (command.callback != null) {
+            mLogger.d(TAG, String.format("id=%s failCallback: index=%d", mLogger.sensitiveObject(mId), command.index));
+            command.callback.run(STATUS_FAILURE);
+        }
     }
 
     private void cancelTimer() {
@@ -155,8 +184,14 @@ public class BleQueue {
             mNrTries = 0;
         }
         mHandler.postDelayed(() -> {
-            try {
+            synchronized (this) {
+                // the queue may have been cleared while this command was waiting for its delay
+                if (mCommandQueue.peek() != bluetoothCommand) {
+                    return;
+                }
                 startTimer();
+            }
+            try {
                 bluetoothCommand.task.run();
             } catch (Exception e) {
                 mLogger.e(TAG, String.format("id=%s nextCommand: command exception", mLogger.sensitiveObject(mId)), e);
@@ -165,13 +200,23 @@ public class BleQueue {
         }, bluetoothCommand.delay);
     }
 
-    public synchronized void clear() {
-        TaskDelay taskDelay = mCommandQueue.poll();
-        if (taskDelay != null) {
-            mHandler.removeCallbacks(taskDelay.task);
+    // Drop all the pending commands. Their callbacks are called with a failure status so that
+    // the threads waiting for them are released.
+    public void clear() {
+        List<TaskDelay> dropped = new ArrayList<>();
+        synchronized (this) {
+            cancelTimer();
+            TaskDelay command;
+            while ((command = mCommandQueue.poll()) != null) {
+                dropped.add(command);
+            }
+            mCommandQueueBusy = false;
+            mIsRetrying = false;
         }
-        mCommandQueue.clear();
-        mCommandQueueBusy = false;
+
+        for (TaskDelay command : dropped) {
+            failCallback(command);
+        }
     }
 
     private class TaskDelay {
