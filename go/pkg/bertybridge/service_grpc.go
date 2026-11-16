@@ -14,18 +14,25 @@ import (
 	"berty.tech/berty/v2/go/pkg/errcode"
 )
 
+// errStreamClosed is returned in-band to a ClientStreamRecv that arrives after
+// its stream was closed or had already finished. It carries the same Canceled
+// code the caller got before ClientStreamClose started releasing streams
+// eagerly (a closed stream's context is cancelled), so the frontend recv loop
+// still ends cleanly instead of failing with a bridge-level error.
+var errStreamClosed = status.Error(codes.Canceled, "stream closed")
+
 // ClientInvokeUnary invoke a unary method
 func (s *service) ClientInvokeUnary(_ context.Context, req *ClientInvokeUnary_Request) (*ClientInvokeUnary_Reply, error) {
+	if req.GetMethodDesc() == nil {
+		return nil, fmt.Errorf("cannot invoke `ClientInvokeUnary` without a `MethodDesc`")
+	}
+
 	client, ok := s.getServiceClient(req.MethodDesc)
 	if !ok {
-		return nil, fmt.Errorf("unknow or unregister service: `%s", req.GetMethodDesc().GetName())
+		return nil, fmt.Errorf("unknown or unregistered service: `%s`", req.MethodDesc.GetName())
 	}
 
 	res := &ClientInvokeUnary_Reply{}
-	if req.MethodDesc == nil {
-		return res, fmt.Errorf("cannot invoke `ClientInvokeUnary` without a `MethodDesc``")
-	}
-
 	if req.MethodDesc.IsClientStream || req.MethodDesc.IsServerStream {
 		return res, fmt.Errorf("cannot call stream method with `ClientInvokeUnary`")
 	}
@@ -48,16 +55,16 @@ func (s *service) ClientInvokeUnary(_ context.Context, req *ClientInvokeUnary_Re
 
 // CreateClientStream create a stream
 func (s *service) CreateClientStream(_ context.Context, req *ClientCreateStream_Request) (*ClientCreateStream_Reply, error) {
-	client, ok := s.getServiceClient(req.MethodDesc)
-	if !ok {
-		return nil, fmt.Errorf("unknow or unregister service: `%s", req.GetMethodDesc().GetName())
-	}
-
-	res := &ClientCreateStream_Reply{}
-	if req.MethodDesc == nil {
+	if req.GetMethodDesc() == nil {
 		return nil, fmt.Errorf("cannot invoke `CreateClientStream` without a `MethodDesc`")
 	}
 
+	client, ok := s.getServiceClient(req.MethodDesc)
+	if !ok {
+		return nil, fmt.Errorf("unknown or unregistered service: `%s`", req.MethodDesc.GetName())
+	}
+
+	res := &ClientCreateStream_Reply{}
 	if !req.MethodDesc.IsClientStream && !req.MethodDesc.IsServerStream {
 		return nil, fmt.Errorf("cannot call a unary method with `CreateClientStream`")
 	}
@@ -96,9 +103,7 @@ func (s *service) ClientStreamSend(_ context.Context, req *ClientStreamSend_Requ
 
 	if err != nil {
 		res.Trailer = convertMetadata(cstream.Trailer())
-		s.muStreams.Lock()
-		delete(s.streams, id)
-		s.muStreams.Unlock()
+		s.unregisterStream(id)
 	}
 
 	return res, nil
@@ -109,7 +114,13 @@ func (s *service) ClientStreamRecv(_ context.Context, req *ClientStreamRecv_Requ
 	id := req.StreamId
 	cstream, err := s.getSream(id)
 	if err != nil {
-		return nil, err
+		// The frontend keeps a recv loop running and can issue one more recv
+		// after ClientStreamClose has released the stream; report it like any
+		// other closed stream rather than as a bridge failure.
+		return &ClientStreamRecv_Reply{
+			StreamId: id,
+			Error:    getServiceError(errStreamClosed),
+		}, nil
 	}
 
 	return s.clientStreamRecv(id, cstream), nil
@@ -117,21 +128,21 @@ func (s *service) ClientStreamRecv(_ context.Context, req *ClientStreamRecv_Requ
 
 // Close the given stream
 func (s *service) ClientStreamClose(_ context.Context, req *ClientStreamClose_Request) (*ClientStreamClose_Reply, error) {
-	id := req.StreamId
+	// Take the stream out of the registry first: Close always cancels the
+	// stream context, even when CloseSend fails, so the entry must not outlive
+	// this call either way.
+	cstream, ok := s.unregisterStream(req.StreamId)
+	if !ok {
+		// The stream already finished (EOF or error during send/recv) and was
+		// released then; closing it again is a no-op.
+		return &ClientStreamClose_Reply{Error: getServiceError(nil)}, nil
+	}
 
-	cstream, err := s.getSream(id)
-	if err != nil {
+	if err := cstream.Close(); err != nil {
 		return nil, err
 	}
 
-	err = cstream.Close()
-	if err != nil {
-		return nil, err
-	}
-
-	return &ClientStreamClose_Reply{
-		Error: getServiceError(err),
-	}, nil
+	return &ClientStreamClose_Reply{Error: getServiceError(nil)}, nil
 }
 
 // Close send on the given stream and return reply
@@ -141,6 +152,14 @@ func (s *service) ClientStreamCloseAndRecv(_ context.Context, req *ClientStreamC
 	if err != nil {
 		return nil, err
 	}
+
+	// CloseAndRecv ends the call: one reply once the client is done sending.
+	// Release the stream however it ends, including on success, where neither
+	// the registry entry nor the stream context was released before.
+	defer func() {
+		s.unregisterStream(id)
+		cstream.CancelFunc()
+	}()
 
 	if err := cstream.CloseSend(); err != nil {
 		return nil, err
@@ -162,9 +181,7 @@ func (s *service) clientStreamRecv(id string, cstream *grpcutil.LazyStream) *Cli
 	out := grpcutil.NewLazyMessage()
 	err := cstream.RecvMsg(out)
 	if err != nil {
-		s.muStreams.Lock()
-		delete(s.streams, id)
-		s.muStreams.Unlock()
+		s.unregisterStream(id)
 	}
 
 	res.Error = getServiceError(err)
@@ -189,6 +206,19 @@ func (s *service) registerStream(id string, cstream *grpcutil.LazyStream) {
 	s.muStreams.Unlock()
 }
 
+// unregisterStream removes the stream from the registry and returns it, so
+// that only one caller ever gets to close a given stream.
+func (s *service) unregisterStream(id string) (*grpcutil.LazyStream, bool) {
+	s.muStreams.Lock()
+	defer s.muStreams.Unlock()
+
+	cstream, ok := s.streams[id]
+	if ok {
+		delete(s.streams, id)
+	}
+	return cstream, ok
+}
+
 func newOutgoingContext(ctx context.Context, md []*Metadata) context.Context {
 	outmd := make(metadata.MD)
 	for _, m := range md {
@@ -198,18 +228,16 @@ func newOutgoingContext(ctx context.Context, md []*Metadata) context.Context {
 }
 
 func convertMetadata(in metadata.MD) []*Metadata {
-	out := make([]*Metadata, in.Len())
-	i := 0
+	out := make([]*Metadata, 0, in.Len())
 	for k, v := range in {
 		if k == "grpc-status-details-bin" {
 			// ignore grpc-status-details-bin
 			continue
 		}
-		out[i] = &Metadata{
+		out = append(out, &Metadata{
 			Key:    k,
 			Values: v,
-		}
-		i++
+		})
 	}
 
 	return out
