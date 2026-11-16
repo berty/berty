@@ -11,6 +11,7 @@ import (
 	"net"
 	"os"
 	"strings"
+	"sync"
 	"time"
 
 	"github.com/grandcat/zeroconf"
@@ -501,6 +502,47 @@ func (svc *service) streamShallow(sub messengertypes.MessengerService_EventStrea
 }
 
 func (svc *service) EventStream(req *messengertypes.EventStream_Request, sub messengertypes.MessengerService_EventStreamServer) error {
+	sendEvent := func(e *messengertypes.StreamEvent) {
+		{
+			payload, err := e.UnmarshalPayload()
+			if err != nil {
+				svc.logger.Error("failed to unmarshal payload for logging", zap.Error(err))
+				payload = nil
+			}
+			svc.logger.Debug("sending stream event", zap.String("type", e.GetType().String()), logutil.PrivateAny("payload", payload))
+		}
+
+		if err := sub.Send(&messengertypes.EventStream_Reply{Event: e}); err != nil {
+			svc.logger.Error("err: ", zap.Error(err))
+		}
+	}
+
+	// Subscribe to new events before sending the existing models, otherwise the events
+	// dispatched in between are lost: a client that acts as soon as it has received
+	// ListEnded (or, with ShallowAmount < 0, as soon as the stream is open) could miss
+	// the events caused by its own actions.
+	// Until the existing models have been sent, new events are buffered: the dispatcher
+	// calls the notifiee synchronously and sub.Send must not be called concurrently.
+	var (
+		liveMutex sync.Mutex
+		live      bool
+		pending   []*messengertypes.StreamEvent
+	)
+	n := NotifieeBundle{StreamEventImpl: func(e *messengertypes.StreamEvent) error {
+		liveMutex.Lock()
+		defer liveMutex.Unlock()
+
+		if !live {
+			pending = append(pending, e)
+			return nil
+		}
+
+		sendEvent(e)
+		return nil
+	}}
+	unreg := svc.dispatcher.Register(&n)
+	defer unreg()
+
 	if req.ShallowAmount > 0 {
 		if err := svc.streamShallow(sub, req.ShallowAmount); err != nil {
 			return err
@@ -525,43 +567,21 @@ func (svc *service) EventStream(req *messengertypes.EventStream_Request, sub mes
 		}
 	}
 
-	// FIXME: case where a model is created/updated/deleted between the list and the stream
-	// dunno how to add a test to trigger, maybe it can never happen? don't know how to prove either way
-
-	// stream new events
-	{
-		errch := make(chan error)
-		defer close(errch)
-		n := NotifieeBundle{StreamEventImpl: func(e *messengertypes.StreamEvent) error {
-			{
-				payload, err := e.UnmarshalPayload()
-				if err != nil {
-					svc.logger.Error("failed to unmarshal payload for logging", zap.Error(err))
-					payload = nil
-				}
-				svc.logger.Debug("sending stream event", zap.String("type", e.GetType().String()), logutil.PrivateAny("payload", payload))
-			}
-
-			if err := sub.Send(&messengertypes.EventStream_Reply{Event: e}); err != nil {
-				// next commented line allows me to manually test the behavior on a send error. How to isolate into an automatic test?
-				// errch <- errors.New("TEST ERROR")
-				// errch <- err
-				svc.logger.Error("err: ", zap.Error(err))
-			}
-
-			return nil
-		}}
-		unreg := svc.dispatcher.Register(&n)
-		defer unreg()
-
-		// don't return until we have a send error or the context is canceled
-		select {
-		case err := <-errch:
-			return err
-		case <-sub.Context().Done():
-			return nil
-		}
+	// stream new events: first the ones dispatched while the existing models were sent,
+	// then the next ones as they come. A model changed in the meantime may be received
+	// both in the list and as an event; the events keep the dispatch order, so the last
+	// one received carries the latest state.
+	liveMutex.Lock()
+	for _, e := range pending {
+		sendEvent(e)
 	}
+	pending = nil
+	live = true
+	liveMutex.Unlock()
+
+	// don't return until the context is canceled
+	<-sub.Context().Done()
+	return nil
 }
 
 func (svc *service) ConversationCreate(ctx context.Context, req *messengertypes.ConversationCreate_Request) (_ *messengertypes.ConversationCreate_Reply, err error) {
