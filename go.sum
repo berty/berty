@@ -6,8 +6,8 @@ berty.tech/go-orbit-db v1.22.3-0.20260603105145-e1cb4a9a9a7f h1:Ac09tRng+NcZMr77
 berty.tech/go-orbit-db v1.22.3-0.20260603105145-e1cb4a9a9a7f/go.mod h1:35CamAKlgh1i6cjTdFNG9gLh9DyJ4c/FOn6j0v+qgqY=
 berty.tech/ipfs-webui-packed v1.0.0-v2.11.4-1 h1:xXAS7M/RcgIWia1XkXLueirm2zDXnMMNGb3UJhfRzbo=
 berty.tech/ipfs-webui-packed v1.0.0-v2.11.4-1/go.mod h1:n+M4wWEjVxnA0itc1m9oOLAXrNyZr2tiOxLnA1tVnrQ=
-berty.tech/weshnet/v2 v2.3.1-0.20260605081032-915f5df54716 h1:2JjgBZUYBGwH+6H0zfeC6lt9m1fTtp9LthyKegZAWDg=
-berty.tech/weshnet/v2 v2.3.1-0.20260605081032-915f5df54716/go.mod h1:pItKtaq825yHmBeeuwgBRn4FGp2AAy0gyz03rGzWuqk=
+berty.tech/weshnet/v2 v2.3.1 h1:qRB6JTHfGN1xl3tvfJ94vbTDHinA/1OrgUCLMG4TCsw=
+berty.tech/weshnet/v2 v2.3.1/go.mod h1:pItKtaq825yHmBeeuwgBRn4FGp2AAy0gyz03rGzWuqk=
 buf.build/gen/go/bufbuild/bufplugin/protocolbuffers/go v1.36.11-20250718181942-e35f9b667443.1 h1:zQ9C3e6FtwSZUFuKAQfpIKGFk5ZuRoGt5g35Bix55sI=
 buf.build/gen/go/bufbuild/bufplugin/protocolbuffers/go v1.36.11-20250718181942-e35f9b667443.1/go.mod h1:1Znr6gmYBhbxWUPRrrVnSLXQsz8bvFVw1HHJq2bI3VQ=
 buf.build/gen/go/bufbuild/protodescriptor/protocolbuffers/go v1.36.11-20250109164928-1da0de137947.1 h1:HwzzCRS4ZrEm1++rzSDxHnO0DOjiT1b8I/24e8a4exY=
