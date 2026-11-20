@@ -8,6 +8,7 @@ import (
 	"net"
 	"os"
 	"runtime"
+	"sync/atomic"
 	"testing"
 	"time"
 
@@ -15,9 +16,13 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"go.uber.org/zap"
+	"google.golang.org/grpc"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 	"moul.io/u"
 	"moul.io/zapring"
 
+	"berty.tech/berty/v2/go/internal/messengerutil"
 	"berty.tech/berty/v2/go/pkg/bertylinks"
 	"berty.tech/berty/v2/go/pkg/errcode"
 	"berty.tech/berty/v2/go/pkg/messengertypes"
@@ -439,4 +444,46 @@ func TestServiceTyberHostAttach(t *testing.T) {
 	// first server should not receive ciao2, but should receive eof
 	_, _, err = firstReader.ReadLine()
 	require.Equal(t, err, io.EOF)
+}
+
+type fakeGroupDeviceStatusStream struct {
+	grpc.ServerStreamingClient[protocoltypes.GroupDeviceStatus_Reply]
+
+	err error
+}
+
+func (f *fakeGroupDeviceStatusStream) Recv() (*protocoltypes.GroupDeviceStatus_Reply, error) {
+	return nil, f.err
+}
+
+func TestMonitorGroupPeersStatusRestartAfterStreamEnd(t *testing.T) {
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+
+	var calls int32
+	fakeClient := &fakeProtocolClient{
+		groupDeviceStatus: func(_ context.Context, _ *protocoltypes.GroupDeviceStatus_Request) (protocoltypes.ProtocolService_GroupDeviceStatusClient, error) {
+			atomic.AddInt32(&calls, 1)
+			return &fakeGroupDeviceStatusStream{err: status.Error(codes.Unavailable, "transport is closing")}, nil
+		},
+	}
+
+	svc := &service{
+		ctx:               ctx,
+		logger:            zap.NewNop(),
+		protocolClient:    fakeClient,
+		cancelGroupStatus: make(map[string]context.CancelFunc),
+	}
+
+	groupPK := messengerutil.B64EncodeBytes([]byte("group-pk"))
+
+	require.NoError(t, svc.monitorGroupPeersStatus(groupPK))
+	require.Eventually(t, func() bool {
+		svc.muCancelGroupStatus.Lock()
+		defer svc.muCancelGroupStatus.Unlock()
+		return len(svc.cancelGroupStatus) == 0
+	}, time.Second, 10*time.Millisecond)
+
+	require.NoError(t, svc.monitorGroupPeersStatus(groupPK))
+	require.Equal(t, int32(2), atomic.LoadInt32(&calls))
 }
