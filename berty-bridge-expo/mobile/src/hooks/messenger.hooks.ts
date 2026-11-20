@@ -149,17 +149,26 @@ export const useReadEffect = (publicKey: Maybe<string>, timeout: Maybe<number>) 
 			return
 		}
 		let timeoutID: ReturnType<typeof setTimeout> | null = null
+		const sendOpen = () => {
+			client?.conversationOpen({ groupPk: publicKey }).catch((err: unknown) => {
+				console.warn('failed to open conversation,', err)
+			})
+		}
 		const handleStart = () => {
+			let t = timeout
+			if (typeof t !== 'number') {
+				t = 1000
+			}
+			if (t <= 0) {
+				// no delay: the messages are set as read as soon as the conversation is shown
+				// (with a delay, leaving the chat before it left the unread badge on the list)
+				sendOpen()
+				return
+			}
 			if (timeoutID === null) {
-				let t = timeout
-				if (typeof t !== 'number') {
-					t = 1000
-				}
 				timeoutID = setTimeout(() => {
 					timeoutID = null
-					client?.conversationOpen({ groupPk: publicKey }).catch((err: unknown) => {
-						console.warn('failed to open conversation,', err)
-					})
+					sendOpen()
 				}, t)
 			}
 		}

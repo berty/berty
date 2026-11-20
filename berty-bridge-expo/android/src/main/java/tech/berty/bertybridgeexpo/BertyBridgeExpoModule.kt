@@ -1,11 +1,17 @@
 package tech.berty.bertybridgeexpo
 
 import android.bluetooth.BluetoothAdapter
+import android.bluetooth.BluetoothManager
 import android.content.Context
+import android.content.Intent
 import android.content.IntentFilter
 import android.content.res.Resources
 import android.net.ConnectivityManager
+import android.net.NetworkCapabilities
 import android.os.Build
+import android.os.Handler
+import android.os.Looper
+import android.os.Process
 import android.util.Base64
 import android.util.Log
 import bertybridge.Bertybridge
@@ -39,6 +45,7 @@ import tech.berty.bertybridgeexpo.gobridge.bledriver.BleInterface
 import tech.berty.bertybridgeexpo.notification.FcmBus
 import tech.berty.bertybridgeexpo.notification.NotificationService
 import tech.berty.bertybridgeexpo.rootdir.RootDirModule
+import tech.berty.bertybridgeexpo.service.BackgroundService
 import java.io.File
 
 enum class logLevel(val value: String) : Enumerable {
@@ -112,6 +119,7 @@ class BertyBridgeExpoModule : Module() {
             bridgeMessenger = null
             remoteBridge = null
             serviceClient = null
+            appContext.reactContext?.let { BackgroundService.stop(it) }
         }
 
         OnStartObserving {
@@ -251,6 +259,102 @@ class BertyBridgeExpoModule : Module() {
             }
         }
 
+        // true when the phone is connected to a Wi-Fi, mobile data or ethernet network (even if
+        // that network has no internet access, e.g. a local Wi-Fi mesh)
+        AsyncFunction("hasNetworkConnection") { promise: Promise ->
+            val manager = getReactContext().getSystemService(Context.CONNECTIVITY_SERVICE) as? ConnectivityManager
+            val capabilities = manager?.activeNetwork?.let { manager.getNetworkCapabilities(it) }
+            promise.resolve(
+                capabilities != null && (
+                    capabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) ||
+                    capabilities.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) ||
+                    capabilities.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET)
+                )
+            )
+        }
+
+        AsyncFunction("isBluetoothEnabled") { promise: Promise ->
+            val manager = getReactContext().getSystemService(Context.BLUETOOTH_SERVICE) as? BluetoothManager
+            promise.resolve(manager?.adapter?.isEnabled == true)
+        }
+
+        // Shows the system dialog asking the user to turn Bluetooth on
+        AsyncFunction("requestEnableBluetooth") { promise: Promise ->
+            val activity = appContext.currentActivity
+            if (activity == null) {
+                Logger.w(TAG, "requestEnableBluetooth: no current activity")
+                promise.resolve(false)
+            } else {
+                // Started on the UI thread and with startActivityForResult, as documented for
+                // ACTION_REQUEST_ENABLE: the system dialog needs to know the calling app.
+                // The result is not needed, the Bluetooth state receiver handles the change.
+                activity.runOnUiThread {
+                    try {
+                        activity.startActivityForResult(
+                            Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE),
+                            REQUEST_ENABLE_BLUETOOTH
+                        )
+                        Logger.i(TAG, "requestEnableBluetooth: system dialog requested")
+                        promise.resolve(true)
+                    } catch (e: Exception) {
+                        Logger.e(TAG, "unable to request to enable Bluetooth", e)
+                        promise.resolve(false)
+                    }
+                }
+            }
+        }
+
+        // Keeps the process alive while the app is in the background (see BackgroundService).
+        // Must be called while the app is in the foreground, e.g. right after initBridge.
+        AsyncFunction("startBackgroundService") { title: String, text: String, promise: Promise ->
+            BackgroundService.start(getReactContext(), title, text)
+            promise.resolve(true)
+        }
+
+        AsyncFunction("isBackgroundServiceEnabled") { promise: Promise ->
+            promise.resolve(BackgroundService.isEnabled(getReactContext()))
+        }
+
+        // Setting changed by the user: remembered, and applied right away
+        AsyncFunction("setBackgroundServiceEnabled") { enabled: Boolean, title: String, text: String, promise: Promise ->
+            val context = getReactContext()
+            BackgroundService.setEnabled(context, enabled)
+            if (enabled) {
+                BackgroundService.start(context, title, text)
+            } else {
+                BackgroundService.stop(context)
+            }
+            promise.resolve(true)
+        }
+
+        AsyncFunction("stopBackgroundService") { promise: Promise ->
+            BackgroundService.stop(getReactContext())
+            promise.resolve(true)
+        }
+
+        // Fully quit the app: close the bridge, stop the service, remove the task and
+        // end the process so that nothing keeps running in the background.
+        AsyncFunction("quitApp") { promise: Promise ->
+            val context = getReactContext()
+            Thread {
+                try {
+                    bridgeMessenger?.close()
+                    remoteBridge?.close()
+                } catch (e: Exception) {
+                    Logger.e(TAG, "bridge close error", e)
+                }
+                bridgeMessenger = null
+                remoteBridge = null
+                serviceClient = null
+                BackgroundService.stop(context)
+                appContext.currentActivity?.finishAndRemoveTask()
+                promise.resolve(true)
+                Handler(Looper.getMainLooper()).postDelayed({
+                    Process.killProcess(Process.myPid())
+                }, 500)
+            }.start()
+        }
+
         AsyncFunction("closeBridge") { promise: Promise ->
             try {
                 if (bridgeMessenger != null) {
@@ -262,6 +366,7 @@ class BertyBridgeExpoModule : Module() {
                     remoteBridge = null
                 }
                 serviceClient = null
+                BackgroundService.stop(getReactContext())
                 promise.resolve(true)
             } catch (err: CodedException) {
                 promise.reject(err)
@@ -388,6 +493,8 @@ class BertyBridgeExpoModule : Module() {
     }
 
     companion object {
+        private const val REQUEST_ENABLE_BLUETOOTH = 4242
+
         var bridgeMessenger: Bridge? = null
             private set
     }

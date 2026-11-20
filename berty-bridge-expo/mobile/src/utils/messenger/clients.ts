@@ -3,7 +3,6 @@ import base64 from 'base64-js'
 import { Platform } from 'react-native'
 
 import beapi from '@berty/api'
-import { navigationRef } from '@berty/navigation/rootRef'
 import { GRPCError, createServiceClient } from '@berty/grpc-bridge'
 import { logger } from '@berty/grpc-bridge/middleware'
 import { bridge as rpcBridge, grpcweb as rpcWeb } from '@berty/grpc-bridge/rpc'
@@ -19,6 +18,7 @@ import { streamEventToAction as streamEventToReduxAction } from '@berty/redux/me
 import { setClients, setStreamError, setClearClients } from '@berty/redux/reducers/ui.reducer'
 import { AppDispatch } from '@berty/redux/store'
 import { AsyncStorageKeys, NodeInfos, getData } from '@berty/utils/async-storage/async-storage'
+import { isViewingConversation } from '@berty/utils/notification/viewing'
 import { defaultGlobalPersistentOptions } from '@berty/utils/global-persistent-options/defaults'
 import { GlobalPersistentOptionsKeys } from '@berty/utils/global-persistent-options/types'
 import * as Notifications from 'expo-notifications';
@@ -49,18 +49,6 @@ const conversationPkFromNotified = (payload: any): string | undefined => {
 	} catch (e) {
 		return undefined
 	}
-}
-
-// True when the user is currently viewing the given conversation.
-const isViewingConversation = (convPK: string | undefined): boolean => {
-	if (!convPK) {
-		return false
-	}
-	const route = navigationRef.current?.getCurrentRoute()
-	return (
-		(route?.name === 'Chat.OneToOne' || route?.name === 'Chat.MultiMember') &&
-		(route?.params as { convId?: string } | undefined)?.convId === convPK
-	)
 }
 
 const messengerEventStream = (

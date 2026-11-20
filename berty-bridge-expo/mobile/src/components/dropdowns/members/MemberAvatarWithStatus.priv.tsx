@@ -3,6 +3,7 @@ import { View, StyleSheet } from 'react-native'
 
 import beapi from '@berty/api'
 import { MemberAvatar } from '@berty/components/avatars'
+import { useThemeColor } from '@berty/hooks'
 import { Maybe } from '@berty/utils/type/maybe'
 
 import { IMemberStatus } from './interfaces'
@@ -22,6 +23,7 @@ const reconnectingStatusColor = '#FF9900'
 const disconnectedStatusColor = '#AFAFAF'
 
 const MemberStatus: React.FC<MemberStatusProps> = ({ memberStatus, isMe }) => {
+	const colors = useThemeColor()
 	let backgroundColor
 	switch (memberStatus) {
 		case beapi.protocol.GroupDeviceStatus.Type.TypePeerConnected:
@@ -41,7 +43,7 @@ const MemberStatus: React.FC<MemberStatusProps> = ({ memberStatus, isMe }) => {
 	}
 
 	return (
-		<View style={[styles.container]}>
+		<View style={[styles.container, { backgroundColor: colors['main-background'] }]}>
 			<View style={[styles.status, { backgroundColor }]} />
 		</View>
 	)
@@ -71,7 +73,6 @@ const styles = StyleSheet.create({
 		height: containerSize,
 		top: 10,
 		right: 10,
-		backgroundColor: '#FFFFFF',
 		justifyContent: 'center',
 	},
 	status: {

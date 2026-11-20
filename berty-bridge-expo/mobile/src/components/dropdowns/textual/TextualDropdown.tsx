@@ -1,6 +1,8 @@
 import React, { useRef } from 'react'
 import { StyleSheet, TouchableOpacity, View } from 'react-native'
 
+import { useThemeColor } from '@berty/hooks'
+
 import { UnifiedText } from '../../shared-components/UnifiedText'
 import { DropdownPriv } from '../Dropdown.priv'
 import { DropdownRef } from '../interfaces'
@@ -19,9 +21,10 @@ interface TextualDropdownProps {
 
 export const TextualDropdown: React.FC<TextualDropdownProps> = props => {
 	const childRef = useRef<DropdownRef>(null)
+	const colors = useThemeColor()
 
 	return (
-		<View style={styles.container}>
+		<View style={[styles.container, { backgroundColor: colors['input-background'] }]}>
 			<DropdownPriv ref={childRef} placeholder={props.placeholder} testID={props.testID}>
 				{props.items.map(item => (
 					<TouchableOpacity
@@ -30,7 +33,7 @@ export const TextualDropdown: React.FC<TextualDropdownProps> = props => {
 							props.onChangeItem(item)
 							childRef.current?.toggleView?.()
 						}}
-						style={styles.item}
+						style={[styles.item, { borderTopColor: colors['secondary-background'] }]}
 						key={`${item.label}-${item.value}`}
 					>
 						<UnifiedText>{item.label}</UnifiedText>
@@ -45,13 +48,11 @@ const styles = StyleSheet.create({
 	container: {
 		borderRadius: 14,
 		flex: 1,
-		backgroundColor: '#F7F8FE',
 	},
 	item: {
 		height: 48,
 		flexDirection: 'row',
 		borderTopWidth: 1,
-		borderTopColor: '#F0F0F7',
 		paddingLeft: 15,
 		paddingVertical: 12,
 		paddingRight: 12,

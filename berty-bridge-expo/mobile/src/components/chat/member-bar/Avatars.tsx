@@ -2,6 +2,7 @@ import React from 'react'
 import { StyleSheet, View } from 'react-native'
 
 import { UnifiedText } from '@berty/components/shared-components/UnifiedText'
+import { useThemeColor } from '@berty/hooks'
 
 import { AvatarWrapper } from './AvatarWrapper'
 import { MemberBarItem } from './interfaces'
@@ -16,6 +17,7 @@ interface AvatarsProps {
 }
 
 export const Avatars: React.FC<AvatarsProps> = props => {
+	const colors = useThemeColor()
 	return (
 		<View style={styles.container}>
 			<View style={styles.placeholder} />
@@ -28,7 +30,7 @@ export const Avatars: React.FC<AvatarsProps> = props => {
 				/>
 			))}
 			{props.membersLength > MAX_MEMBERS_TO_SHOW && (
-				<View style={styles.manyMembersWrapper}>
+				<View style={[styles.manyMembersWrapper, { backgroundColor: colors['secondary-background'] }]}>
 					<UnifiedText style={styles.manyMembersText}>
 						+{props.membersLength - MAX_MEMBERS_TO_SHOW}
 					</UnifiedText>
@@ -51,7 +53,6 @@ const styles = StyleSheet.create({
 		width: WIDTH_AVATAR_WRAPPER,
 		height: 30,
 		borderRadius: 30,
-		backgroundColor: '#EDF1F7',
 		justifyContent: 'center',
 		alignItems: 'center',
 		marginLeft: -10,

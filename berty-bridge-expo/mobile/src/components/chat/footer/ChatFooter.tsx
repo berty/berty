@@ -13,6 +13,7 @@ import {
 	useThemeColor,
 	useMessengerClient,
 	useMountEffect,
+	useBluetoothEnablePrompt,
 } from '@berty/hooks'
 import {
 	resetChatInput,
@@ -57,7 +58,11 @@ export const ChatFooter: React.FC<ChatFooterProps> = React.memo(
 		const isFake = !!(conversation as any)?.fake
 		const sendEnabled = !sending && !!(!isFake && message)
 
+		const askToEnableBluetooth = useBluetoothEnablePrompt()
+
 		const sendMessageBouncy = React.useCallback(async () => {
+			// offline (no Wi-Fi/mobile data) and Bluetooth off: offer to turn Bluetooth on
+			askToEnableBluetooth()
 			try {
 				if (!messengerClient) {
 					throw new Error('no messenger client')
@@ -87,7 +92,16 @@ export const ChatFooter: React.FC<ChatFooterProps> = React.memo(
 				console.warn('e sending message:', e)
 				setSending(false)
 			}
-		}, [convPK, playSound, dispatch, message, messengerClient, setSending, setMessage])
+		}, [
+			askToEnableBluetooth,
+			convPK,
+			playSound,
+			dispatch,
+			message,
+			messengerClient,
+			setSending,
+			setMessage,
+		])
 
 		const handlePressSend = React.useCallback(async () => {
 			if (sending) {

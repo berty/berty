@@ -1,6 +1,8 @@
 import React, { useRef } from 'react'
 import { StyleSheet, type TextInputInstance } from 'react-native'
 
+import { useThemeColor } from '@berty/hooks'
+
 import { ClearTouchablePriv } from '../ClearTouchable.priv'
 import { IconPriv } from '../Icon.priv'
 import { InputWithIconPriv } from '../InputWithIcon.priv'
@@ -9,9 +11,10 @@ import { TouchableWrapperWithIconPriv } from '../wrapper/TouchableWrapperWithIco
 
 export const SmallClearableInput: React.FC<InputWithIconProps> = props => {
 	const input = useRef<TextInputInstance>(null)
+	const colors = useThemeColor()
 
 	return (
-		<TouchableWrapperWithIconPriv onPress={() => input.current?.focus()} style={styles.container}>
+		<TouchableWrapperWithIconPriv onPress={() => input.current?.focus()} style={[styles.container, { backgroundColor: colors['input-background'] }]}>
 			<IconPriv
 				iconColor='#AEAFC1'
 				iconName={props.iconName}
@@ -31,7 +34,6 @@ export const SmallClearableInput: React.FC<InputWithIconProps> = props => {
 
 const styles = StyleSheet.create({
 	container: {
-		backgroundColor: '#F7F8FE',
 		borderRadius: 8,
 		height: 36,
 		paddingHorizontal: 12,

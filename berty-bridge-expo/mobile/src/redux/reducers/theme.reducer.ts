@@ -3,6 +3,8 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import darkTheme from '@berty/assets/themes/dark-theme.json'
 import darkLFTheme from '@berty/assets/themes/DarkLF-theme.json'
 import defaultTheme from '@berty/assets/themes/default-theme.json'
+import blackTheme from '@berty/assets/themes/black-theme.json'
+import nightTheme from '@berty/assets/themes/night-theme.json'
 import pinkTheme from '@berty/assets/themes/pink-theme.json'
 import { randomizeThemeColor } from '@berty/contexts/styles'
 
@@ -40,6 +42,9 @@ export type ThemeType = {
 type ThemeDefinition = { colors: ThemeType }
 
 type ThemeCollectionType = Partial<Record<AVAILABLE_THEMES | string, ThemeDefinition>>
+
+export const nightThemeColors: ThemeType = nightTheme
+export const blackThemeColors: ThemeType = blackTheme
 
 type ThemeState = {
 	selected: keyof AVAILABLE_THEMES | string
@@ -152,7 +157,13 @@ const slice = createSlice({
 	},
 })
 
-export const { setTheme, randomizeTheme, saveTheme, importTheme, deleteAddedThemes, resetTheme } =
-	slice.actions
+export const {
+	setTheme,
+	randomizeTheme,
+	saveTheme,
+	importTheme,
+	deleteAddedThemes,
+	resetTheme,
+} = slice.actions
 
 export default makeRoot(slice.reducer)

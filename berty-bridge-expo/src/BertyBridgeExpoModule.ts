@@ -23,6 +23,14 @@ declare class BertyBridgeExpoModule extends NativeModule<BertyBridgeExpoModuleEv
 	invokeBridgeMethod(method: string, b64message: string): Promise<string>;
 	connectService(serviceName: string, address: string): Promise<void>;
 	requestPushToken(): Promise<string>;
+	startBackgroundService(title: string, text: string): Promise<void>;
+	stopBackgroundService(): Promise<void>;
+	isBackgroundServiceEnabled(): Promise<boolean>;
+	setBackgroundServiceEnabled(enabled: boolean, title: string, text: string): Promise<void>;
+	quitApp(): Promise<void>;
+	isBluetoothEnabled(): Promise<boolean>;
+	hasNetworkConnection(): Promise<boolean>;
+	requestEnableBluetooth(): Promise<boolean>;
 }
 
 // This call loads the native module object from the JSI.
