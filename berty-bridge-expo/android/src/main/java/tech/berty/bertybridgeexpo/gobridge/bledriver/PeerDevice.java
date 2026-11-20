@@ -30,6 +30,7 @@ import java.util.Random;
 import java.util.UUID;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicReference;
 
 public class PeerDevice {
     // Mark used to tell all data is transferred
@@ -75,7 +76,9 @@ public class PeerDevice {
     private final BleQueue mWriteQueue;
     private final BleQueue mReadQueue;
     private Runnable mTimeoutRunnable;
-    private CountDownLatch mConnectionLatch;
+    // Released when the connection attempt started by connectToDevice() is over, whatever its
+    // outcome, so that the scanner can go on (see releaseConnectionLatch()).
+    private final AtomicReference<CountDownLatch> mConnectionLatch = new AtomicReference<>();
     private BluetoothGattService mBertyService;
     private BluetoothGattCharacteristic mPIDCharacteristic;
     private BluetoothGattCharacteristic mWriterCharacteristic;
@@ -115,7 +118,7 @@ public class PeerDevice {
 
                         if (getClientState() != CONNECTION_STATE.CONNECTING) {
                             mLogger.w(TAG, String.format("onConnectionStateChange: device status error: device=%s status=%s newState=CONNECTED", mLogger.sensitiveObject(mLogger.sensitiveObject(getMACAddress())), getClientState()));
-//                            mConnectionLatch.countDown();
+//                            releaseConnectionLatch();
                             // duplicate callback, just ignore it.
                             return;
                         }
@@ -363,7 +366,7 @@ public class PeerDevice {
         if (checkAndSetClientState(CONNECTION_STATE.DISCONNECTED, CONNECTION_STATE.CONNECTING)) {
             boolean status = BleDriver.mainHandler.postDelayed(() -> {
                 mLogger.d(TAG, "connectToDevice: connecting to device=" + mLogger.sensitiveObject(getMACAddress()));
-                mConnectionLatch = countDown;
+                mConnectionLatch.set(countDown);
                 setBluetoothGatt(mBluetoothDevice.connectGatt(mContext, autoConnect,
                     mGattCallback, BluetoothDevice.TRANSPORT_LE));
 
@@ -376,7 +379,7 @@ public class PeerDevice {
                     mBleQueue.clear();
                     setClientState(CONNECTION_STATE.DISCONNECTED);
 
-                    mConnectionLatch.countDown();
+                    releaseConnectionLatch();
                     mTimeoutRunnable = null;
                 }, CONNECTION_TIMEOUT);
             }, 500);
@@ -388,6 +391,18 @@ public class PeerDevice {
         } else {
             mLogger.v(TAG, String.format("connectToDevice canceled, device %s is not disconnected", mLogger.sensitiveObject(getMACAddress())));
             countDown.countDown();
+        }
+    }
+
+    // Ends the current connection attempt for the scanner (Scanner.processResult() waits for it
+    // before scanning again). Only the first call counts: it is called when the handshake is
+    // done, but also when the connection fails or is closed before that (GATT error such as
+    // status 133/147, disconnection, timeout). Before, a failed connection was not reported and
+    // the scanner stayed paused until its 30 s timeout.
+    private void releaseConnectionLatch() {
+        CountDownLatch latch = mConnectionLatch.getAndSet(null);
+        if (latch != null) {
+            latch.countDown();
         }
     }
 
@@ -509,6 +524,9 @@ public class PeerDevice {
 
         mBleDriver.peerManager().unregisterDevices(mRemotePID);
         setPeer(null);
+
+        // the connection attempt, if any, is over
+        releaseConnectionLatch();
     }
 
     public void closeServer() {
@@ -1347,7 +1365,7 @@ public class PeerDevice {
                 if (!write(getPIDCharacteristic(), mLocalPID.getBytes(), true)) {
                     mLogger.e(TAG, String.format("handshake error: device=%s: failed to send local PID", mLogger.sensitiveObject(getMACAddress())));
                     disconnect();
-                    mConnectionLatch.countDown();
+                    releaseConnectionLatch();
                     return;
                 }
 
@@ -1355,7 +1373,7 @@ public class PeerDevice {
                 if (!read(getPIDCharacteristic())) {
                     mLogger.e(TAG, String.format("handshake error: device=%s: failed to read remote PID", mLogger.sensitiveObject(getMACAddress())));
                     disconnect();
-                    mConnectionLatch.countDown();
+                    releaseConnectionLatch();
                     return;
                 }
 
@@ -1367,7 +1385,7 @@ public class PeerDevice {
                 if (!setNotify(mWriterCharacteristic, true)) {
                     mLogger.e(TAG, String.format("handshake error: device=%s: failed to enable notifications", mLogger.sensitiveObject(getMACAddress())));
                     disconnect();
-                    mConnectionLatch.countDown();
+                    releaseConnectionLatch();
                     return;
                 }
 
@@ -1377,7 +1395,7 @@ public class PeerDevice {
                 }
 
                 // Complete this connection and allow to proceed an another pending connection
-                mConnectionLatch.countDown();
+                releaseConnectionLatch();
                 return;
             }
         }
