@@ -353,7 +353,13 @@ public class BleDriver {
     }
 
     public static String idFromPid(String pid) {
+        if (pid == null) {
+            return "";
+        }
         int pidLen = pid.length();
+        if (pidLen < 4) {
+            return pid;
+        }
         return pid.substring(pidLen - 4, pidLen);
     }
 
