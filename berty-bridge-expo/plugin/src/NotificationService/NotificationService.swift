@@ -25,8 +25,13 @@ class NotificationService: UNNotificationServiceExtension {
     let oslogger = OSLog(subsystem: "tech.berty.ios.notif", category: "gomobile")
     let pushStandalone: BertypushPushStandalone
 
-    var contentHandler: ((UNNotificationContent) -> Void)?
-    var bestAttemptContent: UNMutableNotificationContent?
+    // didReceive and serviceExtensionTimeWillExpire run on different threads: the content
+    // handler is only taken through takeContentHandler(), under this lock, so that it is
+    // called at most once.
+    private let lock = NSLock()
+    private var contentHandler: ((UNNotificationContent) -> Void)?
+    // set once in didReceive, then only read (by the fallback)
+    private var bestAttemptContent: UNMutableNotificationContent?
 
     override init() {
         let config = BertypushNewConfig()!
@@ -36,11 +41,32 @@ class NotificationService: UNNotificationServiceExtension {
         super.init()
     }
 
+    // Returns the content handler and clears it, atomically: only the first caller gets it.
+    private func takeContentHandler() -> ((UNNotificationContent) -> Void)? {
+        lock.lock()
+        defer { lock.unlock() }
+        let handler = self.contentHandler
+        self.contentHandler = nil
+        return handler
+    }
+
+    // The only way a notification is delivered (success, muted and fallback): the content is
+    // only built, and the handler only called, by the caller that took the handler.
+    private func deliver(_ makeContent: () -> UNNotificationContent) {
+        guard let handler = takeContentHandler() else {
+            os_log("notification already delivered", log: oslogger)
+            return
+        }
+        handler(makeContent())
+    }
+
     override func didReceive(_ request: UNNotificationRequest, withContentHandler contentHandler: @escaping (UNNotificationContent) -> Void) {
         os_log("didReceive encrypted notification", log: oslogger)
 
+        lock.lock()
         self.contentHandler = contentHandler
         self.bestAttemptContent = (request.content.mutableCopy() as? UNMutableNotificationContent)
+        lock.unlock()
 
         var rootDir: String
         do {
@@ -71,24 +97,27 @@ class NotificationService: UNNotificationServiceExtension {
         os_log("successfully decrypt push", log: oslogger)
 
         if decrypted.muted {
-            self.contentHandler = nil
-            contentHandler(UNNotificationContent())
+            deliver { UNNotificationContent() }
             return
         }
 
-        self.bestAttemptContent!.title = decrypted.title
-        self.bestAttemptContent!.body = decrypted.body
+        deliver {
+            // a copy of its own: bestAttemptContent may be read by the fallback at the same time
+            guard let content = request.content.mutableCopy() as? UNMutableNotificationContent else {
+                return UNNotificationContent()
+            }
+            content.title = decrypted.title
+            content.body = decrypted.body
 
-        if decrypted.deepLink != "" {
-            self.bestAttemptContent!.userInfo["deepLink"] = decrypted.deepLink
+            if decrypted.deepLink != "" {
+                content.userInfo["deepLink"] = decrypted.deepLink
+            }
+
+            if decrypted.subtitle != "" {
+                content.subtitle = decrypted.subtitle
+            }
+            return content
         }
-
-        if decrypted.subtitle != "" {
-            self.bestAttemptContent!.subtitle = decrypted.subtitle
-        }
-
-        self.contentHandler = nil
-        contentHandler(self.bestAttemptContent!)
     }
 
     // This callback will be called by iOS if data decryption took to much time
@@ -127,21 +156,20 @@ class NotificationService: UNNotificationServiceExtension {
     // Dropping it silently means the user never learns about the message, so display a
     // generic notification that doesn't leak anything instead.
     func displayFallback() {
-        guard let handler = self.contentHandler else {
-            return
-        }
-        self.contentHandler = nil // never deliver twice (didReceive vs serviceExtensionTimeWillExpire)
+        deliver {
+            self.lock.lock()
+            let best = self.bestAttemptContent
+            self.lock.unlock()
 
-        guard let content = self.bestAttemptContent else {
-            handler(UNNotificationContent())
-            return
+            guard let content = best?.mutableCopy() as? UNMutableNotificationContent else {
+                return UNNotificationContent()
+            }
+            if content.title.isEmpty && content.body.isEmpty {
+                let bundle = self.getLocalizedBundle()
+                content.title = "Berty"
+                content.body = bundle?.localizedString(forKey: "notification.fallback.body", value: "You have a new message", table: nil) ?? "You have a new message"
+            }
+            return content
         }
-
-        if content.title.isEmpty && content.body.isEmpty {
-            let bundle = getLocalizedBundle()
-            content.title = "Berty"
-            content.body = bundle?.localizedString(forKey: "notification.fallback.body", value: "You have a new message", table: nil) ?? "You have a new message"
-        }
-        handler(content)
     }
 }

@@ -37,7 +37,7 @@ public class BleDriver {
     private final Context mAppContext;
     private BluetoothManager mBluetoothManager;
     private BluetoothAdapter mBluetoothAdapter;
-    private GattServer mGattServer;
+    private volatile GattServer mGattServer;
     private DeviceManager mDeviceManager;
     private PeerManager mPeerManager;
 
@@ -85,6 +85,7 @@ public class BleDriver {
     // Bluetooth stack was not ready yet right after it was turned on, the stop and start of a
     // quick off/on were run in the wrong order, a permission was granted later...), try again.
     private static final long WATCHDOG_PERIOD_SECONDS = 10;
+    private static final long LOST_PEER_FLUSH_TIMEOUT_MS = 5000;
     private ScheduledExecutorService mWatchdog;
 
     private synchronized void startWatchdog() {
@@ -257,6 +258,11 @@ public class BleDriver {
             mLogger.e(TAG, "startBleDriver: internal error: mLocalPid is not set");
             return;
         }
+
+        // The peers of the previous session (Bluetooth turned off and on) must be reported as
+        // lost before the ones of the new session can be reported as found.
+        mPeerManager.awaitLostPeerNotifications(LOST_PEER_FLUSH_TIMEOUT_MS);
+
         // Start the BLE thread
         Thread mThread = new Thread(() -> {
             Looper.prepare();
@@ -343,8 +349,16 @@ public class BleDriver {
         if (mScanner != null) {
             mScanner.stop();
         }
+        // Fence the GATT server callbacks of this session first: a callback already queued
+        // on the callbacks looper must not run once its devices and its BluetoothGattServer
+        // are gone (see GattServerCallback.close()).
+        if (mGattServer != null) {
+            mGattServer.closeCallbacks();
+        }
         // Tell the Go side that every peer is gone: the connections are dead, and
         // without this the stale peers make it believe it is still connected.
+        // The notifications are delivered on their own thread (see PeerManager), not on the
+        // callbacks looper that is discarded below.
         mPeerManager.unregisterAllPeers();
         // Do not wait for disconnection callbacks: they never come if Bluetooth is going off
         mDeviceManager.clearAll();
@@ -353,8 +367,9 @@ public class BleDriver {
         }
         setStarted(false);
 
+        // Discard the pending work of this session instead of draining it after the teardown
         if (mHandshakeLooper != null) mHandshakeLooper.quit();
-        if (mCallbacksLooper != null) mCallbacksLooper.quitSafely(); // let pending HandleLostPeer calls run
+        if (mCallbacksLooper != null) mCallbacksLooper.quit();
         if (mWriteLooper != null) mWriteLooper.quit();
         if (mReadLooper != null) mReadLooper.quit();
 
@@ -408,11 +423,12 @@ public class BleDriver {
 
                 return peerDevice.write(writer, payload, false);
             } else if (peerDevice.isServerConnected()) {
-                if (mGattServer == null) {
+                GattServer gattServer = mGattServer; // can be set to null by stopBleDriver()
+                if (gattServer == null) {
                     mLogger.e(TAG, "SendToPeer error: GATT server not running");
                     return false;
                 }
-                return mGattServer.writeAndNotify(peerDevice, payload);
+                return gattServer.writeAndNotify(peerDevice, payload);
             } else {
                 mLogger.e(TAG, "SendToPeer error: remote device is disconnected");
                 return false;

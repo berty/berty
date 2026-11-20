@@ -12,6 +12,7 @@ import android.content.Context;
 import android.os.ParcelUuid;
 import android.os.SystemClock;
 
+import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -39,6 +40,15 @@ public class Scanner extends ScanCallback {
     private static final int SCAN_PAUSE_TICKS = 1;
     // minimum delay between two "connect now" requests (see maybeRequestEarlyProcessing)
     private static final long EARLY_MIN_INTERVAL_MS = 2000;
+    // Android (AOSP) refuses the 6th scan start within 30 seconds and the app then gets no scan
+    // results for a while. Early processing stops the scan before the end of its window, so the
+    // starts are counted here and a start is postponed (scanner left paused, retried at the next
+    // tick) when it would go over the quota. One less than the system limit, as a margin.
+    private static final long SCAN_QUOTA_WINDOW_MS = 30000;
+    private static final int SCAN_QUOTA_MAX_STARTS = 4;
+    // shared by the Scanner instances: the system counts the starts per app, and a new Scanner
+    // is created each time the driver is restarted (Bluetooth turned off and on)
+    private static final ArrayDeque<Long> sScanStarts = new ArrayDeque<>();
     // key is MAC address
     private static final HashMap<String, ScanResult> foundMap = new HashMap<>();
     private final Context mContext;
@@ -142,13 +152,32 @@ public class Scanner extends ScanCallback {
         processResult();
     }
 
-    private void resumeScanning(ScanCallback callback) {
-        mLogger.d(TAG, "start scanning");
-        if (mBluetoothAdapter.getState() == BluetoothAdapter.STATE_ON) {
-            mBluetoothLeScanner.startScan(Collections.singletonList(mScanFilter), mScanSettings, callback);
-        } else {
-            mLogger.e(TAG, "start scanner in timer error: BT adapter not running");
+    // true (and the start is counted) if a scan can be started without going over the quota
+    private static boolean reserveScanStart() {
+        long now = SystemClock.elapsedRealtime();
+        synchronized (sScanStarts) {
+            while (!sScanStarts.isEmpty() && now - sScanStarts.peekFirst() >= SCAN_QUOTA_WINDOW_MS) {
+                sScanStarts.pollFirst();
+            }
+            if (sScanStarts.size() >= SCAN_QUOTA_MAX_STARTS) {
+                return false;
+            }
+            sScanStarts.addLast(now);
+            return true;
         }
+    }
+
+    private void resumeScanning(ScanCallback callback) {
+        if (mBluetoothAdapter.getState() != BluetoothAdapter.STATE_ON) {
+            mLogger.e(TAG, "start scanner in timer error: BT adapter not running");
+            return; // stay paused, retried at the next tick
+        }
+        if (!reserveScanStart()) {
+            mLogger.w(TAG, "start scanning postponed: too many scan starts in the last 30 s");
+            return; // stay paused, retried at the next tick
+        }
+        mLogger.d(TAG, "start scanning");
+        mBluetoothLeScanner.startScan(Collections.singletonList(mScanFilter), mScanSettings, callback);
         setScannerState(SCANNER_STATE_ENABLED);
         mTicks = 0;
     }
@@ -206,8 +235,14 @@ public class Scanner extends ScanCallback {
                 return false;
             }
 
+            // same checks as parseResult(): no client connection to this MAC address, and none
+            // to this ID through another MAC address (the advertising address can change)
             PeerDevice peerDevice = mBleDriver.deviceManager().get(result.getDevice().getAddress());
-            return peerDevice == null || peerDevice.isClientDisconnected();
+            if (peerDevice != null && !peerDevice.isClientDisconnected()) {
+                return false;
+            }
+            PeerDevice sameId = mBleDriver.deviceManager().getById(id);
+            return sameId == null || sameId.isClientDisconnected();
         } catch (RuntimeException e) {
             return false;
         }
@@ -240,12 +275,18 @@ public class Scanner extends ScanCallback {
             setScannerState(SCANNER_STATE_DISABLED);
         }
 
-        mLogger.i(TAG, "start scanning");
         mLocalPID = localPID;
         mId = localPID.substring(localPID.length() - 4);
-        mBluetoothLeScanner.startScan(Collections.singletonList(mScanFilter), mScanSettings, this);
-
-        setScannerState(SCANNER_STATE_ENABLED);
+        if (reserveScanStart()) {
+            mLogger.i(TAG, "start scanning");
+            mBluetoothLeScanner.startScan(Collections.singletonList(mScanFilter), mScanSettings, this);
+            setScannerState(SCANNER_STATE_ENABLED);
+        } else {
+            // e.g. Bluetooth turned off and on several times in a row: the timer starts the scan
+            // as soon as the quota allows it
+            mLogger.w(TAG, "start scanning postponed: too many scan starts in the last 30 s");
+            setScannerState(SCANNER_STATE_PAUSED);
+        }
 
         ScanCallback callback = this;
         mTicks = 0;

@@ -239,8 +239,17 @@ public class GattServer {
         }
     }
 
+    // Fence the callbacks of this server: from now on, the callbacks already queued or still
+    // delivered by the system are discarded (this server and its devices are being torn down).
+    public void closeCallbacks() {
+        if (mGattServerCallback != null) {
+            mGattServerCallback.close();
+        }
+    }
+
     public void stop() {
         mLogger.i(TAG, "stop() called");
+        closeCallbacks();
         if (isStarted()) {
             setStarted(false);
             if (mBluetoothServerSocket != null) {
@@ -299,7 +308,14 @@ public class GattServer {
                 return;
             }
 
-            if (!mBluetoothGattServer.notifyCharacteristicChanged(device.getBluetoothDevice(), mWriterCharacteristic, true)) {
+            BluetoothGattServer gattServer = getGattServer();
+            if (gattServer == null) {
+                mLogger.e(TAG, "_writeAndNotify: GATT server is not running");
+                device.getBleQueue().completedCommand(device.STATUS_ERROR);
+                return;
+            }
+
+            if (!gattServer.notifyCharacteristicChanged(device.getBluetoothDevice(), mWriterCharacteristic, true)) {
                 mLogger.e(TAG, String.format("_writeAndNotify: notifyCharacteristicChanged failed for device=%s", mLogger.sensitiveObject(device.getMACAddress())));
                 device.getBleQueue().completedCommand(device.STATUS_ERROR);
             }
@@ -327,7 +343,7 @@ public class GattServer {
             mLogger.v(TAG, "writeAndNotify called");
         }
 
-        if (mBluetoothGattServer == null) {
+        if (getGattServer() == null) {
             mLogger.e(TAG, "writeAndNotify: GATT server is not running");
             return false;
         }
