@@ -3,250 +3,413 @@ package bertymessenger
 import (
 	"context"
 	"errors"
-	"sync"
+	"fmt"
+	"io"
 	"testing"
+	"testing/synctest"
 	"time"
 
 	"github.com/stretchr/testify/require"
 	"go.uber.org/zap"
 	"google.golang.org/grpc"
 
+	weshnet_errcode "berty.tech/weshnet/v2/pkg/errcode"
 	"berty.tech/weshnet/v2/pkg/protocoltypes"
 )
 
-// fakeGroupMessageStream yields queued events in order, then returns errAfter or (if block) tails until ctx is done.
-// It embeds the grpc client-stream interface (nil) so it also satisfies the GroupMessageListClient type; only Recv is used.
-type fakeGroupMessageStream struct {
-	grpc.ServerStreamingClient[protocoltypes.GroupMessageEvent]
-
-	mu       sync.Mutex
-	events   []*protocoltypes.GroupMessageEvent
-	idx      int
-	errAfter error
-	block    bool
+type fakeSubscriptionStream[T subscriptionEvent] struct {
+	grpc.ClientStream
 	ctx      context.Context
+	events   []T
+	errAfter error
 }
 
-func (f *fakeGroupMessageStream) Recv() (*protocoltypes.GroupMessageEvent, error) {
-	f.mu.Lock()
-	if f.idx < len(f.events) {
-		e := f.events[f.idx]
-		f.idx++
-		f.mu.Unlock()
-		return e, nil
+func (s *fakeSubscriptionStream[T]) Recv() (T, error) {
+	var zero T
+	if len(s.events) != 0 {
+		event := s.events[0]
+		s.events = s.events[1:]
+		return event, nil
 	}
-	f.mu.Unlock()
-
-	if f.block {
-		<-f.ctx.Done()
-		return nil, f.ctx.Err()
+	if s.errAfter != nil {
+		return zero, s.errAfter
 	}
-	return nil, f.errAfter
+	<-s.ctx.Done()
+	return zero, s.ctx.Err()
 }
 
-func mkGroupMessageEvent(id string) *protocoltypes.GroupMessageEvent {
-	return &protocoltypes.GroupMessageEvent{
-		EventContext: &protocoltypes.EventContext{Id: []byte(id)},
-		Message:      []byte(id),
-	}
+func TestSubscriptionMessages(t *testing.T) {
+	testSubscription(t, func(id string) *protocoltypes.GroupMessageEvent {
+		return &protocoltypes.GroupMessageEvent{EventContext: &protocoltypes.EventContext{Id: []byte(id)}}
+	})
 }
 
-// TestStreamGroupMessagesReconnectBackfill: on stream failure, reconnect, resume from the last handled id, keep delivering.
-func TestStreamGroupMessagesReconnectBackfill(t *testing.T) {
-	svc := &service{logger: zap.NewNop()}
-	gpkb := []byte("group-pk")
-
-	ctx, cancel := context.WithCancel(context.Background())
-	defer cancel()
-
-	// First stream delivers m1, m2 then fails; the reconnect delivers the missed m3, then tails.
-	stream1 := &fakeGroupMessageStream{
-		events:   []*protocoltypes.GroupMessageEvent{mkGroupMessageEvent("m1"), mkGroupMessageEvent("m2")},
-		errAfter: errors.New("stream boom"),
-	}
-	stream2 := &fakeGroupMessageStream{
-		events: []*protocoltypes.GroupMessageEvent{mkGroupMessageEvent("m3")},
-		block:  true,
-		ctx:    ctx,
-	}
-
-	var mu sync.Mutex
-	var handled []string
-	var sinceIDs [][]byte
-	connectCalls := 0
-
-	connect := func(_ context.Context, _, sinceID []byte) (groupMessageStream, error) {
-		mu.Lock()
-		defer mu.Unlock()
-		connectCalls++
-		sinceIDs = append(sinceIDs, append([]byte(nil), sinceID...))
-		return stream2, nil
-	}
-	handle := func(_ []byte, gme *protocoltypes.GroupMessageEvent) {
-		mu.Lock()
-		defer mu.Unlock()
-		handled = append(handled, string(gme.GetEventContext().GetId()))
-	}
-
-	done := make(chan struct{})
-	go func() {
-		// no seed cursor: cursor is established from the live messages (m1, m2)
-		svc.streamGroupMessages(ctx, gpkb, stream1, nil, connect, handle)
-		close(done)
-	}()
-
-	require.Eventually(t, func() bool {
-		mu.Lock()
-		defer mu.Unlock()
-		return len(handled) >= 3
-	}, 5*time.Second, 10*time.Millisecond)
-
-	cancel()
-	<-done
-
-	mu.Lock()
-	defer mu.Unlock()
-	require.Equal(t, []string{"m1", "m2", "m3"}, handled)
-	require.Equal(t, 1, connectCalls)
-	// reconnection must resume right after the last handled message (m2)
-	require.Equal(t, [][]byte{[]byte("m2")}, sinceIDs)
+func TestSubscriptionMetadata(t *testing.T) {
+	testSubscription(t, func(id string) *protocoltypes.GroupMetadataEvent {
+		return &protocoltypes.GroupMetadataEvent{EventContext: &protocoltypes.EventContext{Id: []byte(id)}}
+	})
 }
 
-// TestStreamGroupMessagesSeedCursor: a drop before any live message reconnects using the DB-seeded cursor.
-func TestStreamGroupMessagesSeedCursor(t *testing.T) {
-	svc := &service{logger: zap.NewNop()}
-	gpkb := []byte("group-pk")
-
-	ctx, cancel := context.WithCancel(context.Background())
-	defer cancel()
-
-	stream1 := &fakeGroupMessageStream{errAfter: errors.New("stream boom")} // fails immediately
-	stream2 := &fakeGroupMessageStream{
-		events: []*protocoltypes.GroupMessageEvent{mkGroupMessageEvent("seeded")},
-		block:  true,
-		ctx:    ctx,
-	}
-
-	var mu sync.Mutex
-	var sinceIDs [][]byte
-	var handled []string
-
-	connect := func(_ context.Context, _, sinceID []byte) (groupMessageStream, error) {
-		mu.Lock()
-		defer mu.Unlock()
-		sinceIDs = append(sinceIDs, append([]byte(nil), sinceID...))
-		return stream2, nil
-	}
-	handle := func(_ []byte, gme *protocoltypes.GroupMessageEvent) {
-		mu.Lock()
-		defer mu.Unlock()
-		handled = append(handled, string(gme.GetEventContext().GetId()))
-	}
-
-	done := make(chan struct{})
-	go func() {
-		svc.streamGroupMessages(ctx, gpkb, stream1, []byte("seed-cursor"), connect, handle)
-		close(done)
-	}()
-
-	require.Eventually(t, func() bool {
-		mu.Lock()
-		defer mu.Unlock()
-		return len(handled) >= 1
-	}, 5*time.Second, 10*time.Millisecond)
-
-	cancel()
-	<-done
-
-	mu.Lock()
-	defer mu.Unlock()
-	require.Equal(t, [][]byte{[]byte("seed-cursor")}, sinceIDs)
-}
-
-// TestDrainBoundedStream: the drain handles every event of a non-tailing stream, skipping sentinels.
-func TestDrainBoundedStream(t *testing.T) {
-	svc := &service{logger: zap.NewNop()}
-	gpkb := []byte("group-pk")
-
-	stream := &fakeGroupMessageStream{
-		events: []*protocoltypes.GroupMessageEvent{
-			mkGroupMessageEvent("h1"),
-			{EventContext: nil}, // sentinel: must be skipped
-			mkGroupMessageEvent("h2"),
-			mkGroupMessageEvent("h3"),
-		},
-		errAfter: errors.New("EOF"), // bounded stream ends after the queued events
-	}
-
-	var handled []string
-	count := svc.drainBoundedStream(gpkb, stream, func(_ []byte, gme *protocoltypes.GroupMessageEvent) {
-		handled = append(handled, string(gme.GetEventContext().GetId()))
+// Exercise the same recovery contract with both actual protocol event types.
+func testSubscription[T subscriptionEvent](t *testing.T, event func(string) T) {
+	t.Run("reconnect and reconcile interleaved history", func(t *testing.T) {
+		synctest.Test(t, func(t *testing.T) {
+			ctx, cancel := context.WithCancel(context.Background())
+			defer cancel()
+			var handled []string
+			var previous context.Context
+			calls := 0
+			connect := func(streamCtx context.Context, sinceID []byte, untilNow bool) (subscriptionStream[T], error) {
+				if previous != nil {
+					require.ErrorIs(t, previous.Err(), context.Canceled, "previous attempt must be closed")
+				}
+				previous = streamCtx
+				calls++
+				s := &fakeSubscriptionStream[T]{ctx: streamCtx}
+				switch calls {
+				case 1: // Initial connection failures must also retry.
+					require.Equal(t, "seed", string(sinceID))
+					require.True(t, untilNow)
+					return nil, errors.New("offline")
+				case 2:
+					require.Equal(t, "seed", string(sinceID))
+					require.True(t, untilNow)
+					s.events = []T{event("seed"), event("history")}
+					s.errAfter = io.EOF
+				case 3:
+					require.Equal(t, "history", string(sinceID))
+					require.False(t, untilNow)
+					// A new live event overtakes a historical event not received yet.
+					s.events = []T{event("history"), event("newer"), event("newer")}
+					s.errAfter = io.ErrUnexpectedEOF
+				case 4:
+					require.Equal(t, "history", string(sinceID), "live receipt must not skip the gap")
+					require.True(t, untilNow)
+					s.events = []T{event("history"), event("missed"), event("newer")}
+					s.errAfter = io.EOF
+				case 5:
+					require.Equal(t, "newer", string(sinceID))
+					require.False(t, untilNow)
+					s.events = []T{event("newer"), event("last")}
+				default:
+					t.Fatal("unexpected reconnect")
+				}
+				return s, nil
+			}
+			runSubscription(ctx, zap.NewNop(), []byte("seed"), connect, func(e T) error {
+				id := string(e.GetEventContext().GetId())
+				handled = append(handled, id)
+				if id == "last" {
+					cancel()
+				}
+				return nil
+			})
+			require.Equal(t, []string{"history", "newer", "missed", "last"}, handled)
+			require.Equal(t, 5, calls)
+			require.ErrorIs(t, previous.Err(), context.Canceled)
+		})
 	})
 
-	require.Equal(t, 3, count)
-	require.Equal(t, []string{"h1", "h2", "h3"}, handled)
+	t.Run("interrupted replay and handler retry", func(t *testing.T) {
+		synctest.Test(t, func(t *testing.T) {
+			ctx, cancel := context.WithCancel(context.Background())
+			defer cancel()
+			var handled []string
+			calls, handlerAttempts := 0, 0
+			connect := func(streamCtx context.Context, sinceID []byte, untilNow bool) (subscriptionStream[T], error) {
+				calls++
+				s := &fakeSubscriptionStream[T]{ctx: streamCtx, errAfter: io.EOF}
+				switch calls {
+				case 1:
+					require.Nil(t, sinceID)
+					var sentinel T // Generated GetEventContext methods are nil-safe.
+					s.events = []T{sentinel, event(""), event("one")}
+					s.errAfter = io.ErrUnexpectedEOF
+				case 2, 3:
+					require.True(t, untilNow)
+					require.Equal(t, "one", string(sinceID))
+					s.events = []T{event("one"), event("two"), event("three")}
+				case 4:
+					require.False(t, untilNow)
+					require.Equal(t, "three", string(sinceID))
+					cancel()
+				default:
+					t.Fatal("unexpected reconnect")
+				}
+				return s, nil
+			}
+			runSubscription(ctx, zap.NewNop(), nil, connect, func(e T) error {
+				id := string(e.GetEventContext().GetId())
+				if id == "two" {
+					handlerAttempts++
+					if handlerAttempts == 1 {
+						return errors.New("temporary database failure")
+					}
+				}
+				handled = append(handled, id)
+				return nil
+			})
+			require.Equal(t, []string{"one", "two", "three"}, handled)
+			require.Equal(t, 2, handlerAttempts)
+		})
+	})
+
+	t.Run("live handler failure keeps checkpoint", func(t *testing.T) {
+		synctest.Test(t, func(t *testing.T) {
+			ctx, cancel := context.WithCancel(context.Background())
+			defer cancel()
+			calls, attempts := 0, 0
+			connect := func(streamCtx context.Context, sinceID []byte, untilNow bool) (subscriptionStream[T], error) {
+				calls++
+				require.Equal(t, "seed", string(sinceID))
+				s := &fakeSubscriptionStream[T]{ctx: streamCtx, errAfter: io.EOF}
+				switch calls {
+				case 1:
+					require.True(t, untilNow)
+				case 2:
+					require.False(t, untilNow)
+					s.events = []T{event("failed")}
+				case 3:
+					require.True(t, untilNow)
+					s.events = []T{event("failed")}
+				default:
+					t.Fatal("unexpected reconnect")
+				}
+				return s, nil
+			}
+			runSubscription(ctx, zap.NewNop(), []byte("seed"), connect, func(T) error {
+				attempts++
+				if attempts == 1 {
+					return errors.New("temporary database failure")
+				}
+				cancel()
+				return nil
+			})
+			require.Equal(t, 2, attempts)
+		})
+	})
+
+	t.Run("unavailable persisted cursor", func(t *testing.T) {
+		synctest.Test(t, func(t *testing.T) {
+			ctx, cancel := context.WithCancel(context.Background())
+			defer cancel()
+			calls := 0
+			connect := func(streamCtx context.Context, sinceID []byte, untilNow bool) (subscriptionStream[T], error) {
+				calls++
+				require.True(t, untilNow)
+				if calls == 1 {
+					require.Equal(t, "missing", string(sinceID))
+					return &fakeSubscriptionStream[T]{ctx: streamCtx, errAfter: weshnet_errcode.ErrCode_ErrInvalidRange}, nil
+				}
+				require.Nil(t, sinceID)
+				return &fakeSubscriptionStream[T]{ctx: streamCtx, events: []T{event("recovered")}}, nil
+			}
+			runSubscription(ctx, zap.NewNop(), []byte("missing"), connect, func(T) error { cancel(); return nil })
+			require.Equal(t, 2, calls)
+		})
+	})
+
+	t.Run("canceled before startup", func(t *testing.T) {
+		ctx, cancel := context.WithCancel(context.Background())
+		cancel()
+		connect := func(context.Context, []byte, bool) (subscriptionStream[T], error) {
+			t.Fatal("must not connect after cancellation")
+			return nil, nil
+		}
+		runSubscription(ctx, zap.NewNop(), nil, connect, func(T) error { return nil })
+	})
+
+	for _, failure := range []string{"open", "replay receive", "live receive", "live EOF"} {
+		t.Run("backoff on "+failure, func(t *testing.T) {
+			synctest.Test(t, func(t *testing.T) {
+				ctx, cancel := context.WithCancel(context.Background())
+				defer cancel()
+				var attempts []time.Time
+				connect := func(streamCtx context.Context, _ []byte, untilNow bool) (subscriptionStream[T], error) {
+					if (failure == "live receive" || failure == "live EOF") && untilNow {
+						return &fakeSubscriptionStream[T]{ctx: streamCtx, errAfter: io.EOF}, nil
+					}
+					attempts = append(attempts, time.Now())
+					if len(attempts) == 9 {
+						cancel()
+					}
+					if failure == "open" {
+						return nil, errors.New("offline")
+					}
+					recvErr := io.ErrUnexpectedEOF
+					if failure == "live EOF" {
+						recvErr = io.EOF
+					}
+					return &fakeSubscriptionStream[T]{ctx: streamCtx, errAfter: recvErr}, nil
+				}
+				runSubscription(ctx, zap.NewNop(), nil, connect, func(T) error { t.Fatal("unexpected event"); return nil })
+				require.Len(t, attempts, 9)
+				for i := 1; i < len(attempts); i++ {
+					cap := min(subscriptionMinRetryDelay*time.Duration(1<<(i-1)), subscriptionMaxRetryDelay)
+					delta := attempts[i].Sub(attempts[i-1])
+					require.GreaterOrEqual(t, delta, cap/2)
+					require.Less(t, delta, cap)
+				}
+			})
+		})
+	}
+
+	for _, recovery := range []string{"processed event", "stable connection"} {
+		t.Run("reset backoff after "+recovery, func(t *testing.T) {
+			synctest.Test(t, func(t *testing.T) {
+				ctx, cancel := context.WithCancel(context.Background())
+				defer cancel()
+				calls := 0
+				var recoveredAt time.Time
+				connect := func(streamCtx context.Context, _ []byte, _ bool) (subscriptionStream[T], error) {
+					calls++
+					switch calls {
+					case 1, 2, 3:
+						return nil, errors.New("offline")
+					case 4:
+						if recovery == "stable connection" {
+							time.Sleep(subscriptionMaxRetryDelay)
+							recoveredAt = time.Now()
+							return nil, errors.New("connection lost after being stable")
+						}
+						return &fakeSubscriptionStream[T]{ctx: streamCtx, events: []T{event("progress")}, errAfter: io.ErrUnexpectedEOF}, nil
+					case 5:
+						delta := time.Since(recoveredAt)
+						require.GreaterOrEqual(t, delta, subscriptionMinRetryDelay/2)
+						require.Less(t, delta, subscriptionMinRetryDelay)
+						cancel()
+						return nil, context.Canceled
+					default:
+						t.Fatal("unexpected reconnect")
+						return nil, nil
+					}
+				}
+				runSubscription(ctx, zap.NewNop(), nil, connect, func(T) error { recoveredAt = time.Now(); return nil })
+				require.Equal(t, 5, calls)
+			})
+		})
+	}
+
+	for _, blocked := range []string{"receive", "backoff"} {
+		t.Run("cancel during "+blocked, func(t *testing.T) {
+			synctest.Test(t, func(t *testing.T) {
+				ctx, cancel := context.WithCancel(context.Background())
+				defer cancel()
+				calls := 0
+				var attemptCtx context.Context
+				connect := func(streamCtx context.Context, _ []byte, _ bool) (subscriptionStream[T], error) {
+					calls++
+					attemptCtx = streamCtx
+					if blocked == "backoff" {
+						return nil, errors.New("offline")
+					}
+					return &fakeSubscriptionStream[T]{ctx: streamCtx}, nil
+				}
+				done := make(chan struct{})
+				go func() {
+					defer close(done)
+					runSubscription(ctx, zap.NewNop(), nil, connect, func(T) error { return nil })
+				}()
+				synctest.Wait()
+				cancel()
+				synctest.Wait()
+				select {
+				case <-done:
+				default:
+					t.Fatal("subscription did not stop")
+				}
+				require.Equal(t, 1, calls)
+				require.ErrorIs(t, attemptCtx.Err(), context.Canceled)
+			})
+		})
+	}
+
+	t.Run("refresh checkpoint without duplicate delivery", func(t *testing.T) {
+		synctest.Test(t, func(t *testing.T) {
+			ctx, cancel := context.WithCancel(context.Background())
+			defer cancel()
+			batch := make([]T, subscriptionCheckpointInterval)
+			for i := range batch {
+				batch[i] = event(fmt.Sprint(i))
+			}
+			calls, handled := 0, 0
+			connect := func(streamCtx context.Context, sinceID []byte, untilNow bool) (subscriptionStream[T], error) {
+				calls++
+				s := &fakeSubscriptionStream[T]{ctx: streamCtx, errAfter: io.EOF}
+				switch calls {
+				case 1:
+					require.True(t, untilNow)
+				case 2:
+					require.False(t, untilNow)
+					s.events = batch
+				case 3:
+					require.True(t, untilNow)
+					require.Nil(t, sinceID)
+					s.events = batch
+				case 4:
+					require.False(t, untilNow)
+					require.Equal(t, fmt.Sprint(len(batch)-1), string(sinceID))
+					cancel()
+				default:
+					t.Fatal("unexpected reconnect")
+				}
+				return s, nil
+			}
+			runSubscription(ctx, zap.NewNop(), nil, connect, func(T) error { handled++; return nil })
+			require.Equal(t, len(batch), handled)
+		})
+	})
 }
 
-// fakeProtocolClient implements only GroupMessageList; other calls hit the nil embedded interface.
 type fakeProtocolClient struct {
 	protocoltypes.ProtocolServiceClient
-
-	groupMessageList func(ctx context.Context, req *protocoltypes.GroupMessageList_Request) (protocoltypes.ProtocolService_GroupMessageListClient, error)
+	groupMessageList  func(context.Context, *protocoltypes.GroupMessageList_Request) (protocoltypes.ProtocolService_GroupMessageListClient, error)
+	groupMetadataList func(context.Context, *protocoltypes.GroupMetadataList_Request) (protocoltypes.ProtocolService_GroupMetadataListClient, error)
 }
 
 func (f *fakeProtocolClient) GroupMessageList(ctx context.Context, req *protocoltypes.GroupMessageList_Request, _ ...grpc.CallOption) (protocoltypes.ProtocolService_GroupMessageListClient, error) {
 	return f.groupMessageList(ctx, req)
 }
 
-// TestReconcileGroupMessagesRequest: the startup pass requests a bounded backfill (SinceId == cursor, UntilNow) and replays it.
-func TestReconcileGroupMessagesRequest(t *testing.T) {
-	gpkb := []byte("group-pk")
-	cursor := []byte("last-indexed-cid")
-
-	var gotReq *protocoltypes.GroupMessageList_Request
-	fakeClient := &fakeProtocolClient{
-		groupMessageList: func(_ context.Context, req *protocoltypes.GroupMessageList_Request) (protocoltypes.ProtocolService_GroupMessageListClient, error) {
-			gotReq = req
-			return &fakeGroupMessageStream{
-				events:   []*protocoltypes.GroupMessageEvent{mkGroupMessageEvent("r1"), mkGroupMessageEvent("r2")},
-				errAfter: errors.New("EOF"), // bounded stream ends at the head
-			}, nil
-		},
-	}
-
-	svc := &service{logger: zap.NewNop(), protocolClient: fakeClient}
-
-	var handled []string
-	svc.reconcileGroupMessages(context.Background(), gpkb, cursor, func(_ []byte, gme *protocoltypes.GroupMessageEvent) {
-		handled = append(handled, string(gme.GetEventContext().GetId()))
-	})
-
-	require.NotNil(t, gotReq)
-	require.Equal(t, gpkb, gotReq.GroupPk)
-	require.Equal(t, cursor, gotReq.SinceId)
-	require.True(t, gotReq.UntilNow, "reconciliation must be bounded (UntilNow)")
-	require.False(t, gotReq.SinceNow, "reconciliation must resume from the cursor, not tail from now")
-	require.Equal(t, []string{"r1", "r2"}, handled)
+func (f *fakeProtocolClient) GroupMetadataList(ctx context.Context, req *protocoltypes.GroupMetadataList_Request, _ ...grpc.CallOption) (protocoltypes.ProtocolService_GroupMetadataListClient, error) {
+	return f.groupMetadataList(ctx, req)
 }
 
-// TestReconnectGroupMessagesCancel: the reconnect loop gives up when ctx is canceled mid-retry.
-func TestReconnectGroupMessagesCancel(t *testing.T) {
-	svc := &service{logger: zap.NewNop()}
-
-	ctx, cancel := context.WithCancel(context.Background())
-
-	var calls int32
-	var mu sync.Mutex
-	connect := func(_ context.Context, _, _ []byte) (groupMessageStream, error) {
-		mu.Lock()
-		calls++
-		if calls == 1 {
-			cancel() // cancel right after the first failed attempt
+func TestSubscriptionConnectors(t *testing.T) {
+	for _, untilNow := range []bool{false, true} {
+		for _, cursor := range [][]byte{nil, []byte("cursor")} {
+			t.Run(fmt.Sprintf("bounded=%v/cursor=%s", untilNow, cursor), func(t *testing.T) {
+				ctx := context.Background()
+				gpkb := []byte("group")
+				boom := errors.New("connection failed")
+				messageCalls, metadataCalls := 0, 0
+				svc := &service{protocolClient: &fakeProtocolClient{
+					groupMessageList: func(gotCtx context.Context, req *protocoltypes.GroupMessageList_Request) (protocoltypes.ProtocolService_GroupMessageListClient, error) {
+						messageCalls++
+						require.Equal(t, ctx, gotCtx)
+						require.Equal(t, gpkb, req.GroupPk)
+						require.Equal(t, cursor, req.SinceId)
+						require.Equal(t, untilNow, req.UntilNow)
+						require.False(t, req.SinceNow, "must backfill the connection gap even with no cursor")
+						return nil, boom
+					},
+					groupMetadataList: func(gotCtx context.Context, req *protocoltypes.GroupMetadataList_Request) (protocoltypes.ProtocolService_GroupMetadataListClient, error) {
+						metadataCalls++
+						require.Equal(t, ctx, gotCtx)
+						require.Equal(t, gpkb, req.GroupPk)
+						require.Equal(t, cursor, req.SinceId)
+						require.Equal(t, untilNow, req.UntilNow)
+						require.False(t, req.SinceNow)
+						return nil, boom
+					},
+				}}
+				_, err := svc.connectGroupMessages(ctx, gpkb, cursor, untilNow)
+				require.ErrorIs(t, err, boom)
+				_, err = svc.connectGroupMetadata(ctx, gpkb, cursor, untilNow)
+				require.ErrorIs(t, err, boom)
+				require.Equal(t, 1, messageCalls)
+				require.Equal(t, 1, metadataCalls)
+			})
 		}
-		mu.Unlock()
-		return nil, errors.New("still down")
 	}
-
-	got := svc.reconnectGroupMessages(ctx, []byte("g"), nil, connect)
-	require.Nil(t, got)
 }
