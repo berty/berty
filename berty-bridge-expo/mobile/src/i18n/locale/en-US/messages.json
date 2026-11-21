@@ -145,7 +145,11 @@
 			},
 			"conversations": {
 				"request-sent": "Request sent. Pending...",
-				"draft": "Draft: {{message}}"
+				"draft": "Draft: {{message}}",
+				"hide-title": "Hide this chat?",
+				"hide-desc": "It will be removed from the list. Nothing is deleted: the chat comes back when a new message arrives.",
+				"hide-confirm": "Hide",
+				"hide-cancel": "Cancel"
 			}
 		},
 		"suggestion-display-name-initial": "Click here to add"

@@ -12,6 +12,7 @@ interface ConversationButtonProps {
 	type: beapi.messenger.Conversation.Type | null
 	isAccepted: boolean | undefined
 	isLast: boolean
+	onLongPress?: () => void
 }
 
 export const ConversationButton: React.FC<ConversationButtonProps> = props => {
@@ -55,6 +56,7 @@ export const ConversationButton: React.FC<ConversationButtonProps> = props => {
 					opacity(0.6),
 			]}
 			onPress={handlePress}
+			onLongPress={props.onLongPress}
 		>
 			<View style={[row.center, !props.isLast && styles.divider, padding.vertical.scale(7)]}>
 				{props.children}

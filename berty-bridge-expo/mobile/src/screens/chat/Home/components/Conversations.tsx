@@ -6,6 +6,10 @@ import beapi from '@berty/api'
 import { useStyles } from '@berty/contexts/styles'
 import { useThemeColor } from '@berty/hooks'
 import { Suggestion, Configuration } from '@berty/redux/reducers/persistentOptions.reducer'
+import {
+	isConversationHidden,
+	useHiddenConversations,
+} from '@berty/utils/conversation/hiddenConversations'
 
 import { ConversationItem } from './conversation/ConversationItem'
 import { AddBotCallback } from './suggestion/interfaces'
@@ -18,7 +22,12 @@ export const Conversations: React.FC<
 		configurations: Configuration[]
 		addBot: AddBotCallback
 	}
-> = React.memo(function Conversations({ items, suggestions, configurations, addBot }) {
+> = React.memo(function Conversations({ items: allItems, suggestions, configurations, addBot }) {
+	const hiddenConversations = useHiddenConversations()
+	const items = React.useMemo(
+		() => allItems.filter(conv => !isConversationHidden(hiddenConversations, conv)),
+		[allItems, hiddenConversations],
+	)
 	const { padding } = useStyles()
 	const { t } = useTranslation()
 	const colors = useThemeColor()
