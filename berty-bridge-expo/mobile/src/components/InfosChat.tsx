@@ -15,6 +15,7 @@ import {
 	useThemeColor,
 } from '@berty/hooks'
 import { pbDateToNum, timeFormat } from '@berty/utils/convert/time'
+import { readableColor } from '@berty/utils/theme/readableColor'
 
 import { ContactAvatar } from './avatars'
 import { SecondaryButtonIconLeft, TertiaryButtonIconLeft, PrimaryButton } from './buttons'
@@ -36,7 +37,11 @@ const InfosContactState: React.FC<{ state: string }> = ({ state }) => {
 	const { text, border, padding, margin } = useStyles()
 	const colors = useThemeColor()
 
-	const textColor = colors['background-header']
+	const textColor = readableColor(
+		colors['background-header'],
+		colors['main-background'],
+		colors['main-text'],
+	)
 	return (
 		<View
 			style={[
@@ -141,7 +146,12 @@ export const InfosChat: React.FC<beapi.messenger.IConversation> = ({
 	const isOutgoing =
 		contact?.state === beapi.messenger.Contact.State.OutgoingRequestEnqueued ||
 		contact?.state === beapi.messenger.Contact.State.OutgoingRequestSent
-	const textColor = colors['background-header']
+	// shown in a MessageSystemWrapper (input background)
+	const textColor = readableColor(
+		colors['background-header'],
+		colors['input-background'],
+		colors['main-text'],
+	)
 
 	const [isRefresh, setIsRefresh] = useState<boolean>(false)
 	const contactPk = contact?.publicKey
