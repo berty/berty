@@ -45,7 +45,7 @@
     "expo-web-browser": "~10.1.0",
     "faker": "^5.2.0",
     "google-palette": "^1.1.0",
-    "i18next": "^21.6.4",
+    "i18next": "^26.3.4",
     "libphonenumber-js": "^1.10.21",
     "linkify-it": "^3.0.3",
     "lottie-react-native": "^4.1.3",
