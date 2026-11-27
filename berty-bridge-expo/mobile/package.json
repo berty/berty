@@ -62,7 +62,7 @@
     "expo-web-browser": "~58.0.7",
     "faker": "^5.2.0",
     "google-palette": "^1.1.1",
-    "i18next": "^21.6.4",
+    "i18next": "^27.2.9",
     "intl-pluralrules": "^2.0.1",
     "libphonenumber-js": "^1.12.8",
     "linkify-it": "^5.0.2",
