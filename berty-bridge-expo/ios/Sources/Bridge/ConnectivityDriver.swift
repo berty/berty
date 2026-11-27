@@ -28,7 +28,15 @@ class ConnectivityDriver: NSObject, BertybridgeIConnectivityDriverProtocol, CBCe
 
         super.init()
       
-        self.centralManager = CBCentralManager(delegate: self, queue: nil)
+        // This manager only observes the Bluetooth state to report it to the
+        // bridge, and it is created on every launch whatever the BLE settings
+        // are. Without this option, iOS shows its "Turn On Bluetooth" alert
+        // each time Bluetooth is off (see #4961).
+        self.centralManager = CBCentralManager(
+            delegate: self,
+            queue: nil,
+            options: [CBCentralManagerOptionShowPowerAlertKey: false]
+        )
 
         self.pathMonitor.pathUpdateHandler = { [weak self] path in
             // The module (and this driver) is recreated on every JS reload;
