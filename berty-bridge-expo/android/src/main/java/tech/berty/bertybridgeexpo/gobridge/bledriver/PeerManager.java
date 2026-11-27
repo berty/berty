@@ -28,6 +28,15 @@ public class PeerManager {
         return thread;
     });
 
+    // Peers whose loss is queued on sLostPeerNotifier and not delivered yet (peerID -> count).
+    // A peer is not reported as found again before its previous loss has been delivered,
+    // otherwise the late "lost" would close the new connection in Go.
+    // Guarded by mLossLock. Lock order: this object, then mLossLock (never the reverse).
+    private final Object mLossLock = new Object();
+    private final HashMap<String, Integer> mPendingLoss = new HashMap<>();
+    private static final long LOSS_BEFORE_FOUND_TIMEOUT_MS = 5000;
+    private static final int REGISTER_ATTEMPTS = 3;
+
     public PeerManager(Logger logger) {
         mLogger = logger;
     }
@@ -45,9 +54,29 @@ public class PeerManager {
         return peer;
     }
 
-    public synchronized Peer registerDevice(String peerID, PeerDevice peerDevice, boolean isClient) {
+    public Peer registerDevice(String peerID, PeerDevice peerDevice, boolean isClient) {
         mLogger.i(TAG, String.format("registerDevice called: device=%s peerID=%s client=%b", mLogger.sensitiveObject(peerDevice.getMACAddress()), mLogger.sensitiveObject(peerID), isClient));
 
+        for (int attempt = 0; attempt < REGISTER_ATTEMPTS; attempt++) {
+            // wait for a previous loss of this peer to be delivered, without holding the monitor
+            // (the loss handler may wait for a writer that needs it, see sLostPeerNotifier)
+            if (!awaitPendingLoss(peerID, LOSS_BEFORE_FOUND_TIMEOUT_MS)) {
+                mLogger.e(TAG, String.format("registerDevice: device=%s peerID=%s: previous loss of the peer still being delivered", mLogger.sensitiveObject(peerDevice.getMACAddress()), mLogger.sensitiveObject(peerID)));
+                return null;
+            }
+            synchronized (this) {
+                // a new loss may have been queued in the meantime: wait for it too
+                if (hasPendingLoss(peerID)) {
+                    continue;
+                }
+                return registerDeviceLocked(peerID, peerDevice, isClient);
+            }
+        }
+        mLogger.e(TAG, String.format("registerDevice: device=%s peerID=%s: peer lost again while registering", mLogger.sensitiveObject(peerDevice.getMACAddress()), mLogger.sensitiveObject(peerID)));
+        return null;
+    }
+
+    private Peer registerDeviceLocked(String peerID, PeerDevice peerDevice, boolean isClient) {
         if (!BleInterface.BLEHandleFoundPeer(peerID)) {
             mLogger.e(TAG, String.format("registerDevice: device=%s peerID=%s: HandleFoundPeer failed", mLogger.sensitiveObject(peerDevice.getMACAddress()), mLogger.sensitiveObject(peerID)));
             return null;
@@ -63,6 +92,32 @@ public class PeerManager {
         peer.getDevice().flushServerDataCache();
 
         return peer;
+    }
+
+    private boolean hasPendingLoss(String peerID) {
+        synchronized (mLossLock) {
+            return mPendingLoss.containsKey(peerID);
+        }
+    }
+
+    // true when no loss of this peer is pending (anymore), false on timeout
+    private boolean awaitPendingLoss(String peerID, long timeoutMs) {
+        long deadline = System.nanoTime() + TimeUnit.MILLISECONDS.toNanos(timeoutMs);
+        synchronized (mLossLock) {
+            while (mPendingLoss.containsKey(peerID)) {
+                long leftMs = TimeUnit.NANOSECONDS.toMillis(deadline - System.nanoTime());
+                if (leftMs <= 0) {
+                    return false;
+                }
+                try {
+                    mLossLock.wait(leftMs);
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                    return false;
+                }
+            }
+            return true;
+        }
     }
 
     public synchronized void unregisterDevices(String peerID) {
@@ -104,11 +159,25 @@ public class PeerManager {
 
     private void notifyLostPeers(List<String> peerIDs) {
         for (String peerID : peerIDs) {
+            synchronized (mLossLock) {
+                Integer count = mPendingLoss.get(peerID);
+                mPendingLoss.put(peerID, count == null ? 1 : count + 1);
+            }
             sLostPeerNotifier.execute(() -> {
                 try {
                     BleInterface.BLEHandleLostPeer(peerID);
                 } catch (RuntimeException e) {
                     mLogger.e(TAG, String.format("HandleLostPeer failed: peer=%s", mLogger.sensitiveObject(peerID)), e);
+                } finally {
+                    synchronized (mLossLock) {
+                        Integer count = mPendingLoss.get(peerID);
+                        if (count == null || count <= 1) {
+                            mPendingLoss.remove(peerID);
+                        } else {
+                            mPendingLoss.put(peerID, count - 1);
+                        }
+                        mLossLock.notifyAll();
+                    }
                 }
             });
         }

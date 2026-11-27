@@ -11,12 +11,13 @@ import { ScreenFC, useNavigation } from '@berty/navigation'
 import { setThemeMode, ThemeMode, useThemeMode } from '@berty/utils/theme/themeMode'
 import { useTopInset } from '@berty/utils/react-native/useTopInset'
 
-const MODES: { mode: ThemeMode; label: string }[] = [
+// the labels are literal translation keys (typed `t()`), so the array is `as const`
+const MODES = [
 	{ mode: 'system', label: 'settings.appearance.mode-system' },
 	{ mode: 'light', label: 'settings.appearance.mode-light' },
 	{ mode: 'dark', label: 'settings.appearance.mode-dark' },
 	{ mode: 'black', label: 'settings.appearance.mode-black' },
-]
+] as const satisfies readonly { mode: ThemeMode; label: string }[]
 
 export const Appearance: ScreenFC<'Settings.Appearance'> = () => {
 	const { scaleSize } = useAppDimensions()

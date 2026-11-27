@@ -556,7 +556,7 @@
 		},
 		"quit": {
 			"title": "Quit Berty?",
-			"desc": "Berty will stop running in the background. You won't receive messages or notifications until you open it again.",
+			"desc": "Berty's background connections will stop until you open it again. Push notifications may still arrive if enabled.",
 			"cancel": "Cancel",
 			"confirm": "Quit"
 		}

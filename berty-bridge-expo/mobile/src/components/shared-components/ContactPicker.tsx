@@ -91,6 +91,7 @@ const ContactItem: React.FC<ContactItemProps> = ({ contact, added, separateBar =
 
 export const ContactPicker: React.FC<ContactPickerProps> = ({ accountContacts }) => {
 	const { padding, margin } = useStyles()
+	const colors = useThemeColor()
 	const { scaleSize } = useAppDimensions()
 	const [searchText, setSearchText] = useState('')
 	const searchContacts = useContactSearchResults(searchText)

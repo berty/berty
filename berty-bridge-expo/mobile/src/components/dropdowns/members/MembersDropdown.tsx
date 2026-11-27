@@ -34,6 +34,7 @@ interface MemberItemProps {
 
 const MemberItem: React.FC<MemberItemProps> = ({ onPress, convPK, item }) => {
 	const { padding } = useStyles()
+	const colors = useThemeColor()
 	const dispatch = useAppDispatch()
 	const [peer, setPeer] = React.useState<PeerNetworkStatus | null>(null)
 	const peers = useAppSelector(selectPeerNetworkStatusDict)
