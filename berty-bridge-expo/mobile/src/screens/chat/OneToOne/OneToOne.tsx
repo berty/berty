@@ -39,7 +39,7 @@ export const OneToOne: ScreenFC<'Chat.OneToOne'> = React.memo(
 
 		const { opacity, flex } = useStyles()
 		const colors = useThemeColor()
-		useReadEffect(params?.convId, 1000)
+		useReadEffect(params?.convId, 0)
 		useDismissNotificationsEffect(params?.convId)
 		const { t } = useTranslation()
 		const conv = useConversation(params?.convId)

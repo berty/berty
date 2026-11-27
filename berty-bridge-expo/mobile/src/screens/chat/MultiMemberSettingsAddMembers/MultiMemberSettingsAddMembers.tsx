@@ -88,12 +88,12 @@ export const MultiMemberSettingsAddMembers: ScreenFC<'Chat.MultiMemberSettingsAd
 	})
 
 	return (
-		<Layout style={[flex.tiny, { backgroundColor: '#FFFFFF' }]}>
+		<Layout style={[flex.tiny, { backgroundColor: colors['main-background'] }]}>
 			<StatusBar style='light' />
 			<SafeAreaView style={{ backgroundColor: colors['background-header'] }}>
 				<CreateGroupMemberList />
 			</SafeAreaView>
-			<View style={{ flex: 1, backgroundColor: '#FFFFFF' }}>
+			<View style={{ flex: 1, backgroundColor: colors['main-background'] }}>
 				<View style={{ top: -30 * scaleHeight, flex: 1 }}>
 					<CreateGroupHeader
 						title={t('chat.add-members.contacts')}

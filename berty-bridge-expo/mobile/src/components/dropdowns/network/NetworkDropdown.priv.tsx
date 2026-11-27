@@ -25,7 +25,7 @@ export const NetworkDropdownPriv = forwardRef(
 					styles.container,
 					margin.top.medium,
 					border.shadow.medium,
-					{ shadowColor: colors.shadow },
+					{ shadowColor: colors.shadow, backgroundColor: colors['input-background'] },
 				]}
 			>
 				<DropdownPriv
@@ -45,6 +45,5 @@ const styles = StyleSheet.create({
 	container: {
 		borderRadius: 14,
 		flex: 1,
-		backgroundColor: '#F7F8FE',
 	},
 })

@@ -14,6 +14,9 @@ import android.os.Handler;
 import android.os.Looper;
 
 import java.nio.charset.StandardCharsets;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 // Make the BleDriver class a Singleton
 // see https://medium.com/@kevalpatel2106/how-to-make-the-perfect-singleton-de6b951dfdb0
@@ -34,7 +37,7 @@ public class BleDriver {
     private final Context mAppContext;
     private BluetoothManager mBluetoothManager;
     private BluetoothAdapter mBluetoothAdapter;
-    private GattServer mGattServer;
+    private volatile GattServer mGattServer;
     private DeviceManager mDeviceManager;
     private PeerManager mPeerManager;
 
@@ -77,6 +80,49 @@ public class BleDriver {
         }
     };
     private boolean mBroadcastReceiverRegistered = false;
+
+    // Safety net: if Bluetooth is on but the driver is not running (the start failed because the
+    // Bluetooth stack was not ready yet right after it was turned on, the stop and start of a
+    // quick off/on were run in the wrong order, a permission was granted later...), try again.
+    private static final long WATCHDOG_PERIOD_SECONDS = 10;
+    private static final long LOST_PEER_FLUSH_TIMEOUT_MS = 5000;
+    private ScheduledExecutorService mWatchdog;
+
+    private synchronized void startWatchdog() {
+        if (mWatchdog != null) {
+            return;
+        }
+        mWatchdog = Executors.newSingleThreadScheduledExecutor();
+        mWatchdog.scheduleWithFixedDelay(
+            this::watchdogCheck, WATCHDOG_PERIOD_SECONDS, WATCHDOG_PERIOD_SECONDS, TimeUnit.SECONDS);
+    }
+
+    private synchronized void stopWatchdog() {
+        if (mWatchdog != null) {
+            mWatchdog.shutdownNow();
+            mWatchdog = null;
+        }
+    }
+
+    private void watchdogCheck() {
+        try {
+            synchronized (this) {
+                if (mLocalPid == null || !mBroadcastReceiverRegistered || isStarted()) {
+                    return;
+                }
+                BluetoothManager manager = (BluetoothManager) mAppContext.getSystemService(Context.BLUETOOTH_SERVICE);
+                BluetoothAdapter adapter = manager != null ? manager.getAdapter() : null;
+                if (adapter == null || adapter.getState() != BluetoothAdapter.STATE_ON) {
+                    return;
+                }
+                mLogger.i(TAG, "watchdog: Bluetooth is on but the BLE driver is not running, starting it");
+                mAdapterState = BluetoothAdapter.STATE_ON;
+                startBleDriver();
+            }
+        } catch (RuntimeException e) {
+            mLogger.e(TAG, "watchdog: error", e);
+        }
+    }
 
     private BleDriver(Context context, Logger logger) {
         if (mBleDriver != null) {
@@ -212,6 +258,11 @@ public class BleDriver {
             mLogger.e(TAG, "startBleDriver: internal error: mLocalPid is not set");
             return;
         }
+
+        // The peers of the previous session (Bluetooth turned off and on) must be reported as
+        // lost before the ones of the new session can be reported as found.
+        mPeerManager.awaitLostPeerNotifications(LOST_PEER_FLUSH_TIMEOUT_MS);
+
         // Start the BLE thread
         Thread mThread = new Thread(() -> {
             Looper.prepare();
@@ -249,6 +300,7 @@ public class BleDriver {
 
         if (!mGattServer.start(mLocalPid)) {
             mLogger.e(TAG, "startBleDriver: mGattServer failed to start");
+            stopBleDriver();
             return;
         }
 
@@ -281,6 +333,7 @@ public class BleDriver {
         }
 
         startBleDriver();
+        startWatchdog();
     }
 
     private synchronized void stopBleDriver() {
@@ -289,23 +342,49 @@ public class BleDriver {
             return;
         }
 
-        if (!isStarted()) {
-            mLogger.d(TAG, "driver is not started");
-            return;
+        // Tear down whatever has been started, even if startBleDriver() failed halfway.
+        if (mAdvertiser != null) {
+            mAdvertiser.stop();
         }
-
-        mAdvertiser.stop();
-        mScanner.stop();
-        mDeviceManager.closeAllDeviceConnections();
-        mGattServer.stop();
+        if (mScanner != null) {
+            mScanner.stop();
+        }
+        // Fence the GATT server callbacks of this session first: a callback already queued
+        // on the callbacks looper must not run once its devices and its BluetoothGattServer
+        // are gone (see GattServerCallback.close()).
+        if (mGattServer != null) {
+            mGattServer.closeCallbacks();
+        }
+        // Tell the Go side that every peer is gone: the connections are dead, and
+        // without this the stale peers make it believe it is still connected.
+        // The notifications are delivered on their own thread (see PeerManager), not on the
+        // callbacks looper that is discarded below.
+        mPeerManager.unregisterAllPeers();
+        // Do not wait for disconnection callbacks: they never come if Bluetooth is going off
+        mDeviceManager.clearAll();
+        if (mGattServer != null) {
+            mGattServer.stop();
+        }
         setStarted(false);
-        mHandshakeLooper.quit();
-        mCallbacksLooper.quit();
-        mWriteLooper.quit();
-        mReadLooper.quit();
+
+        // Discard the pending work of this session instead of draining it after the teardown
+        if (mHandshakeLooper != null) mHandshakeLooper.quit();
+        if (mCallbacksLooper != null) mCallbacksLooper.quit();
+        if (mWriteLooper != null) mWriteLooper.quit();
+        if (mReadLooper != null) mReadLooper.quit();
+
+        // BluetoothLeAdvertiser, BluetoothLeScanner and BluetoothGattServer instances are
+        // tied to the adapter session and are no longer valid once Bluetooth has been turned
+        // off. Drop them so that the next start creates fresh ones, otherwise BLE never
+        // comes back after Bluetooth has been toggled.
+        mAdvertiser = null;
+        mScanner = null;
+        mGattServer = null;
+        setInit(false);
     }
 
     public synchronized void StopBleDriver() {
+        stopWatchdog();
         stopBleDriver();
         if (mBroadcastReceiverRegistered) {
             mAppContext.unregisterReceiver(mBroadcastReceiver);
@@ -344,7 +423,12 @@ public class BleDriver {
 
                 return peerDevice.write(writer, payload, false);
             } else if (peerDevice.isServerConnected()) {
-                return mGattServer.writeAndNotify(peerDevice, payload);
+                GattServer gattServer = mGattServer; // can be set to null by stopBleDriver()
+                if (gattServer == null) {
+                    mLogger.e(TAG, "SendToPeer error: GATT server not running");
+                    return false;
+                }
+                return gattServer.writeAndNotify(peerDevice, payload);
             } else {
                 mLogger.e(TAG, "SendToPeer error: remote device is disconnected");
                 return false;

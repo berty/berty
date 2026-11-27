@@ -125,6 +125,11 @@ export default ({ config }: ConfigContext): ExpoConfig => {
 				{
 					backgroundColor: "#FFFFFF",
 					image: "./assets/images/splash.png",
+					// shown when the phone is in dark mode, so the app doesn't start with a white flash
+					dark: {
+						backgroundColor: "#262842",
+						image: "./assets/images/splash.png",
+					},
 				},
 			],
 			"expo-audio",

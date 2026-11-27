@@ -7,14 +7,14 @@ import expo.modules.core.interfaces.ReactActivityLifecycleListener
 
 class LifecycleListener : ReactActivityLifecycleListener {
     override fun onCreate(activity: Activity, savedInstanceState: Bundle?) {
-        super.onDestroy(activity)
+        super.onCreate(activity, savedInstanceState)
 
         state = AppState.FOREGROUND
         Log.i(TAG, "onCreate")
     }
 
     override fun onResume(activity: Activity) {
-        super.onDestroy(activity)
+        super.onResume(activity)
 
         state = AppState.FOREGROUND
         Log.i(TAG, "onResume")

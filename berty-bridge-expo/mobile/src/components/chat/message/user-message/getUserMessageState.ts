@@ -5,6 +5,7 @@ import { SHA3 } from 'sha3'
 import beapi from '@berty/api'
 import { ParsedInteraction } from '@berty/utils/api'
 import { pbDateToNum } from '@berty/utils/convert/time'
+import { readableColor } from '@berty/utils/theme/readableColor'
 
 const pal = palette('tol-rainbow', 256)
 
@@ -35,7 +36,11 @@ export const getUserMessageState = (
 		// 		? colors['reverted-main-text']
 		// 		: colors['background-header']
 		// 	: colors['background-header']
-		msgTextColor = inte.isMine ? colors['reverted-main-text'] : colors['background-header']
+		// received messages use the accent color on the input background, which is unreadable on
+		// the dark themes: use the main text color there
+		msgTextColor = inte.isMine
+			? colors['reverted-main-text']
+			: readableColor(colors['background-header'], colors['input-background'], colors['main-text'])
 
 		// TODO: tmp comment to don't have user frustration when a message is not received
 		// msgBackgroundColor = inte.isMine

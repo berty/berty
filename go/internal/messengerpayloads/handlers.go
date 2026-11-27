@@ -500,11 +500,13 @@ func (h *EventHandler) accountContactRequestIncomingReceived(gme *protocoltypes.
 	)
 
 	// update db
+	alreadyReceived := false
 	if err := h.db.TX(h.ctx, func(tx *messengerdb.DBWrapper) error {
 		var err error
 
 		contact, err = tx.AddContactRequestIncomingReceived(contactPK, m.GetDisplayName(), groupPKBytes)
 		if errors.Is(err, errcode.ErrCode_ErrDBEntryAlreadyExists) {
+			alreadyReceived = true
 			return nil
 		} else if err != nil {
 			return errcode.ErrCode_ErrDBAddContactRequestIncomingReceived.Wrap(err)
@@ -522,6 +524,12 @@ func (h *EventHandler) accountContactRequestIncomingReceived(gme *protocoltypes.
 		return nil
 	}); err != nil {
 		return err
+	}
+
+	// The metadata events are processed again each time the node starts: if this request has
+	// already been handled (and so already notified), do not notify the user a second time.
+	if alreadyReceived {
+		return nil
 	}
 
 	if err := h.dispatcher.StreamEvent(mt.StreamEvent_TypeContactUpdated, &mt.StreamEvent_ContactUpdated{Contact: contact}, true); err != nil {

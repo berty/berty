@@ -83,7 +83,7 @@ public class NotificationService extends FirebaseMessagingService {
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this, NotificationHelper.CHANNEL_ID_MESSAGE)
             .setContentTitle(fpush.getTitle())
             .setContentText(fpush.getBody())
-            .setSmallIcon(android.R.drawable.stat_notify_chat)
+            .setSmallIcon(NotificationHelper.getSmallIcon(this, NotificationHelper.ICON_MESSAGE))
             .setCategory(Notification.CATEGORY_MESSAGE)
             .setGroup(fpush.getConversationIdentifier())
             .setVibrate(new long[]{125L, 75L, 125L})

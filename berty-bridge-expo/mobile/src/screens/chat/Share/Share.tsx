@@ -15,7 +15,7 @@ import { ButtonSettingRow } from '@berty/components/shared-components'
 import { UnifiedText } from '@berty/components/shared-components/UnifiedText'
 import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
 import { useStyles } from '@berty/contexts/styles'
-import { useAccount, useMessengerClient, useThemeColor } from '@berty/hooks'
+import { useAccount, useBluetoothEnablePrompt, useMessengerClient, useThemeColor } from '@berty/hooks'
 import { ScreenFC, useNavigation } from '@berty/navigation'
 import { checkPermission } from '@berty/utils/permissions/checkPermissions'
 import { PermissionType } from '@berty/utils/permissions/permissions'
@@ -201,6 +201,14 @@ export const ShareModal: ScreenFC<'Chat.Share'> = () => {
 	const { t } = useTranslation()
 	const account = useAccount()
 	const url = account.link
+	const askToEnableBluetooth = useBluetoothEnablePrompt()
+
+	// adding a contact with a QR code while offline: Bluetooth may be the only way to connect
+	useFocusEffect(
+		useCallback(() => {
+			askToEnableBluetooth()
+		}, [askToEnableBluetooth]),
+	)
 
 	useFocusEffect(
 		useCallback(() => {

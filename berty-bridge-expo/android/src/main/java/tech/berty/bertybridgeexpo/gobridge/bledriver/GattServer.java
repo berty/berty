@@ -54,7 +54,7 @@ public class GattServer {
     private CountDownLatch mDoneSignal;
     private GattServerCallback mGattServerCallback;
     private BluetoothGattServer mBluetoothGattServer;
-    private BluetoothServerSocket mBluetoothServerSocket;
+    private volatile BluetoothServerSocket mBluetoothServerSocket;
     private int PSM = 0;
     private volatile boolean mInit = false;
     private volatile boolean mStarted = false;
@@ -135,12 +135,15 @@ public class GattServer {
 
             // loop to accept multiple incoming connections
             if (mBluetoothServerSocket != null) {
+                // the thread keeps its own reference: the field is set to null when the server
+                // is released, and closing the socket ends accept() with an IOException
+                final BluetoothServerSocket serverSocket = mBluetoothServerSocket;
                 Thread l2capThread = new Thread(() -> {
                     while (true) {
-                        if (mBluetoothServerSocket != null) {
+                        if (serverSocket != null) {
                             BluetoothSocket bluetoothSocket;
                             try {
-                                bluetoothSocket = mBluetoothServerSocket.accept();
+                                bluetoothSocket = serverSocket.accept();
                             } catch (IOException e) {
                                 mLogger.e(TAG, "L2CAP accept(): exception catch: ", e);
                                 return;
@@ -188,8 +191,7 @@ public class GattServer {
 
         if (!mBluetoothGattServer.addService(mService)) {
             mLogger.e(TAG, "setupGattServer error: cannot add a new service");
-            mBluetoothGattServer.close();
-            mBluetoothGattServer = null;
+            releaseResources();
             return false;
         }
 
@@ -201,7 +203,41 @@ public class GattServer {
         }
 
         // mStarted is updated by GattServerCallback
-        return isStarted();
+        if (!isStarted()) {
+            // onServiceAdded() reported a failure: don't leave the L2CAP listener and the GATT
+            // server open, the driver will try again with a new GattServer
+            mLogger.e(TAG, "start error: GATT service not added");
+            releaseResources();
+            return false;
+        }
+        return true;
+    }
+
+    // Closes everything start() may have opened (L2CAP listener, which also ends its accept
+    // thread, and GATT server), whether or not the start completed. Can be called several times.
+    private void releaseResources() {
+        BluetoothServerSocket serverSocket = mBluetoothServerSocket;
+        mBluetoothServerSocket = null;
+        if (serverSocket != null) {
+            try {
+                mLogger.d(TAG, "stop BluetoothServerSocket (L2cap)");
+                serverSocket.close();
+            } catch (IOException e) {
+                mLogger.e(TAG, "stop error: cannot close BluetoothServerSocket (L2cap)");
+            }
+        }
+
+        BluetoothGattServer gattServer;
+        mLock.lock();
+        try {
+            gattServer = mBluetoothGattServer;
+            mBluetoothGattServer = null;
+        } finally {
+            mLock.unlock();
+        }
+        if (gattServer != null) {
+            gattServer.close();
+        }
     }
 
     public int getL2capPSM() {
@@ -239,28 +275,21 @@ public class GattServer {
         }
     }
 
+    // Fence the callbacks of this server: from now on, the callbacks already queued or still
+    // delivered by the system are discarded (this server and its devices are being torn down).
+    public void closeCallbacks() {
+        if (mGattServerCallback != null) {
+            mGattServerCallback.close();
+        }
+    }
+
     public void stop() {
         mLogger.i(TAG, "stop() called");
-        if (isStarted()) {
-            setStarted(false);
-            if (mBluetoothServerSocket != null) {
-                try {
-                    mLogger.d(TAG, "stop BluetoothServerSocket (L2cap)");
-                    mBluetoothServerSocket.close();
-                } catch (IOException e) {
-                    mLogger.e(TAG, "stop error: cannot close BluetoothServerSocket (L2cap)");
-                } finally {
-                    mBluetoothServerSocket = null;
-                }
-            }
-            mBluetoothGattServer.close();
-            mLock.lock();
-            try {
-                mBluetoothGattServer = null;
-            } finally {
-                mLock.unlock();
-            }
-        }
+        closeCallbacks();
+        setStarted(false);
+        // also when the start failed half-way (isStarted() false): the L2CAP listener and the
+        // GATT server may be open
+        releaseResources();
         mInit = false;
     }
 
@@ -299,7 +328,14 @@ public class GattServer {
                 return;
             }
 
-            if (!mBluetoothGattServer.notifyCharacteristicChanged(device.getBluetoothDevice(), mWriterCharacteristic, true)) {
+            BluetoothGattServer gattServer = getGattServer();
+            if (gattServer == null) {
+                mLogger.e(TAG, "_writeAndNotify: GATT server is not running");
+                device.getBleQueue().completedCommand(device.STATUS_ERROR);
+                return;
+            }
+
+            if (!gattServer.notifyCharacteristicChanged(device.getBluetoothDevice(), mWriterCharacteristic, true)) {
                 mLogger.e(TAG, String.format("_writeAndNotify: notifyCharacteristicChanged failed for device=%s", mLogger.sensitiveObject(device.getMACAddress())));
                 device.getBleQueue().completedCommand(device.STATUS_ERROR);
             }
@@ -327,7 +363,7 @@ public class GattServer {
             mLogger.v(TAG, "writeAndNotify called");
         }
 
-        if (mBluetoothGattServer == null) {
+        if (getGattServer() == null) {
             mLogger.e(TAG, "writeAndNotify: GATT server is not running");
             return false;
         }

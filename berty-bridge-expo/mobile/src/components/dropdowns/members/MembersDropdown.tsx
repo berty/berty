@@ -34,6 +34,7 @@ interface MemberItemProps {
 
 const MemberItem: React.FC<MemberItemProps> = ({ onPress, convPK, item }) => {
 	const { padding } = useStyles()
+	const colors = useThemeColor()
 	const dispatch = useAppDispatch()
 	const [peer, setPeer] = React.useState<PeerNetworkStatus | null>(null)
 	const peers = useAppSelector(selectPeerNetworkStatusDict)
@@ -59,7 +60,11 @@ const MemberItem: React.FC<MemberItemProps> = ({ onPress, convPK, item }) => {
 	}, [convPK, dispatch, item.publicKey, item.conversationPublicKey, peers])
 
 	return peer ? (
-		<TouchableOpacity onPress={onPress} style={[styles.item, padding.horizontal.medium]}>
+		<TouchableOpacity onPress={onPress} style={[
+				styles.item,
+				padding.horizontal.medium,
+				{ borderTopColor: colors['secondary-background'] },
+			]}>
 			<View style={[styles.content]}>
 				<MemberAvatarWithStatus
 					publicKey={item.publicKey}
@@ -93,7 +98,11 @@ export const MembersDropdown: React.FC<MembersDropdownProps> = props => {
 			style={[
 				styles.container,
 				border.shadow.medium,
-				{ shadowColor: colors.shadow, backgroundColor: colors['main-background'] },
+				{
+					shadowColor: colors.shadow,
+					backgroundColor: colors['main-background'],
+					borderColor: colors['secondary-background'],
+				},
 			]}
 		>
 			<DropdownPriv icon='users' placeholder={props.placeholder} testID={props.testID}>
@@ -118,11 +127,9 @@ const styles = StyleSheet.create({
 		borderRadius: 14,
 		flex: 1,
 		borderWidth: 1,
-		borderColor: '#EDF1F7',
 	},
 	item: {
 		borderTopWidth: 1,
-		borderTopColor: '#EDF1F7',
 		flexDirection: 'row',
 		alignItems: 'center',
 		paddingVertical: 12,
