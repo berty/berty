@@ -1,6 +1,6 @@
-import React from 'react'
+import React, { useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
-import { StyleSheet, View } from 'react-native'
+import { Alert, StyleSheet, View } from 'react-native'
 
 import beapi from '@berty/api'
 import { ConversationAvatar } from '@berty/components/avatars'
@@ -9,6 +9,7 @@ import { useAppSelector, useOneToOneContact, useLastConvInteraction } from '@ber
 import { selectChatInputText } from '@berty/redux/reducers/chatInputs.reducer'
 import { selectChatInputIsSending } from '@berty/redux/reducers/chatInputsVolatile.reducer'
 import { ParsedInteraction } from '@berty/utils/api'
+import { hideConversation } from '@berty/utils/conversation/hiddenConversations'
 import { pbDateToNum } from '@berty/utils/convert/time'
 
 import { ConversationButton } from './ConversationButton'
@@ -67,6 +68,27 @@ export const ConversationItem: React.FC<
 			? displayName
 			: contact?.displayName || ''
 
+	// long press: hide the conversation from the list (nothing is deleted, it comes back
+	// with the next message)
+	const handleLongPress = useCallback(() => {
+		if (fake) {
+			return
+		}
+		Alert.alert(
+			t('main.home.conversations.hide-title'),
+			t('main.home.conversations.hide-desc'),
+			[
+				{ text: t('main.home.conversations.hide-cancel'), style: 'cancel' },
+				{
+					text: t('main.home.conversations.hide-confirm'),
+					style: 'destructive',
+					onPress: () => hideConversation({ publicKey, lastUpdate, createdDate }),
+				},
+			],
+			{ cancelable: true },
+		)
+	}, [fake, t, publicKey, lastUpdate, createdDate])
+
 	if (chatInputIsSending) {
 		description = t('chat.sending')
 	} else if (chatInputText) {
@@ -77,7 +99,13 @@ export const ConversationItem: React.FC<
 	}
 
 	return !isIncoming ? (
-		<ConversationButton publicKey={publicKey} isAccepted={isAccepted} type={type} isLast={isLast}>
+		<ConversationButton
+			publicKey={publicKey}
+			isAccepted={isAccepted}
+			type={type}
+			isLast={isLast}
+			onLongPress={handleLongPress}
+		>
 			<View
 				style={[
 					row.item.center,
