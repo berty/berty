@@ -1,6 +1,7 @@
 import { setStreamProgress, setStreamError } from '@berty/redux/reducers/ui.reducer'
 import { AppDispatch, persistor, resetAccountStore } from '@berty/redux/store'
 
+import { stopMessengerEventStream } from '../messenger/clients'
 import { StreamProgressType } from '../protocol/progress.types'
 import { accountClient } from './accountClient'
 
@@ -12,6 +13,7 @@ export const closeAccount = async (dispatch: AppDispatch) =>
 			console.log('flushed redux persistence')
 			persistor.pause()
 			console.log('paused redux persistence')
+			await stopMessengerEventStream()
 			const stream = await accountClient.closeAccountWithProgress({})
 			stream.onMessage((msg, err) => {
 				if (err) {

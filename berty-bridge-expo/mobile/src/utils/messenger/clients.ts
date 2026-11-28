@@ -63,17 +63,52 @@ const isViewingConversation = (convPK: string | undefined): boolean => {
 	)
 }
 
+// Only one messenger event stream may be active per JS runtime. openClients() runs again
+// when the activity or task is recreated while the process (and the JS runtime) is still
+// alive, and when an account is opened again. The previous stream used to keep running, so
+// every event was handled twice and each message produced two notifications.
+let activeEventStream: (() => Promise<void>) | null = null
+// Bumped whenever a stream is started or stopped. A stream handles events only while its
+// generation is the current one, so a stream that is being replaced can't emit anything.
+let eventStreamGeneration = 0
+
+const stopActiveEventStream = async () => {
+	const stop = activeEventStream
+	activeEventStream = null
+	if (stop) {
+		await stop()
+	}
+}
+
+export const stopMessengerEventStream = async () => {
+	eventStreamGeneration++
+	await stopActiveEventStream()
+}
+
 const messengerEventStream = (
 	messengerClient: WelshMessengerServiceClient,
 	dispatch: AppDispatch,
 ) =>
 	new Promise<void>(async (resolve, reject) => {
-		let cancel: () => Promise<void>
+		// Taken before any await, so that of two overlapping calls only the last one wins.
+		const generation = ++eventStreamGeneration
+		const isCurrent = () => generation === eventStreamGeneration
+		await stopActiveEventStream()
+
 		messengerClient
 			.eventStream({ shallowAmount: 20 })
 			.then(async stream => {
-				cancel = async () => await stream.stop()
+				const stop = async () => {
+					try {
+						await stream.stop()
+					} catch (e) {
+						console.warn('failed to stop events stream:', e)
+					}
+				}
 				stream.onMessage((msg, err) => {
+					if (!isCurrent()) {
+						return
+					}
 					try {
 						if (err) {
 							if (
@@ -88,6 +123,7 @@ const messengerEventStream = (
 								dispatch(setStreamError({ error: err }))
 								reject(err)
 							}
+							return
 						}
 
 						const evt = msg?.event
@@ -139,7 +175,21 @@ const messengerEventStream = (
 						console.warn('failed to handle stream event (', msg?.event, '):', err)
 					}
 				})
+
+				if (!isCurrent()) {
+					// Replaced while this stream was being created: close it right away.
+					// start() has to be called first, stop() refuses a stream that never started.
+					stream.start().catch(() => {})
+					await stop()
+					resolve()
+					return
+				}
+
+				activeEventStream = stop
 				await stream.start()
+				if (activeEventStream === stop) {
+					activeEventStream = null
+				}
 			})
 			.catch(err => {
 				if (err instanceof GRPCError && err?.EOF) {
@@ -151,7 +201,7 @@ const messengerEventStream = (
 					reject(err)
 				}
 			})
-		dispatch(setClearClients(async () => await cancel()))
+		dispatch(setClearClients(stopMessengerEventStream))
 	})
 
 const createMockClients = () => {
